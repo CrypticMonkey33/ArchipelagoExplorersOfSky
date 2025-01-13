@@ -1,3 +1,11 @@
+Adding on preliminary Pokemon Mystery Dungeon Explorers of Sky integration to Archipelago. The integration is under worlds->pmd_eos.
+
+THIS INTEGRATION IS CURRENTLY WORK IN PROGRESS AND NOT PLAYABLE. You can watch the discord for information on our progress and how close we are to integration.
+
+
+
+
+
 # [Archipelago](https://archipelago.gg) ![Discord Shield](https://discordapp.com/api/guilds/731205301247803413/widget.png?style=shield) | [Install](https://github.com/ArchipelagoMW/Archipelago/releases)
 
 Archipelago provides a generic framework for developing multiworld capability for game randomizers. In all cases,
