@@ -1,0 +1,45 @@
+{
+  "REGION_PETALBURG_WOODS/WEST_PATH": {
+    "parent_map": "MAP_PETALBURG_WOODS",
+    "has_grass": true,
+    "has_water": false,
+    "has_fishing": false,
+    "locations": [
+      "ITEM_PETALBURG_WOODS_ETHER",
+      "ITEM_PETALBURG_WOODS_PARALYZE_HEAL",
+      "HIDDEN_ITEM_PETALBURG_WOODS_POTION",
+      "HIDDEN_ITEM_PETALBURG_WOODS_POKE_BALL",
+      "NPC_GIFT_RECEIVED_GREAT_BALL_PETALBURG_WOODS",
+      "TRAINER_LYLE_REWARD",
+      "TRAINER_GRUNT_PETALBURG_WOODS_REWARD",
+      "TRAINER_JAMES_1_REWARD"
+    ],
+    "events": [],
+    "exits": [
+      "REGION_PETALBURG_WOODS/EAST_PATH"
+    ],
+    "warps": [
+      "MAP_PETALBURG_WOODS:0,1/MAP_ROUTE104:2,3",
+      "MAP_PETALBURG_WOODS:2,3/MAP_ROUTE104:4,5",
+      "MAP_PETALBURG_WOODS:4,5/MAP_ROUTE104:6,7"
+    ]
+  },
+  "REGION_PETALBURG_WOODS/EAST_PATH": {
+    "parent_map": "MAP_PETALBURG_WOODS",
+    "has_grass": true,
+    "has_water": false,
+    "has_fishing": false,
+    "locations": [
+      "ITEM_PETALBURG_WOODS_GREAT_BALL",
+      "ITEM_PETALBURG_WOODS_X_ATTACK",
+      "HIDDEN_ITEM_PETALBURG_WOODS_TINY_MUSHROOM_1",
+      "HIDDEN_ITEM_PETALBURG_WOODS_TINY_MUSHROOM_2",
+      "NPC_GIFT_RECEIVED_MIRACLE_SEED"
+    ],
+    "events": [],
+    "exits": [
+      "REGION_PETALBURG_WOODS/WEST_PATH"
+    ],
+    "warps": []
+  }
+}

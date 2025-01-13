@@ -1,0 +1,560 @@
+
+*#0000: Nothing
+*#0001: Iron Tail
+*#0002: Ice Ball
+*#0003: Yawn
+*#0004: Lovely Kiss
+*#0005: Nightmare
+*#0006: Morning Sun
+*#0007: Vital Throw
+*#0008: Dig
+*#0009: Thrash
+*#0010: Sweet Scent
+#0011: Charm
+*#0012: Rain Dance
+*# 0013: Confuse Ray
+*#0014: Hail
+*# 0015: Aromatherapy
+*#0016: Bubble
+*#0017: Encore
+*#0018: Cut
+*#0019: Rage
+*#0020: Super Fang
+*#0021: Pain Split
+*#0022: Torment
+*# 0023: String Shot
+*#0024: Swagger
+*#0025: Snore
+*#0026: Heal Bell
+*#0027: Screech
+*#0028: Rock Throw
+*#0029: Rock Smash
+*#0030: Rock Slide
+*#0031: Weather Ball
+*#0032: Whirlpool
+*#0033: Fake Tears
+*#0034: Sing
+*#0035: Spite
+*#0036: Air Cutter
+*# 0037: SmokeScreen
+*#0038: Pursuit
+*#0039: DoubleSlap
+*# 0040: Mirror Move
+*#0041: Overheat
+*#0042: Aurora Beam
+*#0043: Memento
+*#0044: Octazooka
+*#0045: Flatter
+*#0046: Astonish
+*#0047: Will-O-Wisp
+
+*#0048: Return *#0049: Grudge
+*#0050: Strength *#0051: Counter
+*#0052: Flame Wheel *# 0053: Flamethrower
+*# 0054: Odor Sleuth
+*#0055: Sharpen
+*# 0056: Double Team
+*#0057: Gust
+*#0058: Harden
+*#0059: Disable
+*#0060: Razor Wind
+*#0061: Bide
+#0062: Crunch
+*#0063: Bite
+*#0064: Thunder
+*#0065: ThunderPunch
+*#0066: Endeavor
+*#0067: Facade
+*#0068: Karate Chop
+*#0069: Clamp
+*#0070: Withdraw
+*#0071: Constrict
+*#0072: Brick Break
+*#0073: Rock Tomb
+*#0074: Focus Energy
+*#0075: Focus Punch
+*#0076: Giga Drain
+*#0077: Reversal
+*#0078: SmellingSalt
+**0079: Spore
+*#0080: Leech Life
+*#0081: Slash
+*#0082: Silver Wind
+*#0083: Metal Sound
+*#0084: Grass Whistle
+*#0085: Tickle
+*# 0086: Spider Web
+#0087: Crabhammer
+*#0088: Haze
+*#0089: Mean Look
+*# 0090: Cross Chop
+*#0091: Outrage
+*#0092: Low Kick
+*# 0093: AncientPower
+*# 0094: Synthesis
+*#0095: Agility
+
+*# 0096: Rapid Spin #0097: Icy Wind
+*# 0098: Mind Reader
+*#0099: Cosmic Power
+*#0100: Sky Attack
+*#0101: Powder Snow
+*#0102: Follow Me
+*#0103: Meteor Mash
+*#0104: Endure
+*#0105: Rollout
+*#0106: Scary Face
+*#0107: Psybeam
+*#0108: Psywave
+*#0109: Psychic
+*#0110: Psycho Boost
+*#0111: Hypnosis
+*#0112: Uproar
+*#0113: Water Spout
+*#0114: Signal Beam
+*#0115: Psych Up
+*#0116: Submission
+*#0117: Recover
+*#0118: Earthquake
+*#0119: Nature Power
+*#0120: Lick
+*#0121: Flail
+*#0122: Tail Whip
+*#0123: Selfdestruct
+*#0124: Stun Spore
+*#0125: Bind
+*#0126: Shadow Punch
+*#0127: Shadow Ball
+*#0128: Charge
+*#0129: Thunderbolt
+*#0130: Mist
+*#0131: Fissure
+*#0132: ExtremeSpeed
+*#0133: Extrasensory
+*#0134: Safeguard
+*#0135: Absorb
+*#0136: Sky Uppercut
+*#0137: Skill Swap
+*#0138: Sketch
+*#0139: Headbutt
+*#0140: Double-Edge
+*#0141: Sandstorm
+*#0142: Sand-Attack
+*#0143: Sand Tomb
+*#0144: Spark
+
+*#0145: Swift *#0146: Kinesis
+*#0147: Smog
+*#0148: Growth
+*#0149: Sacred Fire
+*#0150: Sheer Cold
+*#0151: SolarBeam
+*#0152: SonicBoom
+*#0153: Fly
+*#0154: Tackle
+*#0155: Explosion
+*#0156: Dive
+*#0157: Fire Blast
+*#0158: Waterfall
+*#0159: Muddy Water
+*#0160: Stockpile
+*#0161: Slam
+*#0162: Twister
+*#0163: Bullet Seed
+*#0164: Twineedle
+*#0165: Softboiled
+*#0166: Egg Bomb
+*#0167: Faint Attack
+*#0168: Barrage
+*#0169: Minimize
+*#0170: Seismic Toss
+*#0171: Supersonic
+*#0172: Taunt
+*#0173: Moonlight
+*#0174: Peck
+*#0175: Arm Thrust
+*#0176: Horn Attack
+*#0177: Horn Drill
+*#0178: Wing Attack
+*#0179: Aerial Ace
+*#0180: Icicle Spear
+*#0181: Swords Dance
+*#0182: Vine Whip
+*#0183: Conversion
+*#0184: Conversion 2
+*#0185: Helping Hand
+*#0186: Iron Defense
+*#0187: Teleport
+*#0188: ThunderShock
+*#0189: Shock Wave
+*#0190: Quick Attack
+*#0191: Sweet Kiss
+*#0192: Thunder Wave
+*#0193: Zap Cannon
+
+*#0194: Block *#0195: Howl
+*#0196: Poison Gas
+*#0197: Toxic
+*#0198: Poison Fang
+*#0199: PoisonPowder
+*#0200: Poison Sting
+*#0201: Spike Cannon
+*#0202: Acid Armor
+*#0203: Take Down
+*#0204: Jump Kick
+#0205: Bounce
+*#0206: Hi Jump Kick
+*#0207: Tri Attack
+*#0208: Dragon Claw
+*#0209: Trick
+*#0210: Triple Kick
+*#0211: Drill Peck
+*#0212: Mud Sport
+*#0213: Mud-Slap
+*#0214: Thief
+*#0215: Amnesia
+*#0216: Night Shade
+*#0217: Growl
+*#0218: Slack Off
+*#0219: Surf
+*#0220: Role Play
+*#0221: Needle Arm
+*#0222: Double Kick
+*#0223: Sunny Day
+*#0224: Leer
+*#0225: Wish
+*#0226: Fake Out
+*#0227: Sleep Talk
+*#0228: Pay Day
+*#0229: Assist
+*#0230: Heat Wave
+*#0231: Sleep Powder
+*#0232: Rest
+*#0233: Ingrain
+*#0234: Confusion
+*#0235: Body Slam
+*#0236: Swallow
+*#0237: Curse
+*#0238: Frenzy Plant
+*#0239: Hydro Cannon
+*#0240: Hydro Pump
+*#0241: Hyper Voice
+
+#0242: Hyper Beam
+*#0243: Superpower
+#0244: Steel Wing
+*#0245: Spit Up
+*#0246: DynamicPunch
+*#0247: Guillotine
+#0248: ViceGrip
+*#0249: Knock Off
+#0250: Pound
+#0251: Razor Leaf
+#0252: Baton Pass
+#0253: Petal Dance
+*#0254: Splash
+*#0255: BubbleBeam
+*#0256: Doom Desire
+*#0257: Belly Drum
+#0258: Barrier
+*#0259: Light Screen
+#0260: Scratch
+*#0261: Hyper Fang
+*#0262: Ember
+#0263: Secret Power
+#0264: Dizzy Punch
+#0265: Bulk Up
+#0266: Imprison
+#0267: FeatherDance
+#0268: Whirlwind
+#0269: Beat Up
+*#0270: Blizzard
+*#0271: Stomp
+*#0272: Blast Burn
+*#0273: Flash
+#0274: Teeter Dance
+#0275: Crush Claw
+#0276: Blaze Kick
+#0277: Present
+*#0278: Eruption
+*#0279: Sludge
+*#0280: Sludge Bomb
+#0281: Glare
+#0282: Transform
+#0283: Poison Tail
+#0284: Roar
+#0285: Bone Rush
+*#0286: Camouflage
+#0287: Covet
+#0288: Tail Glow
+#0289: Bone Club
+#0290: Bonemerang
+
+*#0291: Fire Spin *#0292: Fire Punch
+*#0293: Perish Song
+*#0294: Wrap
+**0295: Spikes
+*#0296: Magnitude
+*#0297: Magical Leaf
+*#0298: Magic Coat
+*#0299: Mud Shot
+#0300: Mach Punch
+*#0301: Protect
+*#0302: Defense Curl
+*#0303: Rolling Kick
+*#0304: Substitute
+*#0305: Detect
+*#0306: Pin Missile
+*#0307: Water Sport
+#0308: Water Gun
+*#0309: Mist Ball
+*#0310: Water Pulse
+*#0311: Fury Attack
+*#0312: Fury Swipes
+*#0313: Destiny Bond
+*#0314: False Swipe
+*#0315: Foresight
+*#0316: Mirror Coat
+*#0317: Future Sight
+*#0318: Milk Drink
+*#0319: Calm Mind
+*#0320: Mega Drain
+*#0321: Mega Kick
+*#0322: Mega Punch
+*#0323: Megahorn
+*#0324: Hidden Power
+*#0325: Metal Claw
+*#0326: Attract
+*#0327: Mimic
+*#0328: Frustration
+*#0329: Leech Seed
+*#0330: Metronome
+*#0331: Dream Eater
+*#0332: Acid
+*#0333: Meditate
+*#0334: Snatch
+*#0335: Luster Purge
+*#0336: Leaf Blade
+*#0337: Recycle
+*#0338: Reflect
+#0339: Refresh
+
+*#0340: Revenge *#0341: Dragon Rage
+*#0342: DragonBreath
+*#0343: Dragon Dance
+*#0344: Ice Punch
+*#0345: Ice Beam
+*#0346: Fury Cutter
+*#0347: Comet Punch
+*#0348: Skull Bash
+*#0349: Lock-On
+*#0350: Rock Blast
+*#0351: Cotton Spore
+*#0352: Struggle
+*#0353: Aeroblast
+*#0354: Volt Tackle
+*#0355: regular attack
+*#0356: is watching
+*#0357: Bide
+*#0358: Revenge
+*#0359: Avalanche
+*#0360: Wide Slash
+*#0361: $$$
+*#0362: $$$
+*#0363: See-Trap
+*#0364: Takeaway
+*#0365: Rebound
+*#0366: Bloop Slash
+*#0367: Switcher
+*#0368: Blowback
+*#0369: Warp
+*#0370: Transfer
+*#0371: Slow Down
+*#0372: Speed Boost
+*#0373: Searchlight
+*#0374: Petrify
+*#0375: Stay Away
+*#0376: Pounce
+*#0377: Trawl
+*#0378: Cleanse
+*#0379: Observer
+*#0380: Decoy Maker
+*#0381: Siesta
+*#0382: Totter
+*#0383: Two-Edge
+*#0384: No-Move
+*#0385: Escape
+*#0386: Scan
+*#0387: Power-Ears
+*#0388: Drought
+
+*#0389: Trap Buster *#0390: Wild Call
+*#0391: Invisify
+*#0392: One-Shot
+*#0393: HP Gauge
+*#0394: Vacuum-Cut
+#0395: Reviver
+*#0396: Shocker
+*#0397: Echo
+*#0398: Famish
+*#0399: One-Room
+*#0400: Fill-In
+*#0401: Trapper
+*#0402: Possess
+#0403: Itemize
+*#0404: [M:D1]
+*#0405: projectile
+*#0406: Hurl
+*#0407: Mobile
+*#0408: Item-Toss
+*#0409: See Stairs
+*#0410: Long Toss
+*#0411: [M:D1]
+*#0412: Pierce
+*#0413: [M:D1]
+*#0414: [M:D1]
+*#0415: [M:D1]
+*#0416: [M:D1]
+*#0417: [M:D1]
+*#0418: [M:D1]
+*#0419: [M:D1]
+*#0420: [M:D1]
+*#0421: [M:D1]
+*#0422: [M:D1]
+*#0423: [M:D1]
+*#0424: [M:D1]
+*#0425: [M:D1]
+*#0426: [M:D1]
+*#0427: [M:D1]
+*#0428: [M:D1]
+*#0429: [M:D1]
+*#0430: Hammer Arm
+*#0431: Iron Head
+*#0432: Aqua Jet
+*#0433: Aqua Tail
+*#0434: Aqua Ring
+*#0435: Spacial Rend
+*#0436: Dark Pulse
+*#0437: Ominous Wind
+
+*#0438: Gastro Acid
+*#0439: Healing Wish
+*#0440: Close Combat
+*#0441: Wood Hammer
+*#0442: Air Slash
+*#0443: Energy Ball *#0444: Tailwind
+*#0445: Punishment
+*#0446: Chatter
+*#0447: Lucky Chant
+*#0448: Guard Swap
+*#0449: Heal Order
+*#0450: Heal Block
+*#0451: Shadow Sneak
+*#0452: Thunder Fang
+*#0453: Rock Wrecker
+*#0454: Focus Blast
+*#0455: Giga Impact
+**0456: Defog
+*#0457: Trump Card
+*#0458: Grass Knot
+*#0459: Cross Poison
+*#0460: Attack Order
+*#0461: Ice Fang
+*#0462: Ice Shard
+*#0463: Psycho Cut
+*#0464: Psycho Shift
+*#0465: Me First
+*#0466: Embargo
+*#0467: $$$
+*#0468: Seed Flare
+*#0469: Brine
+*#0470: X-Scissor
+*#0471: Natural Gift
+*#0472: Payback
+*#0473: Zen Headbutt
+*#0474: Wring Out
+*#0475: Gyro Ball
+*#0476: Shadow Claw
+*#0477: Shadow Force
+*#0478: Gravity
+*#0479: Vacuum Wave
+*#0480: Stealth Rock
+*#0481: Stone Edge
+*#0482: Switcheroo
+*#0483: Dark Void
+*#0484: Earth Power *#0485: Gunk Shot
+
+#0486: Seed Bomb
+#0487: Double Hit
+#0488: Assurance
+*#0489: Charge Beam
+*#0490: Pluck
+*#0491: Night Slash
+*#0492: Acupressure
+#0493: Magnet Rise
+#0494: Roar of Time
+#0495: Poison Jab
+#0496: Toxic Spikes
+*#0497: Last Resort
+*#0498: Dragon Rush
+#0499: Trick Room
+#0500: Drain Punch
+#0501: Mud Bomb
+#0502: U-turn
+#0503: Fling
+#0504: Worry Seed
+*#0505: Crush Grip
+*#0506: Heart Swap
+#0507: Force Palm
+*#0508: Aura Sphere
+#0509: Roost
+#0510: Bullet Punch
+#0511: Power Whip
+*#0512: Power Gem
+*#0513: Power Swap
+*#0514: Power Trick
+*#0515: Sucker Punch
+*#0516: Feint
+#0517: Flare Blitz
+#0518: Brave Bird
+#0519: Lava Plume
+#0520: Defend Order
+*#0521: Discharge
+*#0522: Fire Fang
+*#0523: Magnet Bomb
+*#0524: Magma Storm
+*#0525: Copycat
+#0526: Lunar Dance
+#0527: Mirror Shot
+#0528: Miracle Eye
+*#0529: Bug Bite
+*#0530: Bug Buzz
+*#0531: Wake-Up Slap
+*#0532: Metal Burst
+#0533: Head Smash
+#0534· Captivate
+
+
+*#0535: Avalanche *#0536: Flash Cannon
+*#0537: Leaf Storm
+*#0538: Draco Meteor
+*#0539: Dragon Pulse
+#0540: Rock Polish
+*#0541: Rock Climb
+*#0542: Nasty Plot
+*#0543: [M:D1]
+*#0544: [M:D1]
+*#0545: [M:D1]
+*#0546: [M:D1]
+*#0547: [M:D1]
+*#0548: [M:D1]
+*#0549: [M:D1]
+*#0550: [M:D1]
+*#0551: [M:D1]
+*#0552: [M:D1]
+*#0553: [M:D1]
+*#0554: [M:D1]
+*#0555: [M:D1]
+(#0556: [M:D1]
+*#0557: [M:D1]
+*#0558: [M:D1]

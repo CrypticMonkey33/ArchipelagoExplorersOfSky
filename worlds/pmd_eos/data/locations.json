@@ -1,0 +1,30 @@
+{
+  "BADGE_1": {
+    "label": "Rustboro Gym - Stone Badge",
+    "tags": ["Badge"]
+  },
+  "BADGE_2": {
+    "label": "Dewford Gym - Knuckle Badge",
+    "tags": ["Badge"]
+  },
+  "BADGE_3": {
+    "label": "Mauville Gym - Dynamo Badge",
+    "tags": ["Badge"]
+  },
+  "BADGE_4": {
+    "label": "Lavaridge Gym - Heat Badge",
+    "tags": ["Badge"]
+  },
+  "BADGE_5": {
+    "label": "Petalburg Gym - Balance Badge",
+    "tags": ["Badge"]
+  },
+  "BADGE_6": {
+    "label": "Fortree Gym - Feather Badge",
+    "tags": ["Badge"]
+  },
+  "BADGE_7": {
+    "label": "Mossdeep Gym - Mind Badge",
+    "tags": ["Badge"]
+  }
+}
