@@ -2,8 +2,8 @@ from typing import TYPE_CHECKING, Optional, Set, List, Dict
 import struct
 
 from NetUtils import ClientStatus
-from .Locations import EOSLocation
-from .Items import EOS_item_table
+from .Locations import EOSLocation, EOS_location_table
+from .Items import EOS_item_table, ItemData
 
 import asyncio
 
@@ -93,76 +93,47 @@ class EoSClient(BizHawkClient):
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    (0x4564, 59, "EWRAM"),
-                    (0x2330, 2, "IWRAM"),
-                    (0x3FE0, 1, "IWRAM"),
-                    (0x304A, 1, "EWRAM"),
-                    (0x304B, 1, "EWRAM"),
-                    (0x304C, 4, "EWRAM"),
-                    (0x3060, 6, "EWRAM"),
-                    (0x4808, 2, "EWRAM"),
-                    (0x4407, 1, "EWRAM"),
-                    (0x2339, 1, "IWRAM"),
+                    (0x22ABBE3, 2, "MAINROM"),
+                    (0x22ABB83, 2, "MAINROM"),
+                    (0x416A580, 2, "MAINROM")
                 ]
             )
-            flags = read_state[0]
+            #flags = read_state[0]
             #logo = bytes([byte for byte in read_state[6] if byte < 0x70]).decode("UTF-8")
-            received_index = (read_state[7][0] << 8) + read_state[7][1]
-
-
+            #received_index = (read_state[7][0] << 8) + read_state[7][1]
+            open_list = read_state[1]
+            conquest_list = read_state[0]
+            locations_recieved = read_state[2]
             #if logo != "MLSSAP":
                 #return
 
             locs_to_send = set()
 
-            # Loop for receiving items. Item is written as an ID into 0x3057.
-            # ASM reads the ID in a loop and give the player the item before resetting the RAM address to 0x0.
-            # If RAM address isn't 0x0 yet break out and try again later to give the rest of the items
-            for i in range(len(ctx.items_received) - received_index):
-                item_data = items_by_id[ctx.items_received[received_index + i].item]
-                b = await bizhawk.guarded_read(ctx.bizhawk_ctx, [(0x3057, 1, "EWRAM")], [(0x3057, [0x0], "EWRAM")])
-                if b is None:
-                    break
-                await bizhawk.write(
-                    ctx.bizhawk_ctx,
-                    [
-                        (0x3057, [id_to_RAM(item_data.itemID)], "EWRAM"),
-                        (0x4808, [(received_index + i + 1) // 0x100, (received_index + i + 1) % 0x100], "EWRAM"),
-                    ],
-                )
+            # Loop for receiving items.
+            for i in range(len(ctx.items_received)):
+                item_data = EOS_item_table(ctx.items_received[i])
+                item_memoryoffset = item_data.memoryoffset
+                if open_list[item_memoryoffset]==0:
+                    await bizhawk.write(
+                        ctx.bizhawk_ctx,
+                        [
+                            (open_list + item_memoryoffset,[1],"MAINRAM")
+                        ],
+                    )
                 await asyncio.sleep(0.1)
 
+
             # Check for set location flags. NEED TO UPDATE
-            for byte_i, byte in enumerate(bytearray(flags)):
+            for byte_i, byte in enumerate(bytearray(conquest_list)):
                 for j in range(8):
                     if j in self.checked_flags[byte_i]:
                         continue
-                    and_value = 1 << j
-                    if byte & and_value != 0:
-                        flag_id = byte_i * 8 + (j + 1)
-                        room, item = find_key(roomCount, flag_id)
-                        pointer_arr = await bizhawk.read(
-                            ctx.bizhawk_ctx, [(ROOM_ARRAY_POINTER + ((room - 1) * 4), 4, "ROM")]
-                        )
-                        pointer = struct.unpack("<I", pointer_arr[0])[0]
-                        pointer = pointer & 0xFFFFFF
-                        offset = await bizhawk.read(ctx.bizhawk_ctx, [(pointer, 1, "ROM")])
-                        offset = offset[0][0]
-                        if offset != 0:
-                            offset = 2
-                        pointer += (item * 8) + 1 + offset
-                        for key, value in beanstones.items():
-                            if pointer == value:
-                                pointer = key
+                    if ((byte >> j) & 1) == 1:
+                        self.checked_flags[byte_i] += [j]
+                        for key, value in EOS_location_table:
+                            if ((byte_i+1) * (j+1))== value:
+                                locs_to_send.add(key)
                                 break
-                        if pointer in ctx.server_locations:
-                            self.checked_flags[byte_i] += [j]
-                            locs_to_send.add(pointer)
-
-            if not ctx.finished_game and cackletta != 0 and current_room == 0x1C7:
-                await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
-
-
             # Send locations if there are any to send.
             if locs_to_send != self.local_checked_locations:
                 self.local_checked_locations = locs_to_send

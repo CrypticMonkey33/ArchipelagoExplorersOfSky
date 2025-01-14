@@ -9,10 +9,6 @@ class EOSLocation(Location):
         self.id = None if item_id is None else item_id + BASE_OFFSET
 
 
-
-
-
-
 EOS_location_table = {
     "Test Dungeon": 0,
     "Beach Cave": 1,
