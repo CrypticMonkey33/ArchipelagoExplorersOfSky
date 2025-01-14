@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Optional, Set, List, Dict
 import struct
+import binascii
 
 from NetUtils import ClientStatus
 from .Locations import EOSLocation, EOS_location_table
@@ -7,10 +8,8 @@ from .Items import EOS_item_table, ItemData
 
 import asyncio
 
-
 import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
-
 
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
@@ -19,7 +18,7 @@ if TYPE_CHECKING:
 class EoSClient(BizHawkClient):
     game = "Pokemon Mystery Dungeon: Explorers of Sky"
     system = "NDS"
-    patch_suffix = ".apeos" #Might need to change the patch suffix
+    patch_suffix = ".apeos"  # Might need to change the patch suffix
     local_checked_locations: Set[int]
     goal_flag: int
     rom_slot_name: Optional[str]
@@ -93,35 +92,38 @@ class EoSClient(BizHawkClient):
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    (0x22ABBE3, 2, "MAINROM"),
-                    (0x22ABB83, 2, "MAINROM"),
-                    (0x416A580, 2, "MAINROM")
+                    (0x209E318, 2, "MAINROM"),  # conquest list in Script_Vars
+                    (0x209E2E8, 2, "MAINROM"),  # open list in Script_Vars
+                    (0x416A580, 2, "MAINROM")   # open memory location that we can put the list of collected items in
                 ]
             )
-            #flags = read_state[0]
-            #logo = bytes([byte for byte in read_state[6] if byte < 0x70]).decode("UTF-8")
-            #received_index = (read_state[7][0] << 8) + read_state[7][1]
+
             open_list = read_state[1]
             conquest_list = read_state[0]
-            locations_recieved = read_state[2]
-            #if logo != "MLSSAP":
-                #return
+
+            read_state = await bizhawk.read(
+                ctx.bizhawk_ctx,
+                [
+                    ((conquest_list[0] << 8 | conquest_list[1]) + 0x22AB9EC, 2, "MAINROM"),  # conquest list in Script_Vars_Values
+                    ((open_list[0] << 8 | open_list[1]) + 0x22AB9EC, 2, "MAINROM"),  # open list in Script_Vars_Values
+                    # (0x416A580, 2, "MAINROM")  # open memory location that we can put the list of collected items in
+                ]
+            )
 
             locs_to_send = set()
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received)):
                 item_data = EOS_item_table(ctx.items_received[i])
-                item_memoryoffset = item_data.memoryoffset
-                if open_list[item_memoryoffset]==0:
+                item_memory_offset = item_data.memoryoffset
+                if open_list[item_memory_offset] == 0:
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [
-                            (open_list + item_memoryoffset,[1],"MAINRAM")
+                            (open_list + item_memory_offset, [1], "MAINRAM")
                         ],
                     )
                 await asyncio.sleep(0.1)
-
 
             # Check for set location flags. NEED TO UPDATE
             for byte_i, byte in enumerate(bytearray(conquest_list)):
@@ -131,7 +133,7 @@ class EoSClient(BizHawkClient):
                     if ((byte >> j) & 1) == 1:
                         self.checked_flags[byte_i] += [j]
                         for key, value in EOS_location_table:
-                            if ((byte_i+1) * (j+1))== value:
+                            if ((byte_i + 1) * (j + 1)) == value:
                                 locs_to_send.add(key)
                                 break
             # Send locations if there are any to send.
