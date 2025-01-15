@@ -97,18 +97,21 @@ class EoSClient(BizHawkClient):
                     (0x416A580, 2, "MAINROM")   # open memory location that we can put the list of collected items in
                 ]
             )
+            # read the memory offsets to get the correct memory address for the dungeon lists
+            open_list_offset = read_state[1]
+            conquest_list_offset = read_state[0]
 
-            open_list = read_state[1]
-            conquest_list = read_state[0]
-
-            read_state = await bizhawk.read(
+            read_state_second = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    ((conquest_list[0] << 8 | conquest_list[1]) + 0x22AB9EC, 2, "MAINROM"),  # conquest list in Script_Vars_Values
-                    ((open_list[0] << 8 | open_list[1]) + 0x22AB9EC, 2, "MAINROM"),  # open list in Script_Vars_Values
+                    ((conquest_list_offset[0] << 8 | conquest_list_offset[1]) + 0x22AB9EC, 2, "MAINROM"),  # conquest list in Script_Vars_Values
+                    ((open_list_offset[0] << 8 | open_list_offset[1]) + 0x22AB9EC, 2, "MAINROM"),  # open list in Script_Vars_Values
                     # (0x416A580, 2, "MAINROM")  # open memory location that we can put the list of collected items in
                 ]
             )
+            # read the state of the dungeon lists
+            open_list = read_state_second[1]
+            conquest_list = read_state_second[0]
 
             locs_to_send = set()
 
