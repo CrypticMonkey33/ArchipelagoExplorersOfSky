@@ -4,8 +4,8 @@ import json
 from .Items import EOS_item_table
 from .Locations import EOS_location_table, EOSLocation
 from .Options import EOSOptions
-#from .Rules import set_rules
-#from .Regions import create_regions, sm64_level_to_entrances, SM64Levels
+from .Rules import set_rules
+from .Regions import EoS_regions
 from BaseClasses import Item, Tutorial, ItemClassification, Region, Location
 from ..AutoWorld import World, WebWorld
 
@@ -38,6 +38,7 @@ class EOSWorld(World):
     """
 
     game = "Explorers Of Sky"
+    options: EOSOptions
 
 #    web = EOSWeb
 
@@ -58,26 +59,21 @@ class EOSWorld(World):
 
     options_dataclass = EOSOptions
 
-    def stage_assert_generate(cls, multiworld: MultiWorld):
-        test = 0
-
     def generate_early(self) -> None:
         test = 0
 
     def create_regions(self) -> None:
-        menu_region = Region("Menu", self.player, self.multiworld)
-        self.multiworld.regons.append(menu_region)
-
-        main_region = Region("Overworld?", self.player, self.multiworld)
-
-        main_region.add_locations(main_region_locations, EOSLocation)
+        main_region = Region("Overworld", self.player, self.multiworld)
         self.multiworld.regions.append(main_region)
+
+        for location in EOS_location_table:
+            main_region.locations.append(EOSLocation(self.player, location.name, location.id,main_region))
 
         boss_region = Region("Boss Room", self.player, self.multiworld)
 
         boss_region.locations.append(EOSLocation(self.player, "Final Boss", None, boss_region))
 
-        menu_region.connect(main_region)
+        main_region.connect(boss_region)
 #        test = 0
 
     def create_items(self) -> None:
