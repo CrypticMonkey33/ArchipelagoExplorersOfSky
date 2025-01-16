@@ -72,7 +72,8 @@ class EoSClient(BizHawkClient):
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
-
+        open_list_address = 0x209E2F8  # the address in Script Vars where the open list offset is
+        conquest_list_address = 0x209E328  # the address in Script Vars where the conquest list offset it
         try:
             if ctx.seed_name is None:
                 return
@@ -92,8 +93,8 @@ class EoSClient(BizHawkClient):
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    (0x209E318, 2, "MAINROM"),  # conquest list in Script_Vars
-                    (0x209E2E8, 2, "MAINROM"),  # open list in Script_Vars
+                    (conquest_list_address, 2, "MAINROM"),  # conquest list in Script_Vars
+                    (open_list_address, 2, "MAINROM"),  # open list in Script_Vars
                     (0x416A580, 2, "MAINROM")   # open memory location that we can put the list of collected items in
                 ]
             )
@@ -132,13 +133,14 @@ class EoSClient(BizHawkClient):
             for byte_i, byte in enumerate(bytearray(conquest_list)):
                 for j in range(8):
                     if j in self.checked_flags[byte_i]:
-                        continue
-                    if ((byte >> j) & 1) == 1:
+                        continue  # if the number already exists in the dictionary, it's already been checked. Move on
+                    if ((byte >> j) & 1) == 1:  # check if the bit j in each byte is on, meaning dungeon cleared
                         self.checked_flags[byte_i] += [j]
-                        for key, value in EOS_location_table:
-                            if ((byte_i + 1) * (j + 1)) == value:
-                                locs_to_send.add(key)
+                        for key in EOS_location_table:
+                            if ((byte_i + 1) * (j + 1)) == key.id:
+                                locs_to_send.add(key.id)
                                 break
+
             # Send locations if there are any to send.
             if locs_to_send != self.local_checked_locations:
                 self.local_checked_locations = locs_to_send

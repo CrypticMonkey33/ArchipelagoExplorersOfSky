@@ -1,3 +1,5 @@
+import typing
+
 from BaseClasses import Location
 
 
@@ -18,7 +20,7 @@ class EOSLocation(Location):
     game: str = "Pokemon Mystery Dungeon, Explorers of Sky"
 
 
-EOS_location_table = {
+EOS_location_table: typing.List[LocationData] = [
     # "Test Dungeon", 0,  # Should be unused
     LocationData("DungeonUnlock", 1, "Beach Cave", 1),
     LocationData("DungeonUnlock", 1, "Drenched Bluff", 3),
@@ -123,4 +125,4 @@ EOS_location_table = {
     # "Luminous Spring", 177,
     # "Hot Spring", 178,
     # "Rescue", 179
-}
+]
