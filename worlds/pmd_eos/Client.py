@@ -28,6 +28,7 @@ class EoSClient(BizHawkClient):
     player_name: Optional[str]
     checked_flags: Dict[int, list] = {}
 
+
     def __init__(self) -> None:
         super().__init__()
         self.local_checked_locations = set()
@@ -74,6 +75,7 @@ class EoSClient(BizHawkClient):
         from CommonClient import logger
         open_list_address = 0x209E2F8  # the address in Script Vars where the open list offset is
         conquest_list_address = 0x209E328  # the address in Script Vars where the conquest list offset it
+        dialga_complete = False
         try:
             if ctx.seed_name is None:
                 return
@@ -129,24 +131,30 @@ class EoSClient(BizHawkClient):
                     )
                 await asyncio.sleep(0.1)
 
-            # Check for set location flags. NEED TO UPDATE
+            # Check for set location flags.
             for byte_i, byte in enumerate(bytearray(conquest_list)):
                 for j in range(8):
                     if j in self.checked_flags[byte_i]:
                         continue  # if the number already exists in the dictionary, it's already been checked. Move on
                     if ((byte >> j) & 1) == 1:  # check if the bit j in each byte is on, meaning dungeon cleared
                         self.checked_flags[byte_i] += [j]
+                        byte_number = (byte_i + 1) * (j + 1)
+                        if byte_number == 43:
+                            dialga_complete = True
                         for key in EOS_location_table:
-                            if ((byte_i + 1) * (j + 1)) == key.id:
+                            if byte_number == key.id:
                                 locs_to_send.add(key.id)
                                 break
-
+#44
             # Send locations if there are any to send.
             if locs_to_send != self.local_checked_locations:
                 self.local_checked_locations = locs_to_send
 
                 if locs_to_send is not None:
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
+
+            if not ctx.finished_game and dialga_complete:
+                await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 
         except bizhawk.RequestFailedError:
             # Exit handler and return to main loop to reconnect.
