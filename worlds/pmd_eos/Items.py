@@ -12,7 +12,7 @@ class ItemData:
 
 
 class EOSItem(Item):
-    game: str = "Explorers of Sky"
+    game: str = "Pokemon Mystery Dungeon: Explorers of Sky"
 
 
 EOS_item_table = {

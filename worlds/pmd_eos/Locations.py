@@ -17,7 +17,7 @@ class LocationData:
 
 
 class EOSLocation(Location):
-    game: str = "Pokemon Mystery Dungeon, Explorers of Sky"
+    game: str = "Pokemon Mystery Dungeon: Explorers of Sky"
 
 
 EOS_location_table: typing.List[LocationData] = [

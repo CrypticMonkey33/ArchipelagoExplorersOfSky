@@ -12,9 +12,12 @@ def ready_for_final_boss():
     return True
 
 
-def set_rules(world: "EosWorld"):
+def set_rules(world: "EOSWorld"):
     player = world.player
     options = world.options
 
-    set_rule(world.get_location("Temporal Tower1"),
+    add_rule(world.get_location("Temporal Tower1"),
              lambda state: ready_for_final_boss())
+
+    add_rule(world.get_location("Final Boss"),
+             lambda state: state.has("Temporal Tower1"))
