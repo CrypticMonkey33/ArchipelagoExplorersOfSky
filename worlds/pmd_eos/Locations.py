@@ -9,11 +9,11 @@ class LocationData:
     dungeon_length: int = 1
     id: int = -1
 
-    def __init__(self,  classification, dungeon_length, name, item_id):
+    def __init__(self,  classification, dungeon_length, name, id):
         self.name = name
         self.classification = classification
         self.dungeon_length = dungeon_length
-        self.id = None if item_id is None else item_id
+        self.id = id
 
 
 class EOSLocation(Location):
@@ -85,14 +85,11 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("DungeonUnlock", 1, "Zero Isle South", 102),
     LocationData("DungeonUnlock", 1, "Zero Isle Center", 103),
     LocationData("DungeonUnlock", 1, "Destiny Tower", 104),
-    # "[M,D1]Dummy0", 105,
-    # "[M,D1]Dummy1", 106,
     LocationData("DungeonUnlock", 1, "Oblivion Forest", 107),
     LocationData("DungeonUnlock", 1, "Treacherous Waters", 108),
     LocationData("DungeonUnlock", 1, "Southeastern Islands", 109),
     LocationData("DungeonUnlock", 1, "Inferno Cave", 110),
     LocationData("DungeonUnlock", 12, "1st Station Pass", 111),  # 12 subareas
-    # "Star Cave1", 123,  # 5 subareas
     # Special Episode Dungeons
     LocationData("SpecialDungeonUnlock", 1, "Murky Forest", 128),
     LocationData("SpecialDungeonUnlock", 1, "Eastern Cave", 129),
@@ -111,15 +108,8 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("SpecialDungeonUnlock", 1, "Left Cave Path", 154),
     LocationData("SpecialDungeonUnlock", 3, "Limestone Cavern", 155),  # 3 subareas
     LocationData("SpecialDungeonUnlock", 7, "Spring Cave", 158),  # 7 subareas
-    # "[M,D1]Dummy2", 165,  # unused
-    # "[M,D1]Dummy3", 166,  # unused
-    # "[M,D1]Dummy4", 167,  # unused
-    # "[M,D1]Dummy5", 168,  # unused
-    # "[M,D1]Dummy6", 169,  # unused
-    # "[M,D1]Dummy7", 170,  # unused
-    # "[M,D1]Dummy8", 171,  # unused
-    # "[M,D1]Dummy9", 172,  # unusued 2 subareas
     LocationData("DungeonUnlock", 1,"Star Cave", 174),
+    LocationData("Event", 0, "Final Boss", 163)
     # "Shaymin Village", 175,
     # "Armaldo's Shelter", 176,
     # "Luminous Spring", 177,
