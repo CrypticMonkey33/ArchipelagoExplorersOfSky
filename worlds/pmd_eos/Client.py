@@ -114,8 +114,8 @@ class EoSClient(BizHawkClient):
             read_state_second = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    ((conquest_list_offset[0] << 8 | conquest_list_offset[1]) + 0x2AB9EC, 24, self.ram_mem_domain),  # conquest list in Script_Vars_Values
-                    ((open_list_offset[0] << 8 | open_list_offset[1]) + 0x2AB9EC, 24, self.ram_mem_domain),  # open list in Script_Vars_Values
+                    ((conquest_list_offset[1] << 8 | conquest_list_offset[0]) + 0x2AB9EC, 24, self.ram_mem_domain),  # conquest list in Script_Vars_Values
+                    ((open_list_offset[1] << 8 | open_list_offset[0]) + 0x2AB9EC, 24, self.ram_mem_domain),  # open list in Script_Vars_Values
                     # (0x416A580, 2, "MAINROM")  # open memory location that we can put the list of collected items in
                 ]
             )
