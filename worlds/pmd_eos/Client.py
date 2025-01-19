@@ -133,7 +133,7 @@ class EoSClient(BizHawkClient):
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [
-                            ((open_list_offset[0] << 8 | open_list_offset[1]) + item_memory_offset, [1],
+                            ((open_list_offset[1] << 8 | open_list_offset[0]) + item_memory_offset, [1],
                              self.ram_mem_domain)
                         ],
                     )
