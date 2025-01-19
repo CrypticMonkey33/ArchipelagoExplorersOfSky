@@ -46,7 +46,7 @@ class EoSClient(BizHawkClient):
 
         try:
             # Check ROM name/patch version
-            rom_name_bytes = await bizhawk.read(ctx.bizhawk_ctx, [(0x3FFA80, 15, self.test_rom_mem_domain)])
+            rom_name_bytes = await bizhawk.read(ctx.bizhawk_ctx, [(0x3FFA80, 16, self.test_rom_mem_domain)])
             rom_name = bytes([byte for byte in rom_name_bytes[0] if byte != 0]).decode("UTF-8")
             if not rom_name.startswith("POKEDUN SORAC2SP"):
                 return False
