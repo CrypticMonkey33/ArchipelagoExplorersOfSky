@@ -127,7 +127,7 @@ class EoSClient(BizHawkClient):
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received)):
-                item_data = EOS_item_table(ctx.items_received[i])
+                item_data = EOS_item_table[ctx.items_received[i].item]
                 item_memory_offset = item_data.memoryoffset
                 if open_list[item_memory_offset] == 0:
                     await bizhawk.write(
