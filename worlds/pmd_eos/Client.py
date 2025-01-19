@@ -16,7 +16,7 @@ if TYPE_CHECKING:
 
 
 class EoSClient(BizHawkClient):
-    game = "Pokemon Mystery Dungeon: Explorers of Sky"
+    game = "Pokemon Mystery Dungeon Explorers of Sky"
     system = "NDS"
     patch_suffix = ".apeos"  # Might need to change the patch suffix
     local_checked_locations: Set[int]
