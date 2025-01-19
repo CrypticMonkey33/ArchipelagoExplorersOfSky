@@ -81,7 +81,7 @@ class EoSClient(BizHawkClient):
                 return
             if not self.seed_verify:
                 # Need to figure out where we are putting the seed and then update this
-                seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x30F70, len(ctx.seed_name), "ROM")])
+                seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x37020, len(ctx.seed_name), "ROM")])
                 seed = seed[0].decode("UTF-8")
                 if seed != ctx.seed_name:
                     logger.info(
