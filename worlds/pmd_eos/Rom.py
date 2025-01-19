@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 
 
 def get_base_rom_as_bytes() -> bytes:
-    with open(get_settings().eos_options.rom_file, "rb") as infile:
+    with open(get_settings().pmd_eos_options.rom_file, "rb") as infile:
         base_rom_bytes = bytes(infile.read())
     return base_rom_bytes
 

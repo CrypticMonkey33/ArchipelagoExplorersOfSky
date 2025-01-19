@@ -27,7 +27,8 @@ class EoSClient(BizHawkClient):
     local_events: List[int]
     player_name: Optional[str]
     checked_flags: Dict[int, list] = {}
-
+    test_rom_mem_domain = "File on Disk"
+    ram_mem_domain = "Main RAM"
 
     def __init__(self) -> None:
         super().__init__()
@@ -45,7 +46,7 @@ class EoSClient(BizHawkClient):
 
         try:
             # Check ROM name/patch version
-            rom_name_bytes = await bizhawk.read(ctx.bizhawk_ctx, [(0x00, 15, "ROM")])
+            rom_name_bytes = await bizhawk.read(ctx.bizhawk_ctx, [(0x3FFA80, 15, self.test_rom_mem_domain)])
             rom_name = bytes([byte for byte in rom_name_bytes[0] if byte != 0]).decode("UTF-8")
             if not rom_name.startswith("POKEDUN SORAC2SP"):
                 return False
@@ -60,7 +61,7 @@ class EoSClient(BizHawkClient):
         ctx.watcher_timeout = 0.125
         self.rom_slot_name = rom_name
         self.seed_verify = False
-        name_bytes = (await bizhawk.read(ctx.bizhawk_ctx, [(0xDF0000, 16, "ROM")]))[0]
+        name_bytes = (await bizhawk.read(ctx.bizhawk_ctx, [(0xDF0000, 16, self.test_rom_mem_domain)]))[0]
         name = bytes([byte for byte in name_bytes if byte != 0]).decode("UTF-8")
         self.player_name = name
 
@@ -76,12 +77,13 @@ class EoSClient(BizHawkClient):
         open_list_address = 0x209E2F8  # the address in Script Vars where the open list offset is
         conquest_list_address = 0x209E328  # the address in Script Vars where the conquest list offset it
         dialga_complete = False
+
         try:
             if ctx.seed_name is None:
                 return
             if not self.seed_verify:
                 # Need to figure out where we are putting the seed and then update this
-                seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x37020, len(ctx.seed_name), "ROM")])
+                seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x37020, len(ctx.seed_name), self.test_rom_mem_domain)])
                 seed = seed[0].decode("UTF-8")
                 if seed != ctx.seed_name:
                     logger.info(
@@ -95,9 +97,9 @@ class EoSClient(BizHawkClient):
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    (conquest_list_address, 2, "MAINROM"),  # conquest list in Script_Vars
-                    (open_list_address, 2, "MAINROM"),  # open list in Script_Vars
-                    (0x416A580, 2, "MAINROM")   # open memory location that we can put the list of collected items in
+                    (conquest_list_address, 2, self.ram_mem_domain),  # conquest list in Script_Vars
+                    (open_list_address, 2, self.ram_mem_domain),  # open list in Script_Vars
+                    (0x416A580, 2, self.ram_mem_domain)   # open memory location that we can put the list of collected items in
                 ]
             )
             # read the memory offsets to get the correct memory address for the dungeon lists
@@ -107,8 +109,8 @@ class EoSClient(BizHawkClient):
             read_state_second = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    ((conquest_list_offset[0] << 8 | conquest_list_offset[1]) + 0x22AB9EC, 2, "MAINROM"),  # conquest list in Script_Vars_Values
-                    ((open_list_offset[0] << 8 | open_list_offset[1]) + 0x22AB9EC, 2, "MAINROM"),  # open list in Script_Vars_Values
+                    ((conquest_list_offset[0] << 8 | conquest_list_offset[1]) + 0x22AB9EC, 2, self.ram_mem_domain),  # conquest list in Script_Vars_Values
+                    ((open_list_offset[0] << 8 | open_list_offset[1]) + 0x22AB9EC, 2, self.ram_mem_domain),  # open list in Script_Vars_Values
                     # (0x416A580, 2, "MAINROM")  # open memory location that we can put the list of collected items in
                 ]
             )
@@ -126,7 +128,7 @@ class EoSClient(BizHawkClient):
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [
-                            (open_list + item_memory_offset, [1], "MAINRAM")
+                            (open_list + item_memory_offset, [1], self.ram_mem_domain)
                         ],
                     )
                 await asyncio.sleep(0.1)
