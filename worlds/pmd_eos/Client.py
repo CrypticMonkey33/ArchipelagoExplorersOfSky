@@ -65,6 +65,9 @@ class EoSClient(BizHawkClient):
         name = bytes([byte for byte in name_bytes if byte != 0]).decode("UTF-8")
         self.player_name = name
 
+        for i in range(25):
+            self.checked_flags[i] = []
+
         return True
 
     async def set_auth(self, ctx: "BizHawkClientContext") -> None:
@@ -111,8 +114,8 @@ class EoSClient(BizHawkClient):
             read_state_second = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    ((conquest_list_offset[0] << 8 | conquest_list_offset[1]) + 0x22AB9EC, 2, self.ram_mem_domain),  # conquest list in Script_Vars_Values
-                    ((open_list_offset[0] << 8 | open_list_offset[1]) + 0x22AB9EC, 2, self.ram_mem_domain),  # open list in Script_Vars_Values
+                    ((conquest_list_offset[0] << 8 | conquest_list_offset[1]) + 0x22AB9EC, 24, self.ram_mem_domain),  # conquest list in Script_Vars_Values
+                    ((open_list_offset[0] << 8 | open_list_offset[1]) + 0x22AB9EC, 24, self.ram_mem_domain),  # open list in Script_Vars_Values
                     # (0x416A580, 2, "MAINROM")  # open memory location that we can put the list of collected items in
                 ]
             )
