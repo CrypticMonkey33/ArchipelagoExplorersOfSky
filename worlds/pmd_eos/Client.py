@@ -79,8 +79,8 @@ class EoSClient(BizHawkClient):
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
-        open_list_address = 0x209E2F8  # the address in Script Vars where the open list offset is
-        conquest_list_address = 0x209E328  # the address in Script Vars where the conquest list offset it
+        open_list_address = 0x09E2F8  # the address in Script Vars where the open list offset is
+        conquest_list_address = 0x09E328  # the address in Script Vars where the conquest list offset it
         dialga_complete = False
 
         try:
