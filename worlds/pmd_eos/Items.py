@@ -109,3 +109,4 @@ EOS_item_table = [
 ]
 
 item_table: typing.Dict[str, ItemData] = {item.name: item for item in EOS_item_table}
+item_table_by_id: typing.Dict[int, ItemData] = {item.id: item for item in EOS_item_table}

@@ -4,7 +4,7 @@ import binascii
 
 from NetUtils import ClientStatus
 from .Locations import EOSLocation, EOS_location_table
-from .Items import EOS_item_table, ItemData
+from .Items import EOS_item_table, ItemData, item_table_by_id
 
 import asyncio
 
@@ -127,13 +127,14 @@ class EoSClient(BizHawkClient):
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received)):
-                item_data = EOS_item_table[ctx.items_received[i].item]
-                item_memory_offset = item_data.memoryoffset
+                item_data = item_table_by_id[ctx.items_received[i].item]
+                item_memory_offset = item_data.memory_offset
                 if open_list[item_memory_offset] == 0:
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [
-                            (open_list + item_memory_offset, [1], self.ram_mem_domain)
+                            ((open_list_offset[0] << 8 | open_list_offset[1]) + item_memory_offset, [1],
+                             self.ram_mem_domain)
                         ],
                     )
                 await asyncio.sleep(0.1)
