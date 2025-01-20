@@ -81,6 +81,7 @@ class EoSClient(BizHawkClient):
         from CommonClient import logger
         open_list_address = 0x08456D# the address in Script Vars where the open list offset is
         conquest_list_address = 0x09847D  # the address in Script Vars where the conquest list offset it
+        dung_lists_start_add = 0x2AB9EC
         dialga_complete = False
 
         try:
@@ -114,41 +115,33 @@ class EoSClient(BizHawkClient):
             read_state_second = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    ((conquest_list_offset[0] << 8 | conquest_list_offset[1]) + 0x2AB9EC, 24, self.ram_mem_domain),  # conquest list in Script_Vars_Values
-                    ((open_list_offset[0] << 8 | open_list_offset[1]) + 0x2AB9EC, 24, self.ram_mem_domain),  # open list in Script_Vars_Values
+                    ((conquest_list_offset[0] << 8 | conquest_list_offset[1]) + dung_lists_start_add, 24,
+                     self.ram_mem_domain),  # conquest list in Script_Vars_Values
+                    ((open_list_offset[0] << 8 | open_list_offset[1]) + dung_lists_start_add, 24,
+                     self.ram_mem_domain),  # open list in Script_Vars_Values
                     # (0x416A580, 2, "MAINROM")  # open memory location that we can put the list of collected items in
                 ]
             )
             # read the state of the dungeon lists
             open_list = read_state_second[1]
             conquest_list = read_state_second[0]
-            new_open_list = 0
-            new_conquest_list = 0
-
-            for byte_i in range(len(open_list)):
-                if byte_i == 0:
-                    new_open_list += open_list[byte_i]
-                else:
-                    new_open_list = (new_open_list << 8) + open_list[byte_i]
-
-            for byte_i in range(len(conquest_list)):
-                if byte_i == 0:
-                    new_conquest_list += conquest_list[byte_i]
-                else:
-                    new_conquest_list = (new_conquest_list << 8) + conquest_list[byte_i]
 
             locs_to_send = set()
+
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received)):
                 item_data = item_table_by_id[ctx.items_received[i].item]
                 item_memory_offset = item_data.memory_offset
-                if new_open_list[item_memory_offset] == 0:
+                sig_digit = item_memory_offset // 8
+                non_sig_digit = item_memory_offset % 8
+                if ((open_list[sig_digit] >> non_sig_digit) & 1) == 0:
+                    write_byte = open_list[sig_digit] & (1 << non_sig_digit)
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [
-                            ((open_list_offset[1] << 8 | open_list_offset[0]) + item_memory_offset, [1],
-                             self.ram_mem_domain)
+                            ((open_list_offset[0] << 8 | open_list_offset[1]) + dung_lists_start_add
+                             + item_memory_offset, [write_byte], self.ram_mem_domain)
                         ],
                     )
                 await asyncio.sleep(0.1)
@@ -160,7 +153,7 @@ class EoSClient(BizHawkClient):
                         continue  # if the number already exists in the dictionary, it's already been checked. Move on
                     if ((byte >> j) & 1) == 1:  # check if the bit j in each byte is on, meaning dungeon cleared
                         self.checked_flags[byte_i] += [j]
-                        byte_number = (byte_i + 1) * (j + 1)
+                        byte_number = (byte_i * 8) + j
                         if byte_number == 43:
                             dialga_complete = True
                         for key in EOS_location_table:
