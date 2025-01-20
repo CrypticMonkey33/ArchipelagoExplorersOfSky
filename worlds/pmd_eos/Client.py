@@ -79,8 +79,8 @@ class EoSClient(BizHawkClient):
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
-        open_list_address = 0x09E2F8  # the address in Script Vars where the open list offset is
-        conquest_list_address = 0x09E328  # the address in Script Vars where the conquest list offset it
+        open_list_address = 0x08456D# the address in Script Vars where the open list offset is
+        conquest_list_address = 0x09847D  # the address in Script Vars where the conquest list offset it
         dialga_complete = False
 
         try:
@@ -110,18 +110,32 @@ class EoSClient(BizHawkClient):
             # read the memory offsets to get the correct memory address for the dungeon lists
             open_list_offset = read_state[1]
             conquest_list_offset = read_state[0]
-
+            #2ABA90
             read_state_second = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    ((conquest_list_offset[1] << 8 | conquest_list_offset[0]) + 0x2AB9EC, 24, self.ram_mem_domain),  # conquest list in Script_Vars_Values
-                    ((open_list_offset[1] << 8 | open_list_offset[0]) + 0x2AB9EC, 24, self.ram_mem_domain),  # open list in Script_Vars_Values
+                    ((conquest_list_offset[0] << 8 | conquest_list_offset[1]) + 0x2AB9EC, 24, self.ram_mem_domain),  # conquest list in Script_Vars_Values
+                    ((open_list_offset[0] << 8 | open_list_offset[1]) + 0x2AB9EC, 24, self.ram_mem_domain),  # open list in Script_Vars_Values
                     # (0x416A580, 2, "MAINROM")  # open memory location that we can put the list of collected items in
                 ]
             )
             # read the state of the dungeon lists
             open_list = read_state_second[1]
             conquest_list = read_state_second[0]
+            new_open_list = 0
+            new_conquest_list = 0
+
+            for byte_i in range(len(open_list)):
+                if byte_i == 0:
+                    new_open_list += open_list[byte_i]
+                else:
+                    new_open_list = (new_open_list << 8) + open_list[byte_i]
+
+            for byte_i in range(len(conquest_list)):
+                if byte_i == 0:
+                    new_conquest_list += conquest_list[byte_i]
+                else:
+                    new_conquest_list = (new_conquest_list << 8) + conquest_list[byte_i]
 
             locs_to_send = set()
 
@@ -129,7 +143,7 @@ class EoSClient(BizHawkClient):
             for i in range(len(ctx.items_received)):
                 item_data = item_table_by_id[ctx.items_received[i].item]
                 item_memory_offset = item_data.memory_offset
-                if open_list[item_memory_offset] == 0:
+                if new_open_list[item_memory_offset] == 0:
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [
