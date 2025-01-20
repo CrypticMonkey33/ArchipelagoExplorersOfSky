@@ -111,13 +111,16 @@ class EoSClient(BizHawkClient):
             # read the memory offsets to get the correct memory address for the dungeon lists
             open_list_offset = read_state[1]
             conquest_list_offset = read_state[0]
-            #2ABA90
+
+            open_list_total_offset = (open_list_offset[0] << 8 | open_list_offset[1])
+            conquest_list_total_offset = (conquest_list_offset[0] << 8 | conquest_list_offset[1])
+            # read the open and conquest lists with the offsets we found
             read_state_second = await bizhawk.read(
                 ctx.bizhawk_ctx,
                 [
-                    ((conquest_list_offset[0] << 8 | conquest_list_offset[1]) + dung_lists_start_add, 24,
+                    (conquest_list_total_offset + dung_lists_start_add, 24,
                      self.ram_mem_domain),  # conquest list in Script_Vars_Values
-                    ((open_list_offset[0] << 8 | open_list_offset[1]) + dung_lists_start_add, 24,
+                    (open_list_total_offset + dung_lists_start_add, 24,
                      self.ram_mem_domain),  # open list in Script_Vars_Values
                     # (0x416A580, 2, "MAINROM")  # open memory location that we can put the list of collected items in
                 ]
@@ -128,26 +131,47 @@ class EoSClient(BizHawkClient):
 
             locs_to_send = set()
 
+            new_open_list: bytes = bytes()
+            new_conquest_list: bytes = bytes()
+
+            # need to flip the words in the byte string due to it reading the wrong Endian
+            for byte_i, byte in enumerate(conquest_list):
+                mod_byte_i = byte_i % 4
+                remain_byte_i = byte_i // 4
+                flip_word = bytes(conquest_list[(4*remain_byte_i) - (3-mod_byte_i)])
+                new_conquest_list.join([flip_word])
+
+            for byte_i, byte in enumerate(open_list):
+                mod_byte_i = byte_i % 4
+                remain_byte_i = byte_i // 4
+                flip_word = bytes(open_list[(4*remain_byte_i) - (3-mod_byte_i)])
+                new_open_list.join([flip_word])
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received)):
+                # get the item data from our item table
                 item_data = item_table_by_id[ctx.items_received[i].item]
                 item_memory_offset = item_data.memory_offset
+                # Since our open list is a byte array and our memory offset is bit based
+                # We have to grab our significant byte digits
                 sig_digit = item_memory_offset // 8
                 non_sig_digit = item_memory_offset % 8
-                if ((open_list[sig_digit] >> non_sig_digit) & 1) == 0:
-                    write_byte = open_list[sig_digit] & (1 << non_sig_digit)
+                if ((new_open_list[sig_digit] >> non_sig_digit) & 1) == 0:
+                    # Since we are writing bytes, we need to add the bit to the specific byte
+                    write_byte = new_open_list[sig_digit] | (1 << non_sig_digit)
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [
-                            ((open_list_offset[0] << 8 | open_list_offset[1]) + dung_lists_start_add
-                             + item_memory_offset, [write_byte], self.ram_mem_domain)
+                            (open_list_total_offset + dung_lists_start_add
+                             + sig_digit, [write_byte], self.ram_mem_domain)
                         ],
                     )
                 await asyncio.sleep(0.1)
 
+
+
             # Check for set location flags.
-            for byte_i, byte in enumerate(bytearray(conquest_list)):
+            for byte_i, byte in enumerate(bytearray(new_conquest_list)):
                 for j in range(8):
                     if j in self.checked_flags[byte_i]:
                         continue  # if the number already exists in the dictionary, it's already been checked. Move on

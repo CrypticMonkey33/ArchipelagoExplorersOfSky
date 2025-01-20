@@ -1,11 +1,3 @@
-Adding on preliminary Pokemon Mystery Dungeon Explorers of Sky integration to Archipelago. The integration is under worlds->pmd_eos.
-
-THIS INTEGRATION IS CURRENTLY WORK IN PROGRESS AND NOT PLAYABLE. You can watch the discord for information on our progress and how close we are to integration.
-
-
-
-
-
 # [Archipelago](https://archipelago.gg) ![Discord Shield](https://discordapp.com/api/guilds/731205301247803413/widget.png?style=shield) | [Install](https://github.com/ArchipelagoMW/Archipelago/releases)
 
 Archipelago provides a generic framework for developing multiworld capability for game randomizers. In all cases,
@@ -81,6 +73,9 @@ Currently, the following games are supported:
 * Yu-Gi-Oh! Ultimate Masters: World Championship Tournament 2006
 * A Hat in Time
 * Old School Runescape
+* Kingdom Hearts 1
+* Mega Man 2
+* Yacht Dice
 
 For setup and instructions check out our [tutorials page](https://archipelago.gg/tutorial/).
 Downloads can be found at [Releases](https://github.com/ArchipelagoMW/Archipelago/releases), including compiled
