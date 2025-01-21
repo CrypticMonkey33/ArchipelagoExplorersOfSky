@@ -3,7 +3,7 @@ import struct
 import binascii
 
 from NetUtils import ClientStatus
-from .Locations import EOSLocation, EOS_location_table
+from .Locations import EOSLocation, EOS_location_table, location_Dict_by_id
 from .Items import EOS_item_table, ItemData, item_table_by_id
 
 import asyncio
@@ -138,14 +138,14 @@ class EoSClient(BizHawkClient):
             for byte_i, byte in enumerate(conquest_list):
                 mod_byte_i = byte_i % 4
                 remain_byte_i = byte_i // 4
-                flip_word = bytes(conquest_list[(4*remain_byte_i) - (3-mod_byte_i)])
-                new_conquest_list.join([flip_word])
+                flip_word = conquest_list[(4*remain_byte_i) + (3-mod_byte_i)]|0
+                new_conquest_list += int.to_bytes(flip_word)
 
             for byte_i, byte in enumerate(open_list):
                 mod_byte_i = byte_i % 4
                 remain_byte_i = byte_i // 4
-                flip_word = bytes(open_list[(4*remain_byte_i) - (3-mod_byte_i)])
-                new_open_list.join([flip_word])
+                flip_word = open_list[(4*remain_byte_i) + (3-mod_byte_i)]
+                new_open_list += int.to_bytes(flip_word)
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received)):
@@ -163,7 +163,7 @@ class EoSClient(BizHawkClient):
                         ctx.bizhawk_ctx,
                         [
                             (open_list_total_offset + dung_lists_start_add
-                             + sig_digit, [write_byte], self.ram_mem_domain)
+                             + ((4*sig_digit%4)+(3-sig_digit//4)), [write_byte], self.ram_mem_domain)
                         ],
                     )
                 await asyncio.sleep(0.1)
@@ -177,13 +177,12 @@ class EoSClient(BizHawkClient):
                         continue  # if the number already exists in the dictionary, it's already been checked. Move on
                     if ((byte >> j) & 1) == 1:  # check if the bit j in each byte is on, meaning dungeon cleared
                         self.checked_flags[byte_i] += [j]
+                        # Note to self, change the Location table to be a Dictionary, so I don't have to loop
                         byte_number = (byte_i * 8) + j
                         if byte_number == 43:
                             dialga_complete = True
-                        for key in EOS_location_table:
-                            if byte_number == key.id:
-                                locs_to_send.add(key.id)
-                                break
+                        if byte_number in location_Dict_by_id:
+                            locs_to_send.add(location_Dict_by_id[byte_number].id)
 #44
             # Send locations if there are any to send.
             if locs_to_send != self.local_checked_locations:
