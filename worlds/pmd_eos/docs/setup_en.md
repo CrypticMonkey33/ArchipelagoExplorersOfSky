@@ -37,7 +37,7 @@ files. Your data file should have a `.apeos` extension.
 
 Double-click on your `.apeos` file to start your client and start the ROM patch process. Once the process is finished, the client and the emulator will be started automatically, if you associated the extension to the client as recommended. If the extension isn't associated', select the BizHawk client or the Archipelago Launcher as the program to open the `.apeos` file with.
 
-### Connect to the Multiserver
+### Connect client to emulator
 
 Once both the client and the emulator are started, you must connect them, if this is not done automatically. Within the emulator click on the "Tools" menu and select "Lua Console". Click the folder button or press Ctrl+O to open a Lua script.
 
