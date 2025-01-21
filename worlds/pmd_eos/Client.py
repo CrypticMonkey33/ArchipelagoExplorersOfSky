@@ -56,7 +56,7 @@ class EoSClient(BizHawkClient):
             return False  # Should verify on the next pass
 
         ctx.game = self.game
-        ctx.items_handling = 0b101
+        ctx.items_handling = 0b111
         ctx.want_slot_data = True
         ctx.watcher_timeout = 0.125
         self.rom_slot_name = rom_name
@@ -79,7 +79,7 @@ class EoSClient(BizHawkClient):
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
-        open_list_address = 0x08456D# the address in Script Vars where the open list offset is
+        open_list_address = 0x08456D # the address in Script Vars where the open list offset is
         conquest_list_address = 0x09847D  # the address in Script Vars where the conquest list offset it
         dung_lists_start_add = 0x2AB9EC
         dialga_complete = False
@@ -105,15 +105,16 @@ class EoSClient(BizHawkClient):
                 [
                     (conquest_list_address, 2, self.ram_mem_domain),  # conquest list in Script_Vars
                     (open_list_address, 2, self.ram_mem_domain),  # open list in Script_Vars
-                    # (0x416A580, 2, self.ram_mem_domain)   # open memory location that we can put the list of collected items in
+                    # (0x416A580, 2, self.ram_mem_domain)
+                    # open memory location that we can put the list of collected items in
                 ]
             )
             # read the memory offsets to get the correct memory address for the dungeon lists
-            open_list_offset = read_state[1]
-            conquest_list_offset = read_state[0]
+            open_list_offset = read_state[1]  # 0x0194
+            conquest_list_offset = read_state[0]  # 0x01F4
 
-            open_list_total_offset = (open_list_offset[0] << 8 | open_list_offset[1])
-            conquest_list_total_offset = (conquest_list_offset[0] << 8 | conquest_list_offset[1])
+            open_list_total_offset = 0x0194  # (open_list_offset[0] << 8 | open_list_offset[1])
+            conquest_list_total_offset = 0x01F4  # (conquest_list_offset[0] << 8 | conquest_list_offset[1])
             # read the open and conquest lists with the offsets we found
             read_state_second = await bizhawk.read(
                 ctx.bizhawk_ctx,
@@ -163,12 +164,10 @@ class EoSClient(BizHawkClient):
                         ctx.bizhawk_ctx,
                         [
                             (open_list_total_offset + dung_lists_start_add
-                             + ((4*sig_digit%4)+(3-sig_digit//4)), [write_byte], self.ram_mem_domain)
+                             + (4*(sig_digit//4)+(3-sig_digit%4)), [write_byte], self.ram_mem_domain)
                         ],
                     )
                 await asyncio.sleep(0.1)
-
-
 
             # Check for set location flags.
             for byte_i, byte in enumerate(bytearray(new_conquest_list)):
@@ -183,7 +182,7 @@ class EoSClient(BizHawkClient):
                             dialga_complete = True
                         if byte_number in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[byte_number].id)
-#44
+
             # Send locations if there are any to send.
             if locs_to_send != self.local_checked_locations:
                 self.local_checked_locations = locs_to_send
