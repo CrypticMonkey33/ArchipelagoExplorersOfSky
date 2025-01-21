@@ -4,6 +4,8 @@
 
 As we are using BizHawk, this guide is only applicable to Windows and Linux systems.
 
+Note that in its current state, the EoS apworld is **HIGHLY** unstable! Expect softlocks as we work on improving it!
+
 ## Required Software
 
 - BizHawk: [Bizhawk Releases from TASVideos](https://tasvideos.org/BizHawk/ReleaseHistory)
