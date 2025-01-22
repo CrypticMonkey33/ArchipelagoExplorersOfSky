@@ -27,7 +27,6 @@ class EoSClient(BizHawkClient):
     local_events: List[int]
     player_name: Optional[str]
     checked_flags: Dict[int, list] = {}
-    test_rom_mem_domain = "Main RAM"
     ram_mem_domain = "Main RAM"
 
     def __init__(self) -> None:
@@ -46,7 +45,7 @@ class EoSClient(BizHawkClient):
 
         try:
             # Check ROM name/patch version
-            rom_name_bytes = await bizhawk.read(ctx.bizhawk_ctx, [(0x3FFA80, 16, self.test_rom_mem_domain)])
+            rom_name_bytes = await bizhawk.read(ctx.bizhawk_ctx, [(0x3FFA80, 16, self.ram_mem_domain)])
             rom_name = bytes([byte for byte in rom_name_bytes[0] if byte != 0]).decode("UTF-8")
             if not rom_name.startswith("POKEDUN SORAC2SP"):
                 return False
@@ -61,7 +60,7 @@ class EoSClient(BizHawkClient):
         ctx.watcher_timeout = 0.125
         self.rom_slot_name = rom_name
         self.seed_verify = False
-        name_bytes = (await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE000, 16, self.test_rom_mem_domain)]))[0]
+        name_bytes = (await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE000, 16, self.ram_mem_domain)]))[0]
         name = bytes([byte for byte in name_bytes if byte != 0]).decode("UTF-8")
         self.player_name = name
 
@@ -89,7 +88,7 @@ class EoSClient(BizHawkClient):
                 return
             if not self.seed_verify:
                 # Need to figure out where we are putting the seed and then update this
-                seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE0A0, len(ctx.seed_name), self.test_rom_mem_domain)])
+                seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE0A0, len(ctx.seed_name), self.ram_mem_domain)])
                 seed = seed[0].decode("UTF-8")
                 if seed != ctx.seed_name:
                     logger.info(
@@ -164,7 +163,7 @@ class EoSClient(BizHawkClient):
                         ctx.bizhawk_ctx,
                         [
                             (open_list_total_offset + dung_lists_start_add
-                             + (4*(sig_digit//4)+(3-sig_digit%4)), [write_byte], self.ram_mem_domain)
+                             + (4*(sig_digit//4)+(3-sig_digit%4)), int.to_bytes(write_byte), self.ram_mem_domain)
                         ],
                     )
                 await asyncio.sleep(0.1)
