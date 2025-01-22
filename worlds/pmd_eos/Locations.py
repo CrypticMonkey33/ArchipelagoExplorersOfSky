@@ -88,13 +88,14 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("DungeonUnlock", 1,  "Zero Isle West", 101,  101),
     LocationData("DungeonUnlock", 1,  "Zero Isle South", 102,  102),
     LocationData("DungeonUnlock", 1,  "Zero Isle Center", 103,  103),
-    LocationData("DungeonUnlock", 1,  "Destiny Tower", 106,  104),
+    LocationData("DungeonUnlock", 1,  "Destiny Tower", 104,  104),
     LocationData("DungeonUnlock", 1,  "Oblivion Forest", 107,  107),
     LocationData("DungeonUnlock", 1,  "Treacherous Waters", 108,  108),
     LocationData("DungeonUnlock", 1,  "Southeastern Islands", 109,  109),
     LocationData("DungeonUnlock", 1,  "Inferno Cave", 110,  110),
-    LocationData("DungeonUnlock", 12,  "1st Station Pass", 127,  111),   # 12 subareas
+    LocationData("DungeonUnlock", 12,  "1st Station Pass", 122,  111),   # 12 subareas
     # Special Episode Dungeons
+    LocationData("SpecialDungeonUnlock", 5, "Star Cave1", 127, 123),
     LocationData("SpecialDungeonUnlock", 1,  "Murky Forest", 128,  128),
     LocationData("SpecialDungeonUnlock", 1,  "Eastern Cave", 129,  129),
     LocationData("SpecialDungeonUnlock", 3,  "Fortune Ravine", 132,  130),   # 3 subareas
@@ -111,8 +112,9 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("SpecialDungeonUnlock", 1,  "Right Cave Path", 153,  153),
     LocationData("SpecialDungeonUnlock", 1,  "Left Cave Path", 154,  154),
     LocationData("SpecialDungeonUnlock", 3,  "Limestone Cavern", 157,  155),   # 3 subareas
-    LocationData("SpecialDungeonUnlock", 7,  "Spring Cave", 173,  158),   # 7 subareas
+    LocationData("SpecialDungeonUnlock", 7,  "Spring Cave", 164,  158),   # 7 subareas
     LocationData("DungeonUnlock", 1, "Star Cave", 174,  174),
+    # Add Dojo dungeons as optional
     LocationData("Event", 0,  "Final Boss", 300, 300),
     # "Shaymin Village", 175,
     # "Armaldo's Shelter", 176,

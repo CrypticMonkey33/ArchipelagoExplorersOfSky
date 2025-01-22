@@ -48,12 +48,13 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
         "seed": world.multiworld.seed,
         "player": world.player,
     }
+    seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
 
     # Bake player name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+player_name_offset, world.multiworld.player_name[world.player].encode("UTF-8"))
 
     # Bake seed name into ROM
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, world.multiworld.seed_name.encode("UTF-8"))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
 
     patch.write_file("token_data.bin", patch.get_token_binary())

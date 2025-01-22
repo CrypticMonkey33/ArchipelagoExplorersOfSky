@@ -88,6 +88,7 @@ EOS_item_table = [
     ItemData("Southeastern Islands", 109, ItemClassification.useful, 109, ["Unique", "Dungeons"], 0x6D),
     ItemData("Inferno Cave", 110, ItemClassification.useful, 110, ["Unique", "Dungeons"], 0x6E),
     ItemData("1st Station Pass", 111, ItemClassification.useful, 111, ["Unique", "Dungeons"], 0x6F),
+    ItemData("Star Cave1", 123, ItemClassification.useful, 123, ["Unique", "Special Dungeons"], 0x7B),
     ItemData("Murky Forest", 128, ItemClassification.useful, 128, ["Unique", "Special Dungeons"], 0x80),
     ItemData("Eastern Cave", 129, ItemClassification.useful, 129, ["Unique", "Special Dungeons"], 0x81),
     ItemData("Fortune Ravine", 130, ItemClassification.useful, 130, ["Unique", "Special Dungeons"], 0x82),
