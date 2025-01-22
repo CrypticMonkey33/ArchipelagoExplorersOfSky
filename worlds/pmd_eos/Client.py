@@ -177,7 +177,7 @@ class EoSClient(BizHawkClient):
                                 (open_list_total_offset + dung_lists_start_add+sig_digit, int.to_bytes(write_byte),
                                 self.ram_mem_domain)
                            ],)
-                    #if sig_digit == 0:
+                    # if sig_digit == 0:
                      #   await bizhawk.write(
                       #      ctx.bizhawk_ctx,
                        #     [
