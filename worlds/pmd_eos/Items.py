@@ -34,7 +34,7 @@ EOS_item_table = [
     ItemData("Steam Cave", 14, ItemClassification.progression, 14, ["Unique", "Dungeons"], 0xE),
     ItemData("Amp Plains", 17, ItemClassification.progression, 17, ["Unique", "Dungeons"], 0X11),
     ItemData("Northern Desert", 20, ItemClassification.progression, 20, ["Unique", "Dungeons"], 0x14),
-    ItemData("Quicksand Cave", 21, ItemClassification.progression, 21, ["Unique", "Dungeons"], 0x16),
+    ItemData("Quicksand Cave", 21, ItemClassification.progression, 21, ["Unique", "Dungeons"], 0x15),
     ItemData("Crystal Cave", 24, ItemClassification.progression, 24, ["Unique", "Dungeons"], 0x18),
     ItemData("Crystal Crossing", 25, ItemClassification.progression, 25, ["Unique", "Dungeons"], 0x19),
     ItemData("Chasm Cave", 27, ItemClassification.progression, 27, ["Unique", "Dungeons"], 0x1B),

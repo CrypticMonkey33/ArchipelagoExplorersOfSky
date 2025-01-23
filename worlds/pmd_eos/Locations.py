@@ -122,6 +122,8 @@ EOS_location_table: typing.List[LocationData] = [
     # "Luminous Spring", 177,
     # "Hot Spring", 178,
     # "Rescue", 179
+
+    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag", 500, 500)
 ]
 
 location_Dict_by_id: typing.Dict[int, LocationData] = {location.id: location for location in EOS_location_table}

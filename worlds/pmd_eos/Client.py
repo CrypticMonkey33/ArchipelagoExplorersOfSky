@@ -132,32 +132,6 @@ class EoSClient(BizHawkClient):
 
             locs_to_send = set()
 
-            #new_open_list: bytes = bytes()
-            #new_conquest_list: bytes = bytes()
-            #new_open_list = open_list
-            #new_conquest_list = conquest_list
-
-            # need to flip the words in the byte string due to it reading the wrong Endian
-            #for byte_i, byte in enumerate(conquest_list):
-            #    if (byte_i == 0) | (byte_i == 21):
-            #        new_conquest_list += int.to_bytes(byte)
-            #        continue
-            #    mod_byte_i = (byte_i - 1) % 4
-            #    remain_byte_i = (byte_i - 1) // 4
-            #    flip_word = conquest_list[(4 * remain_byte_i) + (3 - mod_byte_i) + 1]
-            #    new_conquest_list += int.to_bytes(flip_word)
-
-            # need to subtract 1 from the byte number to shift the quadrant to be correct
-            # Then I need to add 1 back in to get it to the right index spot
-           # for byte_i, byte in enumerate(open_list):
-           #     if (byte_i == 0) | (byte_i == 21):
-           #         new_open_list += int.to_bytes(byte)
-           #         continue
-           #     mod_byte_i = (byte_i - 1) % 4
-           #     remain_byte_i = (byte_i - 1) // 4
-           #     flip_word = open_list[(4 * remain_byte_i) + (3 - mod_byte_i) + 1]
-           #     new_open_list += int.to_bytes(flip_word)
-
             # Loop for receiving items.
             for i in range(len(ctx.items_received)):
                 # get the item data from our item table
@@ -176,23 +150,6 @@ class EoSClient(BizHawkClient):
                             (open_list_total_offset + dung_lists_start_add + sig_digit, int.to_bytes(write_byte),
                              self.ram_mem_domain)],
                     )
-                    # if sig_digit == 0:
-                    #   await bizhawk.write(
-                    #      ctx.bizhawk_ctx,
-                    #     [
-                    #        (open_list_total_offset + dung_lists_start_add, int.to_bytes(write_byte),
-                    #        self.ram_mem_domain)
-                    #   ],
-                    #)
-                    #else:
-                    #   await bizhawk.write(
-                    #       ctx.bizhawk_ctx,
-                    #       [
-                    #           (open_list_total_offset + dung_lists_start_add
-                    #            + 1+(4*((sig_digit-1)//4)+(3-(sig_digit-1)%4)), int.to_bytes(write_byte), self.ram_mem_domain)
-                    #           # (4*(sig_digit//4)+(3-sig_digit%4)), int.to_bytes(write_byte), self.ram_mem_domain)
-                    #       ],
-                    #   )
                 await asyncio.sleep(0.1)
 
             # Check for set location flags.

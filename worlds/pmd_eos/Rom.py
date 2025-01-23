@@ -33,6 +33,7 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
     procedure = [
         ("apply_bsdiff4", ["base_patch.bsdiff4"]),
         ("apply_tokens", ["token_data.bin"]),
+        ("apply_basic_options", [])
     ]
 
     @classmethod
@@ -44,9 +45,19 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
     ov36_mem_loc = 0x295400
     seed_offset = 0x37020
     player_name_offset = 0x36F80
+    recruitment_offset = 0x3702C
+    recruitment_evo_offset = 0x37030
+    team_formation_offset = 0x37034
+    level_scaling_offset = 0x37038
     options_dict = {
         "seed": world.multiworld.seed,
         "player": world.player,
+        "bag_start": world.options.bag_on_start,
+        "level_scaling": world.options.level_scale,
+        "recruiting": world.options.recruit,
+        "recruits_evolution": world.options.recruit_evo,
+        "team_formation": world.options.team_form,
+
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
@@ -57,4 +68,23 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
 
+    if world.options.recruit:
+        patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + recruitment_offset, 1)
+
+    if world.options.recruit_evo:
+        patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + recruitment_evo_offset, 1)
+
+    if world.options.team_form:
+        patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + team_formation_offset, 1)
+
+    if world.options.level_scale:
+        patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + level_scaling_offset, 1)
+
+    if world.options.bag_on_start:
+        test = 0
+
     patch.write_file("token_data.bin", patch.get_token_binary())
+
+
+def apply_basic_options():
+    test = 0
