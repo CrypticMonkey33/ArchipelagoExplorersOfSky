@@ -58,7 +58,7 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("DungeonUnlock", 3,  "Crevice Cave", 48,  47),   # 3 subareas
     LocationData("DungeonUnlock", 1,  "Surrounded Sea", 50,  50),
     LocationData("DungeonUnlock", 3,  "Miracle Sea", 52,  51),   # 3 subareas
-    LocationData("DungeonUnlock", 8,  "Ice Aegis Cave", 60,  54),   # 8 subareas
+    #LocationData("DungeonUnlock", 8,  "Ice Aegis Cave", 60,  54),   # 8 subareas             we hate aegis cave. also it's kinda broken rn so we're gonna remove it for now
     LocationData("DungeonUnlock", 1,  "Mt. Travail", 62,  62),
     LocationData("DungeonUnlock", 1,  "The Nightmare", 63,  63),
     LocationData("DungeonUnlock", 3,  "Spacial Rift", 65,  64),   # 3 subareas

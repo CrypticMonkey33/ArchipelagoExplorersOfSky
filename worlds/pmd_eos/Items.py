@@ -51,7 +51,7 @@ EOS_item_table = [
     ItemData("Crevice Cave", 47, ItemClassification.useful, 47, ["Unique", "Dungeons"], 0x2F),
     ItemData("Surrounded Sea", 50, ItemClassification.useful, 50, ["Unique", "Dungeons"], 0x32),
     ItemData("Miracle Sea", 51, ItemClassification.useful, 51, ["Unique", "Dungeons"], 0x33),
-    ItemData("Ice Aegis Cave", 54, ItemClassification.useful, 54, ["Unique", "Dungeons"], 0x36),
+    #ItemData("Ice Aegis Cave", 54, ItemClassification.useful, 54, ["Unique", "Dungeons"], 0x36),
     ItemData("Mt. Travail", 62, ItemClassification.useful, 62, ["Unique", "Dungeons"], 0x3E),
     ItemData("The Nightmare", 63, ItemClassification.useful, 63, ["Unique", "Dungeons"], 0x3F),
     ItemData("Spacial Rift", 64, ItemClassification.useful, 64, ["Unique", "Dungeons"], 0x40),
