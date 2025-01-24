@@ -107,8 +107,13 @@ EOS_item_table = [
     # ItemData("Limestone Cavern", 155, ItemClassification.useful, 155, ["Unique", "Special Dungeons"], 0x9B),
     # ItemData("Spring Cave", 158, ItemClassification.useful, 158, ["Unique", "Special Dungeons"], 0x9E),
     ItemData("Star Cave2", 174, ItemClassification.useful, 174, ["Unique", "Dungeons"], 0xAE),
-    ItemData("Victory", 300, ItemClassification.progression, 0, [], 0x00)
+    ItemData("Victory", 300, ItemClassification.progression, 0, [], 0x00),
+    ItemData("Bag Upgrade", 500, ItemClassification.useful, 0, ["Progressive"], 0x00)
 ]
+
+item_frequencies: typing.Dict[str, int] = {
+    "Bag Upgrade": 5
+}
 
 item_table: typing.Dict[str, ItemData] = {item.name: item for item in EOS_item_table}
 item_table_by_id: typing.Dict[int, ItemData] = {item.id: item for item in EOS_item_table}

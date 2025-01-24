@@ -4,7 +4,7 @@ import json
 import pkgutil
 import settings
 from typing import List, Dict, Set, Any
-from .Items import EOS_item_table, EOSItem, item_table
+from .Items import EOS_item_table, EOSItem, item_table, item_frequencies
 from .Locations import EOS_location_table, EOSLocation
 from .Options import EOSOptions
 from .Rules import set_rules
@@ -76,6 +76,8 @@ class EOSWorld(World):
         for location in EOS_location_table:
             if location.classification == "DungeonUnlock" or location.classification == "SpecialDungeonUnlock":
                 main_region.locations.append(EOSLocation(self.player, location.name, location.id, main_region))
+            elif location.classification == "ProgressiveBagUpgrade":
+                main_region.locations.append(EOSLocation(self.player, location.name, location.id, main_region))
 
         boss_region = Region("Boss Room", self.player, self.multiworld)
 
@@ -96,10 +98,19 @@ class EOSWorld(World):
     def create_items(self) -> None:
         required_items = []
         filler_items = []
+        precollected = [item for item in item_table if item in self.multiworld.precollected_items]
 
         for item_name in item_table:
-            if item_table[item_name].classification == ItemClassification.filler:
-                filler_items.append( self.create_item(item_name, ItemClassification.filler))
+            if item_name in item_frequencies:
+                freq = item_frequencies.get(item_name, 1)
+                if item_name in precollected:
+                    freq = max(freq - precollected.count(item_name),0)
+                if self.options.bag_on_start:
+                    precollected += [item_name]
+                required_items += [item_name for _ in range(freq)]
+
+            elif item_table[item_name].classification == ItemClassification.filler:
+                filler_items.append(self.create_item(item_name, ItemClassification.filler))
             elif item_table[item_name].classification == ItemClassification.useful:
                 required_items.append(self.create_item(item_name, ItemClassification.useful))
             elif item_table[item_name].name == "Victory":
@@ -121,3 +132,4 @@ class EOSWorld(World):
             output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
         )
         patch.write(rom_path)
+

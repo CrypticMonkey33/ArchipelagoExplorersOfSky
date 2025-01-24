@@ -115,15 +115,15 @@ EOS_location_table: typing.List[LocationData] = [
     #LocationData("SpecialDungeonUnlock", 3,  "Limestone Cavern", 157,  155),   # 3 subareas
     #LocationData("SpecialDungeonUnlock", 7,  "Spring Cave", 164,  158),   # 7 subareas
     LocationData("DungeonUnlock", 1, "Star Cave", 174,  174),
-    # Add Dojo dungeons as optional
+    # ToDo Add Dojo dungeons as optional
     LocationData("Event", 0,  "Final Boss", 300, 300),
-    # "Shaymin Village", 175,
-    # "Armaldo's Shelter", 176,
-    # "Luminous Spring", 177,
-    # "Hot Spring", 178,
-    # "Rescue", 179
+    # generic checks, right now just bag upgrades
+    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 1", 200, 200),
+    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 2", 201, 201),
+    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 3", 202, 202),
+    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 4", 203, 203),
+    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 5", 204, 204),
 
-    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag", 500, 500)
 ]
 
 location_Dict_by_id: typing.Dict[int, LocationData] = {location.id: location for location in EOS_location_table}
