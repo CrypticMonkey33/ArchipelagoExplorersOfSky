@@ -62,12 +62,75 @@ Pokemon Mystery Dungeon Explorers of Sky:
     minimal: 0
 
   goal:
-    # Sets the desired goal for the run
-    # Currently only Dialga implemented
-    dialga: 50
+    # Change the desired goal to complete the game (Currently only Dialga is implemented)
+    dialga: 0
+    darkrai: 50
 
   dungeon_rando:
-    #Do you want the names of the dungeons to be randomized
-    #According to the Skytemple logic
+    # NOT IMPLEMENTED: Randomizes the names of the dungeons. IDs and completion requirements stay the same
     'false': 0
     'true': 50
+
+  recruit:
+    # Start with recruitment enabled?
+    'false': 0
+    'true': 50
+
+  recruit_evo:
+    # Start with Recruitment Evolution Enabled?
+    'false': 0
+    'true': 50
+
+  team_form:
+    # Start with full team formation control?
+    'false': 0
+    'true': 50
+
+  level_scale:
+    # Allow for dungeons to scale to the highest level of your party members?
+    'false': 0
+    'true': 50
+
+  bag_on_start:
+    # Start with bag? If False all bag upgrades will be randomized in the game
+    'false': 50
+    'true': 0
+
+  # Item & Location Options
+  local_items:
+    # Forces these items to be in their native world.
+    []
+
+  non_local_items:
+    # Forces these items to be outside their native world.
+    []
+
+  start_inventory:
+    # Start with these items.
+    {}
+
+  start_hints:
+    # Start with these item's locations prefilled into the ``!hint`` command.
+    []
+
+  start_location_hints:
+    # Start with these locations and their item prefilled into the ``!hint`` command.
+    []
+
+  exclude_locations:
+    # Prevent these locations from having an important item.
+    []
+
+  priority_locations:
+    # Prevent these locations from having an unimportant item.
+    []
+
+  item_links:
+    # Share part of your item pool with other players.
+    []
+
+  start_inventory_from_pool:
+    # Start with these items and don't place them in the world.
+    # 
+    # The game decides what the replacement items will be.
+    {}
