@@ -68,6 +68,9 @@ class EoSClient(BizHawkClient):
         for i in range(25):
             self.checked_dungeon_flags[i] = []
 
+        for i in range(16):
+            self.checked_general_flags[i] = []
+
         return True
 
     async def set_auth(self, ctx: "BizHawkClientContext") -> None:
@@ -119,6 +122,7 @@ class EoSClient(BizHawkClient):
             scenario_balance_offset = await (self.load_script_variable_raw(19, ctx))
             performance_progress_offset = await (self.load_script_variable_raw(78, ctx))
             generic_checks_offset = await (self.load_script_variable_raw(5, ctx))
+            received_items_offset = await (self.load_script_variable_raw(16, ctx))
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
@@ -127,8 +131,8 @@ class EoSClient(BizHawkClient):
                     (open_list_total_offset, 24, self.ram_mem_domain),  # open list in Script_Vars_Values
                     (scenario_balance_offset, 1, self.ram_mem_domain),
                     (performance_progress_offset, 1, self.ram_mem_domain),
-                    (generic_checks_offset, 16, self.ram_mem_domain)
-                    # (0x416A580, 2, "MAINROM")  # open memory location that we can put the list of collected items in
+                    (generic_checks_offset, 16, self.ram_mem_domain),
+                    (received_items_offset, 2, self.ram_mem_domain)
                 ]
             )
             # read the state of the dungeon lists
@@ -137,13 +141,14 @@ class EoSClient(BizHawkClient):
             scenario_balance_byte = read_state[2]
             performance_progress_bitfield = read_state[3]
             generic_checks_bitfield = read_state[4]
+            received_index = int.from_bytes(read_state[5])
 
             locs_to_send = set()
 
             # Loop for receiving items.
-            for i in range(len(ctx.items_received)):
+            for i in range(len(ctx.items_received) - received_index):
                 # get the item data from our item table
-                item_data = item_table_by_id[ctx.items_received[i].item]
+                item_data = item_table_by_id[ctx.items_received[received_index + i].item]
                 if "Dungeons" in item_data.group:
                     item_memory_offset = item_data.memory_offset
                     # Since our open list is a byte array and our memory offset is bit based
@@ -163,7 +168,7 @@ class EoSClient(BizHawkClient):
                 elif "Progressive" in item_data.group:
                     if item_data.name == "Bag Upgrade":
 
-                        if performance_progress_bitfield[2] == 0:
+                        if ((performance_progress_bitfield[0] >> 2) & 1) == 0:
                             write_byte = int.from_bytes(performance_progress_bitfield) + (0x1 << 2)
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
@@ -173,7 +178,8 @@ class EoSClient(BizHawkClient):
                                 ]
                             )
                         else:
-                            write_byte = int.from_bytes(scenario_balance_byte) + 0x1
+
+                            write_byte = scenario_balance_byte[0] + 0x1
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [
@@ -181,6 +187,13 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [
+                        (received_items_offset, [(received_index + i + 1) // 0x100, (received_index + i + 1) % 0x100],
+                         self.ram_mem_domain),
+                    ]
+                )
 
 
             # Check for set location flags.

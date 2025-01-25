@@ -104,10 +104,10 @@ class EOSWorld(World):
             if item_name in item_frequencies:
                 freq = item_frequencies.get(item_name, 1)
                 if item_name in precollected:
-                    freq = max(freq - precollected.count(item_name),0)
+                    freq = max(freq - precollected.count(item_name), 0)
                 if self.options.bag_on_start:
                     precollected += [item_name]
-                required_items += [item_name for _ in range(freq)]
+                required_items += [self.create_item(item_name) for _ in range(freq)]
 
             elif item_table[item_name].classification == ItemClassification.filler:
                 filler_items.append(self.create_item(item_name, ItemClassification.filler))

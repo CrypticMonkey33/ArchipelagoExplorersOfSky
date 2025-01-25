@@ -80,8 +80,8 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
     if world.options.level_scale:
         patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + level_scaling_offset, 1)
 
-    if world.options.bag_on_start:
-        test = 0
+    #if world.options.bag_on_start:
+    #    test = 0
 
     patch.write_file("token_data.bin", patch.get_token_binary())
 

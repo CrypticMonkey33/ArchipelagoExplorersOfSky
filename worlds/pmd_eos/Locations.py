@@ -27,6 +27,7 @@ class EOSLocation(Location):
 # lowered locations by 1 to ignore bosses
 EOS_location_table: typing.List[LocationData] = [
     # "Test Dungeon", 0,  # Should be unused
+    LocationData("DungeonUnlock", 2,  "Beach Cave", 2,  1),
     LocationData("DungeonUnlock", 1, "Drenched Bluff", 3, 3),
     LocationData("DungeonUnlock", 2, "Mt. Bristle", 5, 4),  # 2 subareas
     LocationData("DungeonUnlock", 1, "Waterfall Cave", 6, 6),
