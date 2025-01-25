@@ -108,7 +108,8 @@ EOS_item_table = [
     # ItemData("Spring Cave", 158, ItemClassification.useful, 158, ["Unique", "Special Dungeons"], 0x9E),
     ItemData("Star Cave2", 174, ItemClassification.useful, 174, ["Unique", "Dungeons"], 0xAE),
     ItemData("Victory", 300, ItemClassification.progression, 0, [], 0x00),
-    ItemData("Bag Upgrade", 500, ItemClassification.useful, 0, ["Progressive"], 0x00)
+    ItemData("Bag Upgrade", 500, ItemClassification.useful, 0, ["Progressive"], 0x00),
+    ItemData("Filler", 600, ItemClassification.filler, 0, ["Filler"], 0x00)
 ]
 
 item_frequencies: typing.Dict[str, int] = {

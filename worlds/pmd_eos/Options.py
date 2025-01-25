@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from Options import DefaultOnToggle, Range, Toggle, DeathLink, Choice, PerGameCommonOptions, OptionSet
+from Options import DefaultOnToggle, Toggle, DeathLink, Choice, PerGameCommonOptions, OptionSet, StartInventoryPool
 
 
 class DungeonNameRandomizer(DefaultOnToggle):
@@ -42,6 +42,7 @@ class StartWithBag(Toggle):
 
 @dataclass
 class EOSOptions(PerGameCommonOptions):
+    start_inventory_from_pool: StartInventoryPool
     dungeon_rando: DungeonNameRandomizer
     goal: Goal
     recruit: Recruitment

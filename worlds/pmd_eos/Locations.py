@@ -24,7 +24,6 @@ class EOSLocation(Location):
     game: str = "Pokemon Mystery Dungeon Explorers of Sky"
 
 
-# lowered locations by 1 to ignore bosses
 EOS_location_table: typing.List[LocationData] = [
     # "Test Dungeon", 0,  # Should be unused
     LocationData("DungeonUnlock", 2,  "Beach Cave", 2,  1),

@@ -29,6 +29,8 @@ class EoSClient(BizHawkClient):
     checked_dungeon_flags: Dict[int, list] = {}
     checked_general_flags: Dict[int, list] = {}
     ram_mem_domain = "Main RAM"
+    dialga_complete = False
+    bag_given = False
 
     def __init__(self) -> None:
         super().__init__()
@@ -42,7 +44,6 @@ class EoSClient(BizHawkClient):
         self.local_events = []
 
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
-        from CommonClient import logger
 
         try:
             # Check ROM name/patch version
@@ -82,10 +83,6 @@ class EoSClient(BizHawkClient):
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
-        #open_list_address = 0x08456D  # the address in Script Vars where the open list offset is
-        #conquest_list_address = 0x09847D  # the address in Script Vars where the conquest list offset it
-        #dung_lists_start_add = 0x2AB9EC
-        dialga_complete = False
 
         try:
             if ctx.seed_name is None:
@@ -104,25 +101,13 @@ class EoSClient(BizHawkClient):
                     raise bizhawk.ConnectorError("Loaded ROM is for Incorrect lobby.")
                 self.seed_verify = True
 
-            #read_state = await bizhawk.read(
-            #    ctx.bizhawk_ctx,
-            #    [
-            #        (conquest_list_address, 2, self.ram_mem_domain),  # conquest list in Script_Vars
-            #        (open_list_address, 2, self.ram_mem_domain),  # open list in Script_Vars
-            #        # (0x416A580, 2, self.ram_mem_domain)
-            #        # open memory location that we can put the list of collected items in
-            #    ]
-            #)
-            # read the memory offsets to get the correct memory address for the dungeon lists
-            #open_list_offset = read_state[1]  # 0x0194
-            #conquest_list_offset = read_state[0]  # 0x01F4
-
             open_list_total_offset: int = await (self.load_script_variable_raw(79, ctx))
             conquest_list_total_offset: int = await (self.load_script_variable_raw(82, ctx))
             scenario_balance_offset = await (self.load_script_variable_raw(19, ctx))
             performance_progress_offset = await (self.load_script_variable_raw(78, ctx))
             generic_checks_offset = await (self.load_script_variable_raw(5, ctx))
             received_items_offset = await (self.load_script_variable_raw(16, ctx))
+            scenario_main_offset = await (self.load_script_variable_raw(3, ctx))
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
@@ -132,9 +117,13 @@ class EoSClient(BizHawkClient):
                     (scenario_balance_offset, 1, self.ram_mem_domain),
                     (performance_progress_offset, 1, self.ram_mem_domain),
                     (generic_checks_offset, 16, self.ram_mem_domain),
-                    (received_items_offset, 2, self.ram_mem_domain)
+                    (received_items_offset, 2, self.ram_mem_domain),
+                    (scenario_main_offset, 1, self.ram_mem_domain)
                 ]
             )
+            # make sure we are actually on the start screen before checking items and such
+            if int.from_bytes(read_state[6]) == 0:
+                return
             # read the state of the dungeon lists
             open_list = read_state[1]
             conquest_list = read_state[0]
@@ -195,7 +184,6 @@ class EoSClient(BizHawkClient):
                     ]
                 )
 
-
             # Check for set location flags.
             for byte_i, byte in enumerate(bytearray(conquest_list)):
                 for j in range(8):
@@ -227,7 +215,7 @@ class EoSClient(BizHawkClient):
                 if locs_to_send is not None:
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
 
-            if not ctx.finished_game and dialga_complete:
+            if not ctx.finished_game and self.dialga_complete:
                 await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 
         except bizhawk.RequestFailedError:

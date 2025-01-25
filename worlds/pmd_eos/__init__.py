@@ -62,7 +62,9 @@ class EOSWorld(World):
     required_client_version = (0, 5, 1)
 
     def generate_early(self) -> None:
-        test = 0
+        if self.options.bag_on_start:
+            item_name = "Bag Upgrade"
+            self.multiworld.push_precollected(self.create_item(item_name))
 
     def create_regions(self) -> None:
         menu_region = Region("Menu", self.player, self.multiworld)
@@ -98,15 +100,14 @@ class EOSWorld(World):
     def create_items(self) -> None:
         required_items = []
         filler_items = []
-        precollected = [item for item in item_table if item in self.multiworld.precollected_items]
-
+        precollected = [item for item in item_table if item in self.multiworld.precollected_items.items()]
+        #if self.options.bag_on_start:
+        #    precollected += ["Bag Upgrade"]
         for item_name in item_table:
             if item_name in item_frequencies:
                 freq = item_frequencies.get(item_name, 1)
                 if item_name in precollected:
                     freq = max(freq - precollected.count(item_name), 0)
-                if self.options.bag_on_start:
-                    precollected += [item_name]
                 required_items += [self.create_item(item_name) for _ in range(freq)]
 
             elif item_table[item_name].classification == ItemClassification.filler:
@@ -117,8 +118,10 @@ class EOSWorld(World):
                 continue
             else:
                 required_items.append(self.create_item(item_name, ItemClassification.progression))
+        remaining = len(EOS_location_table) - len(required_items) - 1
 
         self.multiworld.itempool += required_items
+        self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item in self.random.sample(filler_items, remaining)]
 
     def set_rules(self) -> None:
         test = 0
