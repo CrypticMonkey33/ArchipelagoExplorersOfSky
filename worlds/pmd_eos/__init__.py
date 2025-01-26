@@ -4,13 +4,14 @@ import json
 import pkgutil
 import settings
 from typing import List, Dict, Set, Any
-from .Items import EOS_item_table, EOSItem, item_table, item_frequencies
-from .Locations import EOS_location_table, EOSLocation
+from .Items import EOS_item_table, EOSItem, item_table, item_frequencies, item_table_by_id, item_table_by_groups
+from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id
 from .Options import EOSOptions
-from .Rules import set_rules
+from .Rules import set_rules, ready_for_late_game, ready_for_final_boss
 from .Regions import EoS_regions
 from BaseClasses import Tutorial, ItemClassification, Region, Location
 from worlds.AutoWorld import World, WebWorld
+from worlds.generic.Rules import set_rule, forbid_item
 from .Client import EoSClient
 from .Rom import EOSProcedurePatch, write_tokens
 
@@ -57,9 +58,11 @@ class EOSWorld(World):
                        item in EOS_item_table}
     location_name_to_id = {location.name: location.id for
                            location in EOS_location_table}
-    origin_region_name = "Overworld"
 
     required_client_version = (0, 5, 1)
+
+    item_name_groups= item_table_by_groups
+    disabled_locations: Set[str] = []
 
     def generate_early(self) -> None:
         if self.options.bag_on_start:
@@ -70,22 +73,51 @@ class EOSWorld(World):
         menu_region = Region("Menu", self.player, self.multiworld)
         self.multiworld.regions.append(menu_region)
 
-        main_region = Region("Overworld", self.player, self.multiworld)
-        self.multiworld.regions.append(main_region)
+        early_dungeons_region = Region("Early Dungeons", self.player, self.multiworld)
+        self.multiworld.regions.append(early_dungeons_region)
 
-        menu_region.connect(main_region)
+        late_dungeons_region = Region("Late Dungeons", self.player, self.multiworld)
+        self.multiworld.regions.append(late_dungeons_region)
+
+        end_game_region = Region("Boss Dungeons", self.player, self.multiworld)
+        self.multiworld.regions.append(end_game_region)
+
+        extra_items_region = Region("Extra Items", self.player,self.multiworld)
+        self.multiworld.regions.append(extra_items_region)
 
         for location in EOS_location_table:
-            if location.classification == "DungeonUnlock" or location.classification == "SpecialDungeonUnlock":
-                main_region.locations.append(EOSLocation(self.player, location.name, location.id, main_region))
-            elif location.classification == "ProgressiveBagUpgrade":
-                main_region.locations.append(EOSLocation(self.player, location.name, location.id, main_region))
+            if location.name == "Beach Cave" or location.name == "Progressive Bag loc 1":
+                menu_region.locations.append(EOSLocation(self.player, location.name,
+                                                         location.id, menu_region))
+            elif (location.classification == "EarlyDungeonComplete") or (location.classification == "SpecialDungeonComplete"):
+                early_dungeons_region.locations.append(EOSLocation(self.player, location.name,
+                                                                   location.id, early_dungeons_region))
+            elif location.classification == "LateDungeonComplete":
+                late_dungeons_region.locations.append(EOSLocation(self.player, location.name,
+                                                                  location.id, late_dungeons_region))
+            elif location.classification == "BossDungeonComplete":
+                end_game_region.locations.append(EOSLocation(self.player, location.name,
+                                                             location.id, end_game_region))
+            elif (location.classification == "ProgressiveBagUpgrade") or (location.classification == "ShopItem"):
+                extra_items_region.locations.append(EOSLocation(self.player, location.name,
+                                                                location.id, early_dungeons_region))
+
+        menu_region.connect(extra_items_region)
+
+        menu_region.connect(early_dungeons_region)
+
+        early_dungeons_region.connect(late_dungeons_region, "Late Game Door")
+                                      #lambda state: ready_for_late_game(state, self.player))
+
+        late_dungeons_region.connect(end_game_region, "Boss Door")
+                                     #lambda state: ready_for_final_boss(state, self.player))
 
         boss_region = Region("Boss Room", self.player, self.multiworld)
 
         boss_region.locations.append(EOSLocation(self.player, "Final Boss", None, boss_region))
 
-        main_region.connect(boss_region)
+        end_game_region.connect(boss_region, "End Game")
+                                #lambda state: state.has("Temporal Tower", self.player))
 
         self.get_location("Final Boss").place_locked_item(self.create_item("Victory"))
 
@@ -95,6 +127,11 @@ class EOSWorld(World):
 
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
+            "BagOnStart": self.options.bag_on_start.value,
+            "Recruitment": self.options.recruit.value,
+            "TeamFormation": self.options.team_form.value,
+            "LevelScaling": self.options.level_scale.value,
+            "RecruitmentEvolution": self.options.recruit_evo.value
         }
 
     def create_items(self) -> None:
@@ -112,19 +149,22 @@ class EOSWorld(World):
 
             elif item_table[item_name].classification == ItemClassification.filler:
                 filler_items.append(self.create_item(item_name, ItemClassification.filler))
-            elif item_table[item_name].classification == ItemClassification.useful:
-                required_items.append(self.create_item(item_name, ItemClassification.useful))
+            elif item_table[item_name].classification == ItemClassification.progression:
+                required_items.append(self.create_item(item_name, ItemClassification.progression))
             elif item_table[item_name].name == "Victory":
                 continue
             else:
-                required_items.append(self.create_item(item_name, ItemClassification.progression))
-        remaining = len(EOS_location_table) - len(required_items) - 1
+                required_items.append(self.create_item(item_name, ItemClassification.useful))
+        remaining = len(EOS_location_table) - len(required_items) - 1 # subtracting 1 for the event check
 
         self.multiworld.itempool += required_items
-        self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item in self.random.sample(filler_items, remaining)]
+        for i in range(5):
+            filler_items += filler_items
+        self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
+                                     in self.random.sample(filler_items, remaining)]
 
     def set_rules(self) -> None:
-        test = 0
+        set_rules(self, self.disabled_locations)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
 
     def generate_output(self, output_directory: str) -> None:

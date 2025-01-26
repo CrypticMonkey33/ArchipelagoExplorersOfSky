@@ -108,6 +108,7 @@ class EoSClient(BizHawkClient):
             generic_checks_offset = await (self.load_script_variable_raw(5, ctx))
             received_items_offset = await (self.load_script_variable_raw(16, ctx))
             scenario_main_offset = await (self.load_script_variable_raw(3, ctx))
+            special_episode_offset = await (self.load_script_variable_raw(75,  ctx))
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
@@ -118,7 +119,8 @@ class EoSClient(BizHawkClient):
                     (performance_progress_offset, 1, self.ram_mem_domain),
                     (generic_checks_offset, 16, self.ram_mem_domain),
                     (received_items_offset, 2, self.ram_mem_domain),
-                    (scenario_main_offset, 1, self.ram_mem_domain)
+                    (scenario_main_offset, 1, self.ram_mem_domain),
+                    (special_episode_offset, 1, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -131,6 +133,7 @@ class EoSClient(BizHawkClient):
             performance_progress_bitfield = read_state[3]
             generic_checks_bitfield = read_state[4]
             received_index = int.from_bytes(read_state[5])
+            special_episode_bitfield = int.from_bytes(read_state[6])
 
             locs_to_send = set()
 
@@ -138,7 +141,7 @@ class EoSClient(BizHawkClient):
             for i in range(len(ctx.items_received) - received_index):
                 # get the item data from our item table
                 item_data = item_table_by_id[ctx.items_received[received_index + i].item]
-                if "Dungeons" in item_data.group:
+                if ("EarlyDungeons" in item_data.group) or ("Late Dungeons" in item_data.group):
                     item_memory_offset = item_data.memory_offset
                     # Since our open list is a byte array and our memory offset is bit based
                     # We have to grab our significant byte digits
@@ -154,7 +157,18 @@ class EoSClient(BizHawkClient):
                                  self.ram_mem_domain)],
                         )
                     await asyncio.sleep(0.1)
-                elif "Progressive" in item_data.group:
+                elif "Special Dungeons" in item_data.group:
+                    item_memory_offset = item_data.memory_offset
+                    if (special_episode_bitfield >> item_memory_offset & 1) == 0:
+                        # Since we are writing bytes, we need to add the bit to the specific byte
+                        write_byte = special_episode_bitfield | (1 << item_memory_offset)
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (special_episode_offset, int.to_bytes(write_byte),
+                                 self.ram_mem_domain)],
+                        )
+                elif "Generic" in item_data.group:
                     if item_data.name == "Bag Upgrade":
 
                         if ((performance_progress_bitfield[0] >> 2) & 1) == 0:

@@ -40,6 +40,17 @@ class StartWithBag(Toggle):
     """Start with bag? If False all bag upgrades will be randomized in the game"""
     display_name = "Start with Bag?"
 
+
+class DojoDungeons(Choice):
+    """How many dojo dungeons should be randomized?"""
+    display_name = "Dojo Dungeons Randomized"
+    option_all_open = 50
+    option_all_random = 0
+    option_start_with_3 = 0
+    option_start_with_1 = 0
+    default = 0
+
+
 @dataclass
 class EOSOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
