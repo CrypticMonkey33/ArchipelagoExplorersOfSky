@@ -4,6 +4,8 @@ import json
 import pkgutil
 import settings
 from typing import List, Dict, Set, Any
+
+import worlds.oot
 from .Items import EOS_item_table, EOSItem, item_table, item_frequencies, item_table_by_id, item_table_by_groups
 from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id
 from .Options import EOSOptions
@@ -65,9 +67,15 @@ class EOSWorld(World):
     disabled_locations: Set[str] = []
 
     def generate_early(self) -> None:
-        if self.options.bag_on_start:
+        if self.options.bag_on_start.value:
             item_name = "Bag Upgrade"
             self.multiworld.push_precollected(self.create_item(item_name))
+        if self.options.dojo_dungeons.value > 0:
+            dojo_amount = self.options.dojo_dungeons.value
+            dojo_table = item_table_by_groups["DojoDungeons"]
+            random_open_dungeons = self.random.sample(sorted(dojo_table), dojo_amount)
+            for item_name in random_open_dungeons:
+                self.multiworld.push_precollected(self.create_item(item_name))
 
     def create_regions(self) -> None:
         menu_region = Region("Menu", self.player, self.multiworld)
@@ -86,10 +94,11 @@ class EOSWorld(World):
         self.multiworld.regions.append(extra_items_region)
 
         for location in EOS_location_table:
-            if location.name == "Beach Cave" or location.name == "Progressive Bag loc 1":
+            if (location.name == "Beach Cave") or (location.name == "Progressive Bag loc 1"):
                 menu_region.locations.append(EOSLocation(self.player, location.name,
                                                          location.id, menu_region))
-            elif (location.classification == "EarlyDungeonComplete") or (location.classification == "SpecialDungeonComplete"):
+            elif ((location.classification == "EarlyDungeonComplete")
+                  or (location.classification == "SpecialDungeonComplete")):
                 early_dungeons_region.locations.append(EOSLocation(self.player, location.name,
                                                                    location.id, early_dungeons_region))
             elif location.classification == "LateDungeonComplete":
@@ -98,7 +107,8 @@ class EOSWorld(World):
             elif location.classification == "BossDungeonComplete":
                 end_game_region.locations.append(EOSLocation(self.player, location.name,
                                                              location.id, end_game_region))
-            elif (location.classification == "ProgressiveBagUpgrade") or (location.classification == "ShopItem"):
+            elif ((location.classification == "ProgressiveBagUpgrade") or (location.classification == "ShopItem")
+                  or (location.classification == "DojoDungeonComplete")):
                 extra_items_region.locations.append(EOSLocation(self.player, location.name,
                                                                 location.id, early_dungeons_region))
 
@@ -131,15 +141,19 @@ class EOSWorld(World):
             "Recruitment": self.options.recruit.value,
             "TeamFormation": self.options.team_form.value,
             "LevelScaling": self.options.level_scale.value,
-            "RecruitmentEvolution": self.options.recruit_evo.value
+            "RecruitmentEvolution": self.options.recruit_evo.value,
+            "DojoDungeonsRandomization": self.options.dojo_dungeons.value,
+            "ShardFragmentAmount": self.options.shard_fragments.value,
         }
 
     def create_items(self) -> None:
         required_items = []
         filler_items = []
         precollected = [item for item in item_table if item in self.multiworld.precollected_items.items()]
-        #if self.options.bag_on_start:
-        #    precollected += ["Bag Upgrade"]
+
+        for i in range(self.options.shard_fragments.value):
+            required_items.append(self.create_item("Relic Fragment Shard", ItemClassification.progression))
+
         for item_name in item_table:
             if item_name in item_frequencies:
                 freq = item_frequencies.get(item_name, 1)
@@ -147,15 +161,19 @@ class EOSWorld(World):
                     freq = max(freq - precollected.count(item_name), 0)
                 required_items += [self.create_item(item_name) for _ in range(freq)]
 
+            elif item_table[item_name].name in ["Victory", "Relic Fragment Shard"]:
+                continue
+
             elif item_table[item_name].classification == ItemClassification.filler:
                 filler_items.append(self.create_item(item_name, ItemClassification.filler))
+
             elif item_table[item_name].classification == ItemClassification.progression:
                 required_items.append(self.create_item(item_name, ItemClassification.progression))
-            elif item_table[item_name].name == "Victory":
-                continue
+
             else:
                 required_items.append(self.create_item(item_name, ItemClassification.useful))
-        remaining = len(EOS_location_table) - len(required_items) - 1 # subtracting 1 for the event check
+
+        remaining = len(EOS_location_table) - len(required_items) - 1  # subtracting 1 for the event check
 
         self.multiworld.itempool += required_items
         for i in range(5):

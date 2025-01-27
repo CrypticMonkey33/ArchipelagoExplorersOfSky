@@ -114,7 +114,19 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("SpecialDungeonComplete", 3,  "SE Limestone Cavern", 157,  155),   # 3 subareas
     LocationData("SpecialDungeonComplete", 7,  "SE Spring Cave", 164,  158),   # 7 subareas
     LocationData("LateDungeonComplete", 1, "Star Cave", 174,  174),
-    # ToDo Add Dojo dungeons as optional
+    # Dojo Dungeons
+    LocationData("DojoDungeonComplete", 1, "Dojo Normal/Fly Maze", 180, 180),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Dark/Fire Maze", 181, 181),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Rock/Water Maze", 182, 182),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Grass Maze", 183, 183),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Elec/Steel Maze", 184, 184),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Ice/Ground Maze", 185, 185),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Fight/Psych Maze", 186, 186),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Poison/Bug Maze", 187, 187),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Dragon Maze", 188, 188),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Ghost Maze", 189, 189),  # 7 subareas
+    #LocationData("DojoDungeonComplete", 1, "Dojo Final Maze", 191, 191),  # 7 subareas
+
     LocationData("Event", 0,  "Final Boss", 700, 0),
     # generic checks, right now just bag upgrades
     LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 1", 300, 0),

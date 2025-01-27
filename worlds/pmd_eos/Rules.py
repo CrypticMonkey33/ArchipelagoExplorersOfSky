@@ -18,17 +18,19 @@ def set_rules(world: "EOSWorld", excluded):
     dungeon_locations_behind_items(world, player)
 
     set_rule(world.multiworld.get_location("Final Boss", player),
-             lambda state: state.has("Temporal Tower", player))
+             lambda state: state.has("Temporal Tower", player) and ready_for_final_boss(state, player, world))
 
     set_rule(world.multiworld.get_entrance("Late Game Door", player),
              lambda state: ready_for_late_game(state, player))
-    set_rule(world.multiworld.get_entrance("Boss Door", player),
-             lambda state: ready_for_final_boss(state, player))
+    #set_rule(world.multiworld.get_entrance("Boss Door", player),
+    #         lambda state: ready_for_final_boss(state, player))
     set_rule(world.multiworld.get_location("Hidden Land", player),
-             lambda state: ready_for_final_boss(state, player))
+             lambda state: ready_for_final_boss(state, player, world))
 
     set_rule(world.multiworld.get_location("Temporal Tower", player),
-             lambda state: ready_for_final_boss(state, player) and state.has("Hidden Land", player))
+             lambda state: state.has("Temporal Tower", player))
+    set_rule(world.multiworld.get_location("Dark Crater", player),
+             lambda state: state.has("", player))
 
     set_rule(world.multiworld.get_location("Progressive Bag loc 2", player),
              lambda state: state.has("Drenched Bluff", player))
@@ -55,12 +57,12 @@ def set_rules(world: "EOSWorld", excluded):
     #                 lambda state: state.has(item_name, player))
 
 
-def ready_for_final_boss(state, player):
-    return state.has_group("LateDungeons", player, 10)
+def ready_for_final_boss(state, player, world):
+    return state.has("Relic Fragment Shard", player, world.options.shard_fragments.value )
 
 
 def ready_for_late_game(state, player):
-    return state.has_group("EarlyDungeons", player, 10)
+    return state.has_group("EarlyDungeons", player, 5)
 
 
 def special_episodes_rules(world, player):
@@ -158,10 +160,10 @@ def dungeon_locations_behind_items(world, player):
              lambda state: state.has("Treeshroud Forest", player))
     set_rule(world.multiworld.get_location("Brine Cave", player),
              lambda state: state.has("Brine Cave", player))
-    set_rule(world.multiworld.get_location("Hidden Land", player),
-             lambda state: state.has("Hidden Land", player))
-    set_rule(world.multiworld.get_location("Temporal Tower", player),
-             lambda state: state.has("Temporal Tower", player))
+    #set_rule(world.multiworld.get_location("Hidden Land", player),
+    #         lambda state: state.has("Hidden Land", player))
+    #set_rule(world.multiworld.get_location("Temporal Tower", player),
+    #         lambda state: state.has("Temporal Tower", player))
     set_rule(world.multiworld.get_location("Mystifying Forest", player),
              lambda state: state.has("Mystifying Forest", player))
     set_rule(world.multiworld.get_location("Blizzard Island", player),
@@ -244,5 +246,23 @@ def dungeon_locations_behind_items(world, player):
              lambda state: state.has("Inferno Cave", player))
     set_rule(world.multiworld.get_location("1st Station Pass", player),
              lambda state: state.has("1st Station Pass", player))
-
-
+    set_rule(world.multiworld.get_location("Dojo Normal/Fly Maze", player),
+             lambda state: state.has("Dojo Normal/Fly Maze", player))
+    set_rule(world.multiworld.get_location("Dojo Dark/Fire Maze", player),
+             lambda state: state.has("Dojo Dark/Fire Maze", player))
+    set_rule(world.multiworld.get_location("Dojo Rock/Water Maze", player),
+             lambda state: state.has("Dojo Rock/Water Maze", player))
+    set_rule(world.multiworld.get_location("Dojo Grass Maze", player),
+             lambda state: state.has("Dojo Grass Maze", player))
+    set_rule(world.multiworld.get_location("Dojo Elec/Steel Maze", player),
+             lambda state: state.has("Dojo Elec/Steel Maze", player))
+    set_rule(world.multiworld.get_location("Dojo Ice/Ground Maze", player),
+             lambda state: state.has("Dojo Ice/Ground Maze", player))
+    set_rule(world.multiworld.get_location("Dojo Fight/Psych Maze", player),
+             lambda state: state.has("Dojo Fight/Psych Maze", player))
+    set_rule(world.multiworld.get_location("Dojo Poison/Bug Maze", player),
+             lambda state: state.has("Dojo Poison/Bug Maze", player))
+    set_rule(world.multiworld.get_location("Dojo Dragon Maze", player),
+             lambda state: state.has("Dojo Dragon Maze", player))
+    set_rule(world.multiworld.get_location("Dojo Ghost Maze", player),
+             lambda state: state.has("Dojo Ghost Maze", player))

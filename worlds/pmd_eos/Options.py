@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from Options import DefaultOnToggle, Toggle, DeathLink, Choice, PerGameCommonOptions, OptionSet, StartInventoryPool
+from Options import DefaultOnToggle, Toggle, Choice, PerGameCommonOptions, StartInventoryPool, NamedRange
 
 
 class DungeonNameRandomizer(DefaultOnToggle):
@@ -14,6 +14,19 @@ class Goal(Choice):
     option_dialga = 50
     option_darkrai = 0
     default = 0
+
+
+class ShardFragments(NamedRange):
+    range_start = 4
+    range_end = 10
+    special_range_names = {
+        "easy": 4,
+        "normal": 6,
+        "hard": 8,
+        "extreme": 10
+    }
+    default = 6
+
 
 
 class Recruitment(DefaultOnToggle):
@@ -44,10 +57,10 @@ class StartWithBag(Toggle):
 class DojoDungeons(Choice):
     """How many dojo dungeons should be randomized?"""
     display_name = "Dojo Dungeons Randomized"
-    option_all_open = 50
+    option_all_open = 10
     option_all_random = 0
-    option_start_with_3 = 0
-    option_start_with_1 = 0
+    option_start_with_three = 3
+    option_start_with_one = 1
     default = 0
 
 
@@ -61,3 +74,5 @@ class EOSOptions(PerGameCommonOptions):
     team_form: FullTeamFormationControl
     level_scale: LevelScaling
     bag_on_start: StartWithBag
+    dojo_dungeons: DojoDungeons
+    shard_fragments: ShardFragments

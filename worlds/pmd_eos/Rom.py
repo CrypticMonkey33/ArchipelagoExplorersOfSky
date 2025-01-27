@@ -56,7 +56,8 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
         "recruiting": world.options.recruit.value,
         "recruits_evolution": world.options.recruit_evo.value,
         "team_formation": world.options.team_form.value,
-
+        "dojo_dungeons_rando": world.options.dojo_dungeons.value,
+        "relic_shard_fragments": world.options.shard_fragments.value,
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))

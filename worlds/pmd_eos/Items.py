@@ -18,7 +18,7 @@ class EOSItem(Item):
     game: str = "Pokemon Mystery Dungeon Explorers of Sky"
 
 
-def get_item_table_by_groups() -> Dict:
+def get_item_table_by_groups() -> Dict[str, set[str]]:
     #groups: Set[str] = set()
     new_dict: Dict[str, set[str]] = {}
     for item_name in item_table:
@@ -60,7 +60,7 @@ EOS_item_table = [
     ItemData("Deep Dusk Forest", 33, ItemClassification.progression, 33, ["Unique", "EarlyDungeons"], 0x21),
     ItemData("Treeshroud Forest", 34, ItemClassification.progression, 34, ["Unique", "EarlyDungeons"], 0x22),
     ItemData("Brine Cave", 35, ItemClassification.progression, 35, ["Unique", "EarlyDungeons"], 0x23),
-    ItemData("Hidden Land", 38, ItemClassification.progression, 38, ["Unique", "BossDungeons"], 0x26),
+    #ItemData("Hidden Land", 38, ItemClassification.progression, 38, ["Unique", "BossDungeons"], 0x26),
     ItemData("Temporal Tower", 41, ItemClassification.progression, 41, ["Unique", "BossDungeons"], 0x29),
     ItemData("Mystifying Forest", 44, ItemClassification.progression, 44, ["Unique", "LateDungeons"], 0x2C),
     ItemData("Blizzard Island", 46, ItemClassification.progression, 46, ["Unique", "LateDungeons"], 0x2E),
@@ -128,6 +128,19 @@ EOS_item_table = [
     ItemData("Sunflora SE", 158, ItemClassification.progression, 158, ["Unique", "Special Dungeons"], 0x2),
     # ItemData("Spring Cave", 158, ItemClassification.useful, 158, ["Unique", "Special Dungeons"], 0x9E),
     ItemData("Star Cave2", 174, ItemClassification.useful, 174, ["Unique", "LateDungeons"], 0xAE),
+    ItemData("Dojo Normal/Fly Maze", 180, ItemClassification.useful, 180, ["Unique", "DojoDungeons"], 0xB4),
+    ItemData("Dojo Dark/Fire Maze", 181, ItemClassification.useful, 181, ["Unique", "DojoDungeons"], 0xB5),
+    ItemData("Dojo Rock/Water Maze", 182, ItemClassification.useful, 182, ["Unique", "DojoDungeons"], 0xB6),
+    ItemData("Dojo Grass Maze", 183, ItemClassification.useful, 183, ["Unique", "DojoDungeons"], 0xB7),
+    ItemData("Dojo Elec/Steel Maze", 184, ItemClassification.useful, 184, ["Unique", "DojoDungeons"], 0xB8),
+    ItemData("Dojo Ice/Ground Maze", 185, ItemClassification.useful, 185, ["Unique", "DojoDungeons"], 0xB9),
+    ItemData("Dojo Fight/Psych Maze", 186, ItemClassification.useful, 186, ["Unique", "DojoDungeons"], 0xBA),
+    ItemData("Dojo Poison/Bug Maze", 187, ItemClassification.useful, 187, ["Unique", "DojoDungeons"], 0xBB),
+    ItemData("Dojo Dragon Maze", 188, ItemClassification.useful, 188, ["Unique", "DojoDungeons"], 0xBC),
+    ItemData("Dojo Ghost Maze", 189, ItemClassification.useful, 189, ["Unique", "DojoDungeons"], 0xBD),
+    #ItemData("DojoDungeonComplete", 191, ItemClassification.useful, 191, ["Unique", "DojoDungeons"], 0xBF),  # 7 subareas
+    ItemData("Relic Fragment Shard", 200, ItemClassification.progression, 200, ["Macguffin"], 0x00),
+
     ItemData("Victory", 300, ItemClassification.progression, 0, [], 0x00),
     ItemData("Bag Upgrade", 500, ItemClassification.useful, 0, ["ProgressiveBag", "Generic"], 0x00),
     ItemData("FillerItem", 600, ItemClassification.filler, 0, ["Filler"], 0x00),
