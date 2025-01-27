@@ -17,6 +17,8 @@ class Goal(Choice):
 
 
 class ShardFragments(NamedRange):
+    """ How many Relic Shard Fragments should be in the game
+    (Macguffins) that you must get to unlock Hidden Land"""
     range_start = 4
     range_end = 10
     special_range_names = {
@@ -26,7 +28,6 @@ class ShardFragments(NamedRange):
         "extreme": 10
     }
     default = 6
-
 
 
 class Recruitment(DefaultOnToggle):

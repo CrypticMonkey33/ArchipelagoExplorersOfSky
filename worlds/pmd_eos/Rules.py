@@ -30,7 +30,8 @@ def set_rules(world: "EOSWorld", excluded):
     set_rule(world.multiworld.get_location("Temporal Tower", player),
              lambda state: state.has("Temporal Tower", player))
     set_rule(world.multiworld.get_location("Dark Crater", player),
-             lambda state: state.has("", player))
+             lambda state: state.has("Dark Crater", player) and state.has("Temporal Tower", player)
+             and ready_for_final_boss(state, player, world))
 
     set_rule(world.multiworld.get_location("Progressive Bag loc 2", player),
              lambda state: state.has("Drenched Bluff", player))

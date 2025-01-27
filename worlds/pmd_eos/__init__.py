@@ -63,7 +63,7 @@ class EOSWorld(World):
 
     required_client_version = (0, 5, 1)
 
-    item_name_groups= item_table_by_groups
+    item_name_groups = item_table_by_groups
     disabled_locations: Set[str] = []
 
     def generate_early(self) -> None:

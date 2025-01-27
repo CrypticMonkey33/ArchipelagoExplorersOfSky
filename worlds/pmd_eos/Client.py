@@ -31,6 +31,8 @@ class EoSClient(BizHawkClient):
     ram_mem_domain = "Main RAM"
     dialga_complete = False
     bag_given = False
+    macguffins_collected = 0
+    macguffin_unlock_amount = 6
 
     def __init__(self) -> None:
         super().__init__()
@@ -141,7 +143,8 @@ class EoSClient(BizHawkClient):
             for i in range(len(ctx.items_received) - received_index):
                 # get the item data from our item table
                 item_data = item_table_by_id[ctx.items_received[received_index + i].item]
-                if ("EarlyDungeons" in item_data.group) or ("Late Dungeons" in item_data.group):
+                if (("EarlyDungeons" in item_data.group) or ("Late Dungeons" in item_data.group)
+                        or ("Dojo Dungeons" in item_data.group)):
                     item_memory_offset = item_data.memory_offset
                     # Since our open list is a byte array and our memory offset is bit based
                     # We have to grab our significant byte digits
@@ -190,6 +193,23 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
+                elif "Macguffin" in item_data.group:
+                    self.macguffins_collected += 1
+                    if self.macguffins_collected >= self.macguffin_unlock_amount:
+                        item_memory_offset = 0x26  # the location in memory of Hidden Land
+                        sig_digit = item_memory_offset // 8
+                        non_sig_digit = item_memory_offset % 8
+                        if ((open_list[sig_digit] >> non_sig_digit) & 1) == 0:
+                            # Since we are writing bytes, we need to add the bit to the specific byte
+                            write_byte = open_list[sig_digit] | (1 << non_sig_digit)
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
+                                     self.ram_mem_domain)],
+                            )
+                        await asyncio.sleep(0.1)
+
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
