@@ -41,7 +41,7 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
 
 
 def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
-    ov36_mem_loc = 0x295400
+    ov36_mem_loc = 0x295C00 #find_ov36_mem_location()  # 0x295C00
     seed_offset = 0x37020
     player_name_offset = 0x36F80
     recruitment_offset = 0x3702C
@@ -62,8 +62,13 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
 
+    player_name_changed = (world.multiworld.player_name[world.player]).translate("[]~\\")
+
+    player_name_changed = player_name_changed.encode("ascii", "xmlcharrefreplace")
+
     # Bake player name into ROM
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+player_name_offset, world.multiworld.player_name[world.player].encode("UTF-8"))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+player_name_offset,
+                      player_name_changed)
 
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
@@ -81,4 +86,15 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
         patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + level_scaling_offset, int.to_bytes(0x1))
 
     patch.write_file("token_data.bin", patch.get_token_binary())
+
+
+def find_ov36_mem_location() -> int:
+    rom = get_base_rom_as_bytes()
+    for byte_i, byte in enumerate(rom):
+
+        hex_search_value = 0x0DF0ADBA
+        hex_searched = int.from_bytes(rom[byte_i:(byte_i+3)])
+        if hex_searched == hex_search_value:
+            return byte_i
+
 

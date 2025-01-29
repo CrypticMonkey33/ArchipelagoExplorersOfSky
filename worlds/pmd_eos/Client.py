@@ -45,6 +45,15 @@ class EoSClient(BizHawkClient):
         self.room = 0
         self.local_events = []
 
+    async def update_received_items(self, ctx: "BizHawkClientContext", received_items_offset, received_index, i) -> None:
+        await bizhawk.write(
+            ctx.bizhawk_ctx,
+            [
+                (received_items_offset, [(received_index + i + 1) // 0x100, (received_index + i + 1) % 0x100],
+                 self.ram_mem_domain),
+            ]
+        )
+
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
 
         try:
@@ -103,14 +112,15 @@ class EoSClient(BizHawkClient):
                     raise bizhawk.ConnectorError("Loaded ROM is for Incorrect lobby.")
                 self.seed_verify = True
 
-            open_list_total_offset: int = await (self.load_script_variable_raw(79, ctx))
-            conquest_list_total_offset: int = await (self.load_script_variable_raw(82, ctx))
-            scenario_balance_offset = await (self.load_script_variable_raw(19, ctx))
-            performance_progress_offset = await (self.load_script_variable_raw(78, ctx))
-            generic_checks_offset = await (self.load_script_variable_raw(5, ctx))
-            received_items_offset = await (self.load_script_variable_raw(16, ctx))
-            scenario_main_offset = await (self.load_script_variable_raw(3, ctx))
-            special_episode_offset = await (self.load_script_variable_raw(75,  ctx))
+            open_list_total_offset: int = await (self.load_script_variable_raw(0x4F, ctx))
+            conquest_list_total_offset: int = await (self.load_script_variable_raw(0x52, ctx))
+            scenario_balance_offset = await (self.load_script_variable_raw(0x13, ctx))
+            performance_progress_offset = await (self.load_script_variable_raw(0x4E, ctx))
+            scenario_subx_offset = await (self.load_script_variable_raw(0x5, ctx))
+            received_items_offset = await (self.load_script_variable_raw(0x16, ctx))
+            scenario_main_offset = await (self.load_script_variable_raw(0x3, ctx))
+            scenario_main_bitfield_offset = await (self.load_script_variable_raw(0x11, ctx))
+            special_episode_offset = await (self.load_script_variable_raw(0x4B,  ctx))
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
@@ -118,33 +128,35 @@ class EoSClient(BizHawkClient):
                     (conquest_list_total_offset, 24, self.ram_mem_domain),  # conquest list in Script_Vars_Values
                     (open_list_total_offset, 24, self.ram_mem_domain),  # open list in Script_Vars_Values
                     (scenario_balance_offset, 1, self.ram_mem_domain),
-                    (performance_progress_offset, 1, self.ram_mem_domain),
-                    (generic_checks_offset, 16, self.ram_mem_domain),
+                    (performance_progress_offset, 5, self.ram_mem_domain),
+                    (scenario_subx_offset, 16, self.ram_mem_domain),
                     (received_items_offset, 2, self.ram_mem_domain),
                     (scenario_main_offset, 1, self.ram_mem_domain),
                     (special_episode_offset, 1, self.ram_mem_domain),
+                    (scenario_main_bitfield_offset, 1, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
-            if int.from_bytes(read_state[6]) == 0:
+            scenario_main_list = read_state[6]
+            if int.from_bytes(scenario_main_list) == 0:
                 return
             # read the state of the dungeon lists
             open_list = read_state[1]
             conquest_list = read_state[0]
             scenario_balance_byte = read_state[2]
             performance_progress_bitfield = read_state[3]
-            generic_checks_bitfield = read_state[4]
+            scenario_subx_bitfield = read_state[4]
             received_index = int.from_bytes(read_state[5])
-            special_episode_bitfield = int.from_bytes(read_state[6])
-
+            special_episode_bitfield = int.from_bytes(read_state[7])
+            scenario_main_bitfield_list = read_state[8]
             locs_to_send = set()
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received) - received_index):
                 # get the item data from our item table
                 item_data = item_table_by_id[ctx.items_received[received_index + i].item]
-                if (("EarlyDungeons" in item_data.group) or ("Late Dungeons" in item_data.group)
-                        or ("Dojo Dungeons" in item_data.group)):
+                if (("EarlyDungeons" in item_data.group) or ("LateDungeons" in item_data.group)
+                        or ("Dojo Dungeons" in item_data.group) or ("BossDungeons" in item_data.group)):
                     item_memory_offset = item_data.memory_offset
                     # Since our open list is a byte array and our memory offset is bit based
                     # We have to grab our significant byte digits
@@ -159,6 +171,7 @@ class EoSClient(BizHawkClient):
                                 (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
                                  self.ram_mem_domain)],
                         )
+                    await self.update_received_items(ctx, received_items_offset, received_index, i)
                     await asyncio.sleep(0.1)
                 elif "Special Dungeons" in item_data.group:
                     item_memory_offset = item_data.memory_offset
@@ -171,11 +184,12 @@ class EoSClient(BizHawkClient):
                                 (special_episode_offset, int.to_bytes(write_byte),
                                  self.ram_mem_domain)],
                         )
+                    await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Generic" in item_data.group:
                     if item_data.name == "Bag Upgrade":
 
                         if ((performance_progress_bitfield[0] >> 2) & 1) == 0:
-                            write_byte = int.from_bytes(performance_progress_bitfield) + (0x1 << 2)
+                            write_byte = performance_progress_bitfield[0] + (0x1 << 2)
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [
@@ -193,6 +207,7 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
+                        await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Macguffin" in item_data.group:
                     self.macguffins_collected += 1
                     if self.macguffins_collected >= self.macguffin_unlock_amount:
@@ -208,15 +223,43 @@ class EoSClient(BizHawkClient):
                                     (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
                                      self.ram_mem_domain)],
                             )
-                        await asyncio.sleep(0.1)
 
-                await bizhawk.write(
-                    ctx.bizhawk_ctx,
-                    [
-                        (received_items_offset, [(received_index + i + 1) // 0x100, (received_index + i + 1) % 0x100],
-                         self.ram_mem_domain),
-                    ]
-                )
+                        await asyncio.sleep(0.1)
+                    await self.update_received_items(ctx, received_items_offset, received_index, i)
+                elif "Trap" in item_data.group:
+                    if item_data.name == "Team Name Trap":
+                        if ((performance_progress_bitfield[4] >> 0) & 1) == 0:
+                            write_byte = performance_progress_bitfield[4] + 0x1
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (performance_progress_offset + 0x4, int.to_bytes(write_byte),
+                                     self.ram_mem_domain),
+                                ]
+                            )
+                        await self.update_received_items(ctx, received_items_offset, received_index, i)
+                    elif item_data.name == "Confusion Trap":
+                        if ((performance_progress_bitfield[4] >> 1) & 1) == 0:
+                            write_byte = performance_progress_bitfield[4] + (0x1 << 1)
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (performance_progress_offset + 0x4, int.to_bytes(write_byte),
+                                     self.ram_mem_domain),
+                                ]
+                            )
+                        await self.update_received_items(ctx, received_items_offset, received_index, i)
+                    elif item_data.name == "Nap Time!":
+                        if ((scenario_main_bitfield_list[0] >> 3) & 1) == 0:
+                            write_byte = scenario_main_bitfield_list[0] + (0x1 << 3)
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (scenario_main_bitfield_offset, int.to_bytes(write_byte),
+                                     self.ram_mem_domain),
+                                ]
+                            )
+                        await self.update_received_items(ctx, received_items_offset, received_index, i)
 
             # Check for set location flags.
             for byte_i, byte in enumerate(bytearray(conquest_list)):
@@ -232,13 +275,13 @@ class EoSClient(BizHawkClient):
                         if bit_number_dung in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
 
-            for byte_m, byte in enumerate(bytearray(generic_checks_bitfield)):
+            for byte_m, byte in enumerate(bytearray(scenario_subx_bitfield)):
                 for k in range(8):
                     if k in self.checked_general_flags[byte_m]:
                         continue
                     if ((byte >> k) & 1) == 1:
                         self.checked_general_flags[byte_m] += [k]
-                        bit_number_gen = (byte_m * 8) + k + 200
+                        bit_number_gen = (byte_m * 8) + k + 300
                         if bit_number_gen in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_gen].id)
 
@@ -264,3 +307,4 @@ class EoSClient(BizHawkClient):
         var_mem_offset = await bizhawk.read(ctx.bizhawk_ctx,
                                             [((script_vars + (var_id << 0x4) + 0x4), 2, self.ram_mem_domain)])
         return script_vars_values + int.from_bytes(var_mem_offset[0], "little")
+

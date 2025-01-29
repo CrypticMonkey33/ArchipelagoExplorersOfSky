@@ -134,16 +134,25 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 3", 302, 0),
     LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 4", 303, 0),
     LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 5", 304, 0),
-    LocationData("ShopItem", 0, "Shop Item 1", 320, 0),
-    LocationData("ShopItem", 0, "Shop Item 2", 321, 0),
-    LocationData("ShopItem", 0, "Shop Item 3", 322, 0),
-    LocationData("ShopItem", 0, "Shop Item 4", 323, 0),
-    LocationData("ShopItem", 0, "Shop Item 5", 324, 0),
-    LocationData("ShopItem", 0, "Shop Item 6", 325, 0),
-    LocationData("ShopItem", 0, "Shop Item 7", 326, 0),
-    LocationData("ShopItem", 0, "Shop Item 8", 327, 0),
-    LocationData("ShopItem", 0, "Shop Item 9", 328, 0),
-    LocationData("ShopItem", 0, "Shop Item 10", 329, 0),
+
+    LocationData("SEDungeonUnlock", 0, "Bidoof SE Location", 305, 0),
+    LocationData("SEDungeonUnlock", 0, "Igglybuff SE Location", 306, 0),
+    LocationData("SEDungeonUnlock", 0, "Sunflora SE Location", 307, 0),
+    LocationData("SEDungeonUnlock", 0, "Team Charm SE Location", 308, 0),
+    LocationData("SEDungeonUnlock", 0, "Grovyle + DusknoirSE Location", 309, 0),
+
+    LocationData("ShopItem", 0, "Shop Item 1", 310, 0),
+    LocationData("ShopItem", 0, "Shop Item 2", 311, 0),
+    LocationData("ShopItem", 0, "Shop Item 3", 312, 0),
+    LocationData("ShopItem", 0, "Shop Item 4", 313, 0),
+    LocationData("ShopItem", 0, "Shop Item 5", 314, 0),
+    LocationData("ShopItem", 0, "Shop Item 6", 315, 0),
+    LocationData("ShopItem", 0, "Shop Item 7", 316, 0),
+    LocationData("ShopItem", 0, "Shop Item 8", 317, 0),
+    LocationData("ShopItem", 0, "Shop Item 9", 318, 0),
+    LocationData("ShopItem", 0, "Shop Item 10", 319, 0),
+    LocationData("SEDungeonUnlock", 0, "Team Name", 427, 0),
+
 
 ]
 

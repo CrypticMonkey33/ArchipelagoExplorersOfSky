@@ -138,7 +138,7 @@ EOS_item_table = [
     ItemData("Dojo Poison/Bug Maze", 187, ItemClassification.progression, 187, ["Unique", "Dojo Dungeons"], 0xBB),
     ItemData("Dojo Dragon Maze", 188, ItemClassification.progression, 188, ["Unique", "Dojo Dungeons"], 0xBC),
     ItemData("Dojo Ghost Maze", 189, ItemClassification.progression, 189, ["Unique", "Dojo Dungeons"], 0xBD),
-    #ItemData("DojoDungeonComplete", 191, ItemClassification.progression, 191, ["Unique", "Dojo Dungeons"], 0xBF),  # 7 subareas
+    # ItemData("Dojo Final Maze", 191, ItemClassification.progression, 191, ["Unique", "Dojo Dungeons"], 0xBF),  # 7 subareas
     ItemData("Relic Fragment Shard", 200, ItemClassification.progression, 200, ["Macguffin"], 0x00),
 
     ItemData("Victory", 300, ItemClassification.progression, 0, [], 0x00),
@@ -153,6 +153,10 @@ EOS_item_table = [
     ItemData("FillerItem8", 607, ItemClassification.filler, 0, ["Filler"], 0x00),
     ItemData("FillerItem9", 608, ItemClassification.filler, 0, ["Filler"], 0x00),
     ItemData("FillerItem10", 609, ItemClassification.filler, 0, ["Filler"], 0x00),
+
+    ItemData("Team Name Trap", 700, ItemClassification.trap, 0, ["Trap"], 0x0),
+    ItemData("Confusion Trap", 701, ItemClassification.trap, 0, ["Trap"], 0x0),
+    ItemData("Nap Time!", 702, ItemClassification.trap, 0, ["Trap"], 0x0),
 
 ]
 

@@ -108,7 +108,7 @@ class EOSWorld(World):
                 end_game_region.locations.append(EOSLocation(self.player, location.name,
                                                              location.id, end_game_region))
             elif ((location.classification == "ProgressiveBagUpgrade") or (location.classification == "ShopItem")
-                  or (location.classification == "DojoDungeonComplete")):
+                  or (location.classification == "DojoDungeonComplete") or (location.classification == "SEDungeonUnlock")):
                 extra_items_region.locations.append(EOSLocation(self.player, location.name,
                                                                 location.id, early_dungeons_region))
 
@@ -166,6 +166,9 @@ class EOSWorld(World):
 
             elif item_table[item_name].classification == ItemClassification.filler:
                 filler_items.append(self.create_item(item_name, ItemClassification.filler))
+
+            elif item_table[item_name].classification == ItemClassification.trap:
+                filler_items.append(self.create_item(item_name, ItemClassification.trap))
 
             elif item_table[item_name].classification == ItemClassification.progression:
                 required_items.append(self.create_item(item_name, ItemClassification.progression))
