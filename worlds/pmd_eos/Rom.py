@@ -41,7 +41,7 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
 
 
 def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
-    ov36_mem_loc = 0x295C00 #find_ov36_mem_location()  # 0x295C00
+    ov36_mem_loc = 0x296000 #find_ov36_mem_location()
     seed_offset = 0x37020
     player_name_offset = 0x36F80
     recruitment_offset = 0x3702C

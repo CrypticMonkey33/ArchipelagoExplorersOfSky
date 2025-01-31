@@ -23,10 +23,9 @@ def set_rules(world: "EOSWorld", excluded):
                  lambda state: state.has("Dark Crater", player))
     elif world.options.goal.value == 1:
         set_rule(world.multiworld.get_location("Final Boss", player),
-                 lambda state: state.has("Temporal Tower", player) and ready_for_darkrai(state, player, world)
-                               and state.has("Dark Crater", player))
+                 lambda state: state.has("Temporal Tower", player) and ready_for_darkrai(state, player, world))
         set_rule(world.multiworld.get_location("Dark Crater", player),
-                 lambda state: state.has("Dark Crater", player) and state.has("Temporal Tower", player)
+                 lambda state: state.has("Temporal Tower", player)
                                and ready_for_darkrai(state, player, world))
 
     set_rule(world.multiworld.get_entrance("Late Game Door", player),

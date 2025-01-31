@@ -72,8 +72,8 @@ class EOSWorld(World):
             self.multiworld.push_precollected(self.create_item(item_name))
         if self.options.dojo_dungeons.value > 0:
             dojo_amount = self.options.dojo_dungeons.value
-            dojo_table = item_table_by_groups["DojoDungeons"]
-            random_open_dungeons = self.random.sample(sorted(dojo_table), dojo_amount)
+            dojo_table = item_table_by_groups["Dojo Dungeons"]
+            random_open_dungeons = self.random.sample(sorted(dojo_table), k=dojo_amount)
             for item_name in random_open_dungeons:
                 self.multiworld.push_precollected(self.create_item(item_name))
 
@@ -150,8 +150,8 @@ class EOSWorld(World):
     def create_items(self) -> None:
         required_items = []
         filler_items = []
-        precollected = [item for item in item_table if item in self.multiworld.precollected_items.items()]
 
+        precollected = [item.name for item in self.multiworld.precollected_items[self.player]]
         for i in range(self.options.shard_fragments.value):
             required_items.append(self.create_item("Relic Fragment Shard", ItemClassification.progression))
 
@@ -159,10 +159,14 @@ class EOSWorld(World):
             required_items.append(self.create_item("Cresselia Feather", ItemClassification.progression))
 
         for item_name in item_table:
-            if item_name in item_frequencies:
-                freq = item_frequencies.get(item_name, 1)
-                if item_name in precollected:
-                    freq = max(freq - precollected.count(item_name), 0)
+            if (item_name == "Dark Crater") and (self.options.goal.value == 1):
+                continue
+            if (item_name in precollected) or (item_name in item_frequencies):
+                freq = 0
+                if item_name in item_frequencies:
+                    freq = item_frequencies.get(item_name, 1)
+
+                freq = max(freq - precollected.count(item_name), 0)
                 required_items += [self.create_item(item_name) for _ in range(freq)]
 
             elif item_table[item_name].name in ["Victory", "Relic Fragment Shard", "Cresselia Feather"]:
