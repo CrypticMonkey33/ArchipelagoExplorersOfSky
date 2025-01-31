@@ -11,8 +11,8 @@ class DungeonNameRandomizer(DefaultOnToggle):
 class Goal(Choice):
     """Change the desired goal to complete the game (Currently only Dialga is implemented)"""
     display_name = "Goal"
-    option_dialga = 50
-    option_darkrai = 0
+    option_dialga = 0
+    option_darkrai = 1
     default = 0
 
 

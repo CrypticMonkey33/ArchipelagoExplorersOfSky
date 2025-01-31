@@ -29,10 +29,12 @@ class EoSClient(BizHawkClient):
     checked_dungeon_flags: Dict[int, list] = {}
     checked_general_flags: Dict[int, list] = {}
     ram_mem_domain = "Main RAM"
-    dialga_complete = False
+    goal_complete = False
     bag_given = False
     macguffins_collected = 0
-    macguffin_unlock_amount = 6
+    macguffin_unlock_amount = 0
+    cresselia_feather_acquired = False
+    dialga_complete = False
 
     def __init__(self) -> None:
         super().__init__()
@@ -76,6 +78,7 @@ class EoSClient(BizHawkClient):
         name_bytes = (await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE000, 16, self.ram_mem_domain)]))[0]
         name = bytes([byte for byte in name_bytes if byte != 0]).decode("UTF-8")
         self.player_name = name
+        #self.macguffin_unlock_amount = ctx.slot_data["ShardFragmentAmount"]
 
         for i in range(25):
             self.checked_dungeon_flags[i] = []
@@ -111,6 +114,9 @@ class EoSClient(BizHawkClient):
                     )
                     raise bizhawk.ConnectorError("Loaded ROM is for Incorrect lobby.")
                 self.seed_verify = True
+
+            if self.macguffin_unlock_amount == 0:
+                self.macguffin_unlock_amount = ctx.slot_data["ShardFragmentAmount"]
 
             open_list_total_offset: int = await (self.load_script_variable_raw(0x4F, ctx))
             conquest_list_total_offset: int = await (self.load_script_variable_raw(0x52, ctx))
@@ -209,23 +215,28 @@ class EoSClient(BizHawkClient):
                             )
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Macguffin" in item_data.group:
-                    self.macguffins_collected += 1
-                    if self.macguffins_collected >= self.macguffin_unlock_amount:
-                        item_memory_offset = 0x26  # the location in memory of Hidden Land
-                        sig_digit = item_memory_offset // 8
-                        non_sig_digit = item_memory_offset % 8
-                        if ((open_list[sig_digit] >> non_sig_digit) & 1) == 0:
-                            # Since we are writing bytes, we need to add the bit to the specific byte
-                            write_byte = open_list[sig_digit] | (1 << non_sig_digit)
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
-                                     self.ram_mem_domain)],
-                            )
+                    if item_data.name == "Relic Fragment Shard":
+                        self.macguffins_collected += 1
+                        if self.macguffins_collected >= self.macguffin_unlock_amount:
+                            item_memory_offset = 0x26  # the location in memory of Hidden Land
+                            sig_digit = item_memory_offset // 8
+                            non_sig_digit = item_memory_offset % 8
+                            if ((open_list[sig_digit] >> non_sig_digit) & 1) == 0:
+                                # Since we are writing bytes, we need to add the bit to the specific byte
+                                write_byte = open_list[sig_digit] | (1 << non_sig_digit)
+                                await bizhawk.write(
+                                    ctx.bizhawk_ctx,
+                                    [
+                                        (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
+                                         self.ram_mem_domain)],
+                                )
 
-                        await asyncio.sleep(0.1)
+                            await asyncio.sleep(0.1)
+                    elif item_data.name == "Cresselia Feather":
+                        self.cresselia_feather_acquired = True
+
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
+
                 elif "Trap" in item_data.group:
                     if item_data.name == "Team Name Trap":
                         if ((performance_progress_bitfield[4] >> 0) & 1) == 0:
@@ -270,8 +281,14 @@ class EoSClient(BizHawkClient):
                         self.checked_dungeon_flags[byte_i] += [j]
                         # Note to self, change the Location table to be a Dictionary, so I don't have to loop
                         bit_number_dung = (byte_i * 8) + j
-                        if bit_number_dung == 43:
-                            dialga_complete = True
+                        if (ctx.slot_data["Goal"] == 0) and (bit_number_dung == 43):
+                            self.goal_complete = True
+                            locs_to_send.add(700)
+                        elif (ctx.slot_data["Goal"] == 1) and (bit_number_dung == 67):
+                            self.goal_complete = True
+                            locs_to_send.add(700)
+                        elif (ctx.slot_data["Goal"] == 1) and (bit_number_dung == 43):
+                            self.dialga_complete = True
                         if bit_number_dung in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
 
@@ -292,7 +309,21 @@ class EoSClient(BizHawkClient):
                 if locs_to_send is not None:
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
 
-            if not ctx.finished_game and self.dialga_complete:
+            if self.cresselia_feather_acquired and self.dialga_complete:
+                item_memory_offset = 0x67  # the location in memory of Dark Crater
+                sig_digit = item_memory_offset // 8
+                non_sig_digit = item_memory_offset % 8
+                if ((open_list[sig_digit] >> non_sig_digit) & 1) == 0:
+                    # Since we are writing bytes, we need to add the bit to the specific byte
+                    write_byte = open_list[sig_digit] | (1 << non_sig_digit)
+                    await bizhawk.write(
+                        ctx.bizhawk_ctx,
+                        [
+                            (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
+                             self.ram_mem_domain)],
+                    )
+
+            if not ctx.finished_game and self.goal_complete:
                 await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 
         except bizhawk.RequestFailedError:

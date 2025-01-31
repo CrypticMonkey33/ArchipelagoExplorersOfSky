@@ -51,6 +51,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
     options_dict = {
         "seed": world.multiworld.seed,
         "player": world.player,
+        "goal": world.options.goal.value,
         "bag_start": world.options.bag_on_start.value,
         "level_scaling": world.options.level_scale.value,
         "recruiting": world.options.recruit.value,

@@ -16,23 +16,31 @@ def set_rules(world: "EOSWorld", excluded):
     special_episodes_rules(world, player)
 
     dungeon_locations_behind_items(world, player)
-
-    set_rule(world.multiworld.get_location("Final Boss", player),
-             lambda state: state.has("Temporal Tower", player) and ready_for_final_boss(state, player, world))
+    if world.options.goal.value == 0:
+        set_rule(world.multiworld.get_location("Final Boss", player),
+                 lambda state: state.has("Temporal Tower", player) and ready_for_dialga(state, player, world))
+        set_rule(world.multiworld.get_location("Dark Crater", player),
+                 lambda state: state.has("Dark Crater", player))
+    elif world.options.goal.value == 1:
+        set_rule(world.multiworld.get_location("Final Boss", player),
+                 lambda state: state.has("Temporal Tower", player) and ready_for_darkrai(state, player, world)
+                               and state.has("Dark Crater", player))
+        set_rule(world.multiworld.get_location("Dark Crater", player),
+                 lambda state: state.has("Dark Crater", player) and state.has("Temporal Tower", player)
+                               and ready_for_darkrai(state, player, world))
 
     set_rule(world.multiworld.get_entrance("Late Game Door", player),
              lambda state: ready_for_late_game(state, player))
     #set_rule(world.multiworld.get_entrance("Boss Door", player),
     #         lambda state: ready_for_final_boss(state, player))
     set_rule(world.multiworld.get_location("Hidden Land", player),
-             lambda state: ready_for_final_boss(state, player, world))
+             lambda state: ready_for_dialga(state, player, world))
 
     set_rule(world.multiworld.get_location("Temporal Tower", player),
-             lambda state: state.has("Temporal Tower", player))
-    set_rule(world.multiworld.get_location("Dark Crater", player),
-             lambda state: state.has("Dark Crater", player) and state.has("Temporal Tower", player)
-             and ready_for_final_boss(state, player, world))
+             lambda state: state.has("Temporal Tower", player) and ready_for_dialga(state, player, world))
 
+    set_rule(world.multiworld.get_location("The Nightmare", player),
+             lambda state: state.can_reach_location("Mt. Bristle", player) and state.has("The Nightmare", player))
     set_rule(world.multiworld.get_location("Progressive Bag loc 2", player),
              lambda state: state.has("Drenched Bluff", player))
     set_rule(world.multiworld.get_location("Progressive Bag loc 3", player),
@@ -58,8 +66,8 @@ def set_rules(world: "EOSWorld", excluded):
     #                 lambda state: state.has(item_name, player))
 
 
-def ready_for_final_boss(state, player, world):
-    return state.has("Relic Fragment Shard", player, world.options.shard_fragments.value )
+def ready_for_dialga(state, player, world):
+    return state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
 
 
 def ready_for_late_game(state, player):
@@ -112,6 +120,11 @@ def special_episodes_rules(world, player):
     # Sunflora Special Episode Checks
     set_rule(world.multiworld.get_location("SE Spring Cave", player),
              lambda state: state.has("Sunflora SE", player))
+
+
+def ready_for_darkrai(state, player, world):
+    return (state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
+            and state.has("Cresselia Feather", player))
 
 
 def dungeon_locations_behind_items(world, player):
@@ -177,12 +190,12 @@ def dungeon_locations_behind_items(world, player):
              lambda state: state.has("Miracle Sea", player))
     set_rule(world.multiworld.get_location("Mt. Travail", player),
              lambda state: state.has("Mt. Travail", player))
-    set_rule(world.multiworld.get_location("The Nightmare", player),
-             lambda state: state.has("The Nightmare", player))
+    #set_rule(world.multiworld.get_location("The Nightmare", player),
+    #         lambda state: state.has("The Nightmare", player))
     set_rule(world.multiworld.get_location("Spacial Rift", player),
              lambda state: state.has("Spacial Rift", player))
-    set_rule(world.multiworld.get_location("Dark Crater", player),
-             lambda state: state.has("Dark Crater", player))
+    #set_rule(world.multiworld.get_location("Dark Crater", player),
+    #         lambda state: state.has("Dark Crater", player))
     set_rule(world.multiworld.get_location("Concealed Ruins", player),
              lambda state: state.has("Concealed Ruins", player))
     set_rule(world.multiworld.get_location("Marine Resort", player),

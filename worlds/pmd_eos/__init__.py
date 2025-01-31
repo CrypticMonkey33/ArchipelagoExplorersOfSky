@@ -9,7 +9,7 @@ import worlds.oot
 from .Items import EOS_item_table, EOSItem, item_table, item_frequencies, item_table_by_id, item_table_by_groups
 from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id
 from .Options import EOSOptions
-from .Rules import set_rules, ready_for_late_game, ready_for_final_boss
+from .Rules import set_rules, ready_for_late_game, ready_for_dialga
 from .Regions import EoS_regions
 from BaseClasses import Tutorial, ItemClassification, Region, Location
 from worlds.AutoWorld import World, WebWorld
@@ -137,6 +137,7 @@ class EOSWorld(World):
 
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
+            "Goal": self.options.goal.value,
             "BagOnStart": self.options.bag_on_start.value,
             "Recruitment": self.options.recruit.value,
             "TeamFormation": self.options.team_form.value,
@@ -154,6 +155,9 @@ class EOSWorld(World):
         for i in range(self.options.shard_fragments.value):
             required_items.append(self.create_item("Relic Fragment Shard", ItemClassification.progression))
 
+        if self.options.goal == 1:
+            required_items.append(self.create_item("Cresselia Feather", ItemClassification.progression))
+
         for item_name in item_table:
             if item_name in item_frequencies:
                 freq = item_frequencies.get(item_name, 1)
@@ -161,7 +165,7 @@ class EOSWorld(World):
                     freq = max(freq - precollected.count(item_name), 0)
                 required_items += [self.create_item(item_name) for _ in range(freq)]
 
-            elif item_table[item_name].name in ["Victory", "Relic Fragment Shard"]:
+            elif item_table[item_name].name in ["Victory", "Relic Fragment Shard", "Cresselia Feather"]:
                 continue
 
             elif item_table[item_name].classification == ItemClassification.filler:
