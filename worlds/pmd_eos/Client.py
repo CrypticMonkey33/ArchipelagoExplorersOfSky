@@ -368,12 +368,13 @@ class EoSClient(BizHawkClient):
                         loot_table = lootbox_table[item_data.name]
 
                         items_in_box = [item for item in loot_table]
-                        write_byte3 = loot_table[self.random.choice(seq=items_in_box)]
+                        loot_chosen = loot_table[self.random.choice(seq=items_in_box)]
+                        write_byte3 = [loot_chosen % 256, loot_chosen // 256]
                         await bizhawk.write(
                             ctx.bizhawk_ctx,
                             [
                                 (item_backup_offset, write_byte2, self.ram_mem_domain),
-                                (item_backup_offset + 0x2, int.to_bytes(write_byte3), self.ram_mem_domain),
+                                (item_backup_offset + 0x2, write_byte3, self.ram_mem_domain),
                                 (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain)
                             ]
                         )
