@@ -4,7 +4,8 @@ from Options import DefaultOnToggle, Toggle, Choice, PerGameCommonOptions, Start
 
 
 class DungeonNameRandomizer(DefaultOnToggle):
-    """Randomizes the names of the dungeons. IDs and completion requirements stay the same"""
+    """NOT IMPLEMENTED YET
+    Randomizes the names of the dungeons. IDs and completion requirements stay the same"""
     display_name = "Dungeon Name Randomization"
 
 

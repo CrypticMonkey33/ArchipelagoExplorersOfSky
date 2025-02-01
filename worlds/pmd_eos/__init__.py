@@ -62,6 +62,7 @@ class EOSWorld(World):
                            location in EOS_location_table}
 
     required_client_version = (0, 5, 1)
+    required_server_version = (0, 5, 1)
 
     item_name_groups = item_table_by_groups
     disabled_locations: Set[str] = []

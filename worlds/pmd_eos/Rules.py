@@ -121,6 +121,8 @@ def special_episodes_rules(world, player):
     # Sunflora Special Episode Checks
     set_rule(world.multiworld.get_location("SE Spring Cave", player),
              lambda state: state.has("Sunflora SE", player))
+    forbid_item(world.multiworld.get_location("Hidden Land", player), "Relic Fragment Shard", player)
+    forbid_item(world.multiworld.get_location("Temporal Tower", player), "Relic Fragment Shard", player)
 
 
 def ready_for_darkrai(state, player, world):

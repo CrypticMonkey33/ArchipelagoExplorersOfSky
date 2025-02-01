@@ -4,8 +4,8 @@ import binascii
 
 from NetUtils import ClientStatus
 from .Locations import EOSLocation, EOS_location_table, location_Dict_by_id
-from .Items import EOS_item_table, ItemData, item_table_by_id
-
+from .Items import EOS_item_table, ItemData, item_table_by_id, lootbox_table
+from random import Random
 import asyncio
 
 import worlds._bizhawk as bizhawk
@@ -35,6 +35,8 @@ class EoSClient(BizHawkClient):
     macguffin_unlock_amount = 0
     cresselia_feather_acquired = False
     dialga_complete = False
+    item_boxes_collected: List[ItemData] = []
+    random: Random = Random()
 
     def __init__(self) -> None:
         super().__init__()
@@ -46,6 +48,7 @@ class EoSClient(BizHawkClient):
         self.eUsed = []
         self.room = 0
         self.local_events = []
+
 
     async def update_received_items(self, ctx: "BizHawkClientContext", received_items_offset, received_index, i) -> None:
         await bizhawk.write(
@@ -114,7 +117,6 @@ class EoSClient(BizHawkClient):
                     )
                     raise bizhawk.ConnectorError("Loaded ROM is for Incorrect lobby.")
                 self.seed_verify = True
-
 
             open_list_total_offset: int = await (self.load_script_variable_raw(0x4F, ctx))
             conquest_list_total_offset: int = await (self.load_script_variable_raw(0x52, ctx))
@@ -249,21 +251,8 @@ class EoSClient(BizHawkClient):
 
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Item" in item_data.group:
-                    if ((performance_progress_bitfield[4] >> 3) & 1) == 0:
-                        write_byte = performance_progress_bitfield[4] + (0x1 << 3)
-                        performance_progress_bitfield[4] = write_byte
-                        write_byte2 = item_data.memory_offset
-
-                        await bizhawk.write(
-                            ctx.bizhawk_ctx,
-                            [
-                                (item_backup_offset, int.to_bytes(write_byte2), self.ram_mem_domain),
-                                (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
-                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain)
-                            ]
-                        )
-                        await self.update_received_items(ctx, received_items_offset, received_index, i)
-                    break
+                    self.item_boxes_collected += [item_data]
+                    await self.update_received_items(ctx, received_items_offset, received_index, i)
 
                 elif "Trap" in item_data.group:
                     if item_data.name == "Team Name Trap":
@@ -353,6 +342,41 @@ class EoSClient(BizHawkClient):
                             (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
                              self.ram_mem_domain)],
                     )
+
+            if self.item_boxes_collected:
+                if ((performance_progress_bitfield[4] >> 3) & 1) == 0:
+                    item_data = self.item_boxes_collected.pop(0)
+                    if item_data.name in ["Golden Seed", "Gold Ribbon", "Link Box", "Sky Gift"]:
+                        write_byte = performance_progress_bitfield[4] + (0x1 << 3)
+                        performance_progress_bitfield[4] = write_byte
+                        write_byte2 = item_data.memory_offset
+
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (item_backup_offset, [write_byte2, 0], self.ram_mem_domain),
+                                (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
+                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain)
+                            ]
+                        )
+                    else:
+                        write_byte = performance_progress_bitfield[4] + (0x1 << 3)
+                        performance_progress_bitfield[4] = write_byte
+
+                        write_byte2 = [item_data.memory_offset % 256, item_data.memory_offset // 256]
+
+                        loot_table = lootbox_table[item_data.name]
+
+                        items_in_box = [item for item in loot_table]
+                        write_byte3 = loot_table[self.random.choice(seq=items_in_box)]
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                (item_backup_offset + 0x2, int.to_bytes(write_byte3), self.ram_mem_domain),
+                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain)
+                            ]
+                        )
 
             if not ctx.finished_game and self.goal_complete:
                 await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
