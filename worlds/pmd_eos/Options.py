@@ -16,8 +16,8 @@ class Goal(Choice):
     default = 0
 
 
-class ShardFragments(NamedRange):
-    """ How many Relic Shard Fragments should be in the game
+class FragmentShards(NamedRange):
+    """ How many Relic Fragment Shards should be in the game
     (Macguffins) that you must get to unlock Hidden Land"""
     range_start = 4
     range_end = 10
@@ -28,6 +28,19 @@ class ShardFragments(NamedRange):
         "extreme": 10
     }
     default = 6
+
+
+class ExtraShards(NamedRange):
+    """ How many extra Fragment Shards should be in the game?"""
+    range_start = 0
+    range_end = 10
+    special_range_names = {
+        "easy": 6,
+        "normal": 4,
+        "hard": 2,
+        "extreme": 0
+    }
+    default = 4
 
 
 class Recruitment(DefaultOnToggle):
@@ -76,4 +89,5 @@ class EOSOptions(PerGameCommonOptions):
     level_scale: LevelScaling
     bag_on_start: StartWithBag
     dojo_dungeons: DojoDungeons
-    shard_fragments: ShardFragments
+    shard_fragments: FragmentShards
+    extra_shards: ExtraShards

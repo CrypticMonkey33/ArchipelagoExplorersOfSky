@@ -125,6 +125,7 @@ class EoSClient(BizHawkClient):
             scenario_main_offset = await (self.load_script_variable_raw(0x3, ctx))
             scenario_main_bitfield_offset = await (self.load_script_variable_raw(0x11, ctx))
             special_episode_offset = await (self.load_script_variable_raw(0x4B,  ctx))
+            item_backup_offset = await (self.load_script_variable_raw(0x64, ctx))
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
@@ -138,6 +139,7 @@ class EoSClient(BizHawkClient):
                     (scenario_main_offset, 1, self.ram_mem_domain),
                     (special_episode_offset, 1, self.ram_mem_domain),
                     (scenario_main_bitfield_offset, 1, self.ram_mem_domain),
+                    (item_backup_offset, 4, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -151,12 +153,13 @@ class EoSClient(BizHawkClient):
             # read the state of the dungeon lists
             open_list: array.array[int] = array.array('i', [item for item in read_state[1]])
             conquest_list: array.array[int] = array.array('i', [item for item in read_state[0]])
-            scenario_balance_byte = read_state[2]
+            scenario_balance_byte = array.array('i', [item for item in read_state[2]])
             performance_progress_bitfield: array.array[int] = array.array('i', [item for item in read_state[3]])
             scenario_subx_bitfield: array.array[int] = array.array('i', [item for item in read_state[4]])
             received_index = int.from_bytes(read_state[5])
             special_episode_bitfield = int.from_bytes(read_state[7])
             scenario_main_bitfield_list: array.array[int] = array.array('i', [item for item in read_state[8]])
+            item_backup_bytes: array.array[int] = array.array('i', [item for item in read_state[9]])
             locs_to_send = set()
 
 
@@ -225,7 +228,7 @@ class EoSClient(BizHawkClient):
                 elif "Macguffin" in item_data.group:
                     if item_data.name == "Relic Fragment Shard":
                         self.macguffins_collected += 1
-                        if self.macguffins_collected >= self.macguffin_unlock_amount:
+                        if self.macguffins_collected == self.macguffin_unlock_amount:
                             item_memory_offset = 0x26  # the location in memory of Hidden Land
                             sig_digit = item_memory_offset // 8
                             non_sig_digit = item_memory_offset % 8
@@ -245,6 +248,22 @@ class EoSClient(BizHawkClient):
                         self.cresselia_feather_acquired = True
 
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
+                elif "Item" in item_data.group:
+                    if ((performance_progress_bitfield[4] >> 3) & 1) == 0:
+                        write_byte = performance_progress_bitfield[4] + (0x1 << 3)
+                        performance_progress_bitfield[4] = write_byte
+                        write_byte2 = item_data.memory_offset
+
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (item_backup_offset, int.to_bytes(write_byte2), self.ram_mem_domain),
+                                (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
+                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain)
+                            ]
+                        )
+                        await self.update_received_items(ctx, received_items_offset, received_index, i)
+                    break
 
                 elif "Trap" in item_data.group:
                     if item_data.name == "Team Name Trap":

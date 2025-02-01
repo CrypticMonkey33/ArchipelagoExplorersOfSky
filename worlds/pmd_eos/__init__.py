@@ -93,6 +93,9 @@ class EOSWorld(World):
         extra_items_region = Region("Extra Items", self.player,self.multiworld)
         self.multiworld.regions.append(extra_items_region)
 
+        rule_dungeons_region = Region("Rule Dungeons", self.player, self.multiworld)
+        self.multiworld.regions.append(rule_dungeons_region)
+
         for location in EOS_location_table:
             if (location.name == "Beach Cave") or (location.name == "Progressive Bag loc 1"):
                 menu_region.locations.append(EOSLocation(self.player, location.name,
@@ -111,13 +114,16 @@ class EOSWorld(World):
                   or (location.classification == "DojoDungeonComplete") or (location.classification == "SEDungeonUnlock")):
                 extra_items_region.locations.append(EOSLocation(self.player, location.name,
                                                                 location.id, early_dungeons_region))
+            elif location.classification == "RuleDungeonComplete":
+                rule_dungeons_region.locations.append(EOSLocation(self.player, location.name,
+                                                                  location.id, rule_dungeons_region))
 
         menu_region.connect(extra_items_region)
 
         menu_region.connect(early_dungeons_region)
 
-        early_dungeons_region.connect(late_dungeons_region, "Late Game Door")
-                                      #lambda state: ready_for_late_game(state, self.player))
+        early_dungeons_region.connect(late_dungeons_region, "Late Game Door",
+                                      lambda state: ready_for_late_game(state, self.player))
 
         late_dungeons_region.connect(end_game_region, "Boss Door")
                                      #lambda state: ready_for_final_boss(state, self.player))
@@ -128,6 +134,7 @@ class EOSWorld(World):
 
         end_game_region.connect(boss_region, "End Game")
                                 #lambda state: state.has("Temporal Tower", self.player))
+        late_dungeons_region.connect(rule_dungeons_region, "Rule Dungeons")
 
         self.get_location("Final Boss").place_locked_item(self.create_item("Victory"))
 
@@ -152,7 +159,7 @@ class EOSWorld(World):
         filler_items = []
 
         precollected = [item.name for item in self.multiworld.precollected_items[self.player]]
-        for i in range(self.options.shard_fragments.value):
+        for i in range(self.options.shard_fragments.value + self.options.extra_shards.value):
             required_items.append(self.create_item("Relic Fragment Shard", ItemClassification.progression))
 
         if self.options.goal == 1:

@@ -83,16 +83,16 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 1, "Shimmer Hill", 96, 96),
     LocationData("LateDungeonComplete", 1, "Lost Wilderness", 97, 97),
     LocationData("LateDungeonComplete", 1, "Midnight Forest", 98, 98),
-    LocationData("LateDungeonComplete", 1, "Zero Isle North", 99, 99),
-    LocationData("LateDungeonComplete", 1, "Zero Isle East", 100, 100),
-    LocationData("LateDungeonComplete", 1, "Zero Isle West", 101, 101),
-    LocationData("LateDungeonComplete", 1, "Zero Isle South", 102, 102),
-    LocationData("LateDungeonComplete", 1, "Zero Isle Center", 103, 103),
-    LocationData("LateDungeonComplete", 1, "Destiny Tower", 104, 104),
-    LocationData("LateDungeonComplete", 1, "Oblivion Forest", 107, 107),
-    LocationData("LateDungeonComplete", 1, "Treacherous Waters", 108, 108),
-    LocationData("LateDungeonComplete", 1, "Southeastern Islands", 109, 109),
-    LocationData("LateDungeonComplete", 1, "Inferno Cave", 110, 110),
+    LocationData("RuleDungeonComplete", 1, "Zero Isle North", 99, 99),
+    LocationData("RuleDungeonComplete", 1, "Zero Isle East", 100, 100),
+    LocationData("RuleDungeonComplete", 1, "Zero Isle West", 101, 101),
+    LocationData("RuleDungeonComplete", 1, "Zero Isle South", 102, 102),
+    LocationData("RuleDungeonComplete", 1, "Zero Isle Center", 103, 103),
+    LocationData("RuleDungeonComplete", 1, "Destiny Tower", 104, 104),
+    LocationData("RuleDungeonComplete", 1, "Oblivion Forest", 107, 107),
+    LocationData("RuleDungeonComplete", 1, "Treacherous Waters", 108, 108),
+    LocationData("RuleDungeonComplete", 1, "Southeastern Islands", 109, 109),
+    LocationData("RuleDungeonComplete", 1, "Inferno Cave", 110, 110),
     LocationData("LateDungeonComplete", 12, "1st Station Pass", 122, 111),  # 12 subareas
     # Special Episode Dungeons
     LocationData("SpecialDungeonComplete", 5, "SE Star Cave", 127, 123),
@@ -125,7 +125,7 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("DojoDungeonComplete", 1, "Dojo Poison/Bug Maze", 187, 187),  # 7 subareas
     LocationData("DojoDungeonComplete", 1, "Dojo Dragon Maze", 188, 188),  # 7 subareas
     LocationData("DojoDungeonComplete", 1, "Dojo Ghost Maze", 189, 189),  # 7 subareas
-    #LocationData("DojoDungeonComplete", 1, "Dojo Final Maze", 191, 191),  # 7 subareas
+    #LocationData("RuleDungeonComplete", 1, "Dojo Final Maze", 191, 191),  # 7 subareas
 
     LocationData("Event", 0,  "Final Boss", 700, 0),
     # generic checks, right now just bag upgrades

@@ -41,7 +41,7 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
 
 
 def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
-    ov36_mem_loc = 0x296000 #find_ov36_mem_location()
+    ov36_mem_loc = 0x296200 #find_ov36_mem_location()
     seed_offset = 0x37020
     player_name_offset = 0x36F80
     recruitment_offset = 0x3702C
@@ -59,6 +59,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
         "team_formation": world.options.team_form.value,
         "dojo_dungeons_rando": world.options.dojo_dungeons.value,
         "relic_shard_fragments": world.options.shard_fragments.value,
+        "extra_shards": world.options.extra_shards.value,
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))

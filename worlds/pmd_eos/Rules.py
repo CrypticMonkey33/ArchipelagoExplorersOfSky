@@ -87,6 +87,8 @@ def special_episodes_rules(world, player):
              lambda state: state.has("IgglyBuff SE", player))
 
     # Grovyle and Dusknoir Special Episode Checks
+    set_rule(world.multiworld.get_location("Grovyle + DusknoirSE Location", player),
+             lambda state: ready_for_dialga(state, player, world))
     set_rule(world.multiworld.get_location("SE Barren Valley", player),
              lambda state: state.has("Grovyle + Dusknoir SE", player))
     set_rule(world.multiworld.get_location("SE Dark Wasteland", player),
