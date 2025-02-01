@@ -181,6 +181,8 @@ class EOSWorld(World):
                 continue
 
             elif item_table[item_name].classification == ItemClassification.filler:
+                if item_name in ["Golden Apple", "Gold Ribbon"]:
+                    continue
                 filler_items.append(self.create_item(item_name, ItemClassification.filler))
 
             elif item_table[item_name].classification == ItemClassification.trap:
