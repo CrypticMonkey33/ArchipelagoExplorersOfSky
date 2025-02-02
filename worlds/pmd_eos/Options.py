@@ -64,8 +64,10 @@ class LevelScaling(DefaultOnToggle):
     display_name = "Level Scaling"
 
 
-class StartWithBag(Toggle):
-    """Start with bag? If False all bag upgrades will be randomized in the game"""
+class StartWithBag(DefaultOnToggle):
+    """Start with bag? If False all bag upgrades will be randomized in the game.
+    If true, you will get one bag upgrade (16 slots) and the rest will be randomized"""
+
     display_name = "Start with Bag?"
 
 

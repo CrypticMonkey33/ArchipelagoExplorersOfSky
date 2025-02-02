@@ -143,7 +143,7 @@ EOS_item_table = [
     ItemData("Cresselia Feather", 201, ItemClassification.progression, 201, ["Macguffin"], 0x00),
 
     ItemData("Victory", 300, ItemClassification.progression, 0, [], 0x00),
-    ItemData("Bag Upgrade", 500, ItemClassification.useful, 0, ["ProgressiveBag", "Generic"], 0x00),
+    ItemData("Bag Upgrade", 500, ItemClassification.progression, 0, ["ProgressiveBag", "Generic"], 0x00),
     #ItemData("FillerItem", 600, ItemClassification.filler, 0, ["Filler"], 0x00),
     #ItemData("FillerItem2", 601, ItemClassification.filler, 0, ["Filler"], 0x00),
     #ItemData("FillerItem3", 602, ItemClassification.filler, 0, ["Filler"], 0x00),

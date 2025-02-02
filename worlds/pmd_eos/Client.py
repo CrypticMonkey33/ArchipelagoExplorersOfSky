@@ -71,7 +71,7 @@ class EoSClient(BizHawkClient):
             return False
         except bizhawk.RequestFailedError:
             return False  # Should verify on the next pass
-
+        await (ctx.send_msgs([{"cmd": "Set", "key": "Dungeon Missions", "default": {}, "want_reply": True}]))
         ctx.game = self.game
         ctx.items_handling = 0b111
         ctx.want_slot_data = True
@@ -117,7 +117,7 @@ class EoSClient(BizHawkClient):
                     )
                     raise bizhawk.ConnectorError("Loaded ROM is for Incorrect lobby.")
                 self.seed_verify = True
-
+            ctx.stored_data
             open_list_total_offset: int = await (self.load_script_variable_raw(0x4F, ctx))
             conquest_list_total_offset: int = await (self.load_script_variable_raw(0x52, ctx))
             scenario_balance_offset = await (self.load_script_variable_raw(0x13, ctx))
