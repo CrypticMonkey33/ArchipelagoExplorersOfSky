@@ -2,9 +2,11 @@ from typing import TYPE_CHECKING, Optional, Set, List, Dict
 import array
 import binascii
 
+from Utils import async_start
 from NetUtils import ClientStatus
-from .Locations import EOSLocation, EOS_location_table, location_Dict_by_id
-from .Items import EOS_item_table, ItemData, item_table_by_id, lootbox_table
+from .Locations import EOSLocation, EOS_location_table, location_Dict_by_id, location_dict_by_start_id, \
+    location_table_by_groups
+from .Items import EOS_item_table, ItemData, item_table_by_id, lootbox_table, item_table_by_groups
 from random import Random
 import asyncio
 
@@ -49,8 +51,8 @@ class EoSClient(BizHawkClient):
         self.room = 0
         self.local_events = []
 
-
-    async def update_received_items(self, ctx: "BizHawkClientContext", received_items_offset, received_index, i) -> None:
+    async def update_received_items(self, ctx: "BizHawkClientContext", received_items_offset, received_index,
+                                    i) -> None:
         await bizhawk.write(
             ctx.bizhawk_ctx,
             [
@@ -71,7 +73,7 @@ class EoSClient(BizHawkClient):
             return False
         except bizhawk.RequestFailedError:
             return False  # Should verify on the next pass
-        await (ctx.send_msgs([{"cmd": "Set", "key": "Dungeon Missions", "default": {}, "want_reply": True}]))
+
         ctx.game = self.game
         ctx.items_handling = 0b111
         ctx.want_slot_data = True
@@ -106,7 +108,7 @@ class EoSClient(BizHawkClient):
                 return
             if not self.seed_verify:
                 # Need to figure out where we are putting the seed and then update this
-                seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE0A0, 8, self.ram_mem_domain)])
+                seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE010, 8, self.ram_mem_domain)])
                 seed = seed[0].decode("UTF-8")[0:7]
                 seed_name = ctx.seed_name[0:7]
                 if seed != seed_name:
@@ -117,7 +119,23 @@ class EoSClient(BizHawkClient):
                     )
                     raise bizhawk.ConnectorError("Loaded ROM is for Incorrect lobby.")
                 self.seed_verify = True
-            ctx.stored_data
+
+            await (ctx.send_msgs(
+                [
+                    {"cmd": "Set",
+                     "key": "Dungeon Missions",
+                     "default": {location: 0 for location in location_table_by_groups["Mission"]},
+                     "want_reply": True,
+                     "operations": [{"operation": "update", "value": {}}]
+                     },
+                    {"cmd": "Set",
+                     "key": "Item Boxes Collected",
+                     "default": [],
+                     "want_reply": True,
+                     "operations": [{"operation": "default", "value": []}]
+                     }
+                ]))
+
             open_list_total_offset: int = await (self.load_script_variable_raw(0x4F, ctx))
             conquest_list_total_offset: int = await (self.load_script_variable_raw(0x52, ctx))
             scenario_balance_offset = await (self.load_script_variable_raw(0x13, ctx))
@@ -126,8 +144,17 @@ class EoSClient(BizHawkClient):
             received_items_offset = await (self.load_script_variable_raw(0x16, ctx))
             scenario_main_offset = await (self.load_script_variable_raw(0x3, ctx))
             scenario_main_bitfield_offset = await (self.load_script_variable_raw(0x11, ctx))
-            special_episode_offset = await (self.load_script_variable_raw(0x4B,  ctx))
+            special_episode_offset = await (self.load_script_variable_raw(0x4B, ctx))
             item_backup_offset = await (self.load_script_variable_raw(0x64, ctx))
+            dungeon_enter_index_offset = await (self.load_script_variable_raw(0x29, ctx))
+            scenario_talk_bitfield_offset = await (self.load_script_variable_raw(0x12, ctx))
+
+            if "Dungeon Missions" in ctx.stored_data:
+                dungeon_missions_dict = ctx.stored_data["Dungeon Missions"]
+            else:
+                dungeon_missions_dict = {}
+                return
+
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
@@ -142,6 +169,9 @@ class EoSClient(BizHawkClient):
                     (special_episode_offset, 1, self.ram_mem_domain),
                     (scenario_main_bitfield_offset, 1, self.ram_mem_domain),
                     (item_backup_offset, 4, self.ram_mem_domain),
+                    (scenario_talk_bitfield_offset + 0x1F, 1, self.ram_mem_domain),
+                    (dungeon_enter_index_offset, 2, self.ram_mem_domain),
+
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -162,8 +192,11 @@ class EoSClient(BizHawkClient):
             special_episode_bitfield = int.from_bytes(read_state[7])
             scenario_main_bitfield_list: array.array[int] = array.array('i', [item for item in read_state[8]])
             item_backup_bytes: array.array[int] = array.array('i', [item for item in read_state[9]])
-            locs_to_send = set()
+            scenario_talk_bitfield_250_list = int.from_bytes(read_state[10])
 
+            dungeon_enter_index = int.from_bytes(read_state[11], "little")
+
+            locs_to_send = set()
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received) - received_index):
@@ -303,10 +336,10 @@ class EoSClient(BizHawkClient):
                         bit_number_dung = (byte_i * 8) + j
                         if (ctx.slot_data["Goal"] == 0) and (bit_number_dung == 43):
                             self.goal_complete = True
-                            locs_to_send.add(700)
+                            locs_to_send.add(400)
                         elif (ctx.slot_data["Goal"] == 1) and (bit_number_dung == 67):
                             self.goal_complete = True
-                            locs_to_send.add(700)
+                            locs_to_send.add(400)
                         elif (ctx.slot_data["Goal"] == 1) and (bit_number_dung == 43):
                             self.dialga_complete = True
                         if bit_number_dung in location_Dict_by_id:
@@ -321,6 +354,64 @@ class EoSClient(BizHawkClient):
                         bit_number_gen = (byte_m * 8) + k + 300
                         if bit_number_gen in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_gen].id)
+
+            # 3 = 251 send check for mission, 4 = 252 outlaw, 5 = 253 normal missions
+            if ((scenario_talk_bitfield_250_list >> 5) & 1) == 1:  # if normal mission
+                # read dungeon enter index
+                if dungeon_enter_index in location_dict_by_start_id:
+                    location_name = location_dict_by_start_id[dungeon_enter_index].name
+                    location_id = location_dict_by_start_id[dungeon_enter_index].id
+                    dungeons_complete = dungeon_missions_dict[location_name]
+                    if "Early" in location_dict_by_start_id[dungeon_enter_index].group:
+                        if dungeons_complete < ctx.slot_data["EarlyMissionsAmount"]:
+                            scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list | (0x1 << 3)
+                            locs_to_send.add(location_id + 500 + (100 * location_id) + dungeons_complete)
+                            dungeon_missions_dict[location_name] += 1
+                            # location.id + 500 + (100 * i) + j
+
+                    elif "Late" in location_Dict_by_id[dungeon_enter_index].group:
+                        if dungeons_complete < ctx.slot_data["LateMissionsAmount"]:
+                            scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list | (0x1 << 3)
+                            locs_to_send.add(location_id + 500 + (100 * location_id) + dungeons_complete)
+                            dungeon_missions_dict[location_name] += 1
+                            # location.id + 500 + (100 * i) + j
+
+                scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xDF
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [
+                        (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list),
+                         self.ram_mem_domain),
+                    ]
+                )
+            elif ((scenario_talk_bitfield_250_list >> 4) & 1) == 1:  # if outlaw mission
+                # read dungeon enter index
+                if dungeon_enter_index in location_dict_by_start_id:
+                    location_name = location_dict_by_start_id[dungeon_enter_index].name
+                    location_id = location_dict_by_start_id[dungeon_enter_index].id
+                    dungeons_complete = dungeon_missions_dict[location_name]
+                    if "Early" in location_dict_by_start_id[dungeon_enter_index].group:
+                        if dungeons_complete < ctx.slot_data["EarlyOutlawsAmount"]:
+                            scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list | (0x1 << 3)
+                            locs_to_send.add(location_id + 500 + (100 * location_id)
+                                             + 50 + dungeons_complete)
+                            dungeon_missions_dict[location_name] += 1
+                            # location.id + 500 + (100 * i) + j
+                    elif "Late" in location_dict_by_start_id[dungeon_enter_index].group:
+                        if dungeons_complete < ctx.slot_data["LateOutlawsAmount"]:
+                            scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list | (0x1 << 3)
+                            locs_to_send.add(location_id + 500 + (100 * location_id)
+                                             + 50 + dungeons_complete)
+                            dungeon_missions_dict[location_name] += 1
+
+                scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xEF
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [
+                        (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list),
+                         self.ram_mem_domain),
+                    ]
+                )
 
             # Send locations if there are any to send.
             if locs_to_send != self.local_checked_locations:
@@ -342,21 +433,22 @@ class EoSClient(BizHawkClient):
                             (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
                              self.ram_mem_domain)],
                     )
-
-            if self.item_boxes_collected:
-                if ((performance_progress_bitfield[4] >> 3) & 1) == 0:
+            if ((performance_progress_bitfield[4] >> 3) & 1) == 0:  # if we are not currently dealing with items
+                if self.item_boxes_collected:
+                    # I have an item in my list, add it to the queue and set the performance progress list to true
                     item_data = self.item_boxes_collected.pop(0)
                     if item_data.name in ["Golden Seed", "Gold Ribbon", "Link Box", "Sky Gift"]:
                         write_byte = performance_progress_bitfield[4] + (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
-                        write_byte2 = item_data.memory_offset
-
+                        write_byte2 = [item_data.memory_offset % 256, item_data.memory_offset // 256]
+                        scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xFB
                         await bizhawk.write(
                             ctx.bizhawk_ctx,
                             [
-                                (item_backup_offset, [write_byte2, 0], self.ram_mem_domain),
+                                (item_backup_offset, write_byte2, self.ram_mem_domain),
                                 (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
-                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain)
+                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list), self.ram_mem_domain)
                             ]
                         )
                     else:
@@ -370,14 +462,89 @@ class EoSClient(BizHawkClient):
                         items_in_box = [item for item in loot_table]
                         loot_chosen = loot_table[self.random.choice(seq=items_in_box)]
                         write_byte3 = [loot_chosen % 256, loot_chosen // 256]
+                        scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xFB
                         await bizhawk.write(
                             ctx.bizhawk_ctx,
                             [
                                 (item_backup_offset, write_byte2, self.ram_mem_domain),
                                 (item_backup_offset + 0x2, write_byte3, self.ram_mem_domain),
-                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain)
+                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list), self.ram_mem_domain)
                             ]
                         )
+            else: # if we are dealing with items
+                if self.item_boxes_collected and (((scenario_talk_bitfield_250_list >> 2) & 1) == 1):
+                    # I have an item in my list and lappy is already done with the item in the queue,
+                    # so add another item to queue and set performance progress to true
+                    item_data = self.item_boxes_collected.pop(0)
+                    if item_data.name in ["Golden Seed", "Gold Ribbon", "Link Box", "Sky Gift"]:
+                        write_byte = performance_progress_bitfield[4] + (0x1 << 3)
+                        performance_progress_bitfield[4] = write_byte
+                        write_byte2 = [item_data.memory_offset % 256, item_data.memory_offset // 256]
+                        scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xFB
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
+                                #(performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list), self.ram_mem_domain)
+                            ]
+                        )
+                    else:
+                        write_byte = performance_progress_bitfield[4] + (0x1 << 3)
+                        performance_progress_bitfield[4] = write_byte
+
+                        write_byte2 = [item_data.memory_offset % 256, item_data.memory_offset // 256]
+
+                        loot_table = lootbox_table[item_data.name]
+
+                        items_in_box = [item for item in loot_table]
+                        loot_chosen = loot_table[self.random.choice(seq=items_in_box)]
+                        write_byte3 = [loot_chosen % 256, loot_chosen // 256]
+                        scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xFB
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                (item_backup_offset + 0x2, write_byte3, self.ram_mem_domain),
+                                #(performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list), self.ram_mem_domain)
+                            ]
+                        )
+                elif self.item_boxes_collected:
+                    # I have items in my list still, but lappy has not processed the item yet, just move on for now
+                    pass
+                elif (((scenario_talk_bitfield_250_list >> 2) & 1) == 1):
+                    # I don't have items in my list and lappy is done with the item,
+                    # add a null to the queue and set performance progress to true
+                    write_byte = performance_progress_bitfield[4] + (0x1 << 3)
+                    scenario_talk_bitfield_250_list = (scenario_talk_bitfield_250_list & 0xFB)
+                    await bizhawk.write(
+                        ctx.bizhawk_ctx,
+                        [
+                            (item_backup_offset, [0,0], self.ram_mem_domain),
+                            (item_backup_offset + 0x2, [0,0], self.ram_mem_domain),
+                            #(performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                            (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list), self.ram_mem_domain)
+                        ]
+                    )
+
+            await (ctx.send_msgs(
+                [
+                    {"cmd": "Set",
+                     "key": "Dungeon Missions",
+                     "default": {},
+                     "want_reply": True,
+                     "operations": [{"operation": "update", "value": dungeon_missions_dict}]
+                     },
+                    {"cmd": "Set",
+                     "key": "Item Boxes Collected",
+                     "default": {},
+                     "want_reply": True,
+                     "operations": [{"operation": "replace", "value": self.item_boxes_collected}]
+                     }
+                ]))
 
             if not ctx.finished_game and self.goal_complete:
                 await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
@@ -395,3 +562,14 @@ class EoSClient(BizHawkClient):
                                             [((script_vars + (var_id << 0x4) + 0x4), 2, self.ram_mem_domain)])
         return script_vars_values + int.from_bytes(var_mem_offset[0], "little")
 
+    def unused(self, ctx):
+        (ctx.send_msgs(
+            [
+                {"cmd": "Set",
+                 "key": "Dungeon Missions",
+                 "default": {},
+                 "want_reply": True,
+                 "operations": [{"operation": "update", "value": {}}]
+                 }
+            ]
+        ))

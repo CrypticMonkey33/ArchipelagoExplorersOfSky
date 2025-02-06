@@ -18,6 +18,8 @@ def set_rules(world: "EOSWorld", excluded):
     shop_items_rules(world, player)
 
     dungeon_locations_behind_items(world, player)
+
+    #mission_rules(world, player)
     if world.options.goal.value == 0:
         set_rule(world.multiworld.get_location("Final Boss", player),
                  lambda state: state.has("Temporal Tower", player) and ready_for_dialga(state, player, world))
@@ -30,8 +32,8 @@ def set_rules(world: "EOSWorld", excluded):
                  lambda state: state.has("Temporal Tower", player)
                                and ready_for_darkrai(state, player, world))
 
-    set_rule(world.multiworld.get_entrance("Late Game Door", player),
-             lambda state: ready_for_late_game(state, player, world))
+    #set_rule(world.multiworld.get_entrance("Late Game Door", player),
+    #         lambda state: ready_for_late_game(state, player, world))
     #set_rule(world.multiworld.get_entrance("Boss Door", player),
     #         lambda state: ready_for_final_boss(state, player))
     set_rule(world.multiworld.get_location("Hidden Land", player),
@@ -44,13 +46,13 @@ def set_rules(world: "EOSWorld", excluded):
              lambda state: state.can_reach_location("Mt. Bristle", player) and state.has("The Nightmare", player)
                            and ready_for_late_game(state, player, world))
     set_rule(world.multiworld.get_location("Progressive Bag loc 2", player),
-             lambda state: state.has("Drenched Bluff", player))
-    set_rule(world.multiworld.get_location("Progressive Bag loc 3", player),
              lambda state: state.has("Mt. Bristle", player))
-    set_rule(world.multiworld.get_location("Progressive Bag loc 4", player),
-             lambda state: state.has("Waterfall Cave", player))
-    set_rule(world.multiworld.get_location("Progressive Bag loc 5", player),
+    set_rule(world.multiworld.get_location("Progressive Bag loc 3", player),
              lambda state: state.has("Apple Woods", player))
+    set_rule(world.multiworld.get_location("Progressive Bag loc 4", player),
+             lambda state: state.has("Steam Cave", player))
+    set_rule(world.multiworld.get_location("Progressive Bag loc 5", player),
+             lambda state: state.has("Mystifying Forest", player))
     #set_rule(world.multiworld.get_entrance("Early Game Door", player),
     #         lambda state: state.has("Beach Cave", player))
     #for location_num in location_Dict_by_id:
@@ -311,3 +313,26 @@ def dungeon_locations_behind_items(world, player):
              lambda state: state.has("Dojo Dragon Maze", player))
     set_rule(world.multiworld.get_location("Dojo Ghost Maze", player),
              lambda state: state.has("Dojo Ghost Maze", player))
+
+
+def mission_rules(world, player):
+    for i, location in enumerate(EOS_location_table):
+        if location.name == "Beach Cave":
+            continue
+        elif location.classification == "EarlyDungeonComplete":
+            for j in range(world.options.early_mission_checks.value):
+                set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
+                         lambda state, ln=location.name, p=player: state.has(ln, p))
+            for j in range(world.options.early_outlaw_checks.value):
+                set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
+                         lambda state, ln=location.name, p=player: state.has(ln, p))
+
+        elif location.classification == "LateDungeonComplete":
+            if world.options.goal.value == 1:
+                for j in range(world.options.late_mission_checks.value):
+                    set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
+                             lambda state, ln=location.name, p=player: state.has(ln, p))
+
+                for j in range(world.options.late_outlaw_checks.value):
+                    set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
+                             lambda state, ln=location.name, p=player: state.has(ln, p))

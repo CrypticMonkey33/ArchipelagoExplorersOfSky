@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from Options import DefaultOnToggle, Toggle, Choice, PerGameCommonOptions, StartInventoryPool, NamedRange
+from Options import DefaultOnToggle, Toggle, Choice, PerGameCommonOptions, StartInventoryPool, NamedRange, Range
 
 
 class DungeonNameRandomizer(DefaultOnToggle):
@@ -44,6 +44,62 @@ class ExtraShards(NamedRange):
     default = 4
 
 
+class EarlyMissionChecks(NamedRange):
+    """ How many Missions per dungeon pre dialga should be checks?
+        0 equals missions are not checks"""
+    range_start = 0
+    range_end = 50
+    special_range_names = {
+        "off": 0,
+        "some": 4,
+        "lots": 10,
+        "insanity": 50
+    }
+    default = 4
+
+
+class LateMissionChecks(NamedRange):
+    """ How many Missions per dungeon post-dialga (including Hidden Land
+    and Temporal Tower) should be checks? 0 equals missions are not checks"""
+    range_start = 0
+    range_end = 50
+    special_range_names = {
+        "off": 0,
+        "some": 4,
+        "lots": 10,
+        "insanity": 50
+    }
+    default = 4
+
+
+class EarlyOutlawChecks(NamedRange):
+    """ How many outlaws per dungeon pre dialga should be checks?
+        0 equals missions are not checks"""
+    range_start = 0
+    range_end = 50
+    special_range_names = {
+        "off": 0,
+        "some": 2,
+        "lots": 10,
+        "insanity": 50
+    }
+    default = 2
+
+
+class LateOutlawChecks(NamedRange):
+    """ How many Missions per dungeon post-dialga (including Hidden Land
+    and Temporal Tower) should be checks? 0 equals missions are not checks"""
+    range_start = 0
+    range_end = 50
+    special_range_names = {
+        "off": 0,
+        "some": 2,
+        "lots": 10,
+        "insanity": 50
+    }
+    default = 2
+
+
 class Recruitment(DefaultOnToggle):
     """Start with recruitment enabled?"""
     display_name = "Recruitment Enable"
@@ -62,6 +118,53 @@ class FullTeamFormationControl(DefaultOnToggle):
 class LevelScaling(DefaultOnToggle):
     """Allow for dungeons to scale to the highest level of your party members?"""
     display_name = "Level Scaling"
+
+
+class TypeSanity(Toggle):
+    """ Allow for your partner to share a type with your main character
+    WARNING: The game is not balanced around this, and we have not done anything to change that.
+    Use at your own risk
+    """
+    display_name = "Type Sanity"
+
+
+class StarterOption(Choice):
+    """How would you like your starter and partner to be chosen?
+    Vanilla: You do the quiz and are stuck with what the quiz gives you. Choose your partner as normal
+    Random: Both your MC and partner will be completely random. This means they can be the same type
+            WARNING: game is not balanced for same type team, use at your own risk (until we fix typesanity)
+    Override: Do the quiz, but you can override the hero it gives you. Choose your partner as normal
+    Choose: Skip the quiz and go strait to choosing your starter and partner"""
+    display_name = "Starter Choice Option"
+    option_vanilla = 0
+    option_name_random = 1
+    option_override = 2
+    option_choose = 3
+    default = 2
+
+
+class IqScaling(Range):
+    """Do you want to scale IQ to gain IQ faster? What rate? (1x, 2x, 3x, etc.)
+    WARNING: 0x WILL NOT GIVE YOU ANY IQ. USE AT YOUR OWN RISK
+
+    Not currently Implemented
+    """
+
+    display_name = "IQ Scaling"
+    range_start = 0
+    range_end = 15
+    default = 1
+
+
+class XpScaling(Range):
+    """Do you want to scale XP to gain XP faster? What rate? (1x, 2x, 3x, etc.)
+    WARNING: 0x WILL NOT GIVE YOU ANY XP. USE AT YOUR OWN RISK
+
+    Not currently Implemented"""
+    display_name = "XP Scaling"
+    range_start = 0
+    range_end = 15
+    default = 1
 
 
 class StartWithBag(DefaultOnToggle):
@@ -94,3 +197,11 @@ class EOSOptions(PerGameCommonOptions):
     dojo_dungeons: DojoDungeons
     shard_fragments: FragmentShards
     extra_shards: ExtraShards
+    early_mission_checks: EarlyMissionChecks
+    late_mission_checks: LateMissionChecks
+    early_outlaw_checks: EarlyOutlawChecks
+    late_outlaw_checks: LateOutlawChecks
+    type_sanity: TypeSanity
+    starter_option: StarterOption
+    iq_scaling: IqScaling
+    xp_scaling: XpScaling

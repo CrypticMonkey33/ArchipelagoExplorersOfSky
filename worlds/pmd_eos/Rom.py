@@ -41,9 +41,10 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
 
 
 def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
-    ov36_mem_loc = 0x296200 #find_ov36_mem_location()
-    seed_offset = 0x37020
+    ov36_mem_loc = 0x296000 #find_ov36_mem_location()
+    seed_offset = 0x36F90
     player_name_offset = 0x36F80
+    ap_settings_offset = 0x36F98
     recruitment_offset = 0x3702C
     recruitment_evo_offset = 0x37030
     team_formation_offset = 0x37034
@@ -60,6 +61,10 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
         "dojo_dungeons_rando": world.options.dojo_dungeons.value,
         "relic_shard_fragments": world.options.shard_fragments.value,
         "extra_shards": world.options.extra_shards.value,
+        "type_sanity": world.options.type_sanity.value,
+        "starter_option": world.options.starter_option.value,
+        "iq_scaling": world.options.iq_scaling.value,
+        "xp_scaling": world.options.xp_scaling.value,
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
@@ -74,19 +79,32 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
 
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
-
+    write_byte = 0
     if world.options.recruit:
-        patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + recruitment_offset, int.to_bytes(0x1))
+        write_byte = write_byte | (0x1 << 0)
 
     if world.options.recruit_evo:
-        patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + recruitment_evo_offset, int.to_bytes(0x1))
+        write_byte = write_byte | (0x1 << 1)
 
     if world.options.team_form:
-        patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + team_formation_offset, int.to_bytes(0x1))
+        write_byte = write_byte | (0x1 << 2)
 
     if world.options.level_scale:
-        patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + level_scaling_offset, int.to_bytes(0x1))
+        write_byte = write_byte | (0x1 << 3)
 
+    if world.options.type_sanity:
+        write_byte = write_byte | (0x1 << 4)
+
+    if world.options.starter_option == 1:
+        write_byte = write_byte | (0x1 << 5)
+
+    elif world.options.starter_option == 2:
+        write_byte = write_byte | (0x1 << 6)
+
+    elif world.options.starter_option == 3:
+        write_byte = write_byte | ((0x1 << 5) + (0x1 << 6))
+
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset, int.to_bytes(write_byte))
     patch.write_file("token_data.bin", patch.get_token_binary())
 
 
