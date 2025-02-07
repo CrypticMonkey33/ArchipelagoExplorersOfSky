@@ -128,6 +128,12 @@ EOS_item_table = [
     ItemData("Sunflora SE", 158, ItemClassification.progression, 158, ["Unique", "Special Dungeons"], 0x2),
     # ItemData("Spring Cave", 158, ItemClassification.useful, 158, ["Unique", "Special Dungeons"], 0x9E),
     ItemData("Star Cave2", 174, ItemClassification.progression, 174, ["Unique", "LateDungeons", "MissionDungeons"], 0xAE),
+    ItemData("Shaymin Village", 175, ItemClassification.filler, 175, ["Unique", "ExtraDungeons"], 0xAF),
+    ItemData("Luminous Spring", 177, ItemClassification.filler, 177, ["Unique", "ExtraDungeons"], 0xB1),
+    ItemData("Hot Spring", 178, ItemClassification.filler, 178, ["Unique", "ExtraDungeons"], 0xB2),
+
+    ItemData("Dojo Normal/Fly Maze", 180, ItemClassification.progression, 180, ["Unique", "Dojo Dungeons"], 0xB4),
+
     ItemData("Dojo Normal/Fly Maze", 180, ItemClassification.progression, 180, ["Unique", "Dojo Dungeons"], 0xB4),
     ItemData("Dojo Dark/Fire Maze", 181, ItemClassification.progression, 181, ["Unique", "Dojo Dungeons"], 0xB5),
     ItemData("Dojo Rock/Water Maze", 182, ItemClassification.progression, 182, ["Unique", "Dojo Dungeons"], 0xB6),
@@ -172,6 +178,10 @@ EOS_item_table = [
     ItemData("Nap Time!", 402, ItemClassification.trap, 0, ["Trap"], 0x0),
     ItemData("Sentry Duty!", 403, ItemClassification.trap, 0, ["Trap"], 0x0),
     ItemData("Break Time", 404, ItemClassification.trap, 0, ["Trap"], 0x0),
+    ItemData("Secret of the Waterfall", 405, ItemClassification.filler, 0, ["Generic"], 0x0),
+    ItemData("Chatot Repellent", 406, ItemClassification.filler, 0, ["Generic"], 0x0),
+    ItemData("Sky Jukebox", 407, ItemClassification.filler, 0, ["Generic"], 0x0),
+    ItemData("Recruitment Sensor", 408, ItemClassification.filler, 0, ["Generic"], 0x0),
 ]
 
 item_frequencies: Dict[str, int] = {

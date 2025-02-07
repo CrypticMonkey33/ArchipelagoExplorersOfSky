@@ -1,109 +1,4 @@
-import typing
 
-import typing_extensions
-from typing import Dict
-from BaseClasses import Location
-
-
-class LocationData:
-    name: str = ""
-    classification: str = ""
-    dungeon_length: int = 1
-    id: int = -1
-    dungeon_start_id: int = -1
-    group: list[str] = [""]
-
-    def __init__(self, classification, dungeon_length, name, id, dungeon_start_id, group=None):
-        if group is None:
-            group = [""]
-        self.name = name
-        self.classification = classification
-        self.dungeon_length = dungeon_length
-        self.id = id
-        self.dungeon_start_id = dungeon_start_id
-        self.group = group
-
-
-class EOSLocation(Location):
-    game: str = "Pokemon Mystery Dungeon Explorers of Sky"
-
-
-def get_location_table_by_groups() -> Dict[str, set[str]]:
-    #groups: Set[str] = set()
-    new_dict: Dict[str, set[str]] = {}
-    for location_name in location_table:
-        if location_table[location_name].group:
-            for group in location_table[location_name].group:
-                #groups.add(group)
-                if group in new_dict:
-                    new_dict[group].add(location_name)
-                else:
-                    test_set = set("")
-                    test_set.add(location_name)
-                    new_dict.update({group: test_set})
-
-    return new_dict
-
-
-def get_mission_location_table() -> typing.List[LocationData]:
-
-    new_list: typing.List[LocationData] = []
-
-    for location in EOS_location_table:
-        if location.name == "Beach Cave":
-            for j in range(50):
-                location_name: str = f"{location.name} Mission {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j
-                new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
-            for j in range(50):
-                location_name = f"{location.name} Outlaw {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j + 50
-                new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
-
-        elif location.classification == "EarlyDungeonComplete":
-            for j in range(50):
-                location_name = f"{location.name} Mission {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j
-                new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
-
-            for j in range(50):
-                location_name = f"{location.name} Outlaw {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j + 50
-                new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
-
-        elif location.classification == "LateDungeonComplete":
-            for j in range(50):
-                location_name = f"{location.name} Mission {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j
-                new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
-
-            for j in range(50):
-                location_name = f"{location.name} Outlaw {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j + 50
-                new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
-
-    return new_list
-
-
-def get_location_table_by_start_id() -> Dict[int, set[str]]:
-    #groups: Set[str] = set()
-    new_dict: Dict[int, set[str]] = {}
-    for location_name in location_table:
-        if location_table[location_name].group:
-            for group in location_table[location_name].group:
-                #groups.add(group)
-                if group in new_dict:
-                    new_dict[group].add(location_name)
-                else:
-                    test_set = set("")
-                    test_set.add(location_name)
-                    new_dict.update({group: test_set})
-
-    return new_dict
-
-
-EOS_location_table: typing.List[LocationData] = [
-    # "Test Dungeon", 0,  # Should be unused
     LocationData("EarlyDungeonComplete", 2,  "Beach Cave", 2,  1, ["Mission", "Early"]),
     LocationData("EarlyDungeonComplete", 1, "Drenched Bluff", 3, 3, ["Mission", "Early"]),
     LocationData("EarlyDungeonComplete", 2, "Mt. Bristle", 5, 4, ["Mission", "Early"]),  # 2 subareas
@@ -135,7 +30,6 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 3, "Crevice Cave", 49, 47, ["Mission", "Late"]),  # 3 subareas
     LocationData("LateDungeonComplete", 1, "Surrounded Sea", 50, 50, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Miracle Sea", 53, 51, ["Mission", "Late"]),  # 3 subareas
-    # LocationData("DungeonComplete", 8,  "Ice Aegis Cave", 60,  54),   # 8 subareas             we hate aegis cave. also it's kinda broken rn so we're gonna remove it for now
     LocationData("LateDungeonComplete", 1, "Mt. Travail", 62, 62, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 1, "The Nightmare", 63, 63, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Spacial Rift", 66, 64, ["Mission", "Late"]),  # 3 subareas
@@ -149,12 +43,12 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 2, "World Abyss", 82, 81, ["Mission", "Late"]),  # 2 subareas
     LocationData("LateDungeonComplete", 2, "Sky Stairway", 84, 83, ["Mission", "Late"]),  # 2 subareas
     LocationData("LateDungeonComplete", 2, "Mystery Jungle", 86, 85, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 1, "Serenity River", 87, 87, ["Mission", "Early"]),
-    LocationData("LateDungeonComplete", 1, "Landslide Cave", 88, 88, ["Mission", "Early"]),
-    LocationData("LateDungeonComplete", 1, "Lush Prairie", 89, 89, ["Mission", "Early"]),
-    LocationData("LateDungeonComplete", 1, "Tiny Meadow", 90, 90, ["Mission", "Early"]),
-    LocationData("LateDungeonComplete", 1, "Labyrinth Cave", 91, 91, ["Mission", "Early"]),
-    LocationData("LateDungeonComplete", 1, "Oran Forest", 92, 92, ["Mission", "Early"]),
+    LocationData("LateDungeonComplete", 1, "Serenity River", 87, 87, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", 1, "Landslide Cave", 88, 88, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", 1, "Lush Prairie", 89, 89, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", 1, "Tiny Meadow", 90, 90, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", 1, "Labyrinth Cave", 91, 91, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", 1, "Oran Forest", 92, 92, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 1, "Lake Afar", 93, 93, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 1, "Happy Outlook", 94, 94, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 1, "Mt. Mistral", 95, 95, ["Mission", "Late"]),
@@ -172,7 +66,6 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("RuleDungeonComplete", 1, "Southeastern Islands", 109, 109, ["Rule"]),
     LocationData("RuleDungeonComplete", 1, "Inferno Cave", 110, 110, ["Rule"]),
     LocationData("LateDungeonComplete", 12, "1st Station Pass", 122, 111, ["Mission", "Late"]),  # 12 subareas
-    # Special Episode Dungeons
     LocationData("SpecialDungeonComplete", 5, "SE Star Cave", 127, 123),
     LocationData("SpecialDungeonComplete", 1,  "SE Murky Forest", 128,  128),
     LocationData("SpecialDungeonComplete", 1,  "SE Eastern Cave", 129,  129),
@@ -192,7 +85,6 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("SpecialDungeonComplete", 3,  "SE Limestone Cavern", 157,  155),   # 3 subareas
     LocationData("SpecialDungeonComplete", 7,  "SE Spring Cave", 164,  158),   # 7 subareas
     LocationData("LateDungeonComplete", 1, "Star Cave", 174,  174, ["Mission", "Late"]),
-    # Dojo Dungeons
     LocationData("DojoDungeonComplete", 1, "Dojo Normal/Fly Maze", 180, 180),  # 7 subareas
     LocationData("DojoDungeonComplete", 1, "Dojo Dark/Fire Maze", 181, 181),  # 7 subareas
     LocationData("DojoDungeonComplete", 1, "Dojo Rock/Water Maze", 182, 182),  # 7 subareas
@@ -203,10 +95,8 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("DojoDungeonComplete", 1, "Dojo Poison/Bug Maze", 187, 187),  # 7 subareas
     LocationData("DojoDungeonComplete", 1, "Dojo Dragon Maze", 188, 188),  # 7 subareas
     LocationData("DojoDungeonComplete", 1, "Dojo Ghost Maze", 189, 189),  # 7 subareas
-    #LocationData("RuleDungeonComplete", 1, "Dojo Final Maze", 191, 191),  # 7 subareas
 
     LocationData("Event", 0,  "Final Boss", 400, 0),
-    # generic checks, right now just bag upgrades
     LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 1", 300, 0),
     LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 2", 301, 0),
     LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 3", 302, 0),
@@ -230,19 +120,3 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("ShopItem", 0, "Shop Item 9", 318, 0),
     LocationData("ShopItem", 0, "Shop Item 10", 319, 0),
     LocationData("SEDungeonUnlock", 0, "Team Name", 427, 0),
-
-
-]
-
-location_Dict_by_id: typing.Dict[int, LocationData] = {location.id: location for location in EOS_location_table}
-location_table: Dict[str, LocationData] = {location.name: location for location in EOS_location_table}
-
-location_table_by_groups = get_location_table_by_groups()
-
-location_dict_by_start_id: typing.Dict[int, LocationData] = {location.dungeon_start_id: location for location in EOS_location_table}
-
-mission_location_table = get_mission_location_table()
-
-expanded_EOS_location_table: typing.List[LocationData] = []
-expanded_EOS_location_table.extend(EOS_location_table)
-expanded_EOS_location_table.extend(mission_location_table)
