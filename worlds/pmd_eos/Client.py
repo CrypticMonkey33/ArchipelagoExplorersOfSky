@@ -240,7 +240,9 @@ class EoSClient(BizHawkClient):
             for i in range(len(ctx.items_received) - received_index):
                 # get the item data from our item table
                 item_data = item_table_by_id[ctx.items_received[received_index + i].item]
-                if item_data.group in ["EarlyDungeons", "LateDungeons", "Dojo Dungeons", "BossDungeons", "ExtraDungeons"]:
+                if (("EarlyDungeons" in item_data.group) or ("LateDungeons" in item_data.group)
+                        or ("Dojo Dungeons" in item_data.group) or ("BossDungeons" in item_data.group)
+                        or ("ExtraDungeons" in item_data.group)):
                     item_memory_offset = item_data.memory_offset
                     # Since our open list is a byte array and our memory offset is bit based
                     # We have to grab our significant byte digits
