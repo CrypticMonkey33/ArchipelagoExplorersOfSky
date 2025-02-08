@@ -573,7 +573,8 @@ class EoSClient(BizHawkClient):
                 if item_boxes_collected != []:
                     # I have an item in my list, add it to the queue and set the performance progress list to true
                     item_data = item_boxes_collected.pop(0)
-                    if item_data["name"] in ["Golden Seed", "Gold Ribbon", "Link Box", "Sky Gift"]:
+                    if item_data["name"] in ["Golden Seed", "Gold Ribbon", "Link Box", "Sky Gift", "Amber Tear",
+                                             "Mystery Part", "Secret Slab", "Friend Bow"]:
                         write_byte = performance_progress_bitfield[4] + (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
                         write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
@@ -615,7 +616,8 @@ class EoSClient(BizHawkClient):
                     # I have an item in my list and lappy is already done with the item in the queue,
                     # so add another item to queue and set performance progress to true
                     item_data = item_boxes_collected.pop(0)
-                    if item_data["name"] in ["Golden Seed", "Gold Ribbon", "Link Box", "Sky Gift"]:
+                    if item_data["name"] in ["Golden Seed", "Gold Ribbon", "Link Box", "Sky Gift", "Amber Tear",
+                                             "Mystery Part", "Secret Slab", "Friend Bow"]:
                         write_byte = performance_progress_bitfield[4] + (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
                         write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]

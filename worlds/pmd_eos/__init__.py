@@ -173,9 +173,10 @@ class EOSWorld(World):
                                  lambda state, ln=location.name, p=self.player: state.has(ln, p))
 
                         self.extra_items_added += 1
-            elif (location.classification == "Manaphy") or (location.classification == "SecretRank"):
+            elif location.classification in ["Manaphy", "SecretRank", "Legendary", "Instrument"]:
                 late_dungeons_region.locations.append(EOSLocation(self.player, location.name,
                                                                   location.id, late_dungeons_region))
+
             elif location.classification == "BossDungeonComplete":
                 end_game_region.locations.append(EOSLocation(self.player, location.name,
                                                              location.id, end_game_region))
@@ -193,7 +194,7 @@ class EOSWorld(World):
 
         menu_region.connect(early_dungeons_region)
 
-        early_dungeons_region.connect(late_dungeons_region)
+        early_dungeons_region.connect(late_dungeons_region, "Late Game Door")
 
         #early_dungeons_region.connect(early_dungeons_region2)
 

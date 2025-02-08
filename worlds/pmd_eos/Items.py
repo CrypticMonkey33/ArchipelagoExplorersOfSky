@@ -183,7 +183,10 @@ EOS_item_table = [
     ItemData("Sky Jukebox", 407, ItemClassification.filler, 0, ["Generic"], 0x0),
     ItemData("Recruitment Sensor", 408, ItemClassification.filler, 0, ["Generic"], 0x0),
     ItemData("Secret Rank", 409, ItemClassification.progression, 0, ["Rank"], 0x0),
-
+    ItemData("Mystery Part", 500, ItemClassification.useful, 0, ["Item"], 0xAD),
+    ItemData("Secret Slab", 501, ItemClassification.useful, 0, ["Item"], 0xAE),
+    ItemData("Amber Tear", 502, ItemClassification.useful, 0, ["Item"], 0x3A),
+    ItemData("Friend Bow", 503, ItemClassification.useful, 0, ["Item"], 0x35),
 
 ]
 
@@ -443,8 +446,6 @@ lootbox_table: Dict[str, Dict[str, int]] = {
 
     },
     "Hard Box": {
-        "Mystery Part": 0xAD,
-        "Secret Slab": 0xAE,
         "Key": 0xB6,
         "Lost Loot": 0xBA,
         "Unown Rock A": 0x190,
