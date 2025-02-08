@@ -213,8 +213,19 @@ class EoSClient(BizHawkClient):
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
-            scenario_main_list = read_state[6]
-            if int.from_bytes(scenario_main_list) == 0:
+            #scenario_main_list = read_state[6]
+            #if int.from_bytes(scenario_main_list) == 0:
+            #    return
+            #is_running = await self.is_game_running(ctx)
+            LOADED_OVERLAY_GROUP_1 = 0xAFAD4
+            overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
+            group1 = int.from_bytes(overlay_groups[0][0:4], "little")
+            group2 = int.from_bytes(overlay_groups[0][4:8], "little")
+            if (group2 == 0x2):
+                is_running = (group1 == 13 or group1 == 14)
+            else:
+                is_running = False
+            if not is_running:
                 return
 
             if self.macguffin_unlock_amount == 0:
@@ -347,7 +358,15 @@ class EoSClient(BizHawkClient):
                                 ]
                             )
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
-
+                elif "Rank" in item_data.group:
+                    if item_data.name == "Secret Rank":
+                        write_byte = performance_progress_bitfield[2] | (0x1 << 6)
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (performance_progress_offset + 0x2, int.to_bytes(write_byte),
+                                 self.ram_mem_domain)],
+                        )
                 elif "Macguffin" in item_data.group:
                     if item_data.name == "Relic Fragment Shard":
                         self.macguffins_collected += 1
@@ -438,7 +457,7 @@ class EoSClient(BizHawkClient):
                             )
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
 
-            # Check for set location flags.
+            # Check for set location flags in dungeon list
             for byte_i, byte in enumerate(conquest_list):
                 for j in range(8):
                     if j in self.checked_dungeon_flags[byte_i]:
@@ -458,6 +477,7 @@ class EoSClient(BizHawkClient):
                         if bit_number_dung in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
 
+            # Check for set location flags in general bitfield
             for byte_m, byte in enumerate(scenario_subx_bitfield):
                 for k in range(8):
                     if k in self.checked_general_flags[byte_m]:
@@ -533,6 +553,7 @@ class EoSClient(BizHawkClient):
                 if locs_to_send is not None:
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
 
+            # Check for opening Dark Crater
             if self.cresselia_feather_acquired and self.dialga_complete:
                 item_memory_offset = 0x67  # the location in memory of Dark Crater
                 sig_digit = item_memory_offset // 8
@@ -546,6 +567,8 @@ class EoSClient(BizHawkClient):
                             (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
                              self.ram_mem_domain)],
                     )
+
+            # Sending item boxes on Event Divide
             if ((performance_progress_bitfield[4] >> 3) & 1) == 0:  # if we are not currently dealing with items
                 if item_boxes_collected != []:
                     # I have an item in my list, add it to the queue and set the performance progress list to true
@@ -648,6 +671,8 @@ class EoSClient(BizHawkClient):
                         ]
                     )
 
+
+            # Update data storage
             await (ctx.send_msgs(
                 [
                     {"cmd": "Set",
@@ -682,6 +707,7 @@ class EoSClient(BizHawkClient):
                      }
                 ]))
 
+            # Check for finishing the game and send the goal to the server
             if not ctx.finished_game and self.goal_complete:
                 await ctx.send_msgs([{"cmd": "StatusUpdate", "status": ClientStatus.CLIENT_GOAL}])
 
@@ -709,3 +735,12 @@ class EoSClient(BizHawkClient):
                  }
             ]
         ))
+
+    async def is_game_running(self, ctx: "BizHawkClientContext") -> bool:
+        LOADED_OVERLAY_GROUP_1 = 0xAF234
+        overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
+        group1 = int.from_bytes(overlay_groups[0][0:4], "little")
+        group2 = int.from_bytes(overlay_groups[0][4:8], "little")
+        if (group2 == 0x2):
+            return group1 == 13 or group1 == 14
+        return False

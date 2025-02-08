@@ -182,6 +182,9 @@ EOS_item_table = [
     ItemData("Chatot Repellent", 406, ItemClassification.filler, 0, ["Generic"], 0x0),
     ItemData("Sky Jukebox", 407, ItemClassification.filler, 0, ["Generic"], 0x0),
     ItemData("Recruitment Sensor", 408, ItemClassification.filler, 0, ["Generic"], 0x0),
+    ItemData("Secret Rank", 409, ItemClassification.progression, 0, ["Rank"], 0x0),
+
+
 ]
 
 item_frequencies: Dict[str, int] = {

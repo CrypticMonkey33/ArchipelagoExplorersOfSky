@@ -53,6 +53,20 @@ def set_rules(world: "EOSWorld", excluded):
              lambda state: state.has("Steam Cave", player))
     set_rule(world.multiworld.get_location("Progressive Bag loc 5", player),
              lambda state: state.has("Mystifying Forest", player))
+
+    set_rule(world.multiworld.get_location("ManaphyEggHatch", player),
+             lambda state: state.has("Surrounded Sea", player))
+    set_rule(world.multiworld.get_location("ManaphyFed", player),
+             lambda state: state.has("Surrounded Sea", player))
+    set_rule(world.multiworld.get_location("ManaphyHealed", player),
+             lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
+    set_rule(world.multiworld.get_location("ManaphyJoinTeam", player),
+             lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
+    set_rule(world.multiworld.get_location("ManaphyRecruited", player),
+             lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
+
+    set_rule(world.multiworld.get_location("SecretRank", player),
+                                           lambda state: state.has("Crevice Cave", player))
     #set_rule(world.multiworld.get_entrance("Early Game Door", player),
     #         lambda state: state.has("Beach Cave", player))
     #for location_num in location_Dict_by_id:

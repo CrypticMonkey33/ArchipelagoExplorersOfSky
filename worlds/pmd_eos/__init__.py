@@ -11,7 +11,7 @@ from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id, exp
 from .Options import EOSOptions
 from .Rules import set_rules, ready_for_late_game, ready_for_dialga
 from .Regions import EoS_regions
-from BaseClasses import Tutorial, ItemClassification, Region, Location
+from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import set_rule, forbid_item
 from .Client import EoSClient
@@ -173,7 +173,9 @@ class EOSWorld(World):
                                  lambda state, ln=location.name, p=self.player: state.has(ln, p))
 
                         self.extra_items_added += 1
-
+            elif (location.classification == "Manaphy") or (location.classification == "SecretRank"):
+                late_dungeons_region.locations.append(EOSLocation(self.player, location.name,
+                                                                  location.id, late_dungeons_region))
             elif location.classification == "BossDungeonComplete":
                 end_game_region.locations.append(EOSLocation(self.player, location.name,
                                                              location.id, end_game_region))
@@ -183,8 +185,9 @@ class EOSWorld(World):
                 extra_items_region.locations.append(EOSLocation(self.player, location.name,
                                                                 location.id, extra_items_region))
             elif location.classification == "RuleDungeonComplete":
-                rule_dungeons_region.locations.append(EOSLocation(self.player, location.name,
-                                                                  location.id, rule_dungeons_region))
+                location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
+                location.progress_type = LocationProgressType.EXCLUDED
+                rule_dungeons_region.locations.append(location)
 
         menu_region.connect(extra_items_region)
 

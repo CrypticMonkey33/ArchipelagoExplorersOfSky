@@ -230,7 +230,12 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("ShopItem", 0, "Shop Item 9", 318, 0),
     LocationData("ShopItem", 0, "Shop Item 10", 319, 0),
     LocationData("SEDungeonUnlock", 0, "Team Name", 427, 0),
-
+    LocationData("Manaphy", 0, "ManaphyEggHatch", 320, 0),
+    LocationData("Manaphy", 0, "ManaphyFed", 321, 0),
+    LocationData("Manaphy", 0, "ManaphyHealed", 322, 0),
+    LocationData("Manaphy", 0, "ManaphyJoinTeam", 323, 0),
+    LocationData("Manaphy", 0, "ManaphyRecruited", 324, 0),
+    LocationData("SecretRank", 0, "SecretRank", 347, 0),
 
 ]
 
