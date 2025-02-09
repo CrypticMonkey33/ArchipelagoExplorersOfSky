@@ -489,7 +489,7 @@ class EoSClient(BizHawkClient):
                         if (ctx.slot_data["Goal"] == 0) and (bit_number_dung == 43):
                             self.goal_complete = True
                             locs_to_send.add(400)
-                        elif (ctx.slot_data["Goal"] == 1) and (bit_number_dung == 67):
+                        elif (ctx.slot_data["Goal"] == 1) and (bit_number_dung == 69):
                             self.goal_complete = True
                             locs_to_send.add(400)
                         elif (ctx.slot_data["Goal"] == 1) and (bit_number_dung == 43):
