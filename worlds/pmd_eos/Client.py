@@ -690,7 +690,7 @@ class EoSClient(BizHawkClient):
                     )
 
             # if performance progress 37 is off, and we have a legendary to recruit, turn 37 on
-            if (((performance_progress_bitfield[4] >> 5) & 1) == 0) and legendaries_recruited:
+            if (((performance_progress_bitfield[4] >> 5) & 1) == 0) and event_local_num != 22 and legendaries_recruited:
                 write_byte = performance_progress_bitfield[4] + (0x1 << 5)
                 performance_progress_bitfield[4] = write_byte
                 await bizhawk.write(
@@ -703,7 +703,7 @@ class EoSClient(BizHawkClient):
 
             # if Scenario Talk 249 is on, edit event local with the index of the next legendary and then turn off
             # performance progress 37
-            if (((scenario_talk_bitfield_248_list >> 1) & 1) == 1) and legendaries_recruited:
+            if (((scenario_talk_bitfield_248_list >> 1) & 1) == 1) and event_local_num == 22 and legendaries_recruited:
                 item_data = legendaries_recruited.pop(0)
                 write_byte2 = item_data["memory_offset"]
                 scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFD
