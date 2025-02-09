@@ -268,7 +268,7 @@ class EOSWorld(World):
                 required_items.append(self.create_item(item_name, ItemClassification.progression))
 
             else:
-                required_items.append(self.create_item(item_name, ItemClassification.filler))
+                required_items.append(self.create_item(item_name, ItemClassification.useful))
 
         remaining = len(EOS_location_table) + self.extra_items_added - len(
             required_items) - 1  # subtracting 1 for the event check
