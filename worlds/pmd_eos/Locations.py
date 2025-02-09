@@ -234,7 +234,7 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("Manaphy", 0, "Manaphy Fed", 321, 0),
     LocationData("Manaphy", 0, "Manaphy Healed", 322, 0),
     LocationData("Manaphy", 0, "Manaphy Join Team", 323, 0),
-    LocationData("Manaphy", 0, "ManaphyLeadsToMarineResort", 324, 0),
+    LocationData("Manaphy", 0, "Manaphy Leads To Marine Resort", 324, 0),
     LocationData("SecretRank", 0, "SecretRank", 347, 0),
 
     LocationData("Legendary", 0, "Recruit Uxie", 325, 0),

@@ -54,15 +54,15 @@ def set_rules(world: "EOSWorld", excluded):
     set_rule(world.multiworld.get_location("Progressive Bag loc 5", player),
              lambda state: state.has("Mystifying Forest", player))
 
-    set_rule(world.multiworld.get_location("ManaphyEggHatch", player),
+    set_rule(world.multiworld.get_location("Manaphy Egg Hatch", player),
              lambda state: state.has("Surrounded Sea", player))
-    set_rule(world.multiworld.get_location("ManaphyFed", player),
+    set_rule(world.multiworld.get_location("Manaphy Fed", player),
              lambda state: state.has("Surrounded Sea", player))
-    set_rule(world.multiworld.get_location("ManaphyHealed", player),
+    set_rule(world.multiworld.get_location("Manaphy Healed", player),
              lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
-    set_rule(world.multiworld.get_location("ManaphyJoinTeam", player),
+    set_rule(world.multiworld.get_location("Manaphy Join Team", player),
              lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
-    set_rule(world.multiworld.get_location("ManaphyLeadsToMarineResort", player),
+    set_rule(world.multiworld.get_location("Manaphy Leads To Marine Resort", player),
              lambda state: state.has("Manaphy", player))
 
     set_rule(world.multiworld.get_location("SecretRank", player),
@@ -178,7 +178,7 @@ def instrument_and_legendary_rules(world, player):
                            and state.has("Mt. Avalanche", player)
                            and state.has("Secret Rank", player)
              )
-    set_rule(world.multiworld.get_location("Recruit Heartan", player),
+    set_rule(world.multiworld.get_location("Recruit Heatran", player),
              lambda state: state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
                            and state.has("Temporal Tower", player)
                            and state.has("Giant Volcano", player)
@@ -208,7 +208,7 @@ def instrument_and_legendary_rules(world, player):
              )
     set_rule(world.multiworld.get_location("Recruit Shaymin", player),
              lambda state: state.has("1st Station Pass", player)
-                           and state.has_group("Relic Fragment Shard", player, world.options.shard_fragments.value)
+                           and state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
                            and state.has("Temporal Tower", player)
              )
 
