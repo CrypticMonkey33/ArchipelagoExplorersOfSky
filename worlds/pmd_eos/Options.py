@@ -146,8 +146,6 @@ class StarterOption(Choice):
 class IqScaling(Range):
     """Do you want to scale IQ to gain IQ faster? What rate? (1x, 2x, 3x, etc.)
     WARNING: 0x WILL NOT GIVE YOU ANY IQ. USE AT YOUR OWN RISK
-
-    Not currently Implemented
     """
 
     display_name = "IQ Scaling"

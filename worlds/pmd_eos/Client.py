@@ -255,7 +255,7 @@ class EoSClient(BizHawkClient):
             scenario_main_bitfield_list: array.array[int] = array.array('i', [item for item in read_state[8]])
             item_backup_bytes: array.array[int] = array.array('i', [item for item in read_state[9]])
             scenario_talk_bitfield_248_list = int.from_bytes(read_state[10])
-
+            event_local_num = int.from_bytes(read_state[12])
             dungeon_enter_index = int.from_bytes(read_state[11], "little")
 
             locs_to_send = set()
@@ -699,24 +699,24 @@ class EoSClient(BizHawkClient):
                         (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                     ]
                 )
+                await asyncio.sleep(0.1)
 
             # if Scenario Talk 249 is on, edit event local with the index of the next legendary and then turn off
             # performance progress 37
-            if ((scenario_talk_bitfield_248_list >> 1) & 1) == 1:
+            if (((scenario_talk_bitfield_248_list >> 1) & 1) == 1) and legendaries_recruited:
                 item_data = legendaries_recruited.pop(0)
-                write_byte = performance_progress_bitfield[4] & 0xDF
-                performance_progress_bitfield[4] = write_byte
                 write_byte2 = item_data["memory_offset"]
                 scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFD
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
-                        (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+
                         (event_local_offset, int.to_bytes(write_byte2), self.ram_mem_domain),
                         (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                          self.ram_mem_domain),
                     ]
                 )
+                await asyncio.sleep(0.1)
 
             # Update data storage
             await (ctx.send_msgs(
