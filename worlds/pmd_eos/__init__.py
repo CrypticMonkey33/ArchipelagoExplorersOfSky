@@ -105,45 +105,47 @@ class EOSWorld(World):
             if location.name == "Beach Cave":
                 menu_region.locations.append(EOSLocation(self.player, location.name,
                                                          location.id, menu_region))
-                for j in range(self.options.early_mission_checks.value):
-                    location_name: str = f"{location.name} Mission {j + 1}"
-                    location_id = location.id + 500 + (100 * location.id) + j
-                    menu_region.locations.append(EOSLocation(self.player, location_name,
-                                                             location_id, menu_region))
+                if "Mission" in location.group:
+                    for j in range(self.options.early_mission_checks.value):
+                        location_name: str = f"{location.name} Mission {j + 1}"
+                        location_id = location.id + 500 + (100 * location.id) + j
+                        menu_region.locations.append(EOSLocation(self.player, location_name,
+                                                                 location_id, menu_region))
 
-                    self.extra_items_added += 1
-                for j in range(self.options.early_outlaw_checks.value):
-                    location_name = f"{location.name} Outlaw {j + 1}"
-                    location_id = location.id + 500 + (100 * location.id) + j + 50
-                    menu_region.locations.append(EOSLocation(self.player, location_name,
-                                                             location_id, menu_region))
+                        self.extra_items_added += 1
+                    for j in range(self.options.early_outlaw_checks.value):
+                        location_name = f"{location.name} Outlaw {j + 1}"
+                        location_id = location.id + 500 + (100 * location.id) + j + 50
+                        menu_region.locations.append(EOSLocation(self.player, location_name,
+                                                                 location_id, menu_region))
 
-                    self.extra_items_added += 1
+                        self.extra_items_added += 1
             elif location.name == "Progressive Bag loc 1":
                 menu_region.locations.append(EOSLocation(self.player, location.name,
                                                          location.id, menu_region))
             elif location.classification == "EarlyDungeonComplete":
                 early_dungeons_region.locations.append(EOSLocation(self.player, location.name,
                                                                    location.id, early_dungeons_region))
-                for j in range(self.options.early_mission_checks.value):
-                    location_name = f"{location.name} Mission {j + 1}"
-                    location_id = location.id + 500 + (100 * location.id) + j
-                    early_dungeons_region.locations.append(EOSLocation(self.player, location_name,
-                                                                       location_id, early_dungeons_region))
+                if "Mission" in location.group:
+                    for j in range(self.options.early_mission_checks.value):
+                        location_name = f"{location.name} Mission {j + 1}"
+                        location_id = location.id + 500 + (100 * location.id) + j
+                        early_dungeons_region.locations.append(EOSLocation(self.player, location_name,
+                                                                           location_id, early_dungeons_region))
 
-                    set_rule(self.multiworld.get_location(location_name, self.player),
-                             lambda state, ln=location.name, p=self.player: state.has(ln, p))
-                    self.extra_items_added += 1
+                        set_rule(self.multiworld.get_location(location_name, self.player),
+                                 lambda state, ln=location.name, p=self.player: state.has(ln, p))
+                        self.extra_items_added += 1
 
-                for j in range(self.options.early_outlaw_checks.value):
-                    location_name = f"{location.name} Outlaw {j + 1}"
-                    location_id = location.id + 500 + (100 * location.id) + j + 50
-                    early_dungeons_region.locations.append(EOSLocation(self.player, location_name,
-                                                                       location_id, early_dungeons_region))
+                    for j in range(self.options.early_outlaw_checks.value):
+                        location_name = f"{location.name} Outlaw {j + 1}"
+                        location_id = location.id + 500 + (100 * location.id) + j + 50
+                        early_dungeons_region.locations.append(EOSLocation(self.player, location_name,
+                                                                           location_id, early_dungeons_region))
 
-                    set_rule(self.multiworld.get_location(location_name, self.player),
-                             lambda state, ln=location.name, p=self.player: state.has(ln, p))
-                    self.extra_items_added += 1
+                        set_rule(self.multiworld.get_location(location_name, self.player),
+                                 lambda state, ln=location.name, p=self.player: state.has(ln, p))
+                        self.extra_items_added += 1
 
             elif location.classification == "SpecialDungeonComplete":
                 early_dungeons_region.locations.append(EOSLocation(self.player, location.name,
@@ -152,7 +154,7 @@ class EOSWorld(World):
             elif location.classification == "LateDungeonComplete":
                 late_dungeons_region.locations.append(EOSLocation(self.player, location.name,
                                                                   location.id, late_dungeons_region))
-                if self.options.goal.value == 1:
+                if self.options.goal.value == 1 and ("Mission" in location.group):
                     for j in range(self.options.late_mission_checks.value):
                         location_name = f"{location.name} Mission {j + 1}"
                         location_id = location.id + 500 + (100 * location.id) + j
@@ -180,6 +182,27 @@ class EOSWorld(World):
             elif location.classification == "BossDungeonComplete":
                 end_game_region.locations.append(EOSLocation(self.player, location.name,
                                                              location.id, end_game_region))
+                if (self.options.goal.value == 1) and ("Mission" in location.group):
+                    for j in range(self.options.late_mission_checks.value):
+                        location_name = f"{location.name} Mission {j + 1}"
+                        location_id = location.id + 500 + (100 * location.id) + j
+                        late_dungeons_region.locations.append(EOSLocation(self.player, location_name,
+                                                                          location_id, late_dungeons_region))
+
+                        set_rule(self.multiworld.get_location(f"{location.name} Mission {j + 1}", self.player),
+                                 lambda state, ln=location.name, p=self.player: state.has(ln, p))
+                        self.extra_items_added += 1
+
+                    for j in range(self.options.late_outlaw_checks.value):
+                        location_name = f"{location.name} Outlaw {j + 1}"
+                        location_id = location.id + 500 + (100 * location.id) + j + 50
+                        late_dungeons_region.locations.append(EOSLocation(self.player, location_name,
+                                                                          location_id, late_dungeons_region))
+
+                        set_rule(self.multiworld.get_location(f"{location.name} Outlaw {j + 1}", self.player),
+                                 lambda state, ln=location.name, p=self.player: state.has(ln, p))
+
+                        self.extra_items_added += 1
             elif ((location.classification == "ProgressiveBagUpgrade") or (location.classification == "ShopItem")
                   or (location.classification == "DojoDungeonComplete") or (
                           location.classification == "SEDungeonUnlock")):

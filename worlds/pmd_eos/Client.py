@@ -230,17 +230,17 @@ class EoSClient(BizHawkClient):
             scenario_main_list = read_state[6]
             if int.from_bytes(scenario_main_list) == 0:
                 return
-            #is_running = await self.is_game_running(ctx)
-            #LOADED_OVERLAY_GROUP_1 = 0xAFAD4
-            #overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
-            #group1 = int.from_bytes(overlay_groups[0][0:4], "little")
-            #group2 = int.from_bytes(overlay_groups[0][4:8], "little")
-            #if (group2 == 0x2):
-            #    is_running = (group1 == 13 or group1 == 14)
-            #else:
-            #    is_running = False
-            #if not is_running:
-            #    return
+            is_running = await self.is_game_running(ctx)
+            LOADED_OVERLAY_GROUP_1 = 0xAFAD4
+            overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
+            group1 = int.from_bytes(overlay_groups[0][0:4], "little")
+            group2 = int.from_bytes(overlay_groups[0][4:8], "little")
+            if (group2 == 0x2):
+                is_running = (group1 == 13 or group1 == 14)
+            else:
+                is_running = False
+            if not is_running:
+                return
 
             #if self.macguffin_unlock_amount == 0:
             #    self.macguffin_unlock_amount = ctx.slot_data["ShardFragmentAmount"]
@@ -461,7 +461,7 @@ class EoSClient(BizHawkClient):
                                 ]
                             )
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
-                    elif item_data.name == "Break Time":  # 36
+                    elif item_data.name == "Touch Grass":  # 36
                         if ((performance_progress_bitfield[4] >> 4) & 1) == 0:
                             write_byte = performance_progress_bitfield[4] + (0x1 << 4)
                             performance_progress_bitfield[4] = write_byte
@@ -508,7 +508,8 @@ class EoSClient(BizHawkClient):
             # 3 = 251 send check for mission, 4 = 252 outlaw, 5 = 253 normal missions
             if ((scenario_talk_bitfield_248_list >> 5) & 1) == 1:  # if normal mission
                 # read dungeon enter index
-                if dungeon_enter_index in location_dict_by_start_id:
+                if ((dungeon_enter_index in location_dict_by_start_id) and
+                        ("Mission" in location_dict_by_start_id[dungeon_enter_index].group)):
                     location_name = location_dict_by_start_id[dungeon_enter_index].name
                     location_id = location_dict_by_start_id[dungeon_enter_index].id
                     dungeons_complete = dungeon_missions_dict[location_name]
@@ -519,7 +520,7 @@ class EoSClient(BizHawkClient):
                             dungeon_missions_dict[location_name] += 1
                             # location.id + 500 + (100 * i) + j
 
-                    elif "Late" in location_Dict_by_id[dungeon_enter_index].group:
+                    elif "Late" in location_dict_by_start_id[dungeon_enter_index].group:
                         if dungeons_complete < ctx.slot_data["LateMissionsAmount"]:
                             scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list | (0x1 << 3)
                             locs_to_send.add(location_id + 500 + (100 * location_id) + dungeons_complete)
@@ -537,7 +538,8 @@ class EoSClient(BizHawkClient):
                 await asyncio.sleep(0.1)
             elif ((scenario_talk_bitfield_248_list >> 4) & 1) == 1:  # if outlaw mission
                 # read dungeon enter index
-                if dungeon_enter_index in location_dict_by_start_id:
+                if ((dungeon_enter_index in location_dict_by_start_id) and
+                        ("Mission" in location_dict_by_start_id[dungeon_enter_index].group)):
                     location_name = location_dict_by_start_id[dungeon_enter_index].name
                     location_id = location_dict_by_start_id[dungeon_enter_index].id
                     dungeons_complete = dungeon_outlaws_dict[location_name]

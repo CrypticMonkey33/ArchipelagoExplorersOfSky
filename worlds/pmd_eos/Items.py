@@ -177,7 +177,7 @@ EOS_item_table = [
     ItemData("Confusion Trap", 401, ItemClassification.trap, 0, ["Trap"], 0x0),
     ItemData("Nap Time!", 402, ItemClassification.trap, 0, ["Trap"], 0x0),
     ItemData("Sentry Duty!", 403, ItemClassification.trap, 0, ["Trap"], 0x0),
-    ItemData("Break Time", 404, ItemClassification.trap, 0, ["Trap"], 0x0),
+    ItemData("Touch Grass", 404, ItemClassification.trap, 0, ["Trap"], 0x0),
     ItemData("Secret of the Waterfall", 405, ItemClassification.filler, 0, ["Generic"], 0x0),
     ItemData("Chatot Repellent", 406, ItemClassification.filler, 0, ["Generic"], 0x0),
     ItemData("Sky Jukebox", 407, ItemClassification.filler, 0, ["Generic"], 0x0),

@@ -50,7 +50,7 @@ def get_mission_location_table() -> typing.List[LocationData]:
     new_list: typing.List[LocationData] = []
 
     for location in EOS_location_table:
-        if location.name == "Beach Cave":
+        if location.name == "Beach Cave" and "Mission" in location.group:
             for j in range(50):
                 location_name: str = f"{location.name} Mission {j + 1}"
                 location_id = location.id + 500 + (100 * location.id) + j
@@ -60,7 +60,7 @@ def get_mission_location_table() -> typing.List[LocationData]:
                 location_id = location.id + 500 + (100 * location.id) + j + 50
                 new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
 
-        elif location.classification == "EarlyDungeonComplete":
+        elif location.classification == "EarlyDungeonComplete" and "Mission" in location.group:
             for j in range(50):
                 location_name = f"{location.name} Mission {j + 1}"
                 location_id = location.id + 500 + (100 * location.id) + j
@@ -71,7 +71,8 @@ def get_mission_location_table() -> typing.List[LocationData]:
                 location_id = location.id + 500 + (100 * location.id) + j + 50
                 new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
 
-        elif location.classification == "LateDungeonComplete":
+        elif "Mission" in location.group and (location.classification == "LateDungeonComplete"
+                                              or location.classification == "BossDungeonComplete"):
             for j in range(50):
                 location_name = f"{location.name} Mission {j + 1}"
                 location_id = location.id + 500 + (100 * location.id) + j
@@ -128,8 +129,8 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("EarlyDungeonComplete", 1, "Deep Dusk Forest", 33, 33, ["Mission", "Early"]),
     LocationData("EarlyDungeonComplete", 1, "Treeshroud Forest", 34, 34, ["Mission", "Early"]),
     LocationData("EarlyDungeonComplete", 3, "Brine Cave", 37, 35, ["Mission", "Early"]),  # 3 subareas
-    LocationData("BossDungeonComplete", 3, "Hidden Land", 40, 38, ["Mission", "Boss"]),  # 3 subareas
-    LocationData("BossDungeonComplete", 3, "Temporal Tower", 43, 41, ["Mission", "Boss"]),  # 3 subareas
+    LocationData("BossDungeonComplete", 3, "Hidden Land", 40, 38, ["Mission", "Boss", "Late"]),  # 3 subareas
+    LocationData("BossDungeonComplete", 3, "Temporal Tower", 43, 41, ["Mission", "Boss", "Late"]),  # 3 subareas
     LocationData("LateDungeonComplete", 2, "Mystifying Forest", 45, 44, ["Mission", "Late"]),  # start of extra levels
     LocationData("LateDungeonComplete", 1, "Blizzard Island", 46, 46, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Crevice Cave", 49, 47, ["Mission", "Late"]),  # 3 subareas
@@ -139,7 +140,7 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 1, "Mt. Travail", 62, 62, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 1, "The Nightmare", 63, 63, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Spacial Rift", 66, 64, ["Mission", "Late"]),  # 3 subareas
-    LocationData("LateDungeonComplete", 3, "Dark Crater", 69, 67, ["Boss"]),  # 3 subareas
+    LocationData("BossDungeonComplete", 3, "Dark Crater", 69, 67, ["Boss"]),  # 3 subareas
     LocationData("LateDungeonComplete", 2, "Concealed Ruins", 71, 70, ["Mission", "Late"]),  # 2 subareas
     LocationData("LateDungeonComplete", 1, "Marine Resort", 72, 72, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 2, "Bottomless Sea", 74, 73, ["Mission", "Late"]),  # 2 subareas
