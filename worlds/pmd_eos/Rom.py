@@ -46,6 +46,8 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
     seed_offset = 0x36F90
     player_name_offset = 0x36F80
     ap_settings_offset = 0x36F98
+    mission_max_offset = 0x36F9A
+    macguffin_max_offset = 0x36F9E
     # recruitment_offset = 0x3702C
     # recruitment_evo_offset = 0x37030
     # team_formation_offset = 0x37034
@@ -83,7 +85,8 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
 
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
-
+    instrument_count = world.options.req_instruments.value + world.options.extra_instruments.value
+    macguffin_count = world.options.shard_fragments.value + world.options.extra_shards.value
     # Take the options and bake them into the rom, so they can be applied on runtime
     write_byte = 0
     write_byte = write_byte | world.options.iq_scaling.value
@@ -112,6 +115,12 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
         write_byte = write_byte | ((0x1 << 9) + (0x1 << 10))
     # write the tokens that will be applied and write the token data into the bin for AP
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset, int.to_bytes(write_byte, length=2, byteorder="little"))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + macguffin_max_offset + 0x1, int.to_bytes(instrument_count))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + macguffin_max_offset, int.to_bytes(macguffin_count))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset, int.to_bytes(world.options.early_mission_checks.value))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x1, int.to_bytes(world.options.early_outlaw_checks.value))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x2, int.to_bytes(world.options.late_mission_checks.value))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x3, int.to_bytes(world.options.late_outlaw_checks.value))
     patch.write_file("token_data.bin", patch.get_token_binary())
 
 

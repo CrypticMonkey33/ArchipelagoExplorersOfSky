@@ -176,6 +176,7 @@ class EoSClient(BizHawkClient):
             dungeon_enter_index_offset = await (self.load_script_variable_raw(0x29, ctx))
             scenario_talk_bitfield_offset = await (self.load_script_variable_raw(0x12, ctx))
             event_local_offset = await (self.load_script_variable_raw(0x5C, ctx))
+            mission_status_offset = 0x3B0000 + 0x4
 
             if "Dungeon Missions" in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data["Dungeon Missions"]
@@ -227,13 +228,14 @@ class EoSClient(BizHawkClient):
                     (scenario_talk_bitfield_offset + 0x1F, 1, self.ram_mem_domain),
                     (dungeon_enter_index_offset, 2, self.ram_mem_domain),
                     (event_local_offset, 1, self.ram_mem_domain),
+
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
             scenario_main_list = read_state[6]
             if int.from_bytes(scenario_main_list) == 0:
                 return
-            is_running = await self.is_game_running(ctx)
+            #is_running = await self.is_game_running(ctx)
             LOADED_OVERLAY_GROUP_1 = 0xAFAD4
             overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
             group1 = int.from_bytes(overlay_groups[0][0:4], "little")
@@ -511,24 +513,33 @@ class EoSClient(BizHawkClient):
             # 3 = 251 send check for mission, 4 = 252 outlaw, 5 = 253 normal missions
             if ((scenario_talk_bitfield_248_list >> 5) & 1) == 1:  # if normal mission
                 # read dungeon enter index
-                if ((dungeon_enter_index in location_dict_by_start_id) and
-                        ("Mission" in location_dict_by_start_id[dungeon_enter_index].group)):
-                    location_name = location_dict_by_start_id[dungeon_enter_index].name
-                    location_id = location_dict_by_start_id[dungeon_enter_index].id
-                    dungeons_complete = dungeon_missions_dict[location_name]
-                    if "Early" in location_dict_by_start_id[dungeon_enter_index].group:
-                        if dungeons_complete < ctx.slot_data["EarlyMissionsAmount"]:
-                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list | (0x1 << 3)
-                            locs_to_send.add(location_id + 500 + (100 * location_id) + dungeons_complete)
-                            dungeon_missions_dict[location_name] += 1
-                            # location.id + 500 + (100 * i) + j
+                mission_status = await bizhawk.read(
+                    ctx.bizhawk_ctx,
+                    [(mission_status_offset, 384, self.ram_mem_domain)])
 
-                    elif "Late" in location_dict_by_start_id[dungeon_enter_index].group:
-                        if dungeons_complete < ctx.slot_data["LateMissionsAmount"]:
-                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list | (0x1 << 3)
-                            locs_to_send.add(location_id + 500 + (100 * location_id) + dungeons_complete)
-                            dungeon_missions_dict[location_name] += 1
-                            # location.id + 500 + (100 * i) + j
+                for i in range(192):
+                    if i not in location_dict_by_start_id:
+                        continue
+                    else:
+                        if "Mission" in location_dict_by_start_id[i].group:
+                            location_name = location_dict_by_start_id[i].name
+                            location_id = location_dict_by_start_id[i].id
+                            dungeons_complete = dungeon_missions_dict[location_name]
+                            current_missions_completed = int.from_bytes(mission_status[i])
+                            if current_missions_completed > dungeons_complete:
+                                if "Early" in location_dict_by_start_id[i].group:
+                                    for k in range(current_missions_completed - dungeons_complete):
+                                        if dungeons_complete < ctx.slot_data["EarlyMissionsAmount"]:
+                                            locs_to_send.add(location_id + 500 + (100 * location_id) + dungeons_complete + k)
+                                            dungeon_missions_dict[location_name] += 1
+                                            # location.id + 500 + (100 * i) + j`
+
+                                elif "Late" in location_dict_by_start_id[i].group:
+                                    for k in range(current_missions_completed - dungeons_complete):
+                                        if dungeons_complete < ctx.slot_data["LateMissionsAmount"]:
+                                            locs_to_send.add(location_id + 500 + (100 * location_id) + dungeons_complete + k)
+                                            dungeon_missions_dict[location_name] += 1
+                                            # location.id + 500 + (100 * i) + j
 
                 scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xDF
                 await bizhawk.write(
@@ -541,24 +552,32 @@ class EoSClient(BizHawkClient):
                 await asyncio.sleep(0.1)
             elif ((scenario_talk_bitfield_248_list >> 4) & 1) == 1:  # if outlaw mission
                 # read dungeon enter index
-                if ((dungeon_enter_index in location_dict_by_start_id) and
-                        ("Mission" in location_dict_by_start_id[dungeon_enter_index].group)):
-                    location_name = location_dict_by_start_id[dungeon_enter_index].name
-                    location_id = location_dict_by_start_id[dungeon_enter_index].id
-                    dungeons_complete = dungeon_outlaws_dict[location_name]
-                    if "Early" in location_dict_by_start_id[dungeon_enter_index].group:
-                        if dungeons_complete < ctx.slot_data["EarlyOutlawsAmount"]:
-                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list | (0x1 << 3)
-                            locs_to_send.add(location_id + 500 + (100 * location_id)
-                                             + 50 + dungeons_complete)
-                            dungeon_outlaws_dict[location_name] += 1
-                            # location.id + 500 + (100 * i) + j
-                    elif "Late" in location_dict_by_start_id[dungeon_enter_index].group:
-                        if dungeons_complete < ctx.slot_data["LateOutlawsAmount"]:
-                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list | (0x1 << 3)
-                            locs_to_send.add(location_id + 500 + (100 * location_id)
-                                             + 50 + dungeons_complete)
-                            dungeon_outlaws_dict[location_name] += 1
+                mission_status = await bizhawk.read(
+                    ctx.bizhawk_ctx,
+                    [(mission_status_offset, 384, self.ram_mem_domain)])
+                for i in range(192):
+                    if i not in location_dict_by_start_id:
+                        continue
+                    else:
+                        if "Mission" in location_dict_by_start_id[i].group:
+                            location_name = location_dict_by_start_id[i].name
+                            location_id = location_dict_by_start_id[i].id
+                            dungeons_complete = dungeon_outlaws_dict[location_name]
+                            current_missions_completed = int.from_bytes(mission_status[i+192])
+                            if current_missions_completed > dungeons_complete:
+                                if "Early" in location_dict_by_start_id[i].group:
+                                    for k in range(current_missions_completed - dungeons_complete):
+                                        if dungeons_complete < ctx.slot_data["EarlyOutlawsAmount"]:
+                                            locs_to_send.add(location_id + 500 + 50 + (100 * location_id) + dungeons_complete + k)
+                                            dungeon_outlaws_dict[location_name] += 1
+                                            # location.id + 500 + (100 * i) + j`
+
+                                elif "Late" in location_dict_by_start_id[i].group:
+                                    for k in range(current_missions_completed - dungeons_complete):
+                                        if dungeons_complete < ctx.slot_data["LateOutlawsAmount"]:
+                                            locs_to_send.add(location_id + 500 + 50 + (100 * location_id) + dungeons_complete + k)
+                                            dungeon_outlaws_dict[location_name] += 1
+                                            # location.id + 500 + (100 * i) + j
 
                 scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xEF
                 await bizhawk.write(
