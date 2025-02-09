@@ -134,7 +134,7 @@ class StarterOption(Choice):
     Random: Both your MC and partner will be completely random. This means they can be the same type
             WARNING: game is not balanced for same type team, use at your own risk (until we fix typesanity)
     Override: Do the quiz, but you can override the hero it gives you. Choose your partner as normal
-    Choose: Skip the quiz and go strait to choosing your starter and partner"""
+    Choose: Skip the quiz and go straight to choosing your starter and partner"""
     display_name = "Starter Choice Option"
     option_vanilla = 0
     option_name_random = 1

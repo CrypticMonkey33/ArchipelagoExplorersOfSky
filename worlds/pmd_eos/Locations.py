@@ -149,12 +149,12 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 2, "World Abyss", 82, 81, ["Mission", "Late"]),  # 2 subareas
     LocationData("LateDungeonComplete", 2, "Sky Stairway", 84, 83, ["Mission", "Late"]),  # 2 subareas
     LocationData("LateDungeonComplete", 2, "Mystery Jungle", 86, 85, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 1, "Serenity River", 87, 87, ["Mission", "Early"]),
-    LocationData("LateDungeonComplete", 1, "Landslide Cave", 88, 88, ["Mission", "Early"]),
-    LocationData("LateDungeonComplete", 1, "Lush Prairie", 89, 89, ["Mission", "Early"]),
-    LocationData("LateDungeonComplete", 1, "Tiny Meadow", 90, 90, ["Mission", "Early"]),
-    LocationData("LateDungeonComplete", 1, "Labyrinth Cave", 91, 91, ["Mission", "Early"]),
-    LocationData("LateDungeonComplete", 1, "Oran Forest", 92, 92, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", 1, "Serenity River", 87, 87, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", 1, "Landslide Cave", 88, 88, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", 1, "Lush Prairie", 89, 89, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", 1, "Tiny Meadow", 90, 90, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", 1, "Labyrinth Cave", 91, 91, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", 1, "Oran Forest", 92, 92, ["Mission", "Early"]),
     LocationData("LateDungeonComplete", 1, "Lake Afar", 93, 93, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 1, "Happy Outlook", 94, 94, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 1, "Mt. Mistral", 95, 95, ["Mission", "Late"]),

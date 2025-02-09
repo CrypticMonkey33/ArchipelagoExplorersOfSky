@@ -381,17 +381,17 @@ def dungeon_locations_behind_items(world, player):
     set_rule(world.multiworld.get_location("Mystery Jungle", player),
              lambda state: state.has("Mystery Jungle", player) and ready_for_late_game(state, player, world))
     set_rule(world.multiworld.get_location("Serenity River", player),
-             lambda state: state.has("Serenity River", player) and ready_for_late_game(state, player, world))
+             lambda state: state.has("Serenity River", player))
     set_rule(world.multiworld.get_location("Landslide Cave", player),
-             lambda state: state.has("Landslide Cave", player) and ready_for_late_game(state, player, world))
+             lambda state: state.has("Landslide Cave", player))
     set_rule(world.multiworld.get_location("Lush Prairie", player),
-             lambda state: state.has("Lush Prairie", player) and ready_for_late_game(state, player, world))
+             lambda state: state.has("Lush Prairie", player))
     set_rule(world.multiworld.get_location("Tiny Meadow", player),
-             lambda state: state.has("Tiny Meadow", player) and ready_for_late_game(state, player, world))
+             lambda state: state.has("Tiny Meadow", player))
     set_rule(world.multiworld.get_location("Labyrinth Cave", player),
-             lambda state: state.has("Labyrinth Cave", player) and ready_for_late_game(state, player, world))
+             lambda state: state.has("Labyrinth Cave", player))
     set_rule(world.multiworld.get_location("Oran Forest", player),
-             lambda state: state.has("Oran Forest", player) and ready_for_late_game(state, player, world))
+             lambda state: state.has("Oran Forest", player))
     set_rule(world.multiworld.get_location("Lake Afar", player),
              lambda state: state.has("Lake Afar", player) and ready_for_late_game(state, player, world))
     set_rule(world.multiworld.get_location("Happy Outlook", player),
