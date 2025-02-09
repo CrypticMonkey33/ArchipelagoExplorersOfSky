@@ -141,6 +141,12 @@ class EoSClient(BizHawkClient):
                      "operations": [{"operation": "default", "value": {0: []}}]
                      },
                     {"cmd": "Set",
+                     "key": "Legendaries Recruited",
+                     "default": {0: []},
+                     "want_reply": True,
+                     "operations": [{"operation": "default", "value": {0: []}}]
+                     },
+                    {"cmd": "Set",
                      "key": "GenericStorage",
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "cresselia_feather_acquired": False,
@@ -154,6 +160,7 @@ class EoSClient(BizHawkClient):
                      }
                 ]))
             item_boxes_collected: List[Dict] = []
+            legendaries_recruited: List[Dict] = []
             open_list_total_offset: int = await (self.load_script_variable_raw(0x4F, ctx))
             conquest_list_total_offset: int = await (self.load_script_variable_raw(0x52, ctx))
             scenario_balance_offset = await (self.load_script_variable_raw(0x13, ctx))
@@ -166,6 +173,7 @@ class EoSClient(BizHawkClient):
             item_backup_offset = await (self.load_script_variable_raw(0x64, ctx))
             dungeon_enter_index_offset = await (self.load_script_variable_raw(0x29, ctx))
             scenario_talk_bitfield_offset = await (self.load_script_variable_raw(0x12, ctx))
+            event_local_offset = await (self.load_script_variable_raw(0x5C, ctx))
 
             if "Dungeon Missions" in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data["Dungeon Missions"]
@@ -181,6 +189,11 @@ class EoSClient(BizHawkClient):
                 item_boxes_collected = ctx.stored_data["Item Boxes Collected"]["0"]
             else:
                 item_boxes_collected = []
+                return
+            if "Legendaries Recruited" in ctx.stored_data:
+                legendaries_recruited = ctx.stored_data["Legendaries Recruited"]["0"]
+            else:
+                legendaries_recruited = []
                 return
             if "GenericStorage" in ctx.stored_data:
                 stored = ctx.stored_data["GenericStorage"]
@@ -209,7 +222,7 @@ class EoSClient(BizHawkClient):
                     (item_backup_offset, 4, self.ram_mem_domain),
                     (scenario_talk_bitfield_offset + 0x1F, 1, self.ram_mem_domain),
                     (dungeon_enter_index_offset, 2, self.ram_mem_domain),
-
+                    (event_local_offset, 1, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -241,7 +254,7 @@ class EoSClient(BizHawkClient):
             special_episode_bitfield = int.from_bytes(read_state[7])
             scenario_main_bitfield_list: array.array[int] = array.array('i', [item for item in read_state[8]])
             item_backup_bytes: array.array[int] = array.array('i', [item for item in read_state[9]])
-            scenario_talk_bitfield_250_list = int.from_bytes(read_state[10])
+            scenario_talk_bitfield_248_list = int.from_bytes(read_state[10])
 
             dungeon_enter_index = int.from_bytes(read_state[11], "little")
 
@@ -394,7 +407,10 @@ class EoSClient(BizHawkClient):
                     item_boxes_collected += [
                         {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}]
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
-
+                elif "Legendary" in item_data.group:
+                    legendaries_recruited += [
+                        {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}]
+                    await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Trap" in item_data.group:
                     if item_data.name == "Team Name Trap":
                         if ((performance_progress_bitfield[4] >> 0) & 1) == 0:
@@ -489,7 +505,7 @@ class EoSClient(BizHawkClient):
                             locs_to_send.add(location_Dict_by_id[bit_number_gen].id)
 
             # 3 = 251 send check for mission, 4 = 252 outlaw, 5 = 253 normal missions
-            if ((scenario_talk_bitfield_250_list >> 5) & 1) == 1:  # if normal mission
+            if ((scenario_talk_bitfield_248_list >> 5) & 1) == 1:  # if normal mission
                 # read dungeon enter index
                 if dungeon_enter_index in location_dict_by_start_id:
                     location_name = location_dict_by_start_id[dungeon_enter_index].name
@@ -497,27 +513,27 @@ class EoSClient(BizHawkClient):
                     dungeons_complete = dungeon_missions_dict[location_name]
                     if "Early" in location_dict_by_start_id[dungeon_enter_index].group:
                         if dungeons_complete < ctx.slot_data["EarlyMissionsAmount"]:
-                            scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list | (0x1 << 3)
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list | (0x1 << 3)
                             locs_to_send.add(location_id + 500 + (100 * location_id) + dungeons_complete)
                             dungeon_missions_dict[location_name] += 1
                             # location.id + 500 + (100 * i) + j
 
                     elif "Late" in location_Dict_by_id[dungeon_enter_index].group:
                         if dungeons_complete < ctx.slot_data["LateMissionsAmount"]:
-                            scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list | (0x1 << 3)
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list | (0x1 << 3)
                             locs_to_send.add(location_id + 500 + (100 * location_id) + dungeons_complete)
                             dungeon_missions_dict[location_name] += 1
                             # location.id + 500 + (100 * i) + j
 
-                scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xDF
+                scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xDF
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
-                        (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list),
+                        (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                          self.ram_mem_domain),
                     ]
                 )
-            elif ((scenario_talk_bitfield_250_list >> 4) & 1) == 1:  # if outlaw mission
+            elif ((scenario_talk_bitfield_248_list >> 4) & 1) == 1:  # if outlaw mission
                 # read dungeon enter index
                 if dungeon_enter_index in location_dict_by_start_id:
                     location_name = location_dict_by_start_id[dungeon_enter_index].name
@@ -525,23 +541,23 @@ class EoSClient(BizHawkClient):
                     dungeons_complete = dungeon_outlaws_dict[location_name]
                     if "Early" in location_dict_by_start_id[dungeon_enter_index].group:
                         if dungeons_complete < ctx.slot_data["EarlyOutlawsAmount"]:
-                            scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list | (0x1 << 3)
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list | (0x1 << 3)
                             locs_to_send.add(location_id + 500 + (100 * location_id)
                                              + 50 + dungeons_complete)
                             dungeon_outlaws_dict[location_name] += 1
                             # location.id + 500 + (100 * i) + j
                     elif "Late" in location_dict_by_start_id[dungeon_enter_index].group:
                         if dungeons_complete < ctx.slot_data["LateOutlawsAmount"]:
-                            scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list | (0x1 << 3)
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list | (0x1 << 3)
                             locs_to_send.add(location_id + 500 + (100 * location_id)
                                              + 50 + dungeons_complete)
                             dungeon_outlaws_dict[location_name] += 1
 
-                scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xEF
+                scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xEF
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
-                        (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list),
+                        (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                          self.ram_mem_domain),
                     ]
                 )
@@ -578,14 +594,14 @@ class EoSClient(BizHawkClient):
                         write_byte = performance_progress_bitfield[4] + (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
                         write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
-                        scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xFB
+                        scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
                         await bizhawk.write(
                             ctx.bizhawk_ctx,
                             [
                                 (item_backup_offset, write_byte2, self.ram_mem_domain),
                                 (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
                                 (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
-                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list),
+                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                                  self.ram_mem_domain)
                             ]
                         )
@@ -600,19 +616,19 @@ class EoSClient(BizHawkClient):
                         items_in_box = [item for item in loot_table]
                         loot_chosen = loot_table[self.random.choice(seq=items_in_box)]
                         write_byte3 = [loot_chosen % 256, loot_chosen // 256]
-                        scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xFB
+                        scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
                         await bizhawk.write(
                             ctx.bizhawk_ctx,
                             [
                                 (item_backup_offset, write_byte2, self.ram_mem_domain),
                                 (item_backup_offset + 0x2, write_byte3, self.ram_mem_domain),
                                 (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
-                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list),
+                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                                  self.ram_mem_domain)
                             ]
                         )
             else:  # if we are dealing with items
-                if (item_boxes_collected != []) and (((scenario_talk_bitfield_250_list >> 2) & 1) == 1):
+                if (item_boxes_collected != []) and (((scenario_talk_bitfield_248_list >> 2) & 1) == 1):
                     # I have an item in my list and lappy is already done with the item in the queue,
                     # so add another item to queue and set performance progress to true
                     item_data = item_boxes_collected.pop(0)
@@ -621,14 +637,14 @@ class EoSClient(BizHawkClient):
                         write_byte = performance_progress_bitfield[4] + (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
                         write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
-                        scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xFB
+                        scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
                         await bizhawk.write(
                             ctx.bizhawk_ctx,
                             [
                                 (item_backup_offset, write_byte2, self.ram_mem_domain),
                                 (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
                                 #(performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
-                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list),
+                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                                  self.ram_mem_domain)
                             ]
                         )
@@ -643,36 +659,64 @@ class EoSClient(BizHawkClient):
                         items_in_box = [item for item in loot_table]
                         loot_chosen = loot_table[self.random.choice(seq=items_in_box)]
                         write_byte3 = [loot_chosen % 256, loot_chosen // 256]
-                        scenario_talk_bitfield_250_list = scenario_talk_bitfield_250_list & 0xFB
+                        scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
                         await bizhawk.write(
                             ctx.bizhawk_ctx,
                             [
                                 (item_backup_offset, write_byte2, self.ram_mem_domain),
                                 (item_backup_offset + 0x2, write_byte3, self.ram_mem_domain),
                                 #(performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
-                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list),
+                                (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                                  self.ram_mem_domain)
                             ]
                         )
                 elif item_boxes_collected != []:
                     # I have items in my list still, but lappy has not processed the item yet, just move on for now
                     pass
-                elif (((scenario_talk_bitfield_250_list >> 2) & 1) == 1):
+                elif (((scenario_talk_bitfield_248_list >> 2) & 1) == 1):
                     # I don't have items in my list and lappy is done with the item,
                     # add a null to the queue and set performance progress to true
                     write_byte = performance_progress_bitfield[4] + (0x1 << 3)
-                    scenario_talk_bitfield_250_list = (scenario_talk_bitfield_250_list & 0xFB)
+                    scenario_talk_bitfield_248_list = (scenario_talk_bitfield_248_list & 0xFB)
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [
                             (item_backup_offset, [0, 0], self.ram_mem_domain),
                             (item_backup_offset + 0x2, [0, 0], self.ram_mem_domain),
                             #(performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
-                            (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_250_list),
+                            (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                              self.ram_mem_domain)
                         ]
                     )
 
+            # if performance progress 37 is off, and we have a legendary to recruit, turn 37 on
+            if (((performance_progress_bitfield[4] >> 5) & 1) == 0) and legendaries_recruited:
+                write_byte = performance_progress_bitfield[4] + (0x1 << 5)
+                performance_progress_bitfield[4] = write_byte
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [
+                        (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                    ]
+                )
+
+            # if Scenario Talk 249 is on, edit event local with the index of the next legendary and then turn off
+            # performance progress 37
+            if ((scenario_talk_bitfield_248_list >> 1) & 1) == 1:
+                item_data = legendaries_recruited.pop(0)
+                write_byte = performance_progress_bitfield[4] & 0xDF
+                performance_progress_bitfield[4] = write_byte
+                write_byte2 = item_data["memory_offset"]
+                scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFD
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [
+                        (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                        (event_local_offset, int.to_bytes(write_byte2), self.ram_mem_domain),
+                        (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
+                         self.ram_mem_domain),
+                    ]
+                )
 
             # Update data storage
             await (ctx.send_msgs(
@@ -694,6 +738,12 @@ class EoSClient(BizHawkClient):
                      "default": {},
                      "want_reply": True,
                      "operations": [{"operation": "replace", "value": {0: item_boxes_collected}}]
+                     },
+                    {"cmd": "Set",
+                     "key": "Legendaries Recruited",
+                     "default": {},
+                     "want_reply": True,
+                     "operations": [{"operation": "replace", "value": {0: legendaries_recruited}}]
                      },
                     {"cmd": "Set",
                      "key": "GenericStorage",

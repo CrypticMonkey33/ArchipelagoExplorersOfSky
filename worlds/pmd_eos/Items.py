@@ -188,6 +188,30 @@ EOS_item_table = [
     ItemData("Amber Tear", 502, ItemClassification.useful, 0, ["Item"], 0x3A),
     ItemData("Friend Bow", 503, ItemClassification.useful, 0, ["Item"], 0x35),
 
+    ItemData("Friend Bow", 503, ItemClassification.useful, 0, ["Item"], 0x35),
+
+    ItemData("Regirock", 504, ItemClassification.useful, 0, ["Legendary"], 0x0),
+    ItemData("Regice", 505, ItemClassification.useful, 0, ["Legendary"], 0x1),
+    ItemData("Registeel", 506, ItemClassification.useful, 0, ["Legendary"], 0x2),
+    ItemData("Groudon", 507, ItemClassification.useful, 0, ["Legendary"], 0x3),
+    ItemData("Uxie", 508, ItemClassification.useful, 0, ["Legendary"], 0x4),
+    ItemData("Mespirit", 509, ItemClassification.useful, 0, ["Legendary"], 0x5),
+    ItemData("Azelf", 510, ItemClassification.useful, 0, ["Legendary"], 0x6),
+    ItemData("Dialga", 511, ItemClassification.useful, 0, ["Legendary"], 0x7),
+    ItemData("Palkia", 512, ItemClassification.useful, 0, ["Legendary"], 0x8),
+    ItemData("Regigigas", 513, ItemClassification.useful, 0, ["Legendary"], 0x9),
+    ItemData("Giratina", 514, ItemClassification.useful, 0, ["Legendary"], 0xA),
+    ItemData("Celebi", 515, ItemClassification.useful, 0, ["Legendary"], 0xB),
+    ItemData("Articuno", 516, ItemClassification.useful, 0, ["Legendary"], 0xC),
+    ItemData("Heatran", 517, ItemClassification.useful, 0, ["Legendary"], 0xD),
+    ItemData("Primal Dialga", 518, ItemClassification.useful, 0, ["Legendary"], 0xE),
+    ItemData("Mew", 519, ItemClassification.useful, 0, ["Legendary"], 0xF),
+    ItemData("Manaphy", 520, ItemClassification.useful, 0, ["Legendary"], 0x10),
+    ItemData("Phione", 521, ItemClassification.useful, 0, ["Legendary"], 0x11),
+    ItemData("Cresselia", 522, ItemClassification.useful, 0, ["Legendary"], 0x12),
+    ItemData("Rayquaza", 523, ItemClassification.useful, 0, ["Legendary"], 0x13),
+    ItemData("Kyogre", 524, ItemClassification.useful, 0, ["Legendary"], 0x14),
+    ItemData("Shaymin", 525, ItemClassification.useful, 0, ["Legendary"], 0x15),
 ]
 
 item_frequencies: Dict[str, int] = {

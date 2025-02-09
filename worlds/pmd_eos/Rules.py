@@ -62,8 +62,8 @@ def set_rules(world: "EOSWorld", excluded):
              lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
     set_rule(world.multiworld.get_location("ManaphyJoinTeam", player),
              lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
-    set_rule(world.multiworld.get_location("ManaphyRecruited", player),
-             lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
+    set_rule(world.multiworld.get_location("ManaphyLeadsToMarineResort", player),
+             lambda state: state.has("Manaphy", player))
 
     set_rule(world.multiworld.get_location("SecretRank", player),
              lambda state: state.has("Crevice Cave", player))
@@ -153,6 +153,7 @@ def instrument_and_legendary_rules(world, player):
              lambda state: state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
                            and state.has("Temporal Tower", player)
                            and state.has("Miracle Sea", player)
+                           and state.has("Surrounded Sea", player)
              )
     set_rule(world.multiworld.get_location("Recruit Palkia", player),
              lambda state: state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
