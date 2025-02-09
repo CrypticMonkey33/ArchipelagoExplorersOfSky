@@ -227,23 +227,23 @@ class EoSClient(BizHawkClient):
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
-            #scenario_main_list = read_state[6]
-            #if int.from_bytes(scenario_main_list) == 0:
-            #    return
-            #is_running = await self.is_game_running(ctx)
-            LOADED_OVERLAY_GROUP_1 = 0xAFAD4
-            overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
-            group1 = int.from_bytes(overlay_groups[0][0:4], "little")
-            group2 = int.from_bytes(overlay_groups[0][4:8], "little")
-            if (group2 == 0x2):
-                is_running = (group1 == 13 or group1 == 14)
-            else:
-                is_running = False
-            if not is_running:
+            scenario_main_list = read_state[6]
+            if int.from_bytes(scenario_main_list) == 0:
                 return
+            #is_running = await self.is_game_running(ctx)
+            #LOADED_OVERLAY_GROUP_1 = 0xAFAD4
+            #overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
+            #group1 = int.from_bytes(overlay_groups[0][0:4], "little")
+            #group2 = int.from_bytes(overlay_groups[0][4:8], "little")
+            #if (group2 == 0x2):
+            #    is_running = (group1 == 13 or group1 == 14)
+            #else:
+            #    is_running = False
+            #if not is_running:
+            #    return
 
-            if self.macguffin_unlock_amount == 0:
-                self.macguffin_unlock_amount = ctx.slot_data["ShardFragmentAmount"]
+            #if self.macguffin_unlock_amount == 0:
+            #    self.macguffin_unlock_amount = ctx.slot_data["ShardFragmentAmount"]
 
             # read the state of the dungeon lists
             open_list: array.array[int] = array.array('i', [item for item in read_state[1]])
