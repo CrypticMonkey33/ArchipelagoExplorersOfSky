@@ -159,6 +159,7 @@ class EoSClient(BizHawkClient):
                           "dialga_complete": False}}]
                      }
                 ]))
+            await asyncio.sleep(0.1)
             item_boxes_collected: List[Dict] = []
             legendaries_recruited: List[Dict] = []
             open_list_total_offset: int = await (self.load_script_variable_raw(0x4F, ctx))
@@ -533,6 +534,7 @@ class EoSClient(BizHawkClient):
                          self.ram_mem_domain),
                     ]
                 )
+                await asyncio.sleep(0.1)
             elif ((scenario_talk_bitfield_248_list >> 4) & 1) == 1:  # if outlaw mission
                 # read dungeon enter index
                 if dungeon_enter_index in location_dict_by_start_id:
@@ -561,6 +563,7 @@ class EoSClient(BizHawkClient):
                          self.ram_mem_domain),
                     ]
                 )
+                await asyncio.sleep(0.1)
 
             # Send locations if there are any to send.
             if locs_to_send != self.local_checked_locations:
@@ -583,6 +586,7 @@ class EoSClient(BizHawkClient):
                             (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
                              self.ram_mem_domain)],
                     )
+                    await asyncio.sleep(0.1)
 
             # Sending item boxes on Event Divide
             if ((performance_progress_bitfield[4] >> 3) & 1) == 0:  # if we are not currently dealing with items
@@ -605,6 +609,8 @@ class EoSClient(BizHawkClient):
                                  self.ram_mem_domain)
                             ]
                         )
+                        await asyncio.sleep(0.1)
+
                     else:
                         write_byte = performance_progress_bitfield[4] + (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
@@ -627,6 +633,7 @@ class EoSClient(BizHawkClient):
                                  self.ram_mem_domain)
                             ]
                         )
+                        await asyncio.sleep(0.1)
             else:  # if we are dealing with items
                 if (item_boxes_collected != []) and (((scenario_talk_bitfield_248_list >> 2) & 1) == 1):
                     # I have an item in my list and lappy is already done with the item in the queue,
@@ -648,6 +655,7 @@ class EoSClient(BizHawkClient):
                                  self.ram_mem_domain)
                             ]
                         )
+                        await asyncio.sleep(0.1)
                     else:
                         write_byte = performance_progress_bitfield[4] + (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
@@ -670,6 +678,7 @@ class EoSClient(BizHawkClient):
                                  self.ram_mem_domain)
                             ]
                         )
+                        await asyncio.sleep(0.1)
                 elif item_boxes_collected != []:
                     # I have items in my list still, but lappy has not processed the item yet, just move on for now
                     pass
@@ -688,6 +697,7 @@ class EoSClient(BizHawkClient):
                              self.ram_mem_domain)
                         ]
                     )
+                    await asyncio.sleep(0.1)
 
             # if performance progress 37 is off, and we have a legendary to recruit, turn 37 on
             if (((performance_progress_bitfield[4] >> 5) & 1) == 0) and event_local_num != 22 and legendaries_recruited:
@@ -758,6 +768,7 @@ class EoSClient(BizHawkClient):
                           "dialga_complete": self.dialga_complete}}]
                      }
                 ]))
+            await asyncio.sleep(0.1)
 
             # Check for finishing the game and send the goal to the server
             if not ctx.finished_game and self.goal_complete:
