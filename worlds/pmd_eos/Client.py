@@ -35,7 +35,8 @@ class EoSClient(BizHawkClient):
     bag_given = False
     macguffins_collected = 0
     macguffin_unlock_amount = 0
-    cresselia_feather_acquired = False
+    instruments_collected = 0
+    required_instruments = 0
     dialga_complete = False
     #item_boxes_collected: List[ItemData] = []
     random: Random = Random()
@@ -149,13 +150,13 @@ class EoSClient(BizHawkClient):
                     {"cmd": "Set",
                      "key": "GenericStorage",
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
-                                 "macguffin_unlock_amount": 0, "cresselia_feather_acquired": False,
+                                 "macguffin_unlock_amount": 0, "instruments_collected": 0, "required_instruments": 0,
                                  "dialga_complete": False},
                      "want_reply": True,
                      "operations": [{"operation": "default", "value":
                          {"goal_complete": False, "bag_given": False,
                           "macguffins_collected": 0, "macguffin_unlock_amount": 0,
-                          "cresselia_feather_acquired": False,
+                          "instruments_collected": 0, "required_instruments": 0,
                           "dialga_complete": False}}]
                      }
                 ]))
@@ -202,8 +203,10 @@ class EoSClient(BizHawkClient):
                 self.bag_given = stored["bag_given"]
                 self.macguffins_collected = stored["macguffins_collected"]
                 self.macguffin_unlock_amount = stored["macguffin_unlock_amount"]
-                self.cresselia_feather_acquired = stored["cresselia_feather_acquired"]
+                self.required_instruments = stored["required_instruments"]
+                self.instruments_collected = stored["instruments_collected"]
                 self.dialga_complete = stored["dialga_complete"]
+
             else:
 
                 return
@@ -235,7 +238,7 @@ class EoSClient(BizHawkClient):
             overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
             group1 = int.from_bytes(overlay_groups[0][0:4], "little")
             group2 = int.from_bytes(overlay_groups[0][4:8], "little")
-            if (group2 == 0x2):
+            if group2 == 0x2:
                 is_running = (group1 == 13 or group1 == 14)
             else:
                 is_running = False
@@ -400,8 +403,8 @@ class EoSClient(BizHawkClient):
                                 )
 
                             await asyncio.sleep(0.1)
-                    elif item_data.name == "Cresselia Feather":
-                        self.cresselia_feather_acquired = True
+                    #elif item_data.name == "Cresselia Feather":
+                    #    self.cresselia_feather_acquired = True
 
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Item" in item_data.group:
@@ -575,7 +578,7 @@ class EoSClient(BizHawkClient):
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
 
             # Check for opening Dark Crater
-            if self.cresselia_feather_acquired and self.dialga_complete:
+            if (self.instruments_collected >= self.required_instruments) and self.dialga_complete:
                 item_memory_offset = 0x67  # the location in memory of Dark Crater
                 sig_digit = item_memory_offset // 8
                 non_sig_digit = item_memory_offset % 8
@@ -612,6 +615,24 @@ class EoSClient(BizHawkClient):
                             ]
                         )
                         await asyncio.sleep(0.1)
+                    elif item_data["name"] in item_table_by_groups["Instrument"]:
+                            write_byte = performance_progress_bitfield[4] + (0x1 << 3)
+                            performance_progress_bitfield[4] = write_byte
+                            write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                            self.instruments_collected += 1
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                    (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
+                                    # (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                    (
+                                    scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
+                                    self.ram_mem_domain)
+                                ]
+                            )
+                            await asyncio.sleep(0.1)
 
                     else:
                         write_byte = performance_progress_bitfield[4] + (0x1 << 3)
@@ -636,6 +657,7 @@ class EoSClient(BizHawkClient):
                             ]
                         )
                         await asyncio.sleep(0.1)
+
             else:  # if we are dealing with items
                 if (item_boxes_collected != []) and (((scenario_talk_bitfield_248_list >> 2) & 1) == 1):
                     # I have an item in my list and lappy is already done with the item in the queue,
@@ -658,6 +680,24 @@ class EoSClient(BizHawkClient):
                             ]
                         )
                         await asyncio.sleep(0.1)
+                    elif item_data["name"] in item_table_by_groups["Instrument"]:
+                            write_byte = performance_progress_bitfield[4] + (0x1 << 3)
+                            performance_progress_bitfield[4] = write_byte
+                            write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                            self.instruments_collected += 1
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                    (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
+                                    # (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                    (
+                                    scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
+                                    self.ram_mem_domain)
+                                ]
+                            )
+                            await asyncio.sleep(0.1)
                     else:
                         write_byte = performance_progress_bitfield[4] + (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
@@ -681,10 +721,12 @@ class EoSClient(BizHawkClient):
                             ]
                         )
                         await asyncio.sleep(0.1)
+
                 elif item_boxes_collected != []:
                     # I have items in my list still, but lappy has not processed the item yet, just move on for now
                     pass
-                elif (((scenario_talk_bitfield_248_list >> 2) & 1) == 1):
+
+                elif ((scenario_talk_bitfield_248_list >> 2) & 1) == 1:
                     # I don't have items in my list and lappy is done with the item,
                     # add a null to the queue and set performance progress to true
                     write_byte = performance_progress_bitfield[4] + (0x1 << 3)
@@ -766,7 +808,7 @@ class EoSClient(BizHawkClient):
                      "operations": [{"operation": "update", "value":
                          {"goal_complete": self.goal_complete, "bag_given": self.bag_given,
                           "macguffins_collected": self.macguffins_collected, "macguffin_unlock_amount": self.macguffin_unlock_amount,
-                          "cresselia_feather_acquired": self.cresselia_feather_acquired,
+                          "required_instruments": self.required_instruments, "instruments_collected": self.instruments_collected,
                           "dialga_complete": self.dialga_complete}}]
                      }
                 ]))

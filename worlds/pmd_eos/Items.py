@@ -146,7 +146,7 @@ EOS_item_table = [
     ItemData("Dojo Ghost Maze", 189, ItemClassification.progression, 189, ["Unique", "Dojo Dungeons"], 0xBD),
     # ItemData("Dojo Final Maze", 191, ItemClassification.useful, 191, ["Unique", "Dojo Dungeons"], 0xBF),  # 7 subareas
     ItemData("Relic Fragment Shard", 200, ItemClassification.progression, 200, ["Macguffin"], 0x00),
-    ItemData("Cresselia Feather", 201, ItemClassification.progression, 201, ["Macguffin"], 0x00),
+    #ItemData("Cresselia Feather", 201, ItemClassification.progression, 201, ["Macguffin"], 0x00),
 
     ItemData("Victory", 300, ItemClassification.progression, 0, [], 0x00),
     ItemData("Bag Upgrade", 370, ItemClassification.progression, 0, ["ProgressiveBag", "Generic"], 0x00),
@@ -188,8 +188,6 @@ EOS_item_table = [
     ItemData("Amber Tear", 502, ItemClassification.useful, 0, ["Item"], 0x3A),
     ItemData("Friend Bow", 503, ItemClassification.useful, 0, ["Item"], 0x35),
 
-    ItemData("Friend Bow", 503, ItemClassification.useful, 0, ["Item"], 0x35),
-
     ItemData("Regirock", 504, ItemClassification.useful, 0, ["Legendary"], 0x0),
     ItemData("Regice", 505, ItemClassification.useful, 0, ["Legendary"], 0x1),
     ItemData("Registeel", 506, ItemClassification.useful, 0, ["Legendary"], 0x2),
@@ -212,6 +210,29 @@ EOS_item_table = [
     ItemData("Rayquaza", 523, ItemClassification.useful, 0, ["Legendary"], 0x13),
     ItemData("Kyogre", 524, ItemClassification.useful, 0, ["Legendary"], 0x14),
     ItemData("Shaymin", 525, ItemClassification.useful, 0, ["Legendary"], 0x15),
+
+    ItemData("Icy Flute", 526, ItemClassification.progression, 0, ["Item", "Instrument"], 0x3B),
+    ItemData("Fiery Drum", 527, ItemClassification.progression, 0, ["Item", "Instrument"], 0x3C),
+    ItemData("Terra Cymbal", 528, ItemClassification.progression, 0, ["Item", "Instrument"], 0x3D),
+    ItemData("Aqua-Monica", 529, ItemClassification.progression, 0, ["Item", "Instrument"], 0x3E),
+    ItemData("Rock Horn", 530, ItemClassification.progression, 0, ["Item", "Instrument"], 0x3F),
+    ItemData("Grass Cornet", 531, ItemClassification.progression, 0, ["Item", "Instrument"], 0x40),
+    ItemData("Sky Melodica", 532, ItemClassification.progression, 0, ["Item", "Instrument"], 0x41),
+    ItemData("Stellar Symphony", 533, ItemClassification.progression, 0, ["Item", "Instrument"], 0x56B),
+    ItemData("Null Bagpipes", 534, ItemClassification.progression, 0, ["Item", "Instrument"], 0x56C),
+    ItemData("Glimmer Harp", 535, ItemClassification.progression, 0, ["Item", "Instrument"], 0x56D),
+    ItemData("Toxic Sax", 536, ItemClassification.progression, 0, ["Item", "Instrument"], 0x56E),
+    ItemData("Biting Bass", 537, ItemClassification.progression, 0, ["Item", "Instrument"], 0x56F),
+    ItemData("Knockout Bell", 538, ItemClassification.progression, 0, ["Item", "Instrument"], 0x570),
+    ItemData("Spectral Chimes", 539, ItemClassification.progression, 0, ["Item", "Instrument"], 0x571),
+    ItemData("Liar's Lyre", 540, ItemClassification.progression, 0, ["Item", "Instrument"], 0x572),
+    ItemData("Charge Synth", 541, ItemClassification.progression, 0, ["Item", "Instrument"], 0x573),
+    ItemData("Norma-ccordion", 542, ItemClassification.progression, 0, ["Item", "Instrument"], 0x574),
+    ItemData("Psychic Cello", 543, ItemClassification.progression, 0, ["Item", "Instrument"], 0x575),
+    ItemData("Dragu-teki", 544, ItemClassification.progression, 0, ["Item", "Instrument"], 0x576),
+    ItemData("Steel Guitar", 545, ItemClassification.progression, 0, ["Item", "Instrument"], 0x577),
+
+
 ]
 
 item_frequencies: Dict[str, int] = {

@@ -290,7 +290,7 @@ def special_episodes_rules(world, player):
 
 def ready_for_darkrai(state, player, world):
     return (state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
-            and state.has("Cresselia Feather", player))
+            and state.has_group("Instrument", player, world.options.req_instruments.value))
 
 
 def dungeon_locations_behind_items(world, player):

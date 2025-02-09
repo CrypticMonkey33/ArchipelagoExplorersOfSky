@@ -262,8 +262,8 @@ class EOSWorld(World):
         for i in range(self.options.shard_fragments.value + self.options.extra_shards.value):
             required_items.append(self.create_item("Relic Fragment Shard", ItemClassification.progression))
 
-        if self.options.goal == 1:
-            required_items.append(self.create_item("Cresselia Feather", ItemClassification.progression))
+        #if self.options.goal == 1:
+        #    required_items.append(self.create_item("Cresselia Feather", ItemClassification.progression))
 
         for item_name in item_table:
             if (item_name == "Dark Crater") and (self.options.goal.value == 1):
@@ -276,9 +276,18 @@ class EOSWorld(World):
                 freq = max(freq - precollected.count(item_name), 0)
                 required_items += [self.create_item(item_name) for _ in range(freq)]
 
-            elif item_table[item_name].name in ["Victory", "Relic Fragment Shard", "Cresselia Feather"]:
+            elif item_table[item_name].name in ["Victory", "Relic Fragment Shard"]:
                 continue
+            elif "Instrument" in item_table[item_name].group:
+                if self.options.goal.value == 1:
+                    instruments_to_add = self.options.req_instruments.value + self.options.extra_instruments.value
 
+                    instrument_table = item_table_by_groups["Instrument"]
+                    instruments = self.random.sample(instrument_table, instruments_to_add)
+                    for item in instruments:
+                        required_items.append(self.create_item(item, ItemClassification.progression))
+                else:
+                    continue
             elif item_table[item_name].classification == ItemClassification.filler:
                 if item_name in ["Golden Apple", "Gold Ribbon"]:
                     continue
