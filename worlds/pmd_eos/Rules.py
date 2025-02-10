@@ -27,10 +27,9 @@ def set_rules(world: "EOSWorld", excluded):
                  lambda state: state.has("Dark Crater", player))
     elif world.options.goal.value == 1:
         set_rule(world.multiworld.get_location("Final Boss", player),
-                 lambda state: state.has("Temporal Tower", player) and ready_for_darkrai(state, player, world))
+                 lambda state: ready_for_darkrai(state, player, world))
         set_rule(world.multiworld.get_location("Dark Crater", player),
-                 lambda state: state.has("Temporal Tower", player)
-                               and ready_for_darkrai(state, player, world))
+                 lambda state: ready_for_darkrai(state, player, world))
 
     set_rule(world.multiworld.get_entrance("Late Game Door", player),
              lambda state: ready_for_late_game(state, player, world))
@@ -290,7 +289,9 @@ def special_episodes_rules(world, player):
 
 def ready_for_darkrai(state, player, world):
     return (state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
-            and state.has_group("Instrument", player, world.options.req_instruments.value))
+            and state.has("Temporal Tower", player)
+            and state.has_group("Instrument", player, world.options.req_instruments.value)
+            and state.has_group("LateDungeons", player, 10))
 
 
 def dungeon_locations_behind_items(world, player):

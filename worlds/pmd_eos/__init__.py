@@ -257,6 +257,14 @@ class EOSWorld(World):
     def create_items(self) -> None:
         required_items = []
         filler_items = []
+        instruments = []
+        if self.options.goal.value == 1:
+            instruments_to_add = self.options.req_instruments.value + self.options.extra_instruments.value
+
+            instrument_table = item_table_by_groups["Instrument"]
+            instruments = self.random.sample(sorted(instrument_table), instruments_to_add)
+            for item in instruments:
+                required_items.append(self.create_item(item, ItemClassification.progression_skip_balancing))
 
         precollected = [item.name for item in self.multiworld.precollected_items[self.player]]
         for i in range(self.options.shard_fragments.value + self.options.extra_shards.value):
@@ -279,15 +287,7 @@ class EOSWorld(World):
             elif item_table[item_name].name in ["Victory", "Relic Fragment Shard"]:
                 continue
             elif "Instrument" in item_table[item_name].group:
-                if self.options.goal.value == 1:
-                    instruments_to_add = self.options.req_instruments.value + self.options.extra_instruments.value
-
-                    instrument_table = item_table_by_groups["Instrument"]
-                    instruments = self.random.sample(instrument_table, instruments_to_add)
-                    for item in instruments:
-                        required_items.append(self.create_item(item, ItemClassification.progression))
-                else:
-                    continue
+               continue
             elif item_table[item_name].classification == ItemClassification.filler:
                 if item_name in ["Golden Apple", "Gold Ribbon"]:
                     continue
