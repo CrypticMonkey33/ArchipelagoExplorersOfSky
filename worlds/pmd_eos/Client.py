@@ -525,7 +525,7 @@ class EoSClient(BizHawkClient):
                             location_name = location_dict_by_start_id[i].name
                             location_id = location_dict_by_start_id[i].id
                             dungeons_complete = dungeon_missions_dict[location_name]
-                            current_missions_completed = mission_status[i]
+                            current_missions_completed = mission_status[2*i]
                             if current_missions_completed > dungeons_complete:
                                 if "Early" in location_dict_by_start_id[i].group:
                                     for k in range(current_missions_completed - dungeons_complete):
@@ -564,7 +564,7 @@ class EoSClient(BizHawkClient):
                             location_name = location_dict_by_start_id[i].name
                             location_id = location_dict_by_start_id[i].id
                             dungeons_complete = dungeon_outlaws_dict[location_name]
-                            current_missions_completed = mission_status[i+192]
+                            current_missions_completed = mission_status[2*i + 1]
                             if current_missions_completed > dungeons_complete:
                                 if "Early" in location_dict_by_start_id[i].group:
                                     for k in range(current_missions_completed - dungeons_complete):
