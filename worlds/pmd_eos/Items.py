@@ -232,6 +232,8 @@ EOS_item_table = [
     ItemData("Dragu-teki", 544, ItemClassification.progression_skip_balancing, 0, ["Item", "Instrument"], 0x576),
     ItemData("Steel Guitar", 545, ItemClassification.progression_skip_balancing, 0, ["Item", "Instrument"], 0x577),
 
+    ItemData("Hero Evolution", 550, ItemClassification.useful, 0, ["Generic"], 0),
+    ItemData("Recruit Evolution", 551, ItemClassification.useful, 0, ["Generic"], 0),
 
 ]
 

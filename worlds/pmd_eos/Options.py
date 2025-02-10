@@ -137,6 +137,11 @@ class RecruitmentEvolution(DefaultOnToggle):
     display_name = "Recruitment Evolution Enable"
 
 
+class HeroEvolution(DefaultOnToggle):
+    """Start with Hero/Partner Evolution Enabled?"""
+    display_name = "Partner/Hero Evolution Enable"
+
+
 class FullTeamFormationControl(DefaultOnToggle):
     """ Start with full team formation control?"""
     display_name = "Formation Control Enable"
@@ -232,3 +237,4 @@ class EOSOptions(PerGameCommonOptions):
     xp_scaling: XpScaling
     req_instruments: RequiredInstruments
     extra_instruments: ExtraInstruments
+    hero_evolution: HeroEvolution

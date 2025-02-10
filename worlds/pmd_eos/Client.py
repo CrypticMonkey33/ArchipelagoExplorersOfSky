@@ -177,6 +177,8 @@ class EoSClient(BizHawkClient):
             scenario_talk_bitfield_offset = await (self.load_script_variable_raw(0x12, ctx))
             event_local_offset = await (self.load_script_variable_raw(0x5C, ctx))
             mission_status_offset = 0x3B0000 + 0x4
+            relic_shards_offset = 0x3B0000 + 0x184
+            instruments_offset = 0x3B0000 + 0x185
 
             if "Dungeon Missions" in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data["Dungeon Missions"]
@@ -377,6 +379,26 @@ class EoSClient(BizHawkClient):
                                 ]
                             )
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
+                    elif item_data.name == "Hero Evolution":
+                        write_byte = performance_progress_bitfield[1] | (0x1 << 2)
+                        performance_progress_bitfield[1] = write_byte
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (performance_progress_offset + 0x1, int.to_bytes(write_byte),
+                                 self.ram_mem_domain),
+                            ]
+                        )
+                    elif item_data.name == "Recruit Evolution":
+                        write_byte = performance_progress_bitfield[0] | (0x1 << 6)
+                        performance_progress_bitfield[0] = write_byte
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (performance_progress_offset, int.to_bytes(write_byte),
+                                 self.ram_mem_domain),
+                            ]
+                        )
                 elif "Rank" in item_data.group:
                     if item_data.name == "Secret Rank":
                         write_byte = performance_progress_bitfield[2] | (0x1 << 6)
@@ -405,6 +427,12 @@ class EoSClient(BizHawkClient):
                                 )
 
                             await asyncio.sleep(0.1)
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (relic_shards_offset, int.to_bytes(self.macguffins_collected),
+                                 self.ram_mem_domain)],
+                        )
                     #elif item_data.name == "Cresselia Feather":
                     #    self.cresselia_feather_acquired = True
 
@@ -648,7 +676,9 @@ class EoSClient(BizHawkClient):
                                     (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
                                     (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                     (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
-                                    self.ram_mem_domain)
+                                    self.ram_mem_domain),
+                                    (instruments_offset, int.to_bytes(self.instruments_collected), self.ram_mem_domain)
+
                                 ]
                             )
                             await asyncio.sleep(0.1)
@@ -711,9 +741,9 @@ class EoSClient(BizHawkClient):
                                     (item_backup_offset, write_byte2, self.ram_mem_domain),
                                     (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
                                     (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
-                                    (
-                                    scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
-                                    self.ram_mem_domain)
+                                    (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
+                                    self.ram_mem_domain),
+                                    (instruments_offset, int.to_bytes(self.instruments_collected), self.ram_mem_domain)
                                 ]
                             )
                             await asyncio.sleep(0.1)

@@ -72,6 +72,12 @@ class EOSWorld(World):
         if self.options.bag_on_start.value:
             item_name = "Bag Upgrade"
             self.multiworld.push_precollected(self.create_item(item_name))
+        if self.options.hero_evolution.value:
+            item_name = "Hero Evolution"
+            self.multiworld.push_precollected(self.create_item(item_name))
+        if self.options.recruit_evo.value:
+            item_name = "Recruit Evolution"
+            self.multiworld.push_precollected(self.create_item(item_name))
         if self.options.dojo_dungeons.value > 0:
             dojo_amount = self.options.dojo_dungeons.value
             dojo_table = item_table_by_groups["Dojo Dungeons"]
