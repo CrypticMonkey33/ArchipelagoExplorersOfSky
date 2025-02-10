@@ -132,7 +132,7 @@ EOS_item_table = [
     ItemData("Luminous Spring", 177, ItemClassification.filler, 177, ["Unique", "ExtraDungeons"], 0xB1),
     ItemData("Hot Spring", 178, ItemClassification.filler, 178, ["Unique", "ExtraDungeons"], 0xB2),
 
-    ItemData("Dojo Normal/Fly Maze", 180, ItemClassification.progression, 180, ["Unique", "Dojo Dungeons"], 0xB4),
+    #ItemData("Dojo Normal/Fly Maze", 180, ItemClassification.progression, 180, ["Unique", "Dojo Dungeons"], 0xB4),
 
     ItemData("Dojo Normal/Fly Maze", 180, ItemClassification.progression, 180, ["Unique", "Dojo Dungeons"], 0xB4),
     ItemData("Dojo Dark/Fire Maze", 181, ItemClassification.progression, 181, ["Unique", "Dojo Dungeons"], 0xB5),
@@ -364,7 +364,7 @@ lootbox_table: Dict[str, Dict[str, int]] = {
         "Rock Climb": 0x124,
     },
     "Nifty Box": {
-        "Mobile Scarft": 0x10,
+        "Mobile Scarf": 0x10,
         "Scope Lens": 0x13,
         "No Stick Cap": 0x15,
         "X-Ray Specs": 0x18,
