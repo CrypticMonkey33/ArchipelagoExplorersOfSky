@@ -427,6 +427,34 @@ def dungeon_locations_behind_items(world, player):
              lambda state: state.has("Inferno Cave", player) and ready_for_late_game(state, player, world))
     set_rule(world.multiworld.get_location("1st Station Pass", player),
              lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("1st Station Pass", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+
+    set_rule(world.multiworld.get_location("1st Station Pass", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("2nd Station Pass", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("3rd Station Pass", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("4th Station Pass", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("5th Station Pass", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("6th Station Pass", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("7th Station Pass", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("8th Station Pass", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("9th Station Pass", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("Sky Peak Summit", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("5th Station Clearing", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("Sky Peak Summit", player),
+             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+
     set_rule(world.multiworld.get_location("Dojo Normal/Fly Maze", player),
              lambda state: state.has("Dojo Normal/Fly Maze", player))
     set_rule(world.multiworld.get_location("Dojo Dark/Fire Maze", player),
@@ -463,10 +491,18 @@ def mission_rules(world, player):
 
         elif location.classification == "LateDungeonComplete":
             if world.options.goal.value == 1:
-                for j in range(world.options.late_mission_checks.value):
-                    set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
-                             lambda state, ln=location.name, p=player: state.has(ln, p))
+                if "Station" in location.group:
+                    for j in range(world.options.late_mission_checks.value):
+                        set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
+                                 lambda state, ln="1st Station Pass", p=player: state.has(ln, p))
+                        for j in range(world.options.late_outlaw_checks.value):
+                            set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
+                                     lambda state, ln="1st Station Pass", p=player: state.has(ln, p))
+                else:
+                    for j in range(world.options.late_mission_checks.value):
+                        set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
+                                 lambda state, ln=location.name, p=player: state.has(ln, p))
 
-                for j in range(world.options.late_outlaw_checks.value):
-                    set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
-                             lambda state, ln=location.name, p=player: state.has(ln, p))
+                    for j in range(world.options.late_outlaw_checks.value):
+                        set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
+                                 lambda state, ln=location.name, p=player: state.has(ln, p))

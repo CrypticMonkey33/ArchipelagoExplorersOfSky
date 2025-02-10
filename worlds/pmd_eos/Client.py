@@ -176,10 +176,11 @@ class EoSClient(BizHawkClient):
             dungeon_enter_index_offset = await (self.load_script_variable_raw(0x29, ctx))
             scenario_talk_bitfield_offset = await (self.load_script_variable_raw(0x12, ctx))
             event_local_offset = await (self.load_script_variable_raw(0x5C, ctx))
-            mission_status_offset = 0x3B0000 + 0x4
-            relic_shards_offset = 0x3B0000 + 0x184
-            instruments_offset = 0x3B0000 + 0x185
-
+            custom_save_area_offset = 0x3B0000
+            mission_status_offset = custom_save_area_offset + 0x4
+            relic_shards_offset = custom_save_area_offset + 0x184
+            instruments_offset = custom_save_area_offset + 0x185
+            death_link_offset = custom_save_area_offset + 0x186
             if "Dungeon Missions" in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data["Dungeon Missions"]
             else:
@@ -396,6 +397,30 @@ class EoSClient(BizHawkClient):
                             ctx.bizhawk_ctx,
                             [
                                 (performance_progress_offset, int.to_bytes(write_byte),
+                                 self.ram_mem_domain),
+                            ]
+                        )
+                    elif item_data.name == "Recruitment":
+                        write_byte = performance_progress_bitfield[0] | (0x1 << 5)
+                        performance_progress_bitfield[0] = write_byte
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (performance_progress_offset, int.to_bytes(write_byte),
+                                 self.ram_mem_domain),
+                            ]
+                        )
+                    elif item_data.name == "Formation Control":
+                        write_byte = performance_progress_bitfield[0] | (0x1 << 7)
+                        performance_progress_bitfield[0] = write_byte
+                        write_byte2 = performance_progress_bitfield[2] | (0x1 << 4)
+                        performance_progress_bitfield[2] = write_byte
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (performance_progress_offset, int.to_bytes(write_byte),
+                                 self.ram_mem_domain),
+                                (performance_progress_offset + 0x2, int.to_bytes(write_byte2),
                                  self.ram_mem_domain),
                             ]
                         )

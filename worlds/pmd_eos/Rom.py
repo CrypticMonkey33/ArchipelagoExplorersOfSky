@@ -71,6 +71,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
         "instruments_required": world.options.req_instruments.value,
         "extra_instruments": world.options.extra_instruments.value,
         "hero_evolution": world.options.hero_evolution.value,
+        "deathlink": world.options.deathlink.value,
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))

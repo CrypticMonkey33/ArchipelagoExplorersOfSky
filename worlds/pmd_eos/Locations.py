@@ -172,7 +172,18 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("RuleDungeonComplete", 1, "Treacherous Waters", 108, 108, ["Rule"]),
     LocationData("RuleDungeonComplete", 1, "Southeastern Islands", 109, 109, ["Rule"]),
     LocationData("RuleDungeonComplete", 1, "Inferno Cave", 110, 110, ["Rule"]),
-    LocationData("LateDungeonComplete", 12, "1st Station Pass", 122, 111, ["Mission", "Late"]),  # 12 subareas
+    LocationData("LateDungeonComplete", 1, "1st Station Pass", 111, 111, ["Mission", "Late"]),  # 12 subareas
+    LocationData("LateDungeonComplete", 1, "2nd Station Pass", 112, 112, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", 1, "3rd Station Pass", 113, 113, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", 1, "4th Station Pass", 114, 114, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", 1, "5th Station Pass", 115, 115, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", 1, "6th Station Pass", 116, 116, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", 1, "7th Station Pass", 117, 117, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", 1, "8th Station Pass", 118, 118, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", 1, "9th Station Pass", 119, 119, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", 1, "Sky Peak Summit Pass", 120, 120, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", 1, "5th Station Clearing", 121, 121, ["Late"]),
+    LocationData("LateDungeonComplete", 1, "Sky Peak Summit", 122, 122, ["Late"]),
     # Special Episode Dungeons
     LocationData("SpecialDungeonComplete", 5, "SE Star Cave", 127, 123),
     LocationData("SpecialDungeonComplete", 1,  "SE Murky Forest", 128,  128),

@@ -128,9 +128,9 @@ EOS_item_table = [
     ItemData("Sunflora SE", 158, ItemClassification.progression, 158, ["Unique", "Special Dungeons"], 0x2),
     # ItemData("Spring Cave", 158, ItemClassification.useful, 158, ["Unique", "Special Dungeons"], 0x9E),
     ItemData("Star Cave2", 174, ItemClassification.progression, 174, ["Unique", "LateDungeons", "MissionDungeons"], 0xAE),
-    ItemData("Shaymin Village", 175, ItemClassification.filler, 175, ["Unique", "ExtraDungeons"], 0xAF),
-    ItemData("Luminous Spring", 177, ItemClassification.filler, 177, ["Unique", "ExtraDungeons"], 0xB1),
-    ItemData("Hot Spring", 178, ItemClassification.filler, 178, ["Unique", "ExtraDungeons"], 0xB2),
+    ItemData("Shaymin Village", 175, ItemClassification.useful, 175, ["Unique", "ExtraDungeons"], 0xAF),
+    ItemData("Luminous Spring", 177, ItemClassification.useful, 177, ["Unique", "ExtraDungeons"], 0xB1),
+    ItemData("Hot Spring", 178, ItemClassification.useful, 178, ["Unique", "ExtraDungeons"], 0xB2),
 
     #ItemData("Dojo Normal/Fly Maze", 180, ItemClassification.progression, 180, ["Unique", "Dojo Dungeons"], 0xB4),
 
@@ -234,7 +234,8 @@ EOS_item_table = [
 
     ItemData("Hero Evolution", 550, ItemClassification.useful, 0, ["Generic"], 0),
     ItemData("Recruit Evolution", 551, ItemClassification.useful, 0, ["Generic"], 0),
-
+    ItemData("Recruitment", 552, ItemClassification.useful, 0, ["Generic"], 0),
+    ItemData("Formation Control", 553, ItemClassification.useful, 0, ["Generic"], 0),
 ]
 
 item_frequencies: Dict[str, int] = {

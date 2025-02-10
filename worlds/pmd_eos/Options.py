@@ -1,6 +1,6 @@
 import typing
 from dataclasses import dataclass
-from Options import DefaultOnToggle, Toggle, Choice, PerGameCommonOptions, StartInventoryPool, NamedRange, Range
+from Options import DefaultOnToggle, Toggle, Choice, PerGameCommonOptions, StartInventoryPool, NamedRange, Range, DeathLink
 
 
 class DungeonNameRandomizer(DefaultOnToggle):
@@ -190,7 +190,10 @@ class XpScaling(Range):
     """Do you want to scale XP to gain XP faster? What rate? (1x, 2x, 3x, etc.)
     WARNING: 0x WILL NOT GIVE YOU ANY XP. USE AT YOUR OWN RISK
 
-    Not currently Implemented"""
+    NOT CURRENTLY IMPLEMENTED
+
+    """
+
     display_name = "XP Scaling"
     range_start = 0
     range_end = 15
@@ -213,6 +216,14 @@ class DojoDungeons(Choice):
     option_start_with_one = 1
     default = 0
 
+#class Deathlink(Toggle):
+#    """Enable Deathlink?
+#    Deathlink - If you die in a dungeon, all other players in your multiworld with
+#    deathlink enabled will die as well. And if anyone in your multiworld dies, you do too
+#    In Overworld - Will trigger end of day
+#    In Dungeon - Will instantly kill your player ignoring revival seeds"""
+
+#    display_name = "Deathlink"
 
 @dataclass
 class EOSOptions(PerGameCommonOptions):
@@ -238,3 +249,4 @@ class EOSOptions(PerGameCommonOptions):
     req_instruments: RequiredInstruments
     extra_instruments: ExtraInstruments
     hero_evolution: HeroEvolution
+    deathlink: DeathLink

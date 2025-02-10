@@ -84,6 +84,12 @@ class EOSWorld(World):
             random_open_dungeons = self.random.sample(sorted(dojo_table), k=dojo_amount)
             for item_name in random_open_dungeons:
                 self.multiworld.push_precollected(self.create_item(item_name))
+        if self.options.recruit.value:
+            item_name = "Recruitment"
+            self.multiworld.push_precollected(self.create_item(item_name))
+        if self.options.team_form.value:
+            item_name = "Formation Control"
+            self.multiworld.push_precollected(self.create_item(item_name))
 
     def create_regions(self) -> None:
         menu_region = Region("Menu", self.player, self.multiworld)
