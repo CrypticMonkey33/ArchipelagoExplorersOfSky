@@ -1,6 +1,7 @@
 import typing
 from dataclasses import dataclass
-from Options import DefaultOnToggle, Toggle, Choice, PerGameCommonOptions, StartInventoryPool, NamedRange, Range, DeathLink
+from Options import DefaultOnToggle, Toggle, Choice, PerGameCommonOptions, StartInventoryPool, NamedRange, Range, \
+    DeathLink, OptionSet
 
 
 class DungeonNameRandomizer(DefaultOnToggle):
@@ -42,6 +43,37 @@ class ExtraShards(NamedRange):
         "extreme": 0
     }
     default = 4
+
+
+class AllowedLegendaries(OptionSet):
+    """ Set which Legendaries will be available for the item pool as recruits
+    """
+    display_name = "Allowed Legendary Recruits"
+    valid_keys = [
+        "Regirock",
+        "Regice",
+        "Registeel",
+        "Groudon",
+        "Uxie",
+        "Mespirit",
+        "Azelf",
+        "Dialga",
+        "Palkia",
+        "Regigigas",
+        "Giratina",
+        "Celebi",
+        "Articuno",
+        "Heatran",
+        "Primal Dialga",
+        "Mew",
+        "Manaphy",
+        "Phione",
+        "Cresselia",
+        "Rayquaza",
+        "Kyogre",
+        "Shaymin",
+    ]
+    default = valid_keys.copy()
 
 
 class RequiredInstruments(NamedRange):
@@ -216,6 +248,15 @@ class DojoDungeons(Choice):
     option_start_with_one = 1
     default = 0
 
+class LegendariesInPool(Range):
+    """How many Legendary Pokemon should be in the item pool for you to recruit?
+        """
+
+    display_name = "Legendaries in Item Pool"
+    range_start = 0
+    range_end = 22
+    default = 3
+
 #class Deathlink(Toggle):
 #    """Enable Deathlink?
 #    Deathlink - If you die in a dungeon, all other players in your multiworld with
@@ -250,3 +291,6 @@ class EOSOptions(PerGameCommonOptions):
     extra_instruments: ExtraInstruments
     hero_evolution: HeroEvolution
     deathlink: DeathLink
+    legendaries: LegendariesInPool
+    allowed_legendaries: AllowedLegendaries
+

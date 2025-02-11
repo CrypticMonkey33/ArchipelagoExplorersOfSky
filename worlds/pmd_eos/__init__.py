@@ -284,6 +284,13 @@ class EOSWorld(World):
 
         #if self.options.goal == 1:
         #    required_items.append(self.create_item("Cresselia Feather", ItemClassification.progression))
+        if self.options.legendaries.value > len(self.options.allowed_legendaries.value):
+            for item in self.options.allowed_legendaries.value:
+                required_items.append(self.create_item(item,ItemClassification.useful))
+        else:
+            new_list = self.random.sample(sorted(self.options.allowed_legendaries.value), self.options.legendaries.value)
+            for item in new_list:
+                required_items.append(self.create_item(item, ItemClassification.useful))
 
         for item_name in item_table:
             if (item_name == "Dark Crater") and (self.options.goal.value == 1):
@@ -297,6 +304,8 @@ class EOSWorld(World):
                 required_items += [self.create_item(item_name) for _ in range(freq)]
 
             elif item_table[item_name].name in ["Victory", "Relic Fragment Shard"]:
+                continue
+            elif "Legendary" in item_table[item_name].group:
                 continue
             elif "Instrument" in item_table[item_name].group:
                continue
