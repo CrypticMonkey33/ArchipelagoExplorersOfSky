@@ -48,6 +48,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
     ap_settings_offset = 0x36F98
     mission_max_offset = 0x36F9A
     macguffin_max_offset = 0x36F9E
+
     # recruitment_offset = 0x3702C
     # recruitment_evo_offset = 0x37030
     # team_formation_offset = 0x37034
@@ -73,7 +74,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
         "hero_evolution": world.options.hero_evolution.value,
         "deathlink": world.options.deathlink.value,
         "legendaries": world.options.legendaries.value,
-        "allowed_legendaries": world.options.allowed_legendaries.value,
+
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))

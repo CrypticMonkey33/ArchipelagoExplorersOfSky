@@ -479,6 +479,8 @@ def dungeon_locations_behind_items(world, player):
 
 def mission_rules(world, player):
     for i, location in enumerate(EOS_location_table):
+        if "Mission" not in location.group:
+            continue
         if location.name == "Beach Cave":
             continue
         elif location.classification == "EarlyDungeonComplete":
