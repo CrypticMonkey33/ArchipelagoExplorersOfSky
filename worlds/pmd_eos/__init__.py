@@ -11,7 +11,7 @@ from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id, exp
 from .Options import EOSOptions
 from .Rules import set_rules, ready_for_late_game, ready_for_dialga
 from .Regions import EoS_regions
-from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType
+from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType, Item
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import set_rule, forbid_item
 from .Client import EoSClient
@@ -350,7 +350,10 @@ class EOSWorld(World):
     def generate_output(self, output_directory: str) -> None:
         patch = EOSProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
         patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/archipelago-base.bsdiff"))
-        write_tokens(self, patch)
+        hint_item_list: list[Item] = []
+        for i in range(10):
+            hint_item_list += self.multiworld.get_location(f"Shop Item {1+i}", self.player).item
+        write_tokens(self, patch, hint_item_list)
         rom_path = os.path.join(
             output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
         )

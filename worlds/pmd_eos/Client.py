@@ -131,7 +131,13 @@ class EoSClient(BizHawkClient):
                     )
                     raise bizhawk.ConnectorError("Loaded ROM is for Incorrect lobby.")
                 self.seed_verify = True
-
+            #if 310 not in ctx.locations_info:
+            #    await ctx.send_msgs(
+            #        [{
+            #            "cmd": "LocationScouts",
+            #            "locations": [310, 311, 312, 313, 314, 315, 316, 317, 318, 319]
+            #        }]
+            #    )
             await (ctx.send_msgs(
                 [
                     {"cmd": "Set",
@@ -205,7 +211,7 @@ class EoSClient(BizHawkClient):
             death_link_sky_death_message_offset = death_link_offset + 0x2  # sky death message
             death_link_ally_death_message_offset = death_link_offset + 0x2 + 128 # ally death message
             death_link_ally_name_offset = death_link_offset + 0x2 + 256  # ally death name
-
+            #hintable_items_offset = 0x23DE022
 
             if "Dungeon Missions" in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data["Dungeon Missions"]
@@ -262,6 +268,7 @@ class EoSClient(BizHawkClient):
                     (death_link_sky_death_message_offset, 128, self.ram_mem_domain),  # sky death message
                     (death_link_ally_death_message_offset, 128, self.ram_mem_domain),  # ally death message
                     (death_link_ally_name_offset, 18, self.ram_mem_domain),  # ally death name
+                    #(hintable_items_offset, 0x1A4, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -296,13 +303,18 @@ class EoSClient(BizHawkClient):
             scenario_talk_bitfield_248_list = int.from_bytes(read_state[10])
             event_local_num = int.from_bytes(read_state[12])
             dungeon_enter_index = int.from_bytes(read_state[11], "little")
-            deathlink_receiver = int.from_bytes(read_state[13])
+            #deathlink_receiver = int.from_bytes(read_state[13])
             deathlink_sender = int.from_bytes(read_state[14])
             deathlink_message_from_sky = read_state[15].decode("ascii")
-            deathlink_message_send = read_state[16].decode("ascii")
-            deathlink_send_name = read_state[17].decode("ascii")
-
+            #deathlink_message_send = read_state[16].decode("ascii")
+            #deathlink_send_name = read_state[17].decode("ascii")
+            #hintable_items = read_state[18]
             locs_to_send = set()
+
+            #if (310 in ctx.locations_info) and hintable_items[0] == 0:
+            #    for i in range(10):
+            #        network_item = ctx.locations_info[310+i]
+
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received) - received_index):
@@ -803,6 +815,23 @@ class EoSClient(BizHawkClient):
                                 (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                 (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                                  self.ram_mem_domain)
+                            ]
+                        )
+                        await asyncio.sleep(0.1)
+                    elif item_data["name"] in ["Rare Fossil"]:
+                        write_byte = performance_progress_bitfield[4] | (0x1 << 3)
+                        performance_progress_bitfield[4] = write_byte
+                        write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
+                        scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                (item_backup_offset + 0x2, int.to_bytes(5), self.ram_mem_domain),
+                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                (
+                                scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
+                                self.ram_mem_domain)
                             ]
                         )
                         await asyncio.sleep(0.1)

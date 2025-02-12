@@ -41,14 +41,14 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
         return get_base_rom_as_bytes()
 
 
-def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
+def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[Item]) -> None:
     ov36_mem_loc = 0x296200  # find_ov36_mem_location()
     seed_offset = 0x36F90
     player_name_offset = 0x36F80
     ap_settings_offset = 0x36F98
     mission_max_offset = 0x36F9A
     macguffin_max_offset = 0x36F9E
-
+    hintable_items_offset = ov36_mem_loc + 0x36FA2
     # recruitment_offset = 0x3702C
     # recruitment_evo_offset = 0x37030
     # team_formation_offset = 0x37034
@@ -87,6 +87,10 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch) -> None:
     # Bake player name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+player_name_offset,
                       player_name_changed)
+
+    for i in range(len(hint_items)):
+        patch.write_token(APTokenTypes.WRITE, hintable_items_offset + 42*i,
+                          f"[CS:N]{hint_items[i].player[0:10]}[CR]'s{hint_items[i].name[0:20]}".encode("ascii"))
 
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
