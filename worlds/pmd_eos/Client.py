@@ -1,5 +1,6 @@
 from typing import TYPE_CHECKING, Optional, Set, List, Dict
 import array
+import time
 import binascii
 
 from Utils import async_start
@@ -40,7 +41,9 @@ class EoSClient(BizHawkClient):
     dialga_complete = False
     #item_boxes_collected: List[ItemData] = []
     random: Random = Random()
-
+    outside_deathlink = 0
+    deathlink_sender = ""
+    deathlink_message:str = ""
     def __init__(self) -> None:
         super().__init__()
         self.local_checked_locations = set()
@@ -100,6 +103,14 @@ class EoSClient(BizHawkClient):
     def on_package(self, ctx, cmd, args) -> None:
         if cmd == "RoomInfo":
             ctx.seed_name = args["seed_name"]
+        if cmd != "Bounced":
+            return
+        if "tags" not in args:
+            return
+        if "DeathLink" in args["tags"] and args["data"]["source"] != ctx.slot_info[ctx.slot].name:
+            self.outside_deathlink += 1
+            self.deathlink_sender = args["data"]["source"]
+            self.deathlink_message = args["data"]["cause"]
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
@@ -161,6 +172,11 @@ class EoSClient(BizHawkClient):
                      }
                 ]))
             await asyncio.sleep(0.1)
+            if ("DeathLink" not in ctx.tags) and ctx.slot_data["Deathlink"]:
+                await ctx.update_death_link(True)
+            elif ("DeathLink" in ctx.tags) and not ctx.slot_data["Deathlink"]:
+                await ctx.update_death_link(False)
+
             item_boxes_collected: List[Dict] = []
             legendaries_recruited: List[Dict] = []
             open_list_total_offset: int = await (self.load_script_variable_raw(0x4F, ctx))
@@ -181,6 +197,13 @@ class EoSClient(BizHawkClient):
             relic_shards_offset = custom_save_area_offset + 0x184
             instruments_offset = custom_save_area_offset + 0x185
             death_link_offset = custom_save_area_offset + 0x186
+            death_link_receiver_offset = death_link_offset # reciever bool
+            death_link_sender_offset = death_link_offset + 0x1 # sender bool
+            death_link_sky_death_message_offset = death_link_offset + 0x2  # sky death message
+            death_link_ally_death_message_offset = death_link_offset + 0x2 + 128 # ally death message
+            death_link_ally_name_offset = death_link_offset + 0x2 + 256  # ally death name
+
+
             if "Dungeon Missions" in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data["Dungeon Missions"]
             else:
@@ -231,7 +254,11 @@ class EoSClient(BizHawkClient):
                     (scenario_talk_bitfield_offset + 0x1F, 1, self.ram_mem_domain),
                     (dungeon_enter_index_offset, 2, self.ram_mem_domain),
                     (event_local_offset, 1, self.ram_mem_domain),
-
+                    (death_link_receiver_offset, 1, self.ram_mem_domain),  # reciever bool
+                    (death_link_sender_offset, 1, self.ram_mem_domain),  # sender bool
+                    (death_link_sky_death_message_offset, 128, self.ram_mem_domain),  # sky death message
+                    (death_link_ally_death_message_offset, 128, self.ram_mem_domain),  # ally death message
+                    (death_link_ally_name_offset, 18, self.ram_mem_domain),  # ally death name
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -266,6 +293,11 @@ class EoSClient(BizHawkClient):
             scenario_talk_bitfield_248_list = int.from_bytes(read_state[10])
             event_local_num = int.from_bytes(read_state[12])
             dungeon_enter_index = int.from_bytes(read_state[11], "little")
+            deathlink_receiver = int.from_bytes(read_state[13])
+            deathlink_sender = int.from_bytes(read_state[14])
+            deathlink_message_from_sky = read_state[15].decode("ascii")
+            deathlink_message_send = read_state[16].decode("ascii")
+            deathlink_send_name = read_state[17].decode("ascii")
 
             locs_to_send = set()
 
@@ -649,6 +681,23 @@ class EoSClient(BizHawkClient):
 
                 if locs_to_send is not None:
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
+
+            if "DeathLink" in ctx.tags and ctx.last_death_link + 1 < time.time():
+                if (self.outside_deathlink == 0) and ((deathlink_sender & 1) == 1):
+                    await ctx.send_death(f"{ctx.player_names[ctx.slot]} {deathlink_message_from_sky}!")
+
+            if self.outside_deathlink != 0:
+                write_message = self.deathlink_message.encode("ascii")[0:128]
+                write_message2 = self.deathlink_sender.encode("ascii")[0:18]
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [
+                        (death_link_ally_death_message_offset, write_message,self.ram_mem_domain),
+                        (death_link_ally_name_offset, write_message2, self.ram_mem_domain),
+                        (death_link_receiver_offset, 0x1, self.ram_mem_domain)
+                    ]
+                )
+                self.outside_deathlink -= 1
 
             # Check for opening Dark Crater
             if (self.instruments_collected >= self.required_instruments) and self.dialga_complete:

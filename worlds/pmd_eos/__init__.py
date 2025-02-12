@@ -260,10 +260,21 @@ class EOSWorld(World):
             "RecruitmentEvolution": self.options.recruit_evo.value,
             "DojoDungeonsRandomization": self.options.dojo_dungeons.value,
             "ShardFragmentAmount": self.options.shard_fragments.value,
+            "ExtraShardsAmount": self.options.extra_shards.value,
             "EarlyMissionsAmount": self.options.early_mission_checks.value,
             "EarlyOutlawsAmount": self.options.early_outlaw_checks.value,
             "LateMissionsAmount": self.options.late_mission_checks.value,
             "LateOutlawsAmount": self.options.late_outlaw_checks.value,
+            "TypeSanity": self.options.type_sanity.value,
+            "StarterOption": self.options.starter_option.value,
+            "IQScaling": self.options.iq_scaling.value,
+            "XPScaling": self.options.xp_scaling.value,
+            "RequiredInstruments": self.options.req_instruments.value,
+            "ExtraInstruments": self.options.extra_instruments.value,
+            "HeroEvolution": self.options.hero_evolution.value,
+            "Deathlink": self.options.deathlink.value,
+            "LegendaryAmount": self.options.legendaries.value,
+            "AllowedLegendaries": self.options.allowed_legendaries.value,
         }
 
     def create_items(self) -> None:
