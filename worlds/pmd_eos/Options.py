@@ -11,7 +11,10 @@ class DungeonNameRandomizer(DefaultOnToggle):
 
 
 class Goal(Choice):
-    """Change the desired goal to complete the game (Currently only Dialga is implemented)"""
+    """Change the desired goal to complete the game
+    Dialga - Get X relic fragment shards to unlock hidden land. Find Temporal Tower location
+            then go through hidden land via Lapras on the beach to beat dialga
+    Darkrai - Beat Dialga (all the same requirements), then get X instruments to unlock Dark Crater"""
     display_name = "Goal"
     option_dialga = 0
     option_darkrai = 1
@@ -248,6 +251,7 @@ class DojoDungeons(Choice):
     option_start_with_one = 1
     default = 0
 
+
 class LegendariesInPool(Range):
     """How many Legendary Pokemon should be in the item pool for you to recruit?
         """
@@ -257,14 +261,14 @@ class LegendariesInPool(Range):
     range_end = 22
     default = 3
 
-class DeathlinkType(Toggle):
-    """Enable Deathlink?
-    Deathlink - If you die in a dungeon, all other players in your multiworld with
-    deathlink enabled will die as well. And if anyone in your multiworld dies, you do too
-    In Overworld - Will trigger end of day
-    In Dungeon - Will instantly kill your player ignoring revival seeds"""
 
-    display_name = "Deathlink"
+class DeathlinkType(Toggle):
+    """What type of deathlink do you want?
+    Currently False is death even if you have revival seeds
+    True will turn off deathlink until we implement the other type of death possibility"""
+
+    display_name = "Deathlink Type"
+
 
 @dataclass
 class EOSOptions(PerGameCommonOptions):
