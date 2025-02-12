@@ -73,6 +73,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         "extra_instruments": world.options.extra_instruments.value,
         "hero_evolution": world.options.hero_evolution.value,
         "deathlink": world.options.deathlink.value,
+        "deathlink_type": world.options.deathlink_type.value,
         "legendaries": world.options.legendaries.value,
 
     }
@@ -90,7 +91,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
 
     for i in range(len(hint_items)):
         patch.write_token(APTokenTypes.WRITE, hintable_items_offset + 42*i,
-                          f"[CS:N]{hint_items[i].game[0:10]}[CR]'s{hint_items[i].name[0:20]}".encode("ascii"))
+                          f"[CS:N]{hint_items[i].game[0:10]}[CR]'s {hint_items[i].name[0:20]}".encode("ascii"))
 
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
@@ -122,6 +123,11 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
 
     elif world.options.starter_option.value == 3:
         write_byte = write_byte | ((0x1 << 9) + (0x1 << 10))
+
+    if world.options.deathlink.value and world.options.deathlink_type.value == 0:
+        write_byte = write_byte | (0x1 << 12)
+    elif world.options.deathlink.value and world.options.deathlink.value == 1:
+        write_byte = write_byte | (0x1 << 11)
     # write the tokens that will be applied and write the token data into the bin for AP
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset, int.to_bytes(write_byte, length=2, byteorder="little"))
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + macguffin_max_offset + 0x1, int.to_bytes(instrument_count))

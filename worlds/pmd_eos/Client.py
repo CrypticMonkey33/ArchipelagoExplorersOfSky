@@ -307,11 +307,11 @@ class EoSClient(BizHawkClient):
             scenario_talk_bitfield_248_list = int.from_bytes(read_state[10])
             event_local_num = int.from_bytes(read_state[12])
             dungeon_enter_index = int.from_bytes(read_state[11], "little")
-            #deathlink_receiver = int.from_bytes(read_state[13])
-            deathlink_sender = int.from_bytes(read_state[14])
+            deathlink_receiver_bit = int.from_bytes(read_state[13])
+            deathlink_sender_bit = int.from_bytes(read_state[14])
             deathlink_message_from_sky = read_state[15].decode("ascii")
-            #deathlink_message_send = read_state[16].decode("ascii")
-            #deathlink_send_name = read_state[17].decode("ascii")
+            deathlink_ally_death_message = read_state[16].decode("ascii")
+            deathlink_ally_name = read_state[17].decode("ascii")
             #hintable_items = read_state[18]
             bank_gold_amount = int.from_bytes(read_state[18], "little")
             player_gold_amount = int.from_bytes(read_state[19], "little")
@@ -726,9 +726,14 @@ class EoSClient(BizHawkClient):
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
 
             if "DeathLink" in ctx.tags and ctx.last_death_link + 1 < time.time():
-                if (self.outside_deathlink == 0) and ((deathlink_sender & 1) == 1):
+                if (self.outside_deathlink == 0) and ((deathlink_sender_bit & 1) == 1):
                     await ctx.send_death(f"{ctx.player_names[ctx.slot]} {deathlink_message_from_sky}!")
-
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [
+                        (death_link_sender_offset, int.to_bytes(0), self.ram_mem_domain)
+                    ]
+                )
             if self.outside_deathlink != 0:
                 write_message = self.deathlink_message.encode("ascii")[0:128]
                 write_message2 = self.deathlink_sender.encode("ascii")[0:18]
@@ -737,7 +742,7 @@ class EoSClient(BizHawkClient):
                     [
                         (death_link_ally_death_message_offset, write_message,self.ram_mem_domain),
                         (death_link_ally_name_offset, write_message2, self.ram_mem_domain),
-                        (death_link_receiver_offset, 0x1, self.ram_mem_domain)
+                        (death_link_receiver_offset, int.to_bytes(1), self.ram_mem_domain)
                     ]
                 )
                 self.outside_deathlink -= 1

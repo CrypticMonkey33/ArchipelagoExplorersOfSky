@@ -257,14 +257,14 @@ class LegendariesInPool(Range):
     range_end = 22
     default = 3
 
-#class Deathlink(Toggle):
-#    """Enable Deathlink?
-#    Deathlink - If you die in a dungeon, all other players in your multiworld with
-#    deathlink enabled will die as well. And if anyone in your multiworld dies, you do too
-#    In Overworld - Will trigger end of day
-#    In Dungeon - Will instantly kill your player ignoring revival seeds"""
+class DeathlinkType(Toggle):
+    """Enable Deathlink?
+    Deathlink - If you die in a dungeon, all other players in your multiworld with
+    deathlink enabled will die as well. And if anyone in your multiworld dies, you do too
+    In Overworld - Will trigger end of day
+    In Dungeon - Will instantly kill your player ignoring revival seeds"""
 
-#    display_name = "Deathlink"
+    display_name = "Deathlink"
 
 @dataclass
 class EOSOptions(PerGameCommonOptions):
@@ -291,6 +291,7 @@ class EOSOptions(PerGameCommonOptions):
     extra_instruments: ExtraInstruments
     hero_evolution: HeroEvolution
     deathlink: DeathLink
+    deathlink_type: DeathlinkType
     legendaries: LegendariesInPool
     allowed_legendaries: AllowedLegendaries
 
