@@ -150,44 +150,14 @@ EOS_item_table = [
 
     ItemData("Victory", 300, ItemClassification.progression, 0, [], 0x00),
     ItemData("Bag Upgrade", 370, ItemClassification.progression, 0, ["ProgressiveBag", "Generic"], 0x00),
-    ItemData("Golden Seed", 393, ItemClassification.filler, 0, ["Item"], 0x5D),
-    ItemData("Gold Ribbon", 394, ItemClassification.filler, 0, ["Item"], 0x20),
-    #Add lootboxes, healing box, held items, etc.
-    #ItemData("Wonder Gummi", 395, ItemClassification.filler, 0, ["Item"], 0x88),
-    #ItemData("Golden Apple", 396, ItemClassification.filler, 0, ["Item"], 0x73),
-    #ItemData("Reviver Seed", 397, ItemClassification.filler, 0, ["Item"], 0x49),
-    #ItemData("???? Item", 398, ItemClassification.filler, 0, ["Item"], 0x1AB),
-    #ItemData("Oran Berry", 399, ItemClassification.filler, 0, ["Item"], 0x)
-    #ItemData("Gorgeous Box", 400, ItemClassification.filler, 0, ["Item"], 0x16E),
-    ItemData("Heavy Box", 301, ItemClassification.filler, 0, ["Item"], 0x171),
-    ItemData("Shiny Box", 302, ItemClassification.filler, 0, ["Item"], 0x174),
-    ItemData("Nifty Box", 303, ItemClassification.filler, 0, ["Item"], 0x177),
-    ItemData("Dainty Box", 304, ItemClassification.filler, 0, ["Item"], 0x17A),
-    ItemData("Glittery Box", 305, ItemClassification.filler, 0, ["Item"], 0x17D),
-    ItemData("Pretty Box", 306, ItemClassification.filler, 0, ["Item"], 0x180),
-    ItemData("Deluxe Box", 307, ItemClassification.filler, 0, ["Item"], 0x183),
-    ItemData("Light Box", 308, ItemClassification.filler, 0, ["Item"], 0x186),
-    ItemData("Cute Box", 309, ItemClassification.filler, 0, ["Item"], 0x189),
-    ItemData("Hard Box", 310, ItemClassification.filler, 0, ["Item"], 0x18C),
-    ItemData("Sinister Box", 311, ItemClassification.filler, 0, ["Item"], 0x18F),
-    ItemData("Link Box", 312, ItemClassification.filler, 0, ["Item"], 0x16A),
-    ItemData("Sky Gift", 313, ItemClassification.filler, 0, ["Item"], 0xB4),
 
-    ItemData("Team Name Trap", 400, ItemClassification.trap, 0, ["Trap"], 0x0),
-    ItemData("Confusion Trap", 401, ItemClassification.trap, 0, ["Trap"], 0x0),
-    ItemData("Nap Time!", 402, ItemClassification.trap, 0, ["Trap"], 0x0),
-    ItemData("Sentry Duty!", 403, ItemClassification.trap, 0, ["Trap"], 0x0),
-    ItemData("Touch Grass", 404, ItemClassification.trap, 0, ["Trap"], 0x0),
-    ItemData("Secret of the Waterfall", 405, ItemClassification.filler, 0, ["Generic"], 0x0),
-    ItemData("Chatot Repellent", 406, ItemClassification.filler, 0, ["Generic"], 0x0),
-    ItemData("Sky Jukebox", 407, ItemClassification.filler, 0, ["Generic"], 0x0),
-    ItemData("Recruitment Sensor", 408, ItemClassification.filler, 0, ["Generic"], 0x0),
+
     ItemData("Secret Rank", 409, ItemClassification.progression, 0, ["Rank"], 0x0),
     ItemData("Mystery Part", 500, ItemClassification.useful, 0, ["Item"], 0xAD),
     ItemData("Secret Slab", 501, ItemClassification.useful, 0, ["Item"], 0xAE),
     ItemData("Amber Tear", 502, ItemClassification.useful, 0, ["Item"], 0x3A),
     ItemData("Friend Bow", 503, ItemClassification.useful, 0, ["Item"], 0x35),
-    ItemData("Rare Fossil", 410, ItemClassification.filler, 0, ["Item"], 0x10),
+
 
     ItemData("Regirock", 504, ItemClassification.useful, 0, ["Legendary"], 0x0),
     ItemData("Regice", 505, ItemClassification.useful, 0, ["Legendary"], 0x1),
@@ -237,20 +207,63 @@ EOS_item_table = [
     ItemData("Recruit Evolution", 551, ItemClassification.useful, 0, ["Generic"], 0),
     ItemData("Recruitment", 552, ItemClassification.useful, 0, ["Generic"], 0),
     ItemData("Formation Control", 553, ItemClassification.useful, 0, ["Generic"], 0),
-    ItemData("Poke x100", 560, ItemClassification.filler, 0, ["Money"], 100),
-    ItemData("Poke x500", 561, ItemClassification.filler, 0, ["Money"], 500),
-    ItemData("Poke x1000", 562, ItemClassification.filler, 0, ["Money"], 1000),
-    ItemData("Poke x5000", 563, ItemClassification.filler, 0, ["Money"], 5000),
-    ItemData("Poke x200", 564, ItemClassification.filler, 0, ["Money"], 200),
-    ItemData("Poke x1", 565, ItemClassification.filler, 0, ["Money"], 1),
+
     #ItemData("Poke x-1000", 570, ItemClassification.trap, 0, ["Money"], 0),
 ]
+filler_items = [
+    ItemData("Heavy Box", 301, ItemClassification.filler, 10, ["Item", "Box"], 0x171),
+    ItemData("Shiny Box", 302, ItemClassification.filler, 10, ["Item", "Box"], 0x174),
+    ItemData("Nifty Box", 303, ItemClassification.filler, 10, ["Item", "Box"], 0x177),
+    ItemData("Dainty Box", 304, ItemClassification.filler, 10, ["Item", "Box"], 0x17A),
+    ItemData("Glittery Box", 305, ItemClassification.filler, 10, ["Item", "Box"], 0x17D),
+    ItemData("Pretty Box", 306, ItemClassification.filler, 10, ["Item", "Box"], 0x180),
+    ItemData("Deluxe Box", 307, ItemClassification.filler, 10, ["Item", "Box"], 0x183),
+    ItemData("Light Box", 308, ItemClassification.filler, 10, ["Item", "Box"], 0x186),
+    ItemData("Cute Box", 309, ItemClassification.filler, 10, ["Item", "Box"], 0x189),
+    ItemData("Hard Box", 310, ItemClassification.filler, 10, ["Item", "Box"], 0x18C),
+    ItemData("Sinister Box", 311, ItemClassification.filler, 10, ["Item", "Box"], 0x18F),
+    ItemData("Link Box", 312, ItemClassification.filler, 10, ["Item", "Single"], 0x16A),
+    ItemData("Sky Gift", 313, ItemClassification.filler, 10, ["Item", "Single"], 0xB4),
+    ItemData("Poke x100", 560, ItemClassification.filler, 20, ["Money"], 100),
+    ItemData("Poke x500", 561, ItemClassification.filler, 20, ["Money"], 500),
+    ItemData("Poke x1000", 562, ItemClassification.filler, 20, ["Money"], 1000),
+    ItemData("Poke x5000", 563, ItemClassification.filler, 5, ["Money"], 5000),
+    ItemData("Poke x200", 564, ItemClassification.filler, 20, ["Money"], 200),
+    ItemData("Poke x1", 565, ItemClassification.filler, 50, ["Money"], 1),
+    ItemData("Secret of the Waterfall", 405, ItemClassification.filler, 2, ["Generic"], 0x0),
+    ItemData("Chatot Repellent", 406, ItemClassification.filler, 2, ["Generic"], 0x0),
+    ItemData("Sky Jukebox", 407, ItemClassification.filler, 2, ["Generic"], 0x0),
+    ItemData("Recruitment Sensor", 408, ItemClassification.filler, 2, ["Generic"], 0x0),
+    ItemData("Rare Fossil", 410, ItemClassification.filler, 10, ["Item", "Multi"], 0x10),
+    ItemData("Reviver Seed", 411, ItemClassification.filler, 5, ["Item", "Single"], 0x49),
+    ItemData("Oran Berry", 412, ItemClassification.filler, 20, ["Item", "Single"], 0x46),
+    ItemData("Heal Seed", 413, ItemClassification.filler, 20, ["Item", "Single"], 0x45),
+    ItemData("Apple", 414, ItemClassification.filler, 20, ["Item", "Single"], 0x6D),
+    ItemData("Golden Seed", 393, ItemClassification.filler, 3, ["Item", "Single"], 0x5D),
+    ItemData("Ginseng", 393, ItemClassification.filler, 1, ["Item", "Single"], 0x58),
+    #ItemData("Gold Ribbon", 394, ItemClassification.filler, 0, ["Item"], 0x20),
+    ItemData("Team Name Trap", 400, ItemClassification.trap, 20, ["Trap"], 0x0),
+    ItemData("Confusion Trap", 401, ItemClassification.trap, 20, ["Trap"], 0x0),
+    ItemData("Nap Time!", 402, ItemClassification.trap, 20, ["Trap"], 0x0),
+    ItemData("Sentry Duty!", 403, ItemClassification.trap, 20, ["Trap"], 0x0),
+    ItemData("Touch Grass", 404, ItemClassification.trap, 20, ["Trap"], 0x0),
+    ItemData("Protein", 405, ItemClassification.filler, 10, ["Item", "Single"], 0x64),
+    ItemData("Calcium", 406, ItemClassification.filler, 10, ["Item", "Single"], 0x65),
+    ItemData("Iron", 407, ItemClassification.filler, 10, ["Item", "Single"], 0x66),
+    ItemData("Nectar", 408, ItemClassification.filler, 10, ["Item", "Single"], 0x67),
+    ItemData("Max Elixir", 409, ItemClassification.filler, 10, ["Item", "Single"], 0x63),
+    ItemData("Gabite Scale", 410, ItemClassification.filler, 10, ["Item", "Single"], 0x5c),
+    ItemData("Zinc", 411, ItemClassification.filler, 10, ["Item", "Single"], 0x6c),
+]
+filler_item_weights = [item.start_number for item in filler_items]
+filler_item_table: Dict[str, ItemData] = {item.name: item for item in filler_items}
 
 item_frequencies: Dict[str, int] = {
     "Bag Upgrade": 5
 }
 
 item_table: Dict[str, ItemData] = {item.name: item for item in EOS_item_table}
+item_table.update(filler_item_table)
 item_table_by_id: Dict[int, ItemData] = {item.id: item for item in EOS_item_table}
 
 item_table_by_groups = get_item_table_by_groups()
@@ -417,8 +430,8 @@ lootbox_table: Dict[str, Dict[str, int]] = {
         "Oren Berry": 0x75,
         "Reviver Seed": 0x49,
         "Reviser Seed": 0x69,
-        "Max Elixer": 0x63,
-        "Mix Elixer": 0x74,
+        "Max Elixir": 0x63,
+        "Mix Elixir": 0x74,
         "Heal Seed": 0x45,
         "Sitrus Berry": 0x47,
         "Eyedrop Seed": 0x48,

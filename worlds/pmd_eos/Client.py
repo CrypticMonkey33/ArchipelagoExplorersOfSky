@@ -768,8 +768,7 @@ class EoSClient(BizHawkClient):
                 if item_boxes_collected != []:
                     # I have an item in my list, add it to the queue and set the performance progress list to true
                     item_data = item_boxes_collected.pop(0)
-                    if item_data["name"] in ["Golden Seed", "Gold Ribbon", "Link Box", "Sky Gift", "Amber Tear",
-                                             "Mystery Part", "Secret Slab", "Friend Bow"]:
+                    if item_data["name"] in item_table_by_groups["Single"]:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
                         write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
@@ -782,6 +781,23 @@ class EoSClient(BizHawkClient):
                                 (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                 (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                                  self.ram_mem_domain)
+                            ]
+                        )
+                        await asyncio.sleep(0.1)
+                    elif item_data["name"] in item_table_by_groups["Multi"]:
+                        write_byte = performance_progress_bitfield[4] | (0x1 << 3)
+                        performance_progress_bitfield[4] = write_byte
+                        write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
+                        scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                (item_backup_offset + 0x2, int.to_bytes(5), self.ram_mem_domain),
+                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                (
+                                scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
+                                self.ram_mem_domain)
                             ]
                         )
                         await asyncio.sleep(0.1)
@@ -805,7 +821,7 @@ class EoSClient(BizHawkClient):
                             )
                             await asyncio.sleep(0.1)
 
-                    else:
+                    elif item_data["name"] in item_table_by_groups["Box"]:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
 
@@ -834,8 +850,7 @@ class EoSClient(BizHawkClient):
                     # I have an item in my list and lappy is already done with the item in the queue,
                     # so add another item to queue and set performance progress to true
                     item_data = item_boxes_collected.pop(0)
-                    if item_data["name"] in ["Golden Seed", "Gold Ribbon", "Link Box", "Sky Gift", "Amber Tear",
-                                             "Mystery Part", "Secret Slab", "Friend Bow"]:
+                    if item_data["name"] in item_table_by_groups["Single"]:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
                         write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
@@ -851,7 +866,7 @@ class EoSClient(BizHawkClient):
                             ]
                         )
                         await asyncio.sleep(0.1)
-                    elif item_data["name"] in ["Rare Fossil"]:
+                    elif item_data["name"] in item_table_by_groups["Multi"]:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
                         write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
@@ -886,7 +901,7 @@ class EoSClient(BizHawkClient):
                                 ]
                             )
                             await asyncio.sleep(0.1)
-                    else:
+                    elif item_data["name"] in item_table_by_groups["Box"]:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
 

@@ -6,7 +6,8 @@ import settings
 from typing import List, Dict, Set, Any
 
 import worlds.oot
-from .Items import EOS_item_table, EOSItem, item_table, item_frequencies, item_table_by_id, item_table_by_groups
+from .Items import (EOS_item_table, EOSItem, item_table, item_frequencies, item_table_by_id, item_table_by_groups,
+                    filler_item_table, filler_item_weights)
 from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table
 from .Options import EOSOptions
 from .Rules import set_rules, ready_for_late_game, ready_for_dialga
@@ -338,10 +339,12 @@ class EOSWorld(World):
             required_items) - 1  # subtracting 1 for the event check
 
         self.multiworld.itempool += required_items
-        for i in range(20):
+        item_weights = filler_item_weights
+        for i in range(5):
             filler_items += filler_items
+            item_weights += filler_item_weights
         self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
-                                     in self.random.sample(filler_items, remaining)]
+                                     in self.random.sample(filler_items, remaining, counts=item_weights)]
 
     def set_rules(self) -> None:
         set_rules(self, self.disabled_locations)
