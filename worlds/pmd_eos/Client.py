@@ -735,8 +735,8 @@ class EoSClient(BizHawkClient):
                     ]
                 )
             if self.outside_deathlink != 0:
-                write_message = self.deathlink_message.encode("ascii")[0:128]
-                write_message2 = self.deathlink_sender.encode("ascii")[0:18]
+                write_message = self.deathlink_message.translate("[]~\\").encode("ascii")[0:128]
+                write_message2 = f"[CS:N]{self.deathlink_sender.translate("[]~\\").encode("ascii")[0:18]}[CR]"
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
