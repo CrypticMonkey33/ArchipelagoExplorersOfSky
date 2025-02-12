@@ -242,7 +242,7 @@ EOS_item_table = [
     ItemData("Poke x1000", 562, ItemClassification.filler, 0, ["Money"], 1000),
     ItemData("Poke x5000", 563, ItemClassification.filler, 0, ["Money"], 5000),
     ItemData("Poke x200", 564, ItemClassification.filler, 0, ["Money"], 200),
-    ItemData("Poke x1", 565, ItemClassification.filler, 0, ["Money"], 1000000),
+    ItemData("Poke x1", 565, ItemClassification.filler, 0, ["Money"], 1),
     #ItemData("Poke x-1000", 570, ItemClassification.trap, 0, ["Money"], 0),
 ]
 

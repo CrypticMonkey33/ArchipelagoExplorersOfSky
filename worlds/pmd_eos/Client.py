@@ -486,8 +486,8 @@ class EoSClient(BizHawkClient):
                         extra_money = player_gold_amount - 99999
                         player_gold_amount = 99999
                         bank_gold_amount += extra_money
-                    if bank_gold_amount > 9999999999:
-                        bank_gold_amount = 9999999999
+                    if bank_gold_amount > 9999999:
+                        bank_gold_amount = 9999999
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [
