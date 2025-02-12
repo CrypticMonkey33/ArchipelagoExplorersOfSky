@@ -201,7 +201,8 @@ class EoSClient(BizHawkClient):
             dungeon_enter_index_offset = await (self.load_script_variable_raw(0x29, ctx))
             scenario_talk_bitfield_offset = await (self.load_script_variable_raw(0x12, ctx))
             event_local_offset = await (self.load_script_variable_raw(0x5C, ctx))
-            bank_gold_offset = await (self.load_script_variable_raw(0x3D, ctx))
+            bank_gold_offset = 0x2A5504  # await (self.load_script_variable_raw(0x3D, ctx))
+            player_gold_offset = 0x2A54F8
             custom_save_area_offset = 0x3B0000
             mission_status_offset = custom_save_area_offset + 0x4
             relic_shards_offset = custom_save_area_offset + 0x184
@@ -270,7 +271,8 @@ class EoSClient(BizHawkClient):
                     (death_link_ally_death_message_offset, 128, self.ram_mem_domain),  # ally death message
                     (death_link_ally_name_offset, 18, self.ram_mem_domain),  # ally death name
                     #(hintable_items_offset, 0x1A4, self.ram_mem_domain),
-                    (bank_gold_offset, 4, self.ram_mem_domain)
+                    (bank_gold_offset, 4, self.ram_mem_domain),
+                    (player_gold_offset, 4, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -311,7 +313,8 @@ class EoSClient(BizHawkClient):
             #deathlink_message_send = read_state[16].decode("ascii")
             #deathlink_send_name = read_state[17].decode("ascii")
             #hintable_items = read_state[18]
-            bank_gold_amount = int.from_bytes(read_state[18])
+            bank_gold_amount = int.from_bytes(read_state[18], "little")
+            player_gold_amount = int.from_bytes(read_state[19], "little")
             locs_to_send = set()
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
@@ -381,7 +384,7 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
-                        await self.update_received_items(ctx, received_items_offset, received_index, i)
+
                     elif item_data.name == "Secret of the Waterfall":
                         if ((performance_progress_bitfield[3] >> 3) & 1) == 0:
                             write_byte = performance_progress_bitfield[3] | (0x1 << 3)
@@ -393,7 +396,7 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
-                        await self.update_received_items(ctx, received_items_offset, received_index, i)
+
                     elif item_data.name == "Chatot Repllent":
                         if ((performance_progress_bitfield[3] >> 1) & 1) == 0:
                             write_byte = performance_progress_bitfield[3] | (0x1 << 1)
@@ -405,7 +408,7 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
-                        await self.update_received_items(ctx, received_items_offset, received_index, i)
+
                     elif item_data.name == "Sky Jukebox":
                         if ((performance_progress_bitfield[3] >> 2) & 1) == 0:
                             write_byte = performance_progress_bitfield[3] | (0x1 << 2)
@@ -417,7 +420,7 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
-                        await self.update_received_items(ctx, received_items_offset, received_index, i)
+
                     elif item_data.name == "Recruitment Sensor":
                         if ((performance_progress_bitfield[3] >> 5) & 1) == 0:
                             write_byte = performance_progress_bitfield[3] | (0x1 << 5)
@@ -429,7 +432,7 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
-                        await self.update_received_items(ctx, received_items_offset, received_index, i)
+
                     elif item_data.name == "Hero Evolution":
                         write_byte = performance_progress_bitfield[1] | (0x1 << 2)
                         performance_progress_bitfield[1] = write_byte
@@ -460,6 +463,7 @@ class EoSClient(BizHawkClient):
                                  self.ram_mem_domain),
                             ]
                         )
+
                     elif item_data.name == "Formation Control":
                         write_byte = performance_progress_bitfield[0] | (0x1 << 7)
                         performance_progress_bitfield[0] = write_byte
@@ -474,16 +478,26 @@ class EoSClient(BizHawkClient):
                                  self.ram_mem_domain),
                             ]
                         )
+                    await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Money" in item_data.group:
-                    bank_gold_amount += item_data.memory_offset
-                    if bank_gold_amount > 999999:
-                        bank_gold_amount = 999999
+                    player_gold_amount += item_data.memory_offset
+                    #bank_gold_amount += item_data.memory_offset
+                    if player_gold_amount > 99999:
+                        extra_money = player_gold_amount - 99999
+                        player_gold_amount = 99999
+                        bank_gold_amount += extra_money
+                    if bank_gold_amount > 9999999999:
+                        bank_gold_amount = 9999999999
                     await bizhawk.write(
                         ctx.bizhawk_ctx,
                         [
                             (bank_gold_offset, int.to_bytes(bank_gold_amount,4, "little"),
-                             self.ram_mem_domain)],
+                             self.ram_mem_domain),
+                            (player_gold_offset, int.to_bytes(player_gold_amount, 4, "little"),
+                             self.ram_mem_domain)
+                        ],
                     )
+                    await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Rank" in item_data.group:
                     if item_data.name == "Secret Rank":
                         write_byte = performance_progress_bitfield[2] | (0x1 << 6)
@@ -493,6 +507,7 @@ class EoSClient(BizHawkClient):
                                 (performance_progress_offset + 0x2, int.to_bytes(write_byte),
                                  self.ram_mem_domain)],
                         )
+                        await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Macguffin" in item_data.group:
                     if item_data.name == "Relic Fragment Shard":
                         self.macguffins_collected += 1
