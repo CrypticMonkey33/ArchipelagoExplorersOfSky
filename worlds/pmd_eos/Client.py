@@ -172,10 +172,13 @@ class EoSClient(BizHawkClient):
                      }
                 ]))
             await asyncio.sleep(0.1)
-            if ("DeathLink" not in ctx.tags) and ctx.slot_data["Deathlink"]:
-                await ctx.update_death_link(True)
-            elif ("DeathLink" in ctx.tags) and not ctx.slot_data["Deathlink"]:
-                await ctx.update_death_link(False)
+            if "Deathlink" in ctx.slot_data:
+                if ("DeathLink" not in ctx.tags) and ctx.slot_data["Deathlink"]:
+                    await ctx.update_death_link(True)
+                elif ("DeathLink" in ctx.tags) and not ctx.slot_data["Deathlink"]:
+                    await ctx.update_death_link(False)
+            else:
+                return
 
             item_boxes_collected: List[Dict] = []
             legendaries_recruited: List[Dict] = []
