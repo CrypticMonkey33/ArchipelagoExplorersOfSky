@@ -6,7 +6,7 @@ import settings
 from typing import List, Dict, Set, Any
 
 import worlds.oot
-from .Items import (EOS_item_table, EOSItem, item_table, item_frequencies, item_table_by_id, item_table_by_groups,
+from .Items import (EOSItem, item_table, item_frequencies, item_table_by_id, item_table_by_groups,
                     filler_item_table, filler_item_weights)
 from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table
 from .Options import EOSOptions
@@ -58,7 +58,7 @@ class EOSWorld(World):
     settings: typing.ClassVar[EOSSettings]
 
     item_name_to_id = {item.name: item.id for
-                       item in EOS_item_table}
+                       item in item_table.values()}
     location_name_to_id = {location.name: location.id for
                            location in expanded_EOS_location_table}
 

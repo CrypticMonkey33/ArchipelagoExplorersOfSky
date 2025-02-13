@@ -264,7 +264,7 @@ item_frequencies: Dict[str, int] = {
 
 item_table: Dict[str, ItemData] = {item.name: item for item in EOS_item_table}
 item_table.update(filler_item_table)
-item_table_by_id: Dict[int, ItemData] = {item.id: item for item in EOS_item_table}
+item_table_by_id: Dict[int, ItemData] = {item.id: item for item in item_table.values()}
 
 item_table_by_groups = get_item_table_by_groups()
 lootbox_table: Dict[str, Dict[str, int]] = {
