@@ -282,6 +282,7 @@ class EOSWorld(World):
         required_items = []
         filler_items = []
         instruments = []
+        item_weights = []
         if self.options.goal.value == 1:
             instruments_to_add = self.options.req_instruments.value + self.options.extra_instruments.value
 
@@ -339,10 +340,10 @@ class EOSWorld(World):
             required_items) - 1  # subtracting 1 for the event check
 
         self.multiworld.itempool += required_items
-        item_weights = filler_item_weights
+        item_weights += filler_item_weights
         for i in range(5):
             filler_items += filler_items
-            item_weights += filler_item_weights
+            item_weights += item_weights
         self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
                                      in self.random.sample(filler_items, remaining, counts=item_weights)]
 
