@@ -254,6 +254,8 @@ class DojoDungeons(Choice):
 
 class LegendariesInPool(Range):
     """How many Legendary Pokemon should be in the item pool for you to recruit?
+        The Legendary will only come post-dialga if you get it early
+        Legendaries are disabled if you are going for a dialga goal
         """
 
     display_name = "Legendaries in Item Pool"

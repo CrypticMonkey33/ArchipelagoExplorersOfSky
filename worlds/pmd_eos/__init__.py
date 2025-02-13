@@ -296,10 +296,10 @@ class EOSWorld(World):
 
         #if self.options.goal == 1:
         #    required_items.append(self.create_item("Cresselia Feather", ItemClassification.progression))
-        if self.options.legendaries.value > len(self.options.allowed_legendaries.value):
+        if self.options.goal.value == 1 and (self.options.legendaries.value > len(self.options.allowed_legendaries.value)):
             for item in self.options.allowed_legendaries.value:
                 required_items.append(self.create_item(item,ItemClassification.useful))
-        else:
+        elif self.options.goal.value == 1:
             new_list = self.random.sample(sorted(self.options.allowed_legendaries.value), self.options.legendaries.value)
             for item in new_list:
                 required_items.append(self.create_item(item, ItemClassification.useful))
