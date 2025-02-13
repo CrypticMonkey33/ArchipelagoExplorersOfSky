@@ -83,7 +83,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     # Change the player name so that PMD_EOS can read it correctly and then make it ascii
     player_name_changed = (world.multiworld.player_name[world.player]).translate("[]~\\")
 
-    player_name_changed = player_name_changed.encode("ascii", "xmlcharrefreplace")
+    player_name_changed = player_name_changed.encode("latin1", "xmlcharrefreplace")
 
     # Bake player name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+player_name_offset,
@@ -91,7 +91,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
 
     for i in range(len(hint_items)):
         patch.write_token(APTokenTypes.WRITE, hintable_items_offset + 42*i,
-                          f"[CS:N]{hint_items[i].game[0:10]}[CR]'s {hint_items[i].name[0:20]}".encode("ascii"))
+                          f"[CS:N]{hint_items[i].game[0:10]}[CR]'s {hint_items[i].name[0:20]}".encode("latin1"))
 
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)

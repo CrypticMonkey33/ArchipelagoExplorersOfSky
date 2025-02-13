@@ -309,9 +309,9 @@ class EoSClient(BizHawkClient):
             dungeon_enter_index = int.from_bytes(read_state[11], "little")
             deathlink_receiver_bit = int.from_bytes(read_state[13])
             deathlink_sender_bit = int.from_bytes(read_state[14])
-            deathlink_message_from_sky = read_state[15].decode("ascii")
-            deathlink_ally_death_message = read_state[16].decode("ascii")
-            deathlink_ally_name = read_state[17].decode("ascii")
+            deathlink_message_from_sky = ""
+            #deathlink_ally_death_message = read_state[16].decode("latin1")
+            #deathlink_ally_name = read_state[17].decode("latin1")
             #hintable_items = read_state[18]
             bank_gold_amount = int.from_bytes(read_state[18], "little")
             player_gold_amount = int.from_bytes(read_state[19], "little")
@@ -727,6 +727,7 @@ class EoSClient(BizHawkClient):
 
             if "DeathLink" in ctx.tags and ctx.last_death_link + 1 < time.time():
                 if (self.outside_deathlink == 0) and ((deathlink_sender_bit & 1) == 1):
+                    deathlink_message_from_sky = read_state[15].decode("latin1")
                     await ctx.send_death(f"{ctx.player_names[ctx.slot]} {deathlink_message_from_sky}!")
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
@@ -735,8 +736,8 @@ class EoSClient(BizHawkClient):
                     ]
                 )
             if self.outside_deathlink != 0:
-                write_message = self.deathlink_message.translate("[]~\\").encode("ascii")[0:128]
-                write_message2 = f"[CS:N]{self.deathlink_sender.translate("[]~\\").encode("ascii")[0:18]}[CR]"
+                write_message = self.deathlink_message.translate("[]~\\").encode("latin1")[0:128]
+                write_message2 = f"[CS:N]{self.deathlink_sender.translate("[]~\\").encode("latin1")[0:18]}[CR]"
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
