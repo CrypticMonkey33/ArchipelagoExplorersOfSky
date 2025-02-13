@@ -558,7 +558,7 @@ class EoSClient(BizHawkClient):
                                 ]
                             )
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
-                    elif item_data.name == "Confusion Trap":
+                    elif item_data.name == "Get Unowned!":
                         if ((performance_progress_bitfield[4] >> 1) & 1) == 0:
                             write_byte = performance_progress_bitfield[4] | (0x1 << 1)
                             performance_progress_bitfield[4] = write_byte
