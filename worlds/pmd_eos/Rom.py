@@ -80,7 +80,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
 
-    # Change the player name so that PMD_EOS can read it correctly and then make it ascii
+    # Change the player name so that PMD_EOS can read it correctly and then make it latin1
     player_name_changed = (world.multiworld.player_name[world.player]).translate("[]~\\")
 
     player_name_changed = player_name_changed.encode("latin1", "xmlcharrefreplace")
@@ -89,6 +89,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+player_name_offset,
                       player_name_changed)
 
+    # Bake names of previewable items into ROM
     for i in range(len(hint_items)):
         patch.write_token(APTokenTypes.WRITE, hintable_items_offset + 42*i,
                           f"[CS:N]{hint_items[i].game[0:10]}[CR]'s {hint_items[i].name[0:20]}".encode("latin1"))
@@ -100,15 +101,6 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     # Take the options and bake them into the rom, so they can be applied on runtime
     write_byte = 0
     write_byte = write_byte | world.options.iq_scaling.value
-    if world.options.recruit.value:
-        write_byte = write_byte | (0x1 << 4)
-
-    if world.options.recruit_evo.value:
-        write_byte = write_byte | (0x1 << 5)
-
-    if world.options.team_form.value:
-        write_byte = write_byte | (0x1 << 6)
-
     if world.options.level_scale.value:
         write_byte = write_byte | (0x1 << 7)
 
