@@ -81,7 +81,8 @@ class AllowedLegendaries(OptionSet):
 
 class RequiredInstruments(NamedRange):
     """ How many Instruments should be in the game (Macguffins)
-     that you must get to unlock Dark Crater if victory condition is Darkrai"""
+     that you must get to unlock Dark Crater if victory condition is Darkrai
+     Instruments are not added to the item pool if the goal is Dialga"""
     range_start = 4
     range_end = 10
     special_range_names = {
@@ -136,7 +137,7 @@ class LateMissionChecks(NamedRange):
 
 class EarlyOutlawChecks(NamedRange):
     """ How many outlaws per dungeon pre dialga should be checks?
-        0 equals missions are not checks"""
+        0 equals outlaws are not checks"""
     range_start = 0
     range_end = 50
     special_range_names = {
@@ -150,7 +151,7 @@ class EarlyOutlawChecks(NamedRange):
 
 class LateOutlawChecks(NamedRange):
     """ How many Missions per dungeon post-dialga (including Hidden Land
-    and Temporal Tower) should be checks? 0 equals missions are not checks"""
+    and Temporal Tower) should be checks? 0 equals outlaws are not checks"""
     range_start = 0
     range_end = 50
     special_range_names = {
@@ -163,27 +164,32 @@ class LateOutlawChecks(NamedRange):
 
 
 class Recruitment(DefaultOnToggle):
-    """Start with recruitment enabled?"""
+    """Start with recruitment enabled?
+    If false, recruitment will be an item available in game"""
     display_name = "Recruitment Enable"
 
 
 class RecruitmentEvolution(DefaultOnToggle):
-    """Start with Recruitment Evolution Enabled?"""
+    """Start with Recruitment Evolution Enabled?
+    If false, recruitment will be an item available in game"""
     display_name = "Recruitment Evolution Enable"
 
 
 class HeroEvolution(DefaultOnToggle):
-    """Start with Hero/Partner Evolution Enabled?"""
+    """Start with Hero/Partner Evolution Enabled?
+    If false, recruitment will be an item available in game"""
     display_name = "Partner/Hero Evolution Enable"
 
 
 class FullTeamFormationControl(DefaultOnToggle):
-    """ Start with full team formation control?"""
+    """ Start with full team formation control?
+    If false, recruitment will be an item available in game"""
     display_name = "Formation Control Enable"
 
 
 class LevelScaling(DefaultOnToggle):
-    """Allow for dungeons to scale to the highest level of your party members?"""
+    """Allow for dungeons to scale to the highest level of your party members?
+    This will not scale bosses at the end of dungeons"""
     display_name = "Level Scaling"
 
 
@@ -201,7 +207,9 @@ class StarterOption(Choice):
     Random: Both your MC and partner will be completely random. This means they can be the same type
             WARNING: game is not balanced for same type team, use at your own risk (until we fix typesanity)
     Override: Do the quiz, but you can override the hero it gives you. Choose your partner as normal
-    Choose: Skip the quiz and go straight to choosing your starter and partner"""
+    Choose: Skip the quiz and go straight to choosing your starter and partner
+    For both Choose and Override you will be able to pick partner exclusive pokemon for your starter as well as gender
+    exclusive pokemon regardless of gender"""
     display_name = "Starter Choice Option"
     option_vanilla = 0
     option_name_random = 1
@@ -267,7 +275,7 @@ class LegendariesInPool(Range):
 class DeathlinkType(Toggle):
     """What type of deathlink do you want?
     Currently False is death even if you have revival seeds
-    True will turn off deathlink until we implement the other type of death possibility"""
+    True will die and recover from revival seeds"""
 
     display_name = "Deathlink Type"
 
