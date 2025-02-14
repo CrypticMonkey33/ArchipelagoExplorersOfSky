@@ -212,7 +212,7 @@ class StarterOption(Choice):
     exclusive pokemon regardless of gender"""
     display_name = "Starter Choice Option"
     option_vanilla = 0
-    option_name_random = 1
+    option_random_starter = 1
     option_override = 2
     option_choose = 3
     default = 2

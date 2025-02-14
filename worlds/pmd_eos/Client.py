@@ -142,31 +142,31 @@ class EoSClient(BizHawkClient):
             await (ctx.send_msgs(
                 [
                     {"cmd": "Set",
-                     "key": "Dungeon Missions",
+                     "key": self.player_name + "Dungeon Missions",
                      "default": {location: 0 for location in location_table_by_groups["Mission"]},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value": {}}]
                      },
                     {"cmd": "Set",
-                     "key": "Dungeon Outlaws",
+                     "key": self.player_name + "Dungeon Outlaws",
                      "default": {location: 0 for location in location_table_by_groups["Mission"]},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value": {}}]
                      },
                     {"cmd": "Set",
-                     "key": "Item Boxes Collected",
+                     "key": self.player_name + "Item Boxes Collected",
                      "default": {0: []},
                      "want_reply": True,
                      "operations": [{"operation": "default", "value": {0: []}}]
                      },
                     {"cmd": "Set",
-                     "key": "Legendaries Recruited",
+                     "key": self.player_name + "Legendaries Recruited",
                      "default": {0: []},
                      "want_reply": True,
                      "operations": [{"operation": "default", "value": {0: []}}]
                      },
                     {"cmd": "Set",
-                     "key": "GenericStorage",
+                     "key": self.player_name + "GenericStorage",
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "instruments_collected": 0, "required_instruments": 0,
                                  "dialga_complete": False},
@@ -179,13 +179,6 @@ class EoSClient(BizHawkClient):
                      }
                 ]))
             await asyncio.sleep(0.1)
-            if "Deathlink" in ctx.slot_data:
-                if ("DeathLink" not in ctx.tags) and ctx.slot_data["Deathlink"]:
-                    await ctx.update_death_link(True)
-                elif ("DeathLink" in ctx.tags) and not ctx.slot_data["Deathlink"]:
-                    await ctx.update_death_link(False)
-            else:
-                return
 
             item_boxes_collected: List[Dict] = []
             legendaries_recruited: List[Dict] = []
@@ -216,28 +209,28 @@ class EoSClient(BizHawkClient):
             death_link_ally_name_offset = death_link_offset + 0x2 + 256  # ally death name
             #hintable_items_offset = 0x23DE022
 
-            if "Dungeon Missions" in ctx.stored_data:
-                dungeon_missions_dict = ctx.stored_data["Dungeon Missions"]
+            if (self.player_name + "Dungeon Missions") in ctx.stored_data:
+                dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
             else:
                 dungeon_missions_dict = {}
                 return
-            if "Dungeon Outlaws" in ctx.stored_data:
-                dungeon_outlaws_dict = ctx.stored_data["Dungeon Outlaws"]
+            if (self.player_name + "Dungeon Outlaws") in ctx.stored_data:
+                dungeon_outlaws_dict = ctx.stored_data[self.player_name + "Dungeon Outlaws"]
             else:
                 dungeon_outlaws_dict = {}
                 return
-            if "Item Boxes Collected" in ctx.stored_data:
-                item_boxes_collected = ctx.stored_data["Item Boxes Collected"]["0"]
+            if (self.player_name + "Item Boxes Collected") in ctx.stored_data:
+                item_boxes_collected = ctx.stored_data[self.player_name + "Item Boxes Collected"]["0"]
             else:
                 item_boxes_collected = []
                 return
-            if "Legendaries Recruited" in ctx.stored_data:
-                legendaries_recruited = ctx.stored_data["Legendaries Recruited"]["0"]
+            if (self.player_name + "Legendaries Recruited") in ctx.stored_data:
+                legendaries_recruited = ctx.stored_data[self.player_name + "Legendaries Recruited"]["0"]
             else:
                 legendaries_recruited = []
                 return
-            if "GenericStorage" in ctx.stored_data:
-                stored = ctx.stored_data["GenericStorage"]
+            if (self.player_name + "GenericStorage") in ctx.stored_data:
+                stored = ctx.stored_data[self.player_name + "GenericStorage"]
                 self.goal_complete = stored["goal_complete"]
                 self.bag_given = stored["bag_given"]
                 self.macguffins_collected = stored["macguffins_collected"]
@@ -249,6 +242,15 @@ class EoSClient(BizHawkClient):
             else:
 
                 return
+
+            if "Deathlink" in ctx.slot_data:
+                if ("DeathLink" not in ctx.tags) and ctx.slot_data["Deathlink"]:
+                    await ctx.update_death_link(True)
+                elif ("DeathLink" in ctx.tags) and not ctx.slot_data["Deathlink"]:
+                    await ctx.update_death_link(False)
+            else:
+                return
+
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
@@ -828,27 +830,27 @@ class EoSClient(BizHawkClient):
                                 ]
                             )
                             await asyncio.sleep(0.1)
-                        
-                     elif item_data["name"] in item_table_by_groups["Exclusive"]:
-                            write_byte = performance_progress_bitfield[4] | (0x1 << 3)
-                            performance_progress_bitfield[4] = write_byte
 
-                            write_byte3 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
+                    elif item_data["name"] in item_table_by_groups["Exclusive"]:
+                        write_byte = performance_progress_bitfield[4] | (0x1 << 3)
+                        performance_progress_bitfield[4] = write_byte
 
-                            write_byte2 = [0x16c % 256, 0x16c // 256]
-                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (item_backup_offset, write_byte2, self.ram_mem_domain),
-                                    (item_backup_offset + 0x2, write_byte3, self.ram_mem_domain),
-                                    (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
-                                    (
-                                    scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
-                                    self.ram_mem_domain)
-                                ]
-                            )
-                            await asyncio.sleep(0.1)
+                        write_byte3 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
+
+                        write_byte2 = [0x16c % 256, 0x16c // 256]
+                        scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                (item_backup_offset + 0x2, write_byte3, self.ram_mem_domain),
+                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                (
+                                scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
+                                self.ram_mem_domain)
+                            ]
+                        )
+                        await asyncio.sleep(0.1)
                          
                     elif item_data["name"] in item_table_by_groups["Box"]:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
@@ -1028,31 +1030,31 @@ class EoSClient(BizHawkClient):
             await (ctx.send_msgs(
                 [
                     {"cmd": "Set",
-                     "key": "Dungeon Missions",
+                     "key": self.player_name + "Dungeon Missions",
                      "default": {},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value": dungeon_missions_dict}]
                      },
                     {"cmd": "Set",
-                     "key": "Dungeon Outlaws",
+                     "key": self.player_name + "Dungeon Outlaws",
                      "default": {},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value": dungeon_outlaws_dict}]
                      },
                     {"cmd": "Set",
-                     "key": "Item Boxes Collected",
+                     "key": self.player_name + "Item Boxes Collected",
                      "default": {},
                      "want_reply": True,
                      "operations": [{"operation": "replace", "value": {0: item_boxes_collected}}]
                      },
                     {"cmd": "Set",
-                     "key": "Legendaries Recruited",
+                     "key": self.player_name + "Legendaries Recruited",
                      "default": {},
                      "want_reply": True,
                      "operations": [{"operation": "replace", "value": {0: legendaries_recruited}}]
                      },
                     {"cmd": "Set",
-                     "key": "GenericStorage",
+                     "key": self.player_name + "GenericStorage",
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "cresselia_feather_acquired": False,
                                  "dialga_complete": False},
