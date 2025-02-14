@@ -828,7 +828,28 @@ class EoSClient(BizHawkClient):
                                 ]
                             )
                             await asyncio.sleep(0.1)
+                        
+                     elif item_data["name"] in item_table_by_groups["Exclusive"]:
+                            write_byte = performance_progress_bitfield[4] | (0x1 << 3)
+                            performance_progress_bitfield[4] = write_byte
 
+                            write_byte3 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
+
+                            write_byte2 = [0x16c % 256, 0x16c // 256]
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                    (item_backup_offset + 0x2, write_byte3, self.ram_mem_domain),
+                                    (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                    (
+                                    scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
+                                    self.ram_mem_domain)
+                                ]
+                            )
+                            await asyncio.sleep(0.1)
+                         
                     elif item_data["name"] in item_table_by_groups["Box"]:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
