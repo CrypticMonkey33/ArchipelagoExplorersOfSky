@@ -243,7 +243,7 @@ class EoSClient(BizHawkClient):
 
                 return
 
-            if "Deathlink" in ctx.slot_data:
+            if ctx.slot_data and ("Deathlink" in ctx.slot_data):
                 if ("DeathLink" not in ctx.tags) and ctx.slot_data["Deathlink"]:
                     await ctx.update_death_link(True)
                 elif ("DeathLink" in ctx.tags) and not ctx.slot_data["Deathlink"]:
