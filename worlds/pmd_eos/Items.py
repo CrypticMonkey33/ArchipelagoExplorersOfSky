@@ -294,69 +294,69 @@ filler_items = [
     ItemData("Nap Time!", 402, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Sentry Duty!", 403, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Touch Grass", 404, ItemClassification.trap, 20, ["Trap"], 0x0),
-    ItemData("Protein", 405, ItemClassification.filler, 10, ["Item", "Single"], 0x64),
-    ItemData("Calcium", 406, ItemClassification.filler, 10, ["Item", "Single"], 0x65),
-    ItemData("Iron", 407, ItemClassification.filler, 10, ["Item", "Single"], 0x66),
-    ItemData("Nectar", 408, ItemClassification.filler, 10, ["Item", "Single"], 0x67),
-    ItemData("Max Elixir", 409, ItemClassification.filler, 10, ["Item", "Single"], 0x63),
-    ItemData("Gabite Scale", 410, ItemClassification.filler, 10, ["Item", "Single"], 0x5c),
-    ItemData("Zinc", 411, ItemClassification.filler, 10, ["Item", "Single"], 0x6c),
+    ItemData("Protein", 480, ItemClassification.filler, 10, ["Item", "Single"], 0x64),
+    ItemData("Calcium", 481, ItemClassification.filler, 10, ["Item", "Single"], 0x65),
+    ItemData("Iron", 482, ItemClassification.filler, 10, ["Item", "Single"], 0x66),
+    ItemData("Nectar", 483, ItemClassification.filler, 10, ["Item", "Single"], 0x67),
+    ItemData("Max Elixir", 484, ItemClassification.filler, 10, ["Item", "Single"], 0x63),
+    ItemData("Gabite Scale", 485, ItemClassification.filler, 10, ["Item", "Single"], 0x5c),
+    ItemData("Zinc", 486, ItemClassification.filler, 10, ["Item", "Single"], 0x6c),
 
     # specific item Types
-    ItemData("Joy Globe", 412, ItemClassification.filler, 3, ["Item", "Single"], 0x1FD),  # Normal
-    ItemData("Fiery Globe", 413, ItemClassification.filler, 3, ["Item", "Single"], 0x201),  # Fire
-    ItemData("Aqua Globe", 414, ItemClassification.filler, 3, ["Item", "Single"], 0x205),  # Water
-    ItemData("Soothe Globe", 415, ItemClassification.filler, 3, ["Item", "Single"], 0x209),  # Grass
-    ItemData("Volt Globe", 416, ItemClassification.filler, 3, ["Item", "Single"], 0x20D),  # Electric
-    ItemData("Icy Globe", 417, ItemClassification.filler, 3, ["Item", "Single"], 0x211),  # Ice
-    ItemData("Power Globe", 418, ItemClassification.filler, 3, ["Item", "Single"], 0x215),  # Fighting
-    ItemData("Poison Globe", 419, ItemClassification.filler, 3, ["Item", "Single"], 0x219),  # Poison
-    ItemData("Terra Globe", 420, ItemClassification.filler, 3, ["Item", "Single"], 0x21D),  # Ground
-    ItemData("Sky Globe", 421, ItemClassification.filler, 3, ["Item", "Single"], 0x221),  # Flying
-    ItemData("Psyche Globe", 422, ItemClassification.filler, 3, ["Item", "Single"], 0x225),  # Psychic
-    ItemData("Defend Globe", 423, ItemClassification.filler, 3, ["Item", "Single"], 0x229),  # Bug
-    ItemData("Rock Globe", 424, ItemClassification.filler, 3, ["Item", "Single"], 0x22D),  # Rock
-    ItemData("Nether Globe", 425, ItemClassification.filler, 3, ["Item", "Single"], 0x231),  # Ghost
-    ItemData("Dragon Globe", 426, ItemClassification.filler, 3, ["Item", "Single"], 0x235),  # Dragon
-    ItemData("Dusk Globe", 427, ItemClassification.filler, 3, ["Item", "Single"], 0x239),  # Dark
-    ItemData("Steel Globe", 428, ItemClassification.filler, 3, ["Item", "Single"], 0x23D),  # Steel
+    ItemData("Joy Globe", 487, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1FD),  # Normal
+    ItemData("Fiery Globe", 488, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x201),  # Fire
+    ItemData("Aqua Globe", 489, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x205),  # Water
+    ItemData("Soothe Globe", 415, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x209),  # Grass
+    ItemData("Volt Globe", 416, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x20D),  # Electric
+    ItemData("Icy Globe", 417, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x211),  # Ice
+    ItemData("Power Globe", 418, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x215),  # Fighting
+    ItemData("Poison Globe", 419, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x219),  # Poison
+    ItemData("Terra Globe", 420, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x21D),  # Ground
+    ItemData("Sky Globe", 421, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x221),  # Flying
+    ItemData("Psyche Globe", 422, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x225),  # Psychic
+    ItemData("Defend Globe", 423, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x229),  # Bug
+    ItemData("Rock Globe", 424, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x22D),  # Rock
+    ItemData("Nether Globe", 425, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x231),  # Ghost
+    ItemData("Dragon Globe", 426, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x235),  # Dragon
+    ItemData("Dusk Globe", 427, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x239),  # Dark
+    ItemData("Steel Globe", 428, ItemClassification.filler, 3, ["Item", "SingExclusivele"], 0x23D),  # Steel
 
     # Legendary specific items
-    ItemData("Freeze Veil", 429, ItemClassification.filler, 3, ["Item", "Single"], 0x1D8),  # Articuno
-    ItemData("Thunder Veil", 430, ItemClassification.filler, 3, ["Item", "Single"], 0x1D9),  # Zapdos
-    ItemData("Fire Veil", 431, ItemClassification.filler, 3, ["Item", "Single"], 0x1DA),  # Moltres
-    ItemData("Havoc Robe", 432, ItemClassification.filler, 3, ["Item", "Single"], 0x1DB),  # Mewtwo
-    ItemData("Life Ring", 433, ItemClassification.filler, 3, ["Item", "Single"], 0x1DC),  # Mew
-    ItemData("Bolt Fang", 434, ItemClassification.filler, 3, ["Item", "Single"], 0x1DD),  # Raikou
-    ItemData("Flare Fang", 435, ItemClassification.filler, 3, ["Item", "Single"], 0x1DE),  # Entei
-    ItemData("Aqua Mantle", 436, ItemClassification.filler, 3, ["Item", "Single"], 0x1DF),  # Suicune
-    ItemData("Silver Veil", 437, ItemClassification.filler, 3, ["Item", "Single"], 0x1E0),  # Lugia
-    ItemData("Rainbow Veil", 438, ItemClassification.filler, 3, ["Item", "Single"], 0x1E1),  # Ho-oh
-    ItemData("Chrono Veil", 439, ItemClassification.filler, 3, ["Item", "Single"], 0x1E2),  # Celebi
-    ItemData("Rock Sash", 440, ItemClassification.filler, 3, ["Item", "Single"], 0x1E3),  # Regirock
-    ItemData("Ice Sash", 441, ItemClassification.filler, 3, ["Item", "Single"], 0x1E4),  # Regice
-    ItemData("Steel Sash", 442, ItemClassification.filler, 3, ["Item", "Single"], 0x1E5),  # Registeel
-    ItemData("Heart Brooch", 443, ItemClassification.filler, 3, ["Item", "Single"], 0x1E6),  # Latias
-    ItemData("Eon Veil", 444, ItemClassification.filler, 3, ["Item", "Single"], 0x1E7),  # Latios
-    ItemData("Seabed Veil", 445, ItemClassification.filler, 3, ["Item", "Single"], 0x1E8),  # Kyogre
-    ItemData("Terra Ring", 446, ItemClassification.filler, 3, ["Item", "Single"], 0x1E9),  # Groudon
-    ItemData("SkyHigh Veil", 447, ItemClassification.filler, 3, ["Item", "Single"], 0x1EA),  # Rayquaza
-    ItemData("Wish Mantle", 448, ItemClassification.filler, 3, ["Item", "Single"], 0x1EB),  # Jirachi
-    ItemData("Revive Robe", 449, ItemClassification.filler, 3, ["Item", "Single"], 0x1EC),  # Deoxys
-    ItemData("Edify Robe", 450, ItemClassification.filler, 3, ["Item", "Single"], 0x1EF),  # Uxie
-    ItemData("Charity Robe", 451, ItemClassification.filler, 3, ["Item", "Single"], 0x1F0),  # Mesprit
-    ItemData("Hope Robe", 452, ItemClassification.filler, 3, ["Item", "Single"], 0x1F1),  # Azelf
-    ItemData("Time Shield", 453, ItemClassification.filler, 3, ["Item", "Single"], 0x1F2),  # Dialga
-    ItemData("Air Blade", 454, ItemClassification.filler, 3, ["Item", "Single"], 0x1F3),  # Palkia
-    ItemData("Searing Ring", 455, ItemClassification.filler, 3, ["Item", "Single"], 0x1F4),  # Heatran
-    ItemData("Ancient Ring", 456, ItemClassification.filler, 3, ["Item", "Single"], 0x1F5),  # Regigigas
-    ItemData("Nether Veil", 457, ItemClassification.filler, 3, ["Item", "Single"], 0x1F6),  # Giratina
-    ItemData("Lunar Veil", 458, ItemClassification.filler, 3, ["Item", "Single"], 0x1F7),  # Cresselia
-    ItemData("Ripple Cape", 459, ItemClassification.filler, 3, ["Item", "Single"], 0x3E5),  # Phione
-    ItemData("Marine Cache", 460, ItemClassification.filler, 3, ["Item", "Single"], 0x1D7),  # Phione
-    ItemData("Tidal Cape", 461, ItemClassification.filler, 3, ["Item", "Single"], 0x1F8),  # Manaphy
-    ItemData("Eclipse Robe", 462, ItemClassification.filler, 3, ["Item", "Single"], 0x1F9),  # Darkrai
-    ItemData("Purify Veil", 463, ItemClassification.filler, 3, ["Item", "Single"], 0x547),  # Shaymin
+    ItemData("Freeze Veil", 429, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1D8),  # Articuno
+    ItemData("Thunder Veil", 430, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1D9),  # Zapdos
+    ItemData("Fire Veil", 431, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1DA),  # Moltres
+    ItemData("Havoc Robe", 432, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1DB),  # Mewtwo
+    ItemData("Life Ring", 433, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1DC),  # Mew
+    ItemData("Bolt Fang", 434, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1DD),  # Raikou
+    ItemData("Flare Fang", 435, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1DE),  # Entei
+    ItemData("Aqua Mantle", 436, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1DF),  # Suicune
+    ItemData("Silver Veil", 437, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1E0),  # Lugia
+    ItemData("Rainbow Veil", 438, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1E1),  # Ho-oh
+    ItemData("Chrono Veil", 439, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1E2),  # Celebi
+    ItemData("Rock Sash", 440, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1E3),  # Regirock
+    ItemData("Ice Sash", 441, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1E4),  # Regice
+    ItemData("Steel Sash", 442, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1E5),  # Registeel
+    ItemData("Heart Brooch", 443, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1E6),  # Latias
+    ItemData("Eon Veil", 444, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1E7),  # Latios
+    ItemData("Seabed Veil", 445, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1E8),  # Kyogre
+    ItemData("Terra Ring", 446, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1E9),  # Groudon
+    ItemData("SkyHigh Veil", 447, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1EA),  # Rayquaza
+    ItemData("Wish Mantle", 448, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1EB),  # Jirachi
+    ItemData("Revive Robe", 449, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1EC),  # Deoxys
+    ItemData("Edify Robe", 450, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1EF),  # Uxie
+    ItemData("Charity Robe", 451, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1F0),  # Mesprit
+    ItemData("Hope Robe", 452, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1F1),  # Azelf
+    ItemData("Time Shield", 453, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1F2),  # Dialga
+    ItemData("Air Blade", 454, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1F3),  # Palkia
+    ItemData("Searing Ring", 455, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1F4),  # Heatran
+    ItemData("Ancient Ring", 456, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1F5),  # Regigigas
+    ItemData("Nether Veil", 457, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1F6),  # Giratina
+    ItemData("Lunar Veil", 458, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1F7),  # Cresselia
+    ItemData("Ripple Cape", 459, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x3E5),  # Phione
+    ItemData("Marine Cache", 460, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1D7),  # Phione
+    ItemData("Tidal Cape", 461, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1F8),  # Manaphy
+    ItemData("Eclipse Robe", 462, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1F9),  # Darkrai
+    ItemData("Purify Veil", 463, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x547),  # Shaymin
 
 ]
 filler_item_weights = [item.start_number for item in filler_items]

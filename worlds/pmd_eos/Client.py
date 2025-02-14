@@ -1,6 +1,7 @@
 from typing import TYPE_CHECKING, Optional, Set, List, Dict
 import array
 import time
+import re
 import binascii
 
 from Utils import async_start
@@ -727,8 +728,14 @@ class EoSClient(BizHawkClient):
 
             if "DeathLink" in ctx.tags and ctx.last_death_link + 1 < time.time():
                 if (self.outside_deathlink == 0) and ((deathlink_sender_bit & 1) == 1):
-                    deathlink_message_from_sky = read_state[15].decode("latin1")
-                    await ctx.send_death(f"{ctx.player_names[ctx.slot]} {deathlink_message_from_sky}!")
+                    deathlink_message_from_sky = read_state[15].decode("latin1").rstrip("\x00")
+                    deathlink_message_from_sky = re.sub(r"\[.*?]", "", deathlink_message_from_sky)
+                    lappyint = self.random.randint(1, 100)
+                    #deathlink_message_from_sky = deathlink_message_from_sky.replace("byan", "by an")
+                    if lappyint == 1:
+                        await ctx.send_death(f"{ctx.player_names[ctx.slot]} was defeated by Lappy's silliness")
+                    else:
+                        await ctx.send_death(f"{ctx.player_names[ctx.slot]}{deathlink_message_from_sky}")
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
@@ -737,7 +744,7 @@ class EoSClient(BizHawkClient):
                 )
             if self.outside_deathlink != 0:
                 write_message = self.deathlink_message.translate("[]~\\").encode("latin1")[0:128]
-                write_message2 = f"[CS:N]{self.deathlink_sender.translate("[]~\\").encode("latin1")[0:18]}[CR]"
+                write_message2 = f"[CS:N]{self.deathlink_sender.translate("[]~\\")[0:18]}[CR]".encode("latin1")
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
@@ -899,6 +906,26 @@ class EoSClient(BizHawkClient):
                                     (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                                     self.ram_mem_domain),
                                     (instruments_offset, int.to_bytes(self.instruments_collected), self.ram_mem_domain)
+                                ]
+                            )
+                            await asyncio.sleep(0.1)
+                    elif item_data["name"] in item_table_by_groups["Exclusive"]:
+                            write_byte = performance_progress_bitfield[4] | (0x1 << 3)
+                            performance_progress_bitfield[4] = write_byte
+
+                            write_byte3 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
+
+                            write_byte2 = [0x16c % 256, 0x16c // 256]
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                    (item_backup_offset + 0x2, write_byte3, self.ram_mem_domain),
+                                    (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                    (
+                                    scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
+                                    self.ram_mem_domain)
                                 ]
                             )
                             await asyncio.sleep(0.1)
