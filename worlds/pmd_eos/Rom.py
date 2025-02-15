@@ -92,7 +92,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     # Bake names of previewable items into ROM
     for i in range(len(hint_items)):
         patch.write_token(APTokenTypes.WRITE, hintable_items_offset + 42*i,
-                          f"[CS:N]{hint_items[i].game[0:10]}[CR]'s {hint_items[i].name[0:20]}".encode("latin1"))
+                          f"[CS:N]{player_name_changed[0:10]}[CR]'s {hint_items[i].name[0:20]}".encode("latin1"))
 
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
