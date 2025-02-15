@@ -243,13 +243,14 @@ class EoSClient(BizHawkClient):
 
                 return
 
-            if ctx.slot_data and ("Deathlink" in ctx.slot_data):
-                if ("DeathLink" not in ctx.tags) and ctx.slot_data["Deathlink"]:
-                    await ctx.update_death_link(True)
-                elif ("DeathLink" in ctx.tags) and not ctx.slot_data["Deathlink"]:
-                    await ctx.update_death_link(False)
-            else:
-                return
+            if ctx.slot_data:
+                if ("Deathlink" in ctx.slot_data):
+                    if ("DeathLink" not in ctx.tags) and ctx.slot_data["Deathlink"]:
+                        await ctx.update_death_link(True)
+                    elif ("DeathLink" in ctx.tags) and not ctx.slot_data["Deathlink"]:
+                        await ctx.update_death_link(False)
+                else:
+                    return
 
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
