@@ -207,7 +207,7 @@ class EoSClient(BizHawkClient):
             death_link_sky_death_message_offset = death_link_offset + 0x2  # sky death message
             death_link_ally_death_message_offset = death_link_offset + 0x2 + 128 # ally death message
             death_link_ally_name_offset = death_link_offset + 0x2 + 256  # ally death name
-            #hintable_items_offset = 0x23DE022
+            hintable_items_offset = custom_save_area_offset + 0x29A
 
             if (self.player_name + "Dungeon Missions") in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
@@ -274,7 +274,7 @@ class EoSClient(BizHawkClient):
                     (death_link_sky_death_message_offset, 128, self.ram_mem_domain),  # sky death message
                     (death_link_ally_death_message_offset, 128, self.ram_mem_domain),  # ally death message
                     (death_link_ally_name_offset, 18, self.ram_mem_domain),  # ally death name
-                    #(hintable_items_offset, 0x1A4, self.ram_mem_domain),
+                    (hintable_items_offset, 0xA, self.ram_mem_domain),
                     (bank_gold_offset, 4, self.ram_mem_domain),
                     (player_gold_offset, 4, self.ram_mem_domain),
                 ]
@@ -316,9 +316,9 @@ class EoSClient(BizHawkClient):
             deathlink_message_from_sky = ""
             #deathlink_ally_death_message = read_state[16].decode("latin1")
             #deathlink_ally_name = read_state[17].decode("latin1")
-            #hintable_items = read_state[18]
-            bank_gold_amount = int.from_bytes(read_state[18], "little")
-            player_gold_amount = int.from_bytes(read_state[19], "little")
+            hintable_items = array.array('i', [item for item in read_state[18]])
+            bank_gold_amount = int.from_bytes(read_state[19], "little")
+            player_gold_amount = int.from_bytes(read_state[20], "little")
             locs_to_send = set()
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
@@ -721,6 +721,17 @@ class EoSClient(BizHawkClient):
                     ]
                 )
                 await asyncio.sleep(0.1)
+            hints_to_send = []
+            for i in range(10):
+                if hintable_items[i] == 1:
+                    hints_to_send += [i + 310]
+            await (ctx.send_msgs(
+                [
+                    {"cmd": "LocationScouts",
+                     "locations": hints_to_send,
+                     "create_as_hint": 2
+                     }]))
+
 
             # Send locations if there are any to send.
             if locs_to_send != self.local_checked_locations:
