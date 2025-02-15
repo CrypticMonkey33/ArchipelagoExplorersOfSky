@@ -319,7 +319,7 @@ filler_items = [
     ItemData("Nether Globe", 425, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x231),  # Ghost
     ItemData("Dragon Globe", 426, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x235),  # Dragon
     ItemData("Dusk Globe", 427, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x239),  # Dark
-    ItemData("Steel Globe", 428, ItemClassification.filler, 3, ["Item", "SingExclusivele"], 0x23D),  # Steel
+    ItemData("Steel Globe", 428, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x23D),  # Steel
 
     # Legendary specific items
     ItemData("Freeze Veil", 429, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x1D8),  # Articuno
