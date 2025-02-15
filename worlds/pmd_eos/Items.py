@@ -199,10 +199,10 @@ EOS_item_table = [
     ItemData("Bag Upgrade", 370, ItemClassification.progression, 0, ["ProgressiveBag", "Generic"], 0x00),
 
     ItemData("Secret Rank", 409, ItemClassification.progression, 0, ["Rank"], 0x0),
-    ItemData("Mystery Part", 500, ItemClassification.useful, 0, ["Item"], 0xAD),
-    ItemData("Secret Slab", 501, ItemClassification.useful, 0, ["Item"], 0xAE),
-    ItemData("Amber Tear", 502, ItemClassification.useful, 0, ["Item"], 0x3A),
-    ItemData("Friend Bow", 503, ItemClassification.useful, 0, ["Item"], 0x35),
+    ItemData("Mystery Part", 500, ItemClassification.useful, 0, ["Item", "Single"], 0xAD),
+    ItemData("Secret Slab", 501, ItemClassification.useful, 0, ["Item", "Single"], 0xAE),
+    ItemData("Amber Tear", 502, ItemClassification.useful, 0, ["Item", "Single"], 0x3A),
+    ItemData("Friend Bow", 503, ItemClassification.useful, 0, ["Item", "Single"], 0x35),
 
     ItemData("Regirock", 504, ItemClassification.useful, 0, ["Legendary"], 0x0),
     ItemData("Regice", 505, ItemClassification.useful, 0, ["Legendary"], 0x1),
