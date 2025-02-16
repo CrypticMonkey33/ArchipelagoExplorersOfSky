@@ -143,13 +143,13 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("BossDungeonComplete", 3, "Dark Crater", 69, 67, ["Boss"]),  # 3 subareas
     LocationData("LateDungeonComplete", 2, "Concealed Ruins", 71, 70, ["Mission", "Late"]),  # 2 subareas
     LocationData("LateDungeonComplete", 1, "Marine Resort", 72, 72, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 2, "Bottomless Sea", 74, 73, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "Shimmer Desert", 76, 75, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "Mt. Avalanche", 78, 77, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "Giant Volcano", 80, 79, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "World Abyss", 82, 81, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "Sky Stairway", 84, 83, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "Mystery Jungle", 86, 85, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", 2, "Bottomless Sea", 73, 73, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", 2, "Shimmer Desert", 75, 75, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", 2, "Mt. Avalanche", 77, 77, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", 2, "Giant Volcano", 79, 79, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", 2, "World Abyss", 81, 81, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", 2, "Sky Stairway", 83, 83, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", 2, "Mystery Jungle", 85, 85, ["Mission", "Late"]),  # 2 subareas
     LocationData("EarlyDungeonComplete", 1, "Serenity River", 87, 87, ["Mission", "Early"]),
     LocationData("EarlyDungeonComplete", 1, "Landslide Cave", 88, 88, ["Mission", "Early"]),
     LocationData("EarlyDungeonComplete", 1, "Lush Prairie", 89, 89, ["Mission", "Early"]),

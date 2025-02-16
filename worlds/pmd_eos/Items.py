@@ -281,7 +281,7 @@ filler_items = [
     ItemData("Chatot Repellent", 406, ItemClassification.filler, 2, ["Generic"], 0x0),
     ItemData("Sky Jukebox", 407, ItemClassification.filler, 2, ["Generic"], 0x0),
     ItemData("Recruitment Sensor", 408, ItemClassification.filler, 2, ["Generic"], 0x0),
-    ItemData("Rare Fossil", 410, ItemClassification.filler, 10, ["Item", "Multi"], 0x10),
+    ItemData("Rare Fossil", 410, ItemClassification.filler, 10, ["Item", "Multi"], 0xA),
     ItemData("Reviver Seed", 411, ItemClassification.filler, 5, ["Item", "Single"], 0x49),
     ItemData("Oran Berry", 412, ItemClassification.filler, 20, ["Item", "Single"], 0x46),
     ItemData("Heal Seed", 413, ItemClassification.filler, 20, ["Item", "Single"], 0x45),
