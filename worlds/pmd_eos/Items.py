@@ -397,7 +397,7 @@ lootbox_table: Dict[str, Dict[str, int]] = {
         "Calm Mind": 0xBF,
         "Roar": 0xC0,
         "Toxic": 0xC1,
-        "Hail": 0xC2,
+        #"Hail": 0xC2,
         "Bulk Up": 0xC3,
         "Bullet Seed": 0xC4,
         "Hidden Power": 0xC5,
