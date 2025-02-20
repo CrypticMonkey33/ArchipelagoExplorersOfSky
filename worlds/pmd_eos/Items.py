@@ -289,7 +289,7 @@ filler_items = [
     ItemData("Golden Seed", 393, ItemClassification.filler, 3, ["Item", "Single"], 0x5D),
     ItemData("Ginseng", 394, ItemClassification.filler, 1, ["Item", "Single"], 0x58),
     #ItemData("Gold Ribbon", 395, ItemClassification.filler, 0, ["Item"], 0x20),
-    ItemData("Team Name Trap", 400, ItemClassification.trap, 20, ["Trap"], 0x0),
+    ItemData("Inspiration Strikes!", 400, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Get Unowned!", 401, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Nap Time!", 402, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Sentry Duty!", 403, ItemClassification.trap, 20, ["Trap"], 0x0),
