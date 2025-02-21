@@ -11,7 +11,6 @@ class SubXBitfield (NamedTuple):
     default_item: str  # what item is normally there?
 
 subX_table = [
-"
 SubXBitfield(0, 1, 0, 0, "Bag Upgrade 0", ["Clear Beach Cave"], "Bag Upgrade"),
 SubXBitfield(1, 1, 0, 1, "Bag Upgrade 1", ["Mt. Bristle"], "Bag Upgrade"),
 SubXBitfield(2, 1, 0, 2, "Bag Upgrade 2", ["Apple Woods"], "Bag Upgrade"),
