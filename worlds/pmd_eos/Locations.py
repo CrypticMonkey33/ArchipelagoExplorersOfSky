@@ -225,11 +225,11 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 4", 303, 0),
     LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 5", 304, 0),
 
-    LocationData("SEDungeonUnlock", 0, "Bidoof SE Location", 305, 0),
-    LocationData("SEDungeonUnlock", 0, "Igglybuff SE Location", 306, 0),
-    LocationData("SEDungeonUnlock", 0, "Sunflora SE Location", 307, 0),
-    LocationData("SEDungeonUnlock", 0, "Team Charm SE Location", 308, 0),
-    LocationData("SEDungeonUnlock", 0, "Grovyle + DusknoirSE Location", 309, 0),
+    LocationData("SEDungeonUnlock", 0, "Bidoof's Wish Location", 305, 0),
+    LocationData("SEDungeonUnlock", 0, "Igglybuff the Prodigy Location", 306, 0),
+    LocationData("SEDungeonUnlock", 0, 'Today\'s "Oh My Gosh" Location', 307, 0),
+    LocationData("SEDungeonUnlock", 0, "Here Comes Team Charm! Location", 308, 0),
+    LocationData("SEDungeonUnlock", 0, "In the Future of Darkness Location", 309, 0),
 
     LocationData("ShopItem", 0, "Shop Item 1", 310, 0),
     LocationData("ShopItem", 0, "Shop Item 2", 311, 0),

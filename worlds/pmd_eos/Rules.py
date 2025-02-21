@@ -238,51 +238,51 @@ def shop_items_rules(world, player):
 def special_episodes_rules(world, player):
     # Bidoof Special Episode Checks
     set_rule(world.multiworld.get_location("SE Star Cave", player),
-             lambda state: state.has("Bidoof SE", player))
+             lambda state: state.has("Bidoof's Wish", player))
 
     # Igglybuff Special Episode checks
     set_rule(world.multiworld.get_location("SE Murky Forest", player),
-             lambda state: state.has("IgglyBuff SE", player))
+             lambda state: state.has("Igglybuff the Prodigy", player))
     set_rule(world.multiworld.get_location("SE Eastern Cave", player),
-             lambda state: state.has("IgglyBuff SE", player))
+             lambda state: state.has("Igglybuff the Prodigy", player))
     set_rule(world.multiworld.get_location("SE Fortune Ravine", player),
-             lambda state: state.has("IgglyBuff SE", player))
+             lambda state: state.has("Igglybuff the Prodigy", player))
 
     # Grovyle and Dusknoir Special Episode Checks
-    set_rule(world.multiworld.get_location("Grovyle + DusknoirSE Location", player),
+    set_rule(world.multiworld.get_location("In the Future of Darkness Location", player),
              lambda state: ready_for_dialga(state, player, world))
     set_rule(world.multiworld.get_location("SE Barren Valley", player),
-             lambda state: state.has("Grovyle + Dusknoir SE", player))
+             lambda state: state.has("In the Future of Darkness", player))
     set_rule(world.multiworld.get_location("SE Dark Wasteland", player),
-             lambda state: state.has("Grovyle + Dusknoir SE", player))
+             lambda state: state.has("In the Future of Darkness", player))
     set_rule(world.multiworld.get_location("SE Temporal Tower", player),
-             lambda state: state.has("Grovyle + Dusknoir SE", player))
+             lambda state: state.has("In the Future of Darkness", player))
     set_rule(world.multiworld.get_location("SE Dusk Forest", player),
-             lambda state: state.has("Grovyle + Dusknoir SE", player))
+             lambda state: state.has("In the Future of Darkness", player))
     set_rule(world.multiworld.get_location("SE Spacial Cliffs", player),
-             lambda state: state.has("Grovyle + Dusknoir SE", player))
+             lambda state: state.has("In the Future of Darkness", player))
     set_rule(world.multiworld.get_location("SE Dark Ice Mountain", player),
-             lambda state: state.has("Grovyle + Dusknoir SE", player))
+             lambda state: state.has("In the Future of Darkness", player))
     set_rule(world.multiworld.get_location("SE Icicle Forest", player),
-             lambda state: state.has("Grovyle + Dusknoir SE", player))
+             lambda state: state.has("In the Future of Darkness", player))
     set_rule(world.multiworld.get_location("SE Vast Ice Mountain", player),
-             lambda state: state.has("Grovyle + Dusknoir SE", player))
+             lambda state: state.has("In the Future of Darkness", player))
 
     # Team Charm Special Episode Checks
     set_rule(world.multiworld.get_location("SE Southern Jungle", player),
-             lambda state: state.has("Team Charm SE", player))
+             lambda state: state.has("Here Comes Team Charm!", player))
     set_rule(world.multiworld.get_location("SE Boulder Quarry", player),
-             lambda state: state.has("Team Charm SE", player))
+             lambda state: state.has("Here Comes Team Charm!", player))
     set_rule(world.multiworld.get_location("SE Right Cave Path", player),
-             lambda state: state.has("Team Charm SE", player))
+             lambda state: state.has("Here Comes Team Charm!", player))
     set_rule(world.multiworld.get_location("SE Left Cave Path", player),
-             lambda state: state.has("Team Charm SE", player))
+             lambda state: state.has("Here Comes Team Charm!", player))
     set_rule(world.multiworld.get_location("SE Limestone Cavern", player),
-             lambda state: state.has("Team Charm SE", player))
+             lambda state: state.has("Here Comes Team Charm!", player))
 
     # Sunflora Special Episode Checks
     set_rule(world.multiworld.get_location("SE Spring Cave", player),
-             lambda state: state.has("Sunflora SE", player))
+             lambda state: state.has('Today\'s "Oh My Gosh"', player))
     forbid_item(world.multiworld.get_location("Hidden Land", player), "Relic Fragment Shard", player)
     forbid_item(world.multiworld.get_location("Temporal Tower", player), "Relic Fragment Shard", player)
 
