@@ -742,7 +742,7 @@ class EoSClient(BizHawkClient):
 
             if "DeathLink" in ctx.tags and ctx.last_death_link + 1 < time.time():
                 if (self.outside_deathlink == 0) and ((deathlink_sender_bit & 1) == 1):
-                    deathlink_message_from_sky = read_state[15].decode("latin1").split("\x00")[0]
+                    deathlink_message_from_sky = read_state[15].decode("latin1").split(chr(0))[0]
                     deathlink_message_from_sky = re.sub(r"\[.*?]", "", deathlink_message_from_sky)
                     lappyint = self.random.randint(1, 100)
                     #deathlink_message_from_sky = deathlink_message_from_sky.replace("byan", "by an")
@@ -760,8 +760,8 @@ class EoSClient(BizHawkClient):
             if self.outside_deathlink != 0:
                 trans = str.maketrans("[]~\\", "    ")
                 trans.update({0: 32})
-                write_message = self.deathlink_message.translate(trans).split("\x00")[0].encode("latin1")[0:128]
-                write_message2 = f"[CS:N]{self.deathlink_sender.translate(trans).split("\x00")[0][0:18]}[CR]".encode("latin1")
+                write_message = self.deathlink_message.translate(trans).split(chr(0))[0].encode("latin1")[0:128]
+                write_message2 = f"[CS:N]{self.deathlink_sender.translate(trans).split(chr(0))[0][0:18]}[CR]".encode("latin1")
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
