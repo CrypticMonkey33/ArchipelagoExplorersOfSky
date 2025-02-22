@@ -1,8 +1,8 @@
 name: Bug Report
-description: File a bug report.
-title: "Bug: "
+description: Something is not working as intended
+title: ""
 labels:
-  - bug / fix
+  - "bug"
 body:
   - type: markdown
     attributes:
@@ -20,16 +20,5 @@ body:
     id: expected-results
     attributes:
       label: What were the expected results?
-    validations:
-      required: true
-  - type: dropdown
-    id: version
-    attributes:
-      label: Software
-      description: Where did this bug occur?
-      options:
-        - Website
-        - Local generation
-        - While playing
     validations:
       required: true
