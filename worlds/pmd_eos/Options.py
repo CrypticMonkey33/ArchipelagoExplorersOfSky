@@ -171,19 +171,22 @@ class Recruitment(DefaultOnToggle):
 
 class RecruitmentEvolution(DefaultOnToggle):
     """Start with Recruitment Evolution Enabled?
-    If false, recruitment will be an item available in game"""
+    If false, evolution will be an item available in game"""
     display_name = "Recruitment Evolution Enable"
 
 
 class HeroEvolution(DefaultOnToggle):
     """Start with Hero/Partner Evolution Enabled?
-    If false, recruitment will be an item available in game"""
+    If false, hero evolution will be an item available in game.
+    Note: hero evolution does nothing until recruitment
+    evolution has been unlocked"""
     display_name = "Partner/Hero Evolution Enable"
 
 
 class FullTeamFormationControl(DefaultOnToggle):
     """ Start with full team formation control?
-    If false, recruitment will be an item available in game"""
+    If false, full team formation control will be an item
+    available in game"""
     display_name = "Formation Control Enable"
 
 
