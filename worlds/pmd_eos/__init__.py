@@ -11,7 +11,6 @@ from .Items import (EOSItem, item_table, item_frequencies, item_table_by_id, ite
 from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table
 from .Options import EOSOptions
 from .Rules import set_rules, ready_for_late_game, ready_for_dialga
-from .Regions import EoS_regions
 from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType, Item
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import set_rule, forbid_item
@@ -165,8 +164,12 @@ class EOSWorld(World):
                                                                    location.id, early_dungeons_region))
 
             elif location.classification == "LateDungeonComplete":
-                late_dungeons_region.locations.append(EOSLocation(self.player, location.name,
-                                                                  location.id, late_dungeons_region))
+                late_dungeon = EOSLocation(self.player, location.name,
+                                                                  location.id, late_dungeons_region)
+                if self.options.goal.value == 0:  # if dialga is the goal, make the location excluded
+                    late_dungeon.progress_type = LocationProgressType.EXCLUDED
+
+                late_dungeons_region.locations.append(late_dungeon)
                 if self.options.goal.value == 1 and ("Mission" in location.group):
                     for j in range(self.options.late_mission_checks.value):
                         location_name = f"{location.name} Mission {j + 1}"
@@ -189,12 +192,20 @@ class EOSWorld(World):
 
                         self.extra_items_added += 1
             elif location.classification in ["Manaphy", "SecretRank", "Legendary", "Instrument"]:
-                late_dungeons_region.locations.append(EOSLocation(self.player, location.name,
-                                                                  location.id, late_dungeons_region))
+                late_dungeon = EOSLocation(self.player, location.name,
+                                                                  location.id, late_dungeons_region)
+                if self.options.goal.value == 0:  # if dialga is the goal, make the location excluded
+                    late_dungeon.progress_type = LocationProgressType.EXCLUDED
+
+                late_dungeons_region.locations.append(late_dungeon)
 
             elif location.classification == "BossDungeonComplete":
-                end_game_region.locations.append(EOSLocation(self.player, location.name,
-                                                             location.id, end_game_region))
+                location_data = EOSLocation(self.player, location.name,
+                                                             location.id, end_game_region)
+                if location.name == "Dark Crater" and self.options.goal.value == 0:
+                    location_data.progress_type = LocationProgressType.EXCLUDED
+
+                end_game_region.locations.append(location_data)
                 if (self.options.goal.value == 1) and ("Mission" in location.group):
                     for j in range(self.options.late_mission_checks.value):
                         location_name = f"{location.name} Mission {j + 1}"
@@ -331,7 +342,10 @@ class EOSWorld(World):
                 filler_items.append(self.create_item(item_name, ItemClassification.trap))
 
             elif item_table[item_name].classification == ItemClassification.progression:
-                required_items.append(self.create_item(item_name, ItemClassification.progression))
+                classification = ItemClassification.progression
+                if (self.options.goal.value == 0) and "LateDungeons" in item_table[item_name].group:
+                    classification = ItemClassification.useful
+                required_items.append(self.create_item(item_name, classification))
 
             else:
                 required_items.append(self.create_item(item_name, ItemClassification.useful))
