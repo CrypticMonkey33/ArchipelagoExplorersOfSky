@@ -150,7 +150,7 @@ EOS_item_table = [
     ItemData("Inferno Cave", 110, ItemClassification.useful, 110, ["Unique", "RuleDungeons"], 0x6E),
     ItemData("1st Station Pass", 111, ItemClassification.progression, 111,
              ["Unique", "LateDungeons", "MissionDungeons"], 0x6F),
-    ItemData("Bidoof's Wish'", 123, ItemClassification.progression, 123, ["Unique", "Special Dungeons"], 0x0),
+    ItemData("Bidoof\'s Wish", 123, ItemClassification.progression, 123, ["Unique", "Special Dungeons"], 0x0),
     # ItemData("SE Star Cave", 123, ItemClassification.useful, 123, ["Unique", "Special Dungeons"], 0x7B),
     ItemData("Igglybuff the Prodigy", 128, ItemClassification.progression, 128, ["Unique", "Special Dungeons"], 0x1),
     # ItemData("Murky Forest", 128, ItemClassification.useful, 128, ["Unique", "Special Dungeons"], 0x80),
