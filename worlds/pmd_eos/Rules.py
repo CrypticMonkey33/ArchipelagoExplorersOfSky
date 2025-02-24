@@ -238,7 +238,7 @@ def shop_items_rules(world, player):
 def special_episodes_rules(world, player):
     # Bidoof Special Episode Checks
     set_rule(world.multiworld.get_location("SE Star Cave", player),
-             lambda state: state.has("Bidoof's Wish", player))
+             lambda state: state.has("Bidoof\'s Wish", player))
 
     # Igglybuff Special Episode checks
     set_rule(world.multiworld.get_location("SE Murky Forest", player),
@@ -454,6 +454,8 @@ def dungeon_locations_behind_items(world, player):
              lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
     set_rule(world.multiworld.get_location("Sky Peak Summit", player),
              lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
+    set_rule(world.multiworld.get_location("Star Cave", player),
+             lambda state: state.has("Star Cave", player) and ready_for_late_game(state, player, world))
 
     set_rule(world.multiworld.get_location("Dojo Normal/Fly Maze", player),
              lambda state: state.has("Dojo Normal/Fly Maze", player))
