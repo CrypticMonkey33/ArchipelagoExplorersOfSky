@@ -491,7 +491,7 @@ def mission_rules(world, player):
                 set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
                          lambda state, ln=location.name, p=player: state.has(ln, p))
 
-        elif location.classification == "LateDungeonComplete":
+        elif location.classification in ["LateDungeonComplete", "BossDungeonComplete"]:
             if world.options.goal.value == 1:
                 if "Station" in location.group:
                     for j in range(world.options.late_mission_checks.value):
