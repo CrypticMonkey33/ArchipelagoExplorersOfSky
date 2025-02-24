@@ -121,14 +121,20 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         write_byte = write_byte | (0x1 << 12)
     elif world.options.deathlink.value and world.options.deathlink.value == 1:
         write_byte = write_byte | (0x1 << 11)
+
+    late_missions_count = 0
+    late_outlaws_count = 0
+    if world.options.goal == 1:
+        late_missions_count = world.options.late_mission_checks.value
+        late_outlaws_count = world.options.late_outlaw_checks.value
     # write the tokens that will be applied and write the token data into the bin for AP
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset, int.to_bytes(write_byte, length=2, byteorder="little"))
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + macguffin_max_offset + 0x1, int.to_bytes(instrument_count))
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + macguffin_max_offset, int.to_bytes(macguffin_count))
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset, int.to_bytes(world.options.early_mission_checks.value))
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x1, int.to_bytes(world.options.early_outlaw_checks.value))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x2, int.to_bytes(world.options.late_mission_checks.value))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x3, int.to_bytes(world.options.late_outlaw_checks.value))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x2, int.to_bytes(late_missions_count))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x3, int.to_bytes(late_outlaws_count))
     patch.write_file("token_data.bin", patch.get_token_binary())
 
 
