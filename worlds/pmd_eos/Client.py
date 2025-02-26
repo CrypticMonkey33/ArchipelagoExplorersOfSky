@@ -277,6 +277,7 @@ class EoSClient(BizHawkClient):
                     (hintable_items_offset, 0xA, self.ram_mem_domain),
                     (bank_gold_offset, 4, self.ram_mem_domain),
                     (player_gold_offset, 4, self.ram_mem_domain),
+                    (relic_shards_offset, 1, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -320,6 +321,7 @@ class EoSClient(BizHawkClient):
             bank_gold_amount = int.from_bytes(read_state[19], "little")
             player_gold_amount = int.from_bytes(read_state[20], "little")
             locs_to_send = set()
+            relic_shards_amount = int.from_bytes((read_state[21]))
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
             #    for i in range(10):
@@ -514,7 +516,26 @@ class EoSClient(BizHawkClient):
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Macguffin" in item_data.group:
                     if item_data.name == "Relic Fragment Shard":
-                        self.macguffins_collected += 1
+                        if relic_shards_amount == self.macguffins_collected:
+                            self.macguffins_collected += 1
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (relic_shards_offset, int.to_bytes(relic_shards_amount + 1),
+                                     self.ram_mem_domain)],
+                            )
+                        elif relic_shards_amount > self.macguffins_collected:
+                            # uhhhh I don't know how this could happen? Also what do I do????
+                            self.macguffins_collected = relic_shards_amount
+                        else:
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (relic_shards_offset, int.to_bytes(relic_shards_amount + 1),
+                                     self.ram_mem_domain)],
+                            )
+
+
                         if self.macguffins_collected >= self.macguffin_unlock_amount:
                             item_memory_offset = 0x26  # the location in memory of Hidden Land
                             sig_digit = item_memory_offset // 8
@@ -531,12 +552,7 @@ class EoSClient(BizHawkClient):
                                 )
 
                             await asyncio.sleep(0.1)
-                        await bizhawk.write(
-                            ctx.bizhawk_ctx,
-                            [
-                                (relic_shards_offset, int.to_bytes(self.macguffins_collected),
-                                 self.ram_mem_domain)],
-                        )
+
                     #elif item_data.name == "Cresselia Feather":
                     #    self.cresselia_feather_acquired = True
 

@@ -26,6 +26,8 @@ def set_rules(world: "EOSWorld", excluded):
         set_rule(world.multiworld.get_location("Dark Crater", player),
                  lambda state: state.has("Dark Crater", player))
     elif world.options.goal.value == 1:
+        set_rule(world.multiworld.get_location("Manaphy Leads To Marine Resort", player),
+                 lambda state: state.has("Manaphy", player))
         set_rule(world.multiworld.get_location("Final Boss", player),
                  lambda state: ready_for_darkrai(state, player, world))
         set_rule(world.multiworld.get_location("Dark Crater", player),
@@ -61,8 +63,6 @@ def set_rules(world: "EOSWorld", excluded):
              lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
     set_rule(world.multiworld.get_location("Manaphy Join Team", player),
              lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
-    set_rule(world.multiworld.get_location("Manaphy Leads To Marine Resort", player),
-             lambda state: state.has("Manaphy", player))
 
     set_rule(world.multiworld.get_location("SecretRank", player),
              lambda state: state.has("Crevice Cave", player))
@@ -281,8 +281,13 @@ def special_episodes_rules(world, player):
              lambda state: state.has("Here Comes Team Charm!", player))
 
     # Sunflora Special Episode Checks
-    set_rule(world.multiworld.get_location("SE Spring Cave", player),
+    set_rule(world.multiworld.get_location("SE Upper Spring Cave", player),
              lambda state: state.has('Today\'s "Oh My Gosh"', player))
+    set_rule(world.multiworld.get_location("SE Middle Spring Cave", player),
+             lambda state: state.has('Today\'s "Oh My Gosh"', player))
+    set_rule(world.multiworld.get_location("SE Spring Cave Pit", player),
+             lambda state: state.has('Today\'s "Oh My Gosh"', player))
+
     forbid_item(world.multiworld.get_location("Hidden Land", player), "Relic Fragment Shard", player)
     forbid_item(world.multiworld.get_location("Temporal Tower", player), "Relic Fragment Shard", player)
 
