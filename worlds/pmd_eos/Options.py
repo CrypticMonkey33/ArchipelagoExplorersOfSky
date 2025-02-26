@@ -69,7 +69,6 @@ class AllowedLegendaries(OptionSet):
         "Heatran",
         "Primal Dialga",
         "Mew",
-        "Manaphy",
         "Phione",
         "Cresselia",
         "Rayquaza",
@@ -271,7 +270,7 @@ class LegendariesInPool(Range):
 
     display_name = "Legendaries in Item Pool"
     range_start = 0
-    range_end = 22
+    range_end = 21
     default = 3
 
 

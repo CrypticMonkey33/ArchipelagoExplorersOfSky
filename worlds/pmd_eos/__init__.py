@@ -196,7 +196,8 @@ class EOSWorld(World):
                                                                   location.id, late_dungeons_region)
                 if self.options.goal.value == 0:  # if dialga is the goal, make the location excluded
                     late_dungeon.progress_type = LocationProgressType.EXCLUDED
-
+                    if location.name == "Manaphy Leads To Marine Resort":
+                        continue
                 late_dungeons_region.locations.append(late_dungeon)
 
             elif location.classification == "BossDungeonComplete":
@@ -294,6 +295,7 @@ class EOSWorld(World):
         filler_items = []
         instruments = []
         item_weights = []
+        excluded_locations = 0
         if self.options.goal.value == 1:
             instruments_to_add = self.options.req_instruments.value + self.options.extra_instruments.value
 
@@ -306,11 +308,13 @@ class EOSWorld(World):
         for i in range(self.options.shard_fragments.value + self.options.extra_shards.value):
             required_items.append(self.create_item("Relic Fragment Shard", ItemClassification.progression))
 
-        #if self.options.goal == 1:
-        #    required_items.append(self.create_item("Cresselia Feather", ItemClassification.progression))
+        if self.options.goal == 1:
+            required_items.append(self.create_item("Manaphy", ItemClassification.progression))
+        else:
+            excluded_locations += 1
         if self.options.goal.value == 1 and (self.options.legendaries.value > len(self.options.allowed_legendaries.value)):
             for item in self.options.allowed_legendaries.value:
-                required_items.append(self.create_item(item,ItemClassification.useful))
+                required_items.append(self.create_item(item, ItemClassification.useful))
         elif self.options.goal.value == 1:
             new_list = self.random.sample(sorted(self.options.allowed_legendaries.value), self.options.legendaries.value)
             for item in new_list:
@@ -351,7 +355,7 @@ class EOSWorld(World):
                 required_items.append(self.create_item(item_name, ItemClassification.useful))
 
         remaining = len(EOS_location_table) + self.extra_items_added - len(
-            required_items) - 1  # subtracting 1 for the event check
+            required_items) - excluded_locations - 1  # subtracting 1 for the event check
 
         self.multiworld.itempool += required_items
         item_weights += filler_item_weights
