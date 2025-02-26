@@ -252,6 +252,9 @@ class EoSClient(BizHawkClient):
                 else:
                     return
 
+            if self.required_instruments == 0:
+                self.required_instruments = ctx.slot_data["RequiredInstruments"]
+
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
                 ctx.bizhawk_ctx,
@@ -535,7 +538,6 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain)],
                             )
 
-
                         if self.macguffins_collected >= self.macguffin_unlock_amount:
                             item_memory_offset = 0x26  # the location in memory of Hidden Land
                             sig_digit = item_memory_offset // 8
@@ -790,7 +792,7 @@ class EoSClient(BizHawkClient):
 
             # Check for opening Dark Crater
             if (self.instruments_collected >= self.required_instruments) and self.dialga_complete:
-                item_memory_offset = 0x67  # the location in memory of Dark Crater
+                item_memory_offset = 0x43  # the location in memory of Dark Crater
                 sig_digit = item_memory_offset // 8
                 non_sig_digit = item_memory_offset % 8
                 if ((open_list[sig_digit] >> non_sig_digit) & 1) == 0:
