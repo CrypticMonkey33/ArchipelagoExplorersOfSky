@@ -820,7 +820,7 @@ class EoSClient(BizHawkClient):
                             ctx.bizhawk_ctx,
                             [
                                 (item_backup_offset, write_byte2, self.ram_mem_domain),
-                                (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
+                                (item_backup_offset + 0x2, int.to_bytes(0, byteorder="little",length=2), self.ram_mem_domain),
                                 (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                 (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                                  self.ram_mem_domain)
@@ -836,7 +836,7 @@ class EoSClient(BizHawkClient):
                             ctx.bizhawk_ctx,
                             [
                                 (item_backup_offset, write_byte2, self.ram_mem_domain),
-                                (item_backup_offset + 0x2, int.to_bytes(5), self.ram_mem_domain),
+                                (item_backup_offset + 0x2, int.to_bytes(5, byteorder="little",length=2), self.ram_mem_domain),
                                 (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                 (
                                 scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
@@ -854,7 +854,7 @@ class EoSClient(BizHawkClient):
                                 ctx.bizhawk_ctx,
                                 [
                                     (item_backup_offset, write_byte2, self.ram_mem_domain),
-                                    (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
+                                    (item_backup_offset + 0x2, int.to_bytes(0, byteorder="little",length=2), self.ram_mem_domain),
                                     (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                     (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                                     self.ram_mem_domain),
@@ -923,7 +923,7 @@ class EoSClient(BizHawkClient):
                             ctx.bizhawk_ctx,
                             [
                                 (item_backup_offset, write_byte2, self.ram_mem_domain),
-                                (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
+                                (item_backup_offset + 0x2, int.to_bytes(0, byteorder="little",length=2), self.ram_mem_domain),
                                 (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                 (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                                  self.ram_mem_domain)
@@ -939,7 +939,7 @@ class EoSClient(BizHawkClient):
                             ctx.bizhawk_ctx,
                             [
                                 (item_backup_offset, write_byte2, self.ram_mem_domain),
-                                (item_backup_offset + 0x2, int.to_bytes(5), self.ram_mem_domain),
+                                (item_backup_offset + 0x2, int.to_bytes(5, byteorder="little",length=2), self.ram_mem_domain),
                                 (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                 (
                                 scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
@@ -957,7 +957,7 @@ class EoSClient(BizHawkClient):
                                 ctx.bizhawk_ctx,
                                 [
                                     (item_backup_offset, write_byte2, self.ram_mem_domain),
-                                    (item_backup_offset + 0x2, int.to_bytes(0), self.ram_mem_domain),
+                                    (item_backup_offset + 0x2, int.to_bytes(0, byteorder="little",length=2), self.ram_mem_domain),
                                     (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                     (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                                     self.ram_mem_domain),
