@@ -1,4 +1,4 @@
-# Q. What is this file?
+﻿# Q. What is this file?
 # A. This file contains options which allow you to configure your multiworld experience while allowing
 #    others to play how they want as well.
 #
@@ -28,7 +28,7 @@
 name: Player{number}
 
 # Used to describe your yaml. Useful if you have multiple files.
-description: Default Explorers of Sky Template
+description: Default Pokemon Mystery Dungeon Explorers of Sky Template
 
 game: Pokemon Mystery Dungeon Explorers of Sky
 requires:
@@ -38,7 +38,7 @@ Pokemon Mystery Dungeon Explorers of Sky:
   # Game Options
   progression_balancing:
     # A system that can move progression earlier, to try and prevent the player from getting stuck and bored early.
-    #
+    # 
     # A lower setting means more getting stuck. A higher setting means less getting stuck.
     #
     # You can define additional values between the minimum and maximum values.
@@ -53,48 +53,267 @@ Pokemon Mystery Dungeon Explorers of Sky:
 
   accessibility:
     # Set rules for reachability of your items/locations.
-    #
-    # - **Locations:** ensure everything can be reached and acquired.
-    # - **Items:** ensure all logically relevant items can be acquired.
-    # - **Minimal:** ensure what is needed to reach your goal can be acquired.
-    locations: 0
-    items: 50
+    # 
+    # **Full:** ensure everything can be reached and acquired.
+    # 
+    # **Minimal:** ensure what is needed to reach your goal can be acquired.
+    full: 50
     minimal: 0
 
-  goal:
-    # Change the desired goal to complete the game (Currently only Dialga is implemented)
-    dialga: 0
-    darkrai: 50
-
   dungeon_rando:
-    # NOT IMPLEMENTED: Randomizes the names of the dungeons. IDs and completion requirements stay the same
+    # NOT IMPLEMENTED YET
+    # Randomizes the names of the dungeons. IDs and completion requirements stay the same
     'false': 0
     'true': 50
 
+  goal:
+    # Change the desired goal to complete the game
+    # Dialga - Get X relic fragment shards to unlock hidden land. Find Temporal Tower location
+    #         then go through hidden land via Lapras on the beach to beat dialga
+    # Darkrai - Beat Dialga (all the same requirements), then get X instruments to unlock Dark Crater
+    dialga: 50
+    darkrai: 0
+
   recruit:
     # Start with recruitment enabled?
+    # If false, recruitment will be an item available in game
     'false': 0
     'true': 50
 
   recruit_evo:
     # Start with Recruitment Evolution Enabled?
+    # If false, evolution will be an item available in game
     'false': 0
     'true': 50
 
   team_form:
     # Start with full team formation control?
+    # If false, full team formation control will be an item
+    # available in game
     'false': 0
     'true': 50
 
   level_scale:
     # Allow for dungeons to scale to the highest level of your party members?
+    # This will not scale bosses at the end of dungeons
     'false': 0
     'true': 50
 
   bag_on_start:
-    # Start with bag? If False all bag upgrades will be randomized in the game
+    # Start with bag? If False all bag upgrades will be randomized in the game.
+    # If true, you will get one bag upgrade (16 slots) and the rest will be randomized
+    'false': 0
+    'true': 50
+
+  dojo_dungeons:
+    # How many dojo dungeons should be randomized?
+    all_open: 0
+    all_random: 50
+    start_with_three: 0
+    start_with_one: 0
+
+  shard_fragments:
+    # How many Relic Fragment Shards should be in the game (Macguffins)
+    #  that you must get to unlock Hidden Land
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 4
+    # Maximum value is 10
+    random: 0
+    random-low: 0
+    random-high: 0
+    easy: 0 # equivalent to 4
+    normal: 50 # equivalent to 6
+    hard: 0 # equivalent to 8
+    extreme: 0 # equivalent to 10
+
+  extra_shards:
+    # How many extra Fragment Shards should be in the game?
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 10
+    random: 0
+    random-low: 0
+    random-high: 0
+    easy: 0 # equivalent to 6
+    normal: 50 # equivalent to 4
+    hard: 0 # equivalent to 2
+    extreme: 0 # equivalent to 0
+
+  early_mission_checks:
+    # How many Missions per dungeon pre dialga should be checks?
+    #     0 equals missions are not checks
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 50
+    random: 0
+    random-low: 0
+    random-high: 0
+    off: 0 # equivalent to 0
+    some: 50 # equivalent to 4
+    lots: 0 # equivalent to 10
+    insanity: 0 # equivalent to 50
+
+  late_mission_checks:
+    # How many Missions per dungeon post-dialga (including Hidden Land
+    # and Temporal Tower) should be checks? 0 equals missions are not checks
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 50
+    random: 0
+    random-low: 0
+    random-high: 0
+    off: 0 # equivalent to 0
+    some: 50 # equivalent to 4
+    lots: 0 # equivalent to 10
+    insanity: 0 # equivalent to 50
+
+  early_outlaw_checks:
+    # How many outlaws per dungeon pre dialga should be checks?
+    #     0 equals outlaws are not checks
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 50
+    random: 0
+    random-low: 0
+    random-high: 0
+    off: 0 # equivalent to 0
+    some: 50 # equivalent to 2
+    lots: 0 # equivalent to 10
+    insanity: 0 # equivalent to 50
+
+  late_outlaw_checks:
+    # How many Missions per dungeon post-dialga (including Hidden Land
+    # and Temporal Tower) should be checks? 0 equals outlaws are not checks
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 50
+    random: 0
+    random-low: 0
+    random-high: 0
+    off: 0 # equivalent to 0
+    some: 50 # equivalent to 2
+    lots: 0 # equivalent to 10
+    insanity: 0 # equivalent to 50
+
+  type_sanity:
+    # Allow for your partner to share a type with your main character
+    # WARNING: The game is not balanced around this, and we have not done anything to change that.
+    # Use at your own risk
     'false': 50
     'true': 0
+
+  starter_option:
+    # How would you like your starter and partner to be chosen?
+    # Vanilla: You do the quiz and are stuck with what the quiz gives you. Choose your partner as normal
+    # Random: Both your MC and partner will be completely random. This means they can be the same type
+    #         WARNING: game is not balanced for same type team, use at your own risk (until we fix typesanity)
+    # Override: Do the quiz, but you can override the hero it gives you. Choose your partner as normal
+    # Choose: Skip the quiz and go straight to choosing your starter and partner
+    # For both Choose and Override you will be able to pick partner exclusive pokemon for your starter as well as gender
+    # exclusive pokemon regardless of gender
+    vanilla: 0
+    random_starter: 0
+    override: 50
+    choose: 0
+
+  iq_scaling:
+    # Do you want to scale IQ to gain IQ faster? What rate? (1x, 2x, 3x, etc.)
+    # WARNING: 0x WILL NOT GIVE YOU ANY IQ. USE AT YOUR OWN RISK
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 15
+    1: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  xp_scaling:
+    # Do you want to scale XP to gain XP faster? What rate? (1x, 2x, 3x, etc.)
+    # WARNING: 0x WILL NOT GIVE YOU ANY XP. USE AT YOUR OWN RISK
+    # 
+    # NOT CURRENTLY IMPLEMENTED
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 15
+    1: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  req_instruments:
+    # How many Instruments should be in the game (Macguffins)
+    #  that you must get to unlock Dark Crater if victory condition is Darkrai
+    #  Instruments are not added to the item pool if the goal is Dialga
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 4
+    # Maximum value is 10
+    random: 0
+    random-low: 0
+    random-high: 0
+    easy: 0 # equivalent to 4
+    normal: 50 # equivalent to 6
+    hard: 0 # equivalent to 8
+    extreme: 0 # equivalent to 10
+
+  extra_instruments:
+    # How many extra Instruments should be in the game?
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 10
+    random: 0
+    random-low: 0
+    random-high: 0
+    easy: 0 # equivalent to 6
+    normal: 50 # equivalent to 4
+    hard: 0 # equivalent to 2
+    extreme: 0 # equivalent to 0
+
+  hero_evolution:
+    # Start with Hero/Partner Evolution Enabled?
+    # If false, hero evolution will be an item available in game.
+    # Note: hero evolution does nothing until recruitment
+    # evolution has been unlocked
+    'false': 0
+    'true': 50
+
+  deathlink:
+    # When you die, everyone who enabled death link dies. Of course, the reverse is true too.
+    'false': 50
+    'true': 0
+
+  deathlink_type:
+    # What type of deathlink do you want?
+    # Currently False is death even if you have revival seeds
+    # True will die and recover from revival seeds
+    'false': 50
+    'true': 0
+
+  legendaries:
+    # How many Legendary Pokemon should be in the item pool for you to recruit?
+    #     The Legendary will only come post-dialga if you get it early
+    #     Legendaries are disabled if you are going for a dialga goal
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 21
+    3: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  allowed_legendaries:
+    # Set which Legendaries will be available for the item pool as recruits
+    ['Regirock', 'Regice', 'Registeel', 'Groudon', 'Uxie', 'Mespirit', 'Azelf', 'Dialga', 'Palkia', 'Regigigas', 'Giratina', 'Celebi', 'Articuno', 'Heatran', 'Primal Dialga', 'Mew', 'Phione', 'Cresselia', 'Rayquaza', 'Kyogre', 'Shaymin']
 
   # Item & Location Options
   local_items:
