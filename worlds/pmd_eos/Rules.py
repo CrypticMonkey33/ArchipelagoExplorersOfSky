@@ -35,6 +35,8 @@ def set_rules(world: "EOSWorld", excluded):
 
     set_rule(world.multiworld.get_entrance("Late Game Door", player),
              lambda state: ready_for_late_game(state, player, world))
+    forbid_item(world.multiworld.get_location("Hidden Land", player), "Relic Fragment Shard", player)
+    forbid_item(world.multiworld.get_location("Temporal Tower", player), "Relic Fragment Shard", player)
     #set_rule(world.multiworld.get_entrance("Boss Door", player),
     #         lambda state: ready_for_final_boss(state, player))
     set_rule(world.multiworld.get_location("Hidden Land", player),
@@ -288,8 +290,7 @@ def special_episodes_rules(world, player):
     set_rule(world.multiworld.get_location("SE Spring Cave Pit", player),
              lambda state: state.has('Today\'s "Oh My Gosh"', player))
 
-    forbid_item(world.multiworld.get_location("Hidden Land", player), "Relic Fragment Shard", player)
-    forbid_item(world.multiworld.get_location("Temporal Tower", player), "Relic Fragment Shard", player)
+
 
 
 def ready_for_darkrai(state, player, world):
@@ -507,6 +508,14 @@ def mission_rules(world, player):
                         for j in range(world.options.late_outlaw_checks.value):
                             set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
                                      lambda state, ln="1st Station Pass", p=player: state.has(ln, p))
+                elif location.name == "Hidden Land":
+                    for j in range(world.options.late_mission_checks.value):
+                        set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
+                                 lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world))
+
+                    for j in range(world.options.late_outlaw_checks.value):
+                        set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
+                                 lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world))
                 else:
                     for j in range(world.options.late_mission_checks.value):
                         set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
