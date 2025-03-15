@@ -281,6 +281,7 @@ class EoSClient(BizHawkClient):
                     (bank_gold_offset, 4, self.ram_mem_domain),
                     (player_gold_offset, 4, self.ram_mem_domain),
                     (relic_shards_offset, 1, self.ram_mem_domain),
+                    (instruments_offset, 1, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -324,7 +325,8 @@ class EoSClient(BizHawkClient):
             bank_gold_amount = int.from_bytes(read_state[19], "little")
             player_gold_amount = int.from_bytes(read_state[20], "little")
             locs_to_send = set()
-            relic_shards_amount = int.from_bytes((read_state[21]))
+            relic_shards_amount = int.from_bytes(read_state[21])
+            instruments_amount = int.from_bytes(read_state[22])
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
             #    for i in range(10):
@@ -521,22 +523,26 @@ class EoSClient(BizHawkClient):
                     if item_data.name == "Relic Fragment Shard":
                         if relic_shards_amount == self.macguffins_collected:
                             self.macguffins_collected += 1
+                            relic_shards_amount += 1
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [
-                                    (relic_shards_offset, int.to_bytes(relic_shards_amount + 1),
+                                    (relic_shards_offset, int.to_bytes(relic_shards_amount),
                                      self.ram_mem_domain)],
                             )
+                            await asyncio.sleep(0.1)
                         elif relic_shards_amount > self.macguffins_collected:
                             # uhhhh I don't know how this could happen? Also what do I do????
                             self.macguffins_collected = relic_shards_amount
                         else:
+                            relic_shards_amount += 1
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [
-                                    (relic_shards_offset, int.to_bytes(relic_shards_amount + 1),
+                                    (relic_shards_offset, int.to_bytes(relic_shards_amount),
                                      self.ram_mem_domain)],
                             )
+                            await asyncio.sleep(0.1)
 
                         if self.macguffins_collected >= self.macguffin_unlock_amount:
                             item_memory_offset = 0x26  # the location in memory of Hidden Land
@@ -849,7 +855,29 @@ class EoSClient(BizHawkClient):
                             performance_progress_bitfield[4] = write_byte
                             write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
                             scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
-                            self.instruments_collected += 1
+                            if instruments_amount == self.instruments_collected:
+                                self.instruments_collected += 1
+                                instruments_amount += 1
+                                await bizhawk.write(
+                                    ctx.bizhawk_ctx,
+                                    [
+                                        (instruments_offset, int.to_bytes(instruments_amount),
+                                         self.ram_mem_domain)],
+                                )
+                                await asyncio.sleep(0.1)
+                            elif instruments_amount > self.instruments_collected:
+                                # uhhhh I don't know how this could happen? Also what do I do????
+                                self.instruments_collected = instruments_amount
+                            else:
+                                instruments_amount += 1
+                                await bizhawk.write(
+                                    ctx.bizhawk_ctx,
+                                    [
+                                        (instruments_offset, int.to_bytes(instruments_amount),
+                                         self.ram_mem_domain)],
+                                )
+                                await asyncio.sleep(0.1)
+
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [
@@ -857,8 +885,7 @@ class EoSClient(BizHawkClient):
                                     (item_backup_offset + 0x2, int.to_bytes(0, byteorder="little",length=2), self.ram_mem_domain),
                                     (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                     (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
-                                    self.ram_mem_domain),
-                                    (instruments_offset, int.to_bytes(self.instruments_collected), self.ram_mem_domain)
+                                    self.ram_mem_domain)
 
                                 ]
                             )
@@ -952,7 +979,29 @@ class EoSClient(BizHawkClient):
                             performance_progress_bitfield[4] = write_byte
                             write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
                             scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
-                            self.instruments_collected += 1
+                            if instruments_amount == self.instruments_collected:
+                                self.instruments_collected += 1
+                                instruments_amount += 1
+                                await bizhawk.write(
+                                    ctx.bizhawk_ctx,
+                                    [
+                                        (instruments_offset, int.to_bytes(instruments_amount),
+                                         self.ram_mem_domain)],
+                                )
+                                await asyncio.sleep(0.1)
+                            elif instruments_amount > self.instruments_collected:
+                                # uhhhh I don't know how this could happen? Also what do I do????
+                                self.instruments_collected = instruments_amount
+                            else:
+                                instruments_amount += 1
+                                await bizhawk.write(
+                                    ctx.bizhawk_ctx,
+                                    [
+                                        (instruments_offset, int.to_bytes(instruments_amount),
+                                         self.ram_mem_domain)],
+                                )
+                                await asyncio.sleep(0.1)
+
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [
@@ -960,8 +1009,7 @@ class EoSClient(BizHawkClient):
                                     (item_backup_offset + 0x2, int.to_bytes(0, byteorder="little",length=2), self.ram_mem_domain),
                                     (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                     (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
-                                    self.ram_mem_domain),
-                                    (instruments_offset, int.to_bytes(self.instruments_collected), self.ram_mem_domain)
+                                    self.ram_mem_domain)
                                 ]
                             )
                             await asyncio.sleep(0.1)
