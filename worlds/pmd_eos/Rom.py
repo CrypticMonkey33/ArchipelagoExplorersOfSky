@@ -97,8 +97,8 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
 
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
-    instrument_count = world.options.req_instruments.value + world.options.extra_instruments.value
-    macguffin_count = world.options.shard_fragments.value + world.options.extra_shards.value
+    instrument_count = world.options.req_instruments.value
+    macguffin_count = world.options.shard_fragments.value
     # Take the options and bake them into the rom, so they can be applied on runtime
     write_byte = 0
     write_byte = write_byte | world.options.iq_scaling.value
