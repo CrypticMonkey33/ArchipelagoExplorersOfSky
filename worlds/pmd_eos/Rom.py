@@ -91,7 +91,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
 
     # Bake names of previewable items into ROM
     for i in range(len(hint_items)):
-        hint_player = world.multiworld.player_name[hint_items[i].player]
+        hint_player = world.multiworld.player_name[hint_items[i].player].translate("[]~\\")
         patch.write_token(APTokenTypes.WRITE, hintable_items_offset + 42*i,
                           f"[CS:N]{hint_player[0:10]}[CR]'s {hint_items[i].name[0:20]}".encode("latin1"))
 
