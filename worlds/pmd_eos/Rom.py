@@ -97,8 +97,8 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
 
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
-    instrument_count = world.options.req_instruments.value
-    macguffin_count = world.options.shard_fragments.value
+    instruments_required = world.options.req_instruments.value
+    macguffins_required = world.options.shard_fragments.value
     # Take the options and bake them into the rom, so they can be applied on runtime
     write_byte = 0
     write_byte = write_byte | world.options.iq_scaling.value
@@ -129,8 +129,8 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         late_outlaws_count = world.options.late_outlaw_checks.value
     # write the tokens that will be applied and write the token data into the bin for AP
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset, int.to_bytes(write_byte, length=2, byteorder="little"))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + macguffin_max_offset + 0x1, int.to_bytes(instrument_count))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + macguffin_max_offset, int.to_bytes(macguffin_count))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + macguffin_max_offset + 0x1, int.to_bytes(instruments_required))
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + macguffin_max_offset, int.to_bytes(macguffins_required))
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset, int.to_bytes(world.options.early_mission_checks.value))
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x1, int.to_bytes(world.options.early_outlaw_checks.value))
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x2, int.to_bytes(late_missions_count))
