@@ -3,8 +3,7 @@
 ## Important
 
 As we are using BizHawk, this guide is only applicable to Windows and Linux systems.
-
-Note that in its current state, the EoS apworld is **HIGHLY** unstable! Expect softlocks as we work on improving it!
+The EoS APWorld is still in development, so expect bugs! If you find a bug that hasn't already been reported, please open an issue on the GitHub issues page!
 
 ## Required Software
 
@@ -25,9 +24,7 @@ an experience customized for their taste, and different players in the same mult
 
 ### Where do I get a YAML file?
 
-Download a YAML from the [GitHub repository](https://github.com/CrypticMonkey33/ArchipelagoExplorersOfSky/blob/main/worlds/pmd_eos/docs/pmd_eos.yaml), which you can then edit manually.
-(NOTE: Ignore the following text. There is no options page, since Explorers of Sky is not an official world.) You can customize your options by visiting the 
-[Explorers of Sky Options Page](/games/Explorers%20of%20Sky/player-options)
+Install the download .apworld file with the Archipelago Launcher. In the launcher, click "Generate Template Options" to generate a template YAML for EoS. You can make a copy of this template, and edit it to configure your settings.
 
 ## Joining a MultiWorld Game
 
