@@ -111,7 +111,7 @@ class EoSClient(BizHawkClient):
         if "DeathLink" in args["tags"] and args["data"]["source"] != ctx.slot_info[ctx.slot].name:
             self.outside_deathlink += 1
             self.deathlink_sender = args["data"]["source"]
-            if args["data"]["source"]:
+            if "source" in args["data"]:
                 self.deathlink_message = args["data"]["cause"]
             else:
                 self.deathlink_message = "Died from unknown causes"
