@@ -111,7 +111,10 @@ class EoSClient(BizHawkClient):
         if "DeathLink" in args["tags"] and args["data"]["source"] != ctx.slot_info[ctx.slot].name:
             self.outside_deathlink += 1
             self.deathlink_sender = args["data"]["source"]
-            self.deathlink_message = args["data"]["cause"]
+            if args["data"]["source"]:
+                self.deathlink_message = args["data"]["cause"]
+            else:
+                self.deathlink_message = "Died from unknown causes"
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
