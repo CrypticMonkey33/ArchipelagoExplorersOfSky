@@ -3,7 +3,7 @@ import typing
 import typing_extensions
 from typing import Dict
 from BaseClasses import Location
-
+from .RomTypeDefinitions import subX_table
 
 class LocationData:
     name: str = ""
@@ -44,6 +44,8 @@ def get_location_table_by_groups() -> Dict[str, set[str]]:
 
     return new_dict
 
+def get_subX_table() ->  typing.List[LocationData]:
+    new_list = subX_table
 
 def get_mission_location_table() -> typing.List[LocationData]:
 
@@ -141,7 +143,7 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 1, "The Nightmare", 63, 63, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Spacial Rift", 66, 64, ["Mission", "Late"]),  # 3 subareas
     LocationData("BossDungeonComplete", 3, "Dark Crater", 69, 67, ["Boss"]),  # 3 subareas
-    LocationData("LateDungeonComplete", 2, "Concealed Ruins", 71, 70, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", 1, "Concealed Ruins", 70, 70, ["Mission", "Late"]),  # 2 subareas
     LocationData("LateDungeonComplete", 1, "Marine Resort", 72, 72, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 2, "Bottomless Sea", 73, 73, ["Mission", "Late"]),  # 2 subareas
     LocationData("LateDungeonComplete", 2, "Shimmer Desert", 75, 75, ["Mission", "Late"]),  # 2 subareas
@@ -277,6 +279,9 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("Instrument", 0, "Get Grass Cornet", 343, 0),
 
 ]
+
+
+
 
 location_Dict_by_id: typing.Dict[int, LocationData] = {location.id: location for location in EOS_location_table}
 location_table: Dict[str, LocationData] = {location.name: location for location in EOS_location_table}
