@@ -99,7 +99,7 @@ subX_table = [
     SubXBitfield(65, 5, 0, 1, "Sneasel's Gratitude", ["Sky Peak 7th Station Pass", "Sky Peak Summit Cleared"], "Filler"),
     SubXBitfield(66, 5, 0, 2, "SE Marowak Dojo's Revival", ["Bidoof\'s Wish"], "Filler"),
     SubXBitfield(67, 5, 0, 3, "Clear All Marowak Mazes", ["All Mazes"], "Filler"),
-    SubXBitfield(68, 5, 0, 4, "Grandpa's Treasure", ["Final Maze"], "Filler"),
+    SubXBitfield(68, 5, 0, 4, "Grandpa's Treasure", ["Dojo Final Maze"], "Filler"),
     SubXBitfield(69, 5, 0, 5, "Unused", ["-"], "-"),
     SubXBitfield(70, 5, 0, 6, "Unused", ["-"], "-"),
     SubXBitfield(71, 5, 0, 7, "Unused", ["-"], "-"),

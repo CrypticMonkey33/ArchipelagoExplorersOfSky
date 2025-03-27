@@ -4,6 +4,7 @@ from worlds.generic.Rules import set_rule, add_rule, forbid_item
 from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id
 from .Items import item_table_by_id
 from .Options import EOSOptions
+from .RomTypeDefinitions import subX_table
 
 if TYPE_CHECKING:
     from . import EOSWorld
@@ -291,8 +292,6 @@ def special_episodes_rules(world, player):
              lambda state: state.has('Today\'s "Oh My Gosh"', player))
 
 
-
-
 def ready_for_darkrai(state, player, world):
     return (state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
             and state.has("Temporal Tower", player)
@@ -524,3 +523,29 @@ def mission_rules(world, player):
                     for j in range(world.options.late_outlaw_checks.value):
                         set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
                                  lambda state, ln=location.name, p=player: state.has(ln, p))
+
+
+def subx_rules(world, player):
+
+    for item in subX_table:
+        if item.flag_definition == "Unused":
+            continue
+        for requirement in item.prerequisites:
+            if requirement == "Defeat Dialga":
+                test = 0
+            elif requirement in ["ProgressiveBag1", "ProgressiveBag2", "ProgressiveBag3"]:
+                bag_num_str = requirement[-1]
+                bag_num = int(bag_num_str)
+                add_rule(world.get_location(item.flag_definition),
+                     lambda state, req="ProgressiveBag", p=player, num=bag_num: state.has(req, p, num))
+            elif requirement == "Hidden Land":
+                add_rule(world.get_location(item.flag_definition),
+                         lambda state, req="Relic Fragment Shard", p=player, num=world.options.shard_fragments.value:
+                         state.has(req, p, num))
+            elif requirement == "All Mazes":
+                test = 0
+
+            else:
+                add_rule(world.get_location(item.flag_definition),
+                     lambda state, req=requirement, p=player: state.has(req, p))
+
