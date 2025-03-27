@@ -132,7 +132,7 @@ class EOSWorld(World):
                                                                  location_id, menu_region))
 
                         self.extra_items_added += 1
-            elif location.name == "Progressive Bag loc 1":
+            elif location.name == "Bag Upgrade 0":
                 menu_region.locations.append(EOSLocation(self.player, location.name,
                                                          location.id, menu_region))
             elif location.classification == "EarlyDungeonComplete":
@@ -196,8 +196,10 @@ class EOSWorld(World):
                                                                   location.id, late_dungeons_region)
                 if self.options.goal.value == 0:  # if dialga is the goal, make the location excluded
                     late_dungeon.progress_type = LocationProgressType.EXCLUDED
-                    if location.name == "Manaphy Leads To Marine Resort":
-                        continue
+                    #Manaphy leading to marine resort unlocks a dungeon which cannot be excluded due to logic fun
+                    #Wait no it doesn't, no logic is based on it
+                    #if location.name == "Manaphy Leads To Marine Resort":
+                    #    continue
                 late_dungeons_region.locations.append(late_dungeon)
 
             elif location.classification == "BossDungeonComplete":

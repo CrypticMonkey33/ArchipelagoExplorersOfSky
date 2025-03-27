@@ -1,7 +1,7 @@
 import typing
 
 import typing_extensions
-from typing import Dict
+from typing import Dict, List
 from BaseClasses import Location
 from .RomTypeDefinitions import subX_table
 
@@ -44,45 +44,56 @@ def get_location_table_by_groups() -> Dict[str, set[str]]:
 
     return new_dict
 
-def get_subX_table() ->  typing.List[LocationData]:
-    new_list = subX_table
+
+def get_subX_table() -> List[LocationData]:
+    new_list: List[LocationData] = []
+    subX_start_id = 300
+    for item in subX_table:
+        if item.flag_definition == "Unused":
+            continue
+        new_location = LocationData(classification=item.classification,dungeon_length=0, name=item.flag_definition,
+                                    id=subX_start_id+item.subX_bit_number, dungeon_start_id=0, group=["SubX"])
+        new_list.append(new_location)
+
+    return new_list
+
 
 def get_mission_location_table() -> typing.List[LocationData]:
-
+    mission_start_id = 1000
     new_list: typing.List[LocationData] = []
 
     for location in EOS_location_table:
         if location.name == "Beach Cave" and "Mission" in location.group:
             for j in range(50):
                 location_name: str = f"{location.name} Mission {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j
+                location_id = location.id + mission_start_id + (100 * location.id) + j
                 new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
             for j in range(50):
                 location_name = f"{location.name} Outlaw {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j + 50
+                location_id = location.id + mission_start_id + (100 * location.id) + j + 50
                 new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
 
         elif location.classification == "EarlyDungeonComplete" and "Mission" in location.group:
             for j in range(50):
                 location_name = f"{location.name} Mission {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j
+                location_id = location.id + mission_start_id + (100 * location.id) + j
                 new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
 
             for j in range(50):
                 location_name = f"{location.name} Outlaw {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j + 50
+                location_id = location.id + mission_start_id + (100 * location.id) + j + 50
                 new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
 
         elif "Mission" in location.group and (location.classification == "LateDungeonComplete"
                                               or location.classification == "BossDungeonComplete"):
             for j in range(50):
                 location_name = f"{location.name} Mission {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j
+                location_id = location.id + mission_start_id + (100 * location.id) + j
                 new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
 
             for j in range(50):
                 location_name = f"{location.name} Outlaw {j + 1}"
-                location_id = location.id + 500 + (100 * location.id) + j + 50
+                location_id = location.id + mission_start_id + (100 * location.id) + j + 50
                 new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
 
     return new_list
@@ -222,69 +233,72 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("DojoDungeonComplete", 1, "Dojo Ghost Maze", 189, 189),  # 7 subareas
     #LocationData("RuleDungeonComplete", 1, "Dojo Final Maze", 191, 191),  # 7 subareas
 
-    LocationData("Event", 0,  "Final Boss", 400, 0),
+    LocationData("Event", 0,  "Final Boss", 999, 0),
     # generic checks, right now just bag upgrades
-    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 1", 300, 0),
-    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 2", 301, 0),
-    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 3", 302, 0),
-    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 4", 303, 0),
-    LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 5", 304, 0),
+    #LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 1", 300, 0),
+    #LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 2", 301, 0),
+    #LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 3", 302, 0),
+    #LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 4", 303, 0),
+    #LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 5", 304, 0),
 
-    LocationData("SEDungeonUnlock", 0, "Bidoof's Wish Location", 305, 0),
-    LocationData("SEDungeonUnlock", 0, "Igglybuff the Prodigy Location", 306, 0),
-    LocationData("SEDungeonUnlock", 0, 'Today\'s "Oh My Gosh" Location', 307, 0),
-    LocationData("SEDungeonUnlock", 0, "Here Comes Team Charm! Location", 308, 0),
-    LocationData("SEDungeonUnlock", 0, "In the Future of Darkness Location", 309, 0),
+    #LocationData("SEDungeonUnlock", 0, "Bidoof's Wish Location", 305, 0),
+    #LocationData("SEDungeonUnlock", 0, "Igglybuff the Prodigy Location", 306, 0),
+    #LocationData("SEDungeonUnlock", 0, 'Today\'s "Oh My Gosh" Location', 307, 0),
+    #LocationData("SEDungeonUnlock", 0, "Here Comes Team Charm! Location", 308, 0),
+    #LocationData("SEDungeonUnlock", 0, "In the Future of Darkness Location", 309, 0),
 
-    LocationData("ShopItem", 0, "Shop Item 1", 310, 0),
-    LocationData("ShopItem", 0, "Shop Item 2", 311, 0),
-    LocationData("ShopItem", 0, "Shop Item 3", 312, 0),
-    LocationData("ShopItem", 0, "Shop Item 4", 313, 0),
-    LocationData("ShopItem", 0, "Shop Item 5", 314, 0),
-    LocationData("ShopItem", 0, "Shop Item 6", 315, 0),
-    LocationData("ShopItem", 0, "Shop Item 7", 316, 0),
-    LocationData("ShopItem", 0, "Shop Item 8", 317, 0),
-    LocationData("ShopItem", 0, "Shop Item 9", 318, 0),
-    LocationData("ShopItem", 0, "Shop Item 10", 319, 0),
-    LocationData("SEDungeonUnlock", 0, "Team Name", 427, 0),
-    LocationData("Manaphy", 0, "Manaphy Egg Hatch", 320, 0),
-    LocationData("Manaphy", 0, "Manaphy Fed", 321, 0),
-    LocationData("Manaphy", 0, "Manaphy Healed", 322, 0),
-    LocationData("Manaphy", 0, "Manaphy Join Team", 323, 0),
-    LocationData("Manaphy", 0, "Manaphy Leads To Marine Resort", 324, 0),
-    LocationData("SecretRank", 0, "SecretRank", 347, 0),
+    #LocationData("ShopItem", 0, "Shop Item 1", 310, 0),
+    #LocationData("ShopItem", 0, "Shop Item 2", 311, 0),
+    #LocationData("ShopItem", 0, "Shop Item 3", 312, 0),
+    #LocationData("ShopItem", 0, "Shop Item 4", 313, 0),
+    #LocationData("ShopItem", 0, "Shop Item 5", 314, 0),
+    #LocationData("ShopItem", 0, "Shop Item 6", 315, 0),
+    #LocationData("ShopItem", 0, "Shop Item 7", 316, 0),
+    #LocationData("ShopItem", 0, "Shop Item 8", 317, 0),
+    #LocationData("ShopItem", 0, "Shop Item 9", 318, 0),
+    #LocationData("ShopItem", 0, "Shop Item 10", 319, 0),
+    #LocationData("SEDungeonUnlock", 0, "Team Name", 427, 0),
+    #LocationData("Manaphy", 0, "Manaphy Egg Hatch", 320, 0),
+    #LocationData("Manaphy", 0, "Manaphy Fed", 321, 0),
+    #LocationData("Manaphy", 0, "Manaphy Healed", 322, 0),
+    #LocationData("Manaphy", 0, "Manaphy Join Team", 323, 0),
+    #LocationData("Manaphy", 0, "Manaphy Leads To Marine Resort", 324, 0),
+    #LocationData("SecretRank", 0, "SecretRank", 347, 0),
 
-    LocationData("Legendary", 0, "Recruit Uxie", 325, 0),
-    LocationData("Legendary", 0, "Recruit Mespirit", 326, 0),
-    LocationData("Legendary", 0, "Recruit Azelf", 327, 0),
-    LocationData("Legendary", 0, "Recruit Dialga", 328, 0),
-    LocationData("Legendary", 0, "Recruit Phione", 329, 0),
-    LocationData("Legendary", 0, "Recruit Palkia", 330, 0),
-    LocationData("Legendary", 0, "Recruit Kyogre", 332, 0),
-    LocationData("Legendary", 0, "Recruit Groudon", 334, 0),
-    LocationData("Legendary", 0, "Recruit Articuno", 336, 0),
-    LocationData("Legendary", 0, "Recruit Heatran", 338, 0),
-    LocationData("Legendary", 0, "Recruit Giratina", 340, 0),
-    LocationData("Legendary", 0, "Recruit Rayquaza", 342, 0),
-    LocationData("Legendary", 0, "Recruit Mew", 344, 0),
-    LocationData("Legendary", 0, "Recruit Cresselia", 345, 0),
-    LocationData("Legendary", 0, "Recruit Shaymin", 346, 0),
+    #LocationData("Legendary", 0, "Recruit Uxie", 325, 0),
+    #LocationData("Legendary", 0, "Recruit Mespirit", 326, 0),
+    #LocationData("Legendary", 0, "Recruit Azelf", 327, 0),
+    #LocationData("Legendary", 0, "Recruit Dialga", 328, 0),
+    #LocationData("Legendary", 0, "Recruit Phione", 329, 0),
+    #LocationData("Legendary", 0, "Recruit Palkia", 330, 0),
+    #LocationData("Legendary", 0, "Recruit Kyogre", 332, 0),
+    #LocationData("Legendary", 0, "Recruit Groudon", 334, 0),
+    #LocationData("Legendary", 0, "Recruit Articuno", 336, 0),
+    #LocationData("Legendary", 0, "Recruit Heatran", 338, 0),
+    #LocationData("Legendary", 0, "Recruit Giratina", 340, 0),
+    #LocationData("Legendary", 0, "Recruit Rayquaza", 342, 0),
+    #LocationData("Legendary", 0, "Recruit Mew", 344, 0),
+    #LocationData("Legendary", 0, "Recruit Cresselia", 345, 0),
+    #LocationData("Legendary", 0, "Recruit Shaymin", 346, 0),
 
-    LocationData("Instrument", 0, "Get Aqua-Monica", 331, 0),
-    LocationData("Instrument", 0, "Get Terra Cymbal", 333, 0),
-    LocationData("Instrument", 0, "Get Icy Flute", 335, 0),
-    LocationData("Instrument", 0, "Get Fiery Drum", 337, 0),
-    LocationData("Instrument", 0, "Get Rock Horn", 339, 0),
-    LocationData("Instrument", 0, "Get Sky Melodica", 341, 0),
-    LocationData("Instrument", 0, "Get Grass Cornet", 343, 0),
+    #LocationData("Instrument", 0, "Get Aqua-Monica", 331, 0),
+    #LocationData("Instrument", 0, "Get Terra Cymbal", 333, 0),
+    #LocationData("Instrument", 0, "Get Icy Flute", 335, 0),
+    #LocationData("Instrument", 0, "Get Fiery Drum", 337, 0),
+    #LocationData("Instrument", 0, "Get Rock Horn", 339, 0),
+    #LocationData("Instrument", 0, "Get Sky Melodica", 341, 0),
+    #LocationData("Instrument", 0, "Get Grass Cornet", 343, 0),
 
 ]
 
 
-
-
 location_Dict_by_id: typing.Dict[int, LocationData] = {location.id: location for location in EOS_location_table}
 location_table: Dict[str, LocationData] = {location.name: location for location in EOS_location_table}
+
+subx_location_list = get_subX_table()
+subx_location_dict = {location.name: location for location in subx_location_list}
+
+location_table.update(subx_location_dict)
 
 location_table_by_groups = get_location_table_by_groups()
 
@@ -294,4 +308,5 @@ mission_location_table = get_mission_location_table()
 
 expanded_EOS_location_table: typing.List[LocationData] = []
 expanded_EOS_location_table.extend(EOS_location_table)
+expanded_EOS_location_table.extend(subx_location_list)
 expanded_EOS_location_table.extend(mission_location_table)

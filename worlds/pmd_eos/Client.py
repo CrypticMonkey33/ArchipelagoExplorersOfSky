@@ -118,7 +118,7 @@ class EoSClient(BizHawkClient):
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         from CommonClient import logger
-
+        mission_start_id = 1000
         try:
             if ctx.seed_name is None:
                 return
@@ -649,10 +649,10 @@ class EoSClient(BizHawkClient):
                         bit_number_dung = (byte_i * 8) + j
                         if (ctx.slot_data["Goal"] == 0) and (bit_number_dung == 43):
                             self.goal_complete = True
-                            locs_to_send.add(400)
+                            locs_to_send.add(999)
                         elif (ctx.slot_data["Goal"] == 1) and (bit_number_dung == 69):
                             self.goal_complete = True
-                            locs_to_send.add(400)
+                            locs_to_send.add(999)
                         elif (ctx.slot_data["Goal"] == 1) and (bit_number_dung == 43):
                             self.dialga_complete = True
                         if bit_number_dung in location_Dict_by_id:
@@ -660,12 +660,13 @@ class EoSClient(BizHawkClient):
 
             # Check for set location flags in general bitfield
             for byte_m, byte in enumerate(scenario_subx_bitfield):
+                subX_start_id = 300
                 for k in range(8):
                     if k in self.checked_general_flags[byte_m]:
                         continue
                     if ((byte >> k) & 1) == 1:
                         self.checked_general_flags[byte_m] += [k]
-                        bit_number_gen = (byte_m * 8) + k + 300
+                        bit_number_gen = (byte_m * 8) + k + subX_start_id
                         if bit_number_gen in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_gen].id)
 
@@ -689,16 +690,16 @@ class EoSClient(BizHawkClient):
                                 if "Early" in location_dict_by_start_id[i].group:
                                     for k in range(current_missions_completed - dungeons_complete):
                                         if dungeons_complete < ctx.slot_data["EarlyMissionsAmount"]:
-                                            locs_to_send.add(location_id + 500 + (100 * location_id) + dungeons_complete + k)
+                                            locs_to_send.add(location_id + mission_start_id + (100 * location_id) + dungeons_complete + k)
                                             dungeon_missions_dict[location_name] += 1
-                                            # location.id + 500 + (100 * i) + j`
+                                            # location.id + mission_start_id + (100 * i) + j`
 
                                 elif "Late" in location_dict_by_start_id[i].group:
                                     for k in range(current_missions_completed - dungeons_complete):
                                         if dungeons_complete < ctx.slot_data["LateMissionsAmount"]:
-                                            locs_to_send.add(location_id + 500 + (100 * location_id) + dungeons_complete + k)
+                                            locs_to_send.add(location_id + mission_start_id + (100 * location_id) + dungeons_complete + k)
                                             dungeon_missions_dict[location_name] += 1
-                                            # location.id + 500 + (100 * i) + j
+                                            # location.id + mission_start_id + (100 * i) + j
 
                 scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xDF
                 await bizhawk.write(
@@ -728,16 +729,16 @@ class EoSClient(BizHawkClient):
                                 if "Early" in location_dict_by_start_id[i].group:
                                     for k in range(current_missions_completed - dungeons_complete):
                                         if dungeons_complete < ctx.slot_data["EarlyOutlawsAmount"]:
-                                            locs_to_send.add(location_id + 500 + 50 + (100 * location_id) + dungeons_complete + k)
+                                            locs_to_send.add(location_id + mission_start_id + 50 + (100 * location_id) + dungeons_complete + k)
                                             dungeon_outlaws_dict[location_name] += 1
-                                            # location.id + 500 + (100 * i) + j`
+                                            # location.id + mission_start_id + (100 * i) + j`
 
                                 elif "Late" in location_dict_by_start_id[i].group:
                                     for k in range(current_missions_completed - dungeons_complete):
                                         if dungeons_complete < ctx.slot_data["LateOutlawsAmount"]:
-                                            locs_to_send.add(location_id + 500 + 50 + (100 * location_id) + dungeons_complete + k)
+                                            locs_to_send.add(location_id + mission_start_id + 50 + (100 * location_id) + dungeons_complete + k)
                                             dungeon_outlaws_dict[location_name] += 1
-                                            # location.id + 500 + (100 * i) + j
+                                            # location.id + mission_start_id + (100 * i) + j
 
                 scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xEF
                 await bizhawk.write(
