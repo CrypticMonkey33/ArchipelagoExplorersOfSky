@@ -42,7 +42,7 @@ subX_table = [
     SubXBitfield(25, 2, 1, 1, "Uxie's Gift", ["Defeat Dialga", "Steam Cave"], "Uxie"),
     SubXBitfield(26, 2, 1, 2, "Mesprit's Gift", ["Defeat Dialga", "Quicksand Cave"], "Mesprit", "Legendary"),
     SubXBitfield(27, 2, 1, 3, "Azelf's Gift", ["Defeat Dialga", "Crystal Crossing"], "Azelf", "Legendary"),
-    SubXBitfield(28, 2, 1, 4, "Dialga's Gift", ["Defeat Dialga", "Temporal Tower"], "Dialga", "Legendary"),
+    SubXBitfield(28, 2, 1, 4, "Dialga's Gift", ["Defeat Dialga", "Temporal Tower", "Hidden Land"], "Dialga", "Legendary"),
     SubXBitfield(29, 2, 1, 5, "Phione's Gift", ["Defeat Dialga", "Surrounded Sea", "Miracle Sea"], "Phione",
                  "Legendary"),
 
