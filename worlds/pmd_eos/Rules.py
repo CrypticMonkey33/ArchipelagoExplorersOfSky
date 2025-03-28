@@ -16,10 +16,10 @@ def set_rules(world: "EOSWorld", excluded):
 
     special_episodes_rules(world, player)
 
-    shop_items_rules(world, player)
-
+    #shop_items_rules(world, player)
+    subx_rules(world, player)
     dungeon_locations_behind_items(world, player)
-    instrument_and_legendary_rules(world, player)
+    #instrument_and_legendary_rules(world, player)
     mission_rules(world, player)
     if world.options.goal.value == 0:
         set_rule(world.multiworld.get_location("Final Boss", player),
@@ -49,26 +49,26 @@ def set_rules(world: "EOSWorld", excluded):
     set_rule(world.multiworld.get_location("The Nightmare", player),
              lambda state: state.can_reach_location("Mt. Bristle", player) and state.has("The Nightmare", player)
                            and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Progressive Bag loc 2", player),
-             lambda state: state.has("Mt. Bristle", player))
-    set_rule(world.multiworld.get_location("Progressive Bag loc 3", player),
-             lambda state: state.has("Apple Woods", player))
-    set_rule(world.multiworld.get_location("Progressive Bag loc 4", player),
-             lambda state: state.has("Steam Cave", player))
-    set_rule(world.multiworld.get_location("Progressive Bag loc 5", player),
-             lambda state: state.has("Mystifying Forest", player))
+    #set_rule(world.multiworld.get_location("Progressive Bag loc 2", player),
+    #         lambda state: state.has("Mt. Bristle", player))
+    #set_rule(world.multiworld.get_location("Progressive Bag loc 3", player),
+    #         lambda state: state.has("Apple Woods", player))
+    #set_rule(world.multiworld.get_location("Progressive Bag loc 4", player),
+    #         lambda state: state.has("Steam Cave", player))
+    #set_rule(world.multiworld.get_location("Progressive Bag loc 5", player),
+    #         lambda state: state.has("Mystifying Forest", player))
 
-    set_rule(world.multiworld.get_location("Manaphy Egg Hatch", player),
-             lambda state: state.has("Surrounded Sea", player))
-    set_rule(world.multiworld.get_location("Manaphy Fed", player),
-             lambda state: state.has("Surrounded Sea", player))
-    set_rule(world.multiworld.get_location("Manaphy Healed", player),
-             lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
-    set_rule(world.multiworld.get_location("Manaphy Join Team", player),
-             lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
+    #set_rule(world.multiworld.get_location("Manaphy Egg Hatch", player),
+    #         lambda state: state.has("Surrounded Sea", player))
+    #set_rule(world.multiworld.get_location("Manaphy Fed", player),
+    #         lambda state: state.has("Surrounded Sea", player))
+    #set_rule(world.multiworld.get_location("Manaphy Healed", player),
+    #         lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
+    #set_rule(world.multiworld.get_location("Manaphy Join Team", player),
+    #         lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
 
-    set_rule(world.multiworld.get_location("SecretRank", player),
-             lambda state: state.has("Crevice Cave", player))
+    #set_rule(world.multiworld.get_location("SecretRank", player),
+    #         lambda state: state.has("Crevice Cave", player))
     #set_rule(world.multiworld.get_entrance("Early Game Door", player),
     #         lambda state: state.has("Beach Cave", player))
     #for location_num in location_Dict_by_id:
@@ -432,11 +432,6 @@ def dungeon_locations_behind_items(world, player):
              lambda state: state.has("Inferno Cave", player) and ready_for_late_game(state, player, world))
     set_rule(world.multiworld.get_location("1st Station Pass", player),
              lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("1st Station Pass", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-
-    set_rule(world.multiworld.get_location("1st Station Pass", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
     set_rule(world.multiworld.get_location("2nd Station Pass", player),
              lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
     set_rule(world.multiworld.get_location("3rd Station Pass", player),
@@ -530,20 +525,28 @@ def subx_rules(world, player):
     for item in subX_table:
         if item.flag_definition == "Unused":
             continue
+        if (item.flag_definition == "Manaphy's Discovery") and world.options.goal.value == 0:
+            continue
         for requirement in item.prerequisites:
             if requirement == "Defeat Dialga":
-                test = 0
+                add_rule(world.get_location(item.flag_definition),
+                         lambda state, req="Relic Fragment Shard", p=player, num=world.options.shard_fragments.value,
+                         req2="Temporal Tower": state.has(req, p, num) and state.has(req2, p))
+
             elif requirement in ["ProgressiveBag1", "ProgressiveBag2", "ProgressiveBag3"]:
                 bag_num_str = requirement[-1]
                 bag_num = int(bag_num_str)
                 add_rule(world.get_location(item.flag_definition),
-                     lambda state, req="ProgressiveBag", p=player, num=bag_num: state.has(req, p, num))
+                     lambda state, req="Bag Upgrade", p=player, num=bag_num: state.has(req, p, num))
+
             elif requirement == "Hidden Land":
                 add_rule(world.get_location(item.flag_definition),
                          lambda state, req="Relic Fragment Shard", p=player, num=world.options.shard_fragments.value:
                          state.has(req, p, num))
+
             elif requirement == "All Mazes":
-                test = 0
+                add_rule(world.get_location(item.flag_definition),
+                         lambda state, req="Dojo Dungeons", p=player: state.has_group(req, p, 10))
 
             else:
                 add_rule(world.get_location(item.flag_definition),

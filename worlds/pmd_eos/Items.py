@@ -213,7 +213,7 @@ EOS_item_table = [
     ItemData("Dojo Poison/Bug Maze", 187, ItemClassification.progression, 187, ["Unique", "Dojo Dungeons"], 0xBB),
     ItemData("Dojo Dragon Maze", 188, ItemClassification.progression, 188, ["Unique", "Dojo Dungeons"], 0xBC),
     ItemData("Dojo Ghost Maze", 189, ItemClassification.progression, 189, ["Unique", "Dojo Dungeons"], 0xBD),
-    ItemData("Dojo Final Maze", 191, ItemClassification.useful, 191, ["Unique", "Dojo Dungeons"], 0xBF),  # 7 subareas
+    ItemData("Dojo Final Maze", 191, ItemClassification.progression, 191, ["Unique", "Final Dojo"], 0xBF),  # 7 subareas
     ItemData("Relic Fragment Shard", 200, ItemClassification.progression_skip_balancing, 200, ["Macguffin"], 0x00),
     #ItemData("Cresselia Feather", 201, ItemClassification.progression, 201, ["Macguffin"], 0x00),
 
@@ -273,7 +273,7 @@ EOS_item_table = [
     ItemData("Hero Evolution", 550, ItemClassification.useful, 0, ["Generic"], 0),
     ItemData("Recruit Evolution", 551, ItemClassification.useful, 0, ["Generic"], 0),
     ItemData("Recruitment", 552, ItemClassification.useful, 0, ["Generic"], 0),
-    ItemData("Formation Control", 553, ItemClassification.useful, 0, ["Generic"], 0),
+    ItemData("Formation Control", 553, ItemClassification.progression, 0, ["Generic"], 0),
     ItemData("Miracle Chest", 464, ItemClassification.useful, 0, ["Item", "Single"], 0x42),  # Boosts Exp
     ItemData("Wonder Chest", 465, ItemClassification.useful, 0, ["Item", "Single"], 0x43),  # Boosts Exp
 

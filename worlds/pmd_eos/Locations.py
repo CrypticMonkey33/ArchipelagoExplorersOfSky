@@ -52,7 +52,7 @@ def get_subX_table() -> List[LocationData]:
         if item.flag_definition == "Unused":
             continue
         new_location = LocationData(classification=item.classification,dungeon_length=0, name=item.flag_definition,
-                                    id=subX_start_id+item.subX_bit_number, dungeon_start_id=0, group=["SubX"])
+                                    id=subX_start_id+item.bitfield_bit_number, dungeon_start_id=0, group=["SubX"])
         new_list.append(new_location)
 
     return new_list
@@ -116,6 +116,9 @@ def get_location_table_by_start_id() -> Dict[int, set[str]]:
     return new_dict
 
 
+subx_location_list = get_subX_table()
+subx_location_dict = {location.name: location for location in subx_location_list}
+
 EOS_location_table: typing.List[LocationData] = [
     # "Test Dungeon", 0,  # Should be unused
     LocationData("EarlyDungeonComplete", 2,  "Beach Cave", 2,  1, ["Mission", "Early"]),
@@ -150,6 +153,14 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 1, "Surrounded Sea", 50, 50, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Miracle Sea", 53, 51, ["Mission", "Late"]),  # 3 subareas
     # LocationData("DungeonComplete", 8,  "Ice Aegis Cave", 60,  54),   # 8 subareas             we hate aegis cave. also it's kinda broken rn so we're gonna remove it for now
+    LocationData("LateDungeonComplete", 1,  "Ice Aegis Cave", 54,  54, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", 1,  "Regice Chamber", 55,  55, ["Late"]),
+    LocationData("LateDungeonComplete", 1,  "Rock Aegis Cave", 56,  56, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", 1,  "Regirock Chamber", 57,  57, ["Late"]),
+    LocationData("LateDungeonComplete", 1,  "Steel Aegis Cave", 58,  58, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", 1,  "Registeel Chamber", 59,  59, ["Late"]),
+    LocationData("LateDungeonComplete", 1,  "Aegis Cave Pit", 60,  60, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", 1,  "Regigigas Chamber", 61,  61, ["Late"]),
     LocationData("LateDungeonComplete", 1, "Mt. Travail", 62, 62, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 1, "The Nightmare", 63, 63, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Spacial Rift", 66, 64, ["Mission", "Late"]),  # 3 subareas
@@ -234,6 +245,7 @@ EOS_location_table: typing.List[LocationData] = [
     #LocationData("RuleDungeonComplete", 1, "Dojo Final Maze", 191, 191),  # 7 subareas
 
     LocationData("Event", 0,  "Final Boss", 999, 0),
+
     # generic checks, right now just bag upgrades
     #LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 1", 300, 0),
     #LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 2", 301, 0),
@@ -289,14 +301,11 @@ EOS_location_table: typing.List[LocationData] = [
     #LocationData("Instrument", 0, "Get Sky Melodica", 341, 0),
     #LocationData("Instrument", 0, "Get Grass Cornet", 343, 0),
 
-]
+] + subx_location_list
 
 
 location_Dict_by_id: typing.Dict[int, LocationData] = {location.id: location for location in EOS_location_table}
 location_table: Dict[str, LocationData] = {location.name: location for location in EOS_location_table}
-
-subx_location_list = get_subX_table()
-subx_location_dict = {location.name: location for location in subx_location_list}
 
 location_table.update(subx_location_dict)
 
