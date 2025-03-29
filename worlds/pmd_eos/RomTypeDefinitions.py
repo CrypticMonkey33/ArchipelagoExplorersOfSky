@@ -109,7 +109,7 @@ subX_table = [
                  "Legendary"),
     SubXBitfield(71, 5, 0, 7, "Registeel's Gift", ["Defeat Dialga", "Steel Seal", "Ice Aegis Cave"], "Registeel",
                  "Legendary"),
-    SubXBitfield(72, 5, 1, 0, "Regigigas's Gift", ["Defeat Dialga", "Ice Key", "Rock Key", "Steel Key",
+    SubXBitfield(72, 5, 1, 0, "Regigigas's Gift", ["Defeat Dialga", "Ice Seal", "Rock Seal", "Steel Seal",
                                                    "Ice Aegis Cave"], "Regigigas", "Legendary"),
     SubXBitfield(73, 5, 1, 1, "Unused", ["-"], "-"),
     SubXBitfield(74, 5, 1, 2, "Unused", ["-"], "-"),

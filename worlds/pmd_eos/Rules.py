@@ -188,25 +188,25 @@ def dungeon_locations_behind_items(world, player):
                          lambda state: state.has("1st Station Pass", player)
                                        and ready_for_late_game(state, player, world))
         elif "Aegis" in location.group:
-            if location.id in [54, 56, 58, 60]:
+            if location.id in [54]:
                 set_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Ice Aegis Cave", player)
                                        and ready_for_late_game(state, player, world))
-            elif location.id == 55:  # Regice Chamber
+            elif location.id in [55, 56]:  # Regice Chamber
                 set_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Ice Aegis Cave", player)
                                        and ready_for_late_game(state, player, world)
                                        and state.has("Ice Seal", player))
-            elif location.id == 57:  # Regirock Chamber
+            elif location.id in [57, 58]:  # Regirock Chamber
                 set_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Ice Aegis Cave", player)
                                        and ready_for_late_game(state, player, world)
-                                       and state.has("Rock Seal", player))
-            elif location.id == 59:  # Registeel Chamber
+                                       and state.has("Rock Seal", player) and state.has("Ice Seal", player))
+            elif location.id in [59, 60]:  # Registeel Chamber
                 set_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Ice Aegis Cave", player)
-                                       and ready_for_late_game(state, player, world)
-                                       and state.has("Steel Seal", player))
+                                       and ready_for_late_game(state, player, world) and state.has("Rock Seal", player)
+                                       and state.has("Steel Seal", player) and state.has("Ice Seal", player))
             elif location.id == 61:  # Regigigas Chamber
                 set_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Ice Aegis Cave", player) and state.has("Ice Seal", player)
@@ -304,7 +304,32 @@ def subx_rules(world, player):
             if requirement == "Defeat Dialga":
                 add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state: ready_for_late_game(state, player, world))
-
+            elif requirement == "Sky Station Summit Pass":
+                if world.options.sky_peak_type == 1:
+                    add_rule(world.multiworld.get_location(item.flag_definition, player),
+                             lambda state, req="Progressive Sky Peak": ready_for_late_game(state, player, world)
+                                                                       and state.has(req, player, 10))
+                elif world.options.sky_peak_type == 2:
+                    add_rule(world.multiworld.get_location(item.flag_definition, player),
+                             lambda state, req="Sky Station Summit Pass": ready_for_late_game(state, player, world)
+                                                                          and state.has(req, player))
+                elif world.options.sky_peak_type == 3:
+                    add_rule(world.multiworld.get_location(item.flag_definition, player),
+                             lambda state, req="1st Station Pass": ready_for_late_game(state, player, world)
+                                                                   and state.has(req, player))
+            elif requirement == "7th Station Pass":
+                if world.options.sky_peak_type == 1:
+                    add_rule(world.multiworld.get_location(item.flag_definition, player),
+                             lambda state, req="Progressive Sky Peak": ready_for_late_game(state, player, world)
+                                                                       and state.has(req, player, 7))
+                elif world.options.sky_peak_type == 2:
+                    add_rule(world.multiworld.get_location(item.flag_definition, player),
+                             lambda state, req="7th Station Pass": ready_for_late_game(state, player, world)
+                                                                          and state.has(req, player))
+                elif world.options.sky_peak_type == 3:
+                    add_rule(world.multiworld.get_location(item.flag_definition, player),
+                             lambda state, req="1st Station Pass": ready_for_late_game(state, player, world)
+                                                                   and state.has(req, player))
             elif requirement in ["ProgressiveBag1", "ProgressiveBag2", "ProgressiveBag3"]:
                 bag_num_str = requirement[-1]
                 bag_num = int(bag_num_str)

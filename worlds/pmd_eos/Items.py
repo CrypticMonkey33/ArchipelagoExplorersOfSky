@@ -89,7 +89,7 @@ EOS_item_table = [
              0x32),
     ItemData("Miracle Sea", 51, ItemClassification.progression, 51, ["Unique", "LateDungeons", "MissionDungeons"],
              0x33),
-    ItemData("Ice Aegis Cave", 54, ItemClassification.useful, 54, ["Unique", "LateDungeons"], 0x36),
+    ItemData("Ice Aegis Cave", 54, ItemClassification.progression, 54, ["Unique", "LateDungeons"], 0x36),
     ItemData("Mt. Travail", 62, ItemClassification.progression, 62, ["Unique", "LateDungeons", "MissionDungeons"],
              0x3E),
     ItemData("The Nightmare", 63, ItemClassification.progression, 63, ["Unique", "LateDungeons", "MissionDungeons"],

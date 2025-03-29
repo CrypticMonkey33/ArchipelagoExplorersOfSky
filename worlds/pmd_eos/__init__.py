@@ -415,8 +415,6 @@ class EOSWorld(World):
             self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
                                          in self.random.sample(filler_items, remaining, counts=item_weights)]
 
-
-
     def set_rules(self) -> None:
         set_rules(self, self.disabled_locations)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)

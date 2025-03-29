@@ -318,5 +318,5 @@ mission_location_table = get_mission_location_table()
 
 expanded_EOS_location_table: typing.List[LocationData] = []
 expanded_EOS_location_table.extend(EOS_location_table)
-expanded_EOS_location_table.extend(subx_location_list)
+#expanded_EOS_location_table.extend(subx_location_list)
 expanded_EOS_location_table.extend(mission_location_table)
