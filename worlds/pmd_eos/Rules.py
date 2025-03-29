@@ -291,36 +291,36 @@ def mission_rules(world, player):
             continue
         elif location.classification == "EarlyDungeonComplete":
             for j in range(world.options.early_mission_checks.value):
-                set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
+                set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                          lambda state, ln=location.name, p=player: state.has(ln, p))
             for j in range(world.options.early_outlaw_checks.value):
-                set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
+                set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                          lambda state, ln=location.name, p=player: state.has(ln, p))
 
         elif location.classification in ["LateDungeonComplete", "BossDungeonComplete"]:
             if world.options.goal.value == 1:
                 if "Station" in location.group:
                     for j in range(world.options.late_mission_checks.value):
-                        set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}"),
+                        set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                  lambda state, ln="1st Station Pass", p=player: state.has(ln, p))
                         for j in range(world.options.late_outlaw_checks.value):
-                            set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
+                            set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                      lambda state, ln="1st Station Pass", p=player: state.has(ln, p))
                 elif location.name == "Hidden Land":
                     for j in range(world.options.late_mission_checks.value):
-                        set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}"),
+                        set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                  lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world))
 
                     for j in range(world.options.late_outlaw_checks.value):
-                        set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
+                        set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                  lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world))
                 else:
                     for j in range(world.options.late_mission_checks.value):
-                        set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}"),
+                        set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                  lambda state, ln=location.name, p=player: state.has(ln, p))
 
                     for j in range(world.options.late_outlaw_checks.value):
-                        set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
+                        set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                  lambda state, ln=location.name, p=player: state.has(ln, p))
 
 
