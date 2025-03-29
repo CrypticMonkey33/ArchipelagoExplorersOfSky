@@ -47,12 +47,12 @@ def set_rules(world: "EOSWorld", excluded):
 
 
 def has_relic_shards(state, player, world):
-    return state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
+    return state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
 
 
 def ready_for_late_game(state, player, world):
     return (state.has_group("EarlyDungeons", player, 10)
-            and state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
+            and state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
             and state.has("Temporal Tower", player))
 
 
@@ -140,7 +140,7 @@ def special_episodes_rules(world, player):
 
 
 def ready_for_darkrai(state, player, world):
-    return (state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
+    return (state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
             and state.has("Temporal Tower", player)
             and state.has_group("Instrument", player, world.options.req_instruments.value)
             and state.has_group("LateDungeons", player, 10))
@@ -341,7 +341,7 @@ def subx_rules(world, player):
             elif requirement == "Hidden Land":
                 add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state, req="Relic Fragment Shard", p=player,
-                                num=world.options.shard_fragments.value: state.has(req, p, num))
+                                num=world.options.required_fragments.value: state.has(req, p, num))
             elif requirement == "Ice Seal" and world.options.cursed_aegis_cave.value == 0:
                 add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state, req="Progressive Seal", p=player,

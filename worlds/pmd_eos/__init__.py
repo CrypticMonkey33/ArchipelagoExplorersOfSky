@@ -279,8 +279,8 @@ class EOSWorld(World):
             "LevelScaling": self.options.level_scale.value,
             "RecruitmentEvolution": self.options.recruit_evo.value,
             "DojoDungeonsRandomization": self.options.dojo_dungeons.value,
-            "ShardFragmentAmount": self.options.shard_fragments.value,
-            "ExtraShardsAmount": self.options.extra_shards.value,
+            "ShardFragmentAmount": self.options.required_fragments.value,
+            "ExtraShardsAmount": self.options.total_shards.value,
             "EarlyMissionsAmount": self.options.early_mission_checks.value,
             "EarlyOutlawsAmount": self.options.early_outlaw_checks.value,
             "LateMissionsAmount": self.options.late_mission_checks.value,
@@ -290,7 +290,7 @@ class EOSWorld(World):
             "IQScaling": self.options.iq_scaling.value,
             "XPScaling": self.options.xp_scaling.value,
             "RequiredInstruments": self.options.req_instruments.value,
-            "ExtraInstruments": self.options.extra_instruments.value,
+            "ExtraInstruments": self.options.total_instruments.value,
             "HeroEvolution": self.options.hero_evolution.value,
             "Deathlink": self.options.deathlink.value,
             "LegendaryAmount": self.options.legendaries.value,
@@ -313,7 +313,11 @@ class EOSWorld(World):
         item_weights = []
         excluded_locations = 0
         if self.options.goal.value == 1:
-            instruments_to_add = self.options.req_instruments.value + self.options.extra_instruments.value
+            instruments_to_add = 0
+            if self.options.total_instruments.value < self.options.req_instruments.value:
+                instruments_to_add = self.options.req_instruments.value
+            else:
+                instruments_to_add = self.options.total_instruments.value
 
             instrument_table = item_table_by_groups["Instrument"]
             instruments = self.random.sample(sorted(instrument_table), instruments_to_add)
@@ -321,7 +325,13 @@ class EOSWorld(World):
                 required_items.append(self.create_item(item, ItemClassification.progression_skip_balancing))
 
         precollected = [item.name for item in self.multiworld.precollected_items[self.player]]
-        for i in range(self.options.shard_fragments.value + self.options.extra_shards.value):
+        relics_to_add = 0
+        if self.options.required_fragments.value > self.options.total_shards.value:
+            relics_to_add = self.options.required_fragments.value
+        else:
+            relics_to_add = self.options.total_shards.value
+
+        for i in range(relics_to_add):
             required_items.append(self.create_item("Relic Fragment Shard", ItemClassification.progression))
 
         if self.options.goal == 1:

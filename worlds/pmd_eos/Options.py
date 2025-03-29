@@ -19,7 +19,7 @@ class FragmentShards(NamedRange):
     """ How many Relic Fragment Shards should be in the game (Macguffins)
      that you must get to unlock Hidden Land"""
     range_start = 4
-    range_end = 10
+    range_end = 20
     special_range_names = {
         "easy": 4,
         "normal": 6,
@@ -30,16 +30,16 @@ class FragmentShards(NamedRange):
 
 
 class ExtraShards(NamedRange):
-    """ How many extra Fragment Shards should be in the game?"""
+    """ How many total Fragment Shards should be in the game?"""
     range_start = 0
-    range_end = 10
+    range_end = 20
     special_range_names = {
-        "easy": 6,
-        "normal": 4,
-        "hard": 2,
+        "easy": 16,
+        "normal": 12,
+        "hard": 8,
         "extreme": 0
     }
-    default = 4
+    default = 12
 
 
 class RequiredInstruments(NamedRange):
@@ -47,7 +47,7 @@ class RequiredInstruments(NamedRange):
      that you must get to unlock Dark Crater if victory condition is Darkrai
      Instruments are not added to the item pool if the goal is Dialga"""
     range_start = 4
-    range_end = 10
+    range_end = 20
     special_range_names = {
         "easy": 4,
         "normal": 6,
@@ -58,16 +58,16 @@ class RequiredInstruments(NamedRange):
 
 
 class ExtraInstruments(NamedRange):
-    """ How many extra Instruments should be in the game?"""
+    """ How many total Instruments should be in the game?"""
     range_start = 0
-    range_end = 10
+    range_end = 20
     special_range_names = {
-        "easy": 6,
-        "normal": 4,
-        "hard": 2,
+        "easy": 16,
+        "normal": 12,
+        "hard": 8,
         "extreme": 0
     }
-    default = 4
+    default = 12
 
 
 class EarlyMissionChecks(NamedRange):
@@ -342,8 +342,8 @@ class EOSOptions(PerGameCommonOptions):
     level_scale: LevelScaling
     bag_on_start: StartWithBag
     dojo_dungeons: DojoDungeons
-    shard_fragments: FragmentShards
-    extra_shards: ExtraShards
+    required_fragments: FragmentShards
+    total_shards: ExtraShards
     early_mission_checks: EarlyMissionChecks
     late_mission_checks: LateMissionChecks
     early_outlaw_checks: EarlyOutlawChecks
@@ -353,7 +353,7 @@ class EOSOptions(PerGameCommonOptions):
     iq_scaling: IqScaling
     xp_scaling: XpScaling
     req_instruments: RequiredInstruments
-    extra_instruments: ExtraInstruments
+    total_instruments: ExtraInstruments
     hero_evolution: HeroEvolution
     deathlink: DeathLink
     deathlink_type: DeathlinkType

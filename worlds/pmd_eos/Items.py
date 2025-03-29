@@ -305,6 +305,7 @@ filler_items = [
     ItemData("Poké x200", 564, ItemClassification.filler, 20, ["Money"], 200),
     ItemData("Poké x1", 565, ItemClassification.filler, 50, ["Money"], 1),
     ItemData("Secret of the Waterfall", 405, ItemClassification.filler, 2, ["Generic"], 0x0),
+    ItemData("Mystery of the Quicksand", 299, ItemClassification.filler, 2, ["Generic"], 0x0),
     ItemData("Chatot Repellent", 406, ItemClassification.filler, 2, ["Generic"], 0x0),
     ItemData("Sky Jukebox", 407, ItemClassification.filler, 2, ["Generic"], 0x0),
     ItemData("Recruitment Sensor", 408, ItemClassification.filler, 2, ["Generic"], 0x0),

@@ -63,14 +63,14 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         "recruits_evolution": world.options.recruit_evo.value,
         "team_formation": world.options.team_form.value,
         "dojo_dungeons_rando": world.options.dojo_dungeons.value,
-        "relic_shard_fragments": world.options.shard_fragments.value,
-        "extra_shards": world.options.extra_shards.value,
+        "relic_shard_fragments": world.options.required_fragments.value,
+        "extra_shards": world.options.total_shards.value,
         "type_sanity": world.options.type_sanity.value,
         "starter_option": world.options.starter_option.value,
         "iq_scaling": world.options.iq_scaling.value,
         "xp_scaling": world.options.xp_scaling.value,
         "instruments_required": world.options.req_instruments.value,
-        "extra_instruments": world.options.extra_instruments.value,
+        "extra_instruments": world.options.total_instruments.value,
         "hero_evolution": world.options.hero_evolution.value,
         "deathlink": world.options.deathlink.value,
         "deathlink_type": world.options.deathlink_type.value,
@@ -105,7 +105,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
     instruments_required = world.options.req_instruments.value
-    macguffins_required = world.options.shard_fragments.value
+    macguffins_required = world.options.required_fragments.value
     # Take the options and bake them into the rom, so they can be applied on runtime
     write_byte = 0
     write_byte = write_byte | world.options.iq_scaling.value

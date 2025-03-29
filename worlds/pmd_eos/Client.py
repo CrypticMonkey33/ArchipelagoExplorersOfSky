@@ -460,6 +460,9 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
+                        else:
+                            await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
+                                                 player_gold_offset, bank_gold_offset)
 
                     elif item_data.name == "Chatot Repllent":
                         if ((performance_progress_bitfield[3] >> 1) & 1) == 0:
@@ -472,7 +475,9 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
-
+                        else:
+                            await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
+                                                 player_gold_offset, bank_gold_offset)
                     elif item_data.name == "Sky Jukebox":
                         if ((performance_progress_bitfield[3] >> 2) & 1) == 0:
                             write_byte = performance_progress_bitfield[3] | (0x1 << 2)
@@ -484,6 +489,9 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
+                        else:
+                            await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
+                                                 player_gold_offset, bank_gold_offset)
 
                     elif item_data.name == "Recruitment Sensor":
                         if ((performance_progress_bitfield[3] >> 5) & 1) == 0:
@@ -496,6 +504,24 @@ class EoSClient(BizHawkClient):
                                      self.ram_mem_domain),
                                 ]
                             )
+                        else:
+                            await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
+                                                 player_gold_offset, bank_gold_offset)
+
+                    elif item_data.name == "Mystery of the Quicksand":
+                        if ((performance_progress_bitfield[3] >> 4) & 1) == 0:
+                            write_byte = performance_progress_bitfield[3] | (0x1 << 4)
+                            performance_progress_bitfield[3] = write_byte
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (performance_progress_offset + 0x3, int.to_bytes(write_byte),
+                                     self.ram_mem_domain),
+                                ]
+                            )
+                        else:
+                            await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
+                                                 player_gold_offset, bank_gold_offset)
 
                     elif item_data.name == "Hero Evolution":
                         write_byte = performance_progress_bitfield[1] | (0x1 << 2)
@@ -1261,3 +1287,23 @@ class EoSClient(BizHawkClient):
         if (group2 == 0x2):
             return group1 == 13 or group1 == 14
         return False
+
+    async def add_money(self, ctx: "BizHawkClientContext", money, player_gold_amount, bank_gold_amount,
+                        player_gold_offset, bank_gold_offset):
+        player_gold_amount += money
+        # bank_gold_amount += item_data.memory_offset
+        if player_gold_amount > 99999:
+            extra_money = player_gold_amount - 99999
+            player_gold_amount = 99999
+            bank_gold_amount += extra_money
+        if bank_gold_amount > 9999999:
+            bank_gold_amount = 9999999
+        await bizhawk.write(
+            ctx.bizhawk_ctx,
+            [
+                (bank_gold_offset, int.to_bytes(bank_gold_amount, 4, "little"),
+                 self.ram_mem_domain),
+                (player_gold_offset, int.to_bytes(player_gold_amount, 4, "little"),
+                 self.ram_mem_domain)
+            ],
+        )
