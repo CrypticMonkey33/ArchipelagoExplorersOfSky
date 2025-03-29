@@ -196,7 +196,7 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("RuleDungeonComplete", 1, "Treacherous Waters", 108, 108, ["Rule"]),
     LocationData("RuleDungeonComplete", 1, "Southeastern Islands", 109, 109, ["Rule"]),
     LocationData("RuleDungeonComplete", 1, "Inferno Cave", 110, 110, ["Rule"]),
-    LocationData("LateDungeonComplete", 1, "1st Station Pass", 111, 111, ["Mission", "Late"]),  # 12 subareas
+    LocationData("LateDungeonComplete", 1, "1st Station Pass", 111, 111, ["Mission", "Late", "Station"]),  # 12 subareas
     LocationData("LateDungeonComplete", 1, "2nd Station Pass", 112, 112, ["Mission", "Late", "Station"]),
     LocationData("LateDungeonComplete", 1, "3rd Station Pass", 113, 113, ["Mission", "Late", "Station"]),
     LocationData("LateDungeonComplete", 1, "4th Station Pass", 114, 114, ["Mission", "Late", "Station"]),
@@ -206,42 +206,42 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 1, "8th Station Pass", 118, 118, ["Mission", "Late", "Station"]),
     LocationData("LateDungeonComplete", 1, "9th Station Pass", 119, 119, ["Mission", "Late", "Station"]),
     LocationData("LateDungeonComplete", 1, "Sky Peak Summit Pass", 120, 120, ["Mission", "Late", "Station"]),
-    LocationData("LateDungeonComplete", 1, "5th Station Clearing", 121, 121, ["Late"]),
-    LocationData("LateDungeonComplete", 1, "Sky Peak Summit", 122, 122, ["Late"]),
+    LocationData("LateDungeonComplete", 1, "5th Station Clearing", 121, 121, ["Late", "Station"]),
+    LocationData("LateDungeonComplete", 1, "Sky Peak Summit", 122, 122, ["Late", "Station"]),
     # Special Episode Dungeons
-    LocationData("SpecialDungeonComplete", 5, "SE Star Cave", 127, 123),
-    LocationData("SpecialDungeonComplete", 1,  "SE Murky Forest", 128,  128),
-    LocationData("SpecialDungeonComplete", 1,  "SE Eastern Cave", 129,  129),
-    LocationData("SpecialDungeonComplete", 3,  "SE Fortune Ravine", 132,  130),   # 3 subareas
-    LocationData("SpecialDungeonComplete", 3,  "SE Barren Valley", 135,  133),   # 3 subareas
-    LocationData("SpecialDungeonComplete", 1,  "SE Dark Wasteland", 136,  136),
-    LocationData("SpecialDungeonComplete", 2,  "SE Temporal Tower", 138,  137),   # 2 subareas
-    LocationData("SpecialDungeonComplete", 2,  "SE Dusk Forest", 140,  139),   # 2 subareas
-    LocationData("SpecialDungeonComplete", 1,  "SE Spacial Cliffs", 141,  141),
-    LocationData("SpecialDungeonComplete", 3,  "SE Dark Ice Mountain", 144,  142),   # 3 subareas
-    LocationData("SpecialDungeonComplete", 1,  "SE Icicle Forest", 145,  145),
-    LocationData("SpecialDungeonComplete", 3,  "SE Vast Ice Mountain", 148,  146),   # 3 subareas
-    LocationData("SpecialDungeonComplete", 1,  "SE Southern Jungle", 149,  149),
-    LocationData("SpecialDungeonComplete", 3,  "SE Boulder Quarry", 152,  150),   # 3 subareas
-    LocationData("SpecialDungeonComplete", 1,  "SE Right Cave Path", 153,  153),
-    LocationData("SpecialDungeonComplete", 1,  "SE Left Cave Path", 154,  154),
-    LocationData("SpecialDungeonComplete", 3,  "SE Limestone Cavern", 157,  155),   # 3 subareas
-    LocationData("SpecialDungeonComplete", 2,  "SE Upper Spring Cave", 159,  158),   # 7 subareas
-    LocationData("SpecialDungeonComplete", 2, "SE Middle Spring Cave", 161, 160),  # 7 subareas
-    LocationData("SpecialDungeonComplete", 3, "SE Spring Cave Pit", 164, 162),  # 7 subareas
+    LocationData("SpecialDungeonComplete", 5, "SE Star Cave", 127, 123, ["Special"]),
+    LocationData("SpecialDungeonComplete", 1,  "SE Murky Forest", 128,  128, ["Special"]),
+    LocationData("SpecialDungeonComplete", 1,  "SE Eastern Cave", 129,  129, ["Special"]),
+    LocationData("SpecialDungeonComplete", 3,  "SE Fortune Ravine", 132,  130, ["Special"]),   # 3 subareas
+    LocationData("SpecialDungeonComplete", 3,  "SE Barren Valley", 135,  133, ["Special"]),   # 3 subareas
+    LocationData("SpecialDungeonComplete", 1,  "SE Dark Wasteland", 136,  136, ["Special"]),
+    LocationData("SpecialDungeonComplete", 2,  "SE Temporal Tower", 138,  137, ["Special"]),   # 2 subareas
+    LocationData("SpecialDungeonComplete", 2,  "SE Dusk Forest", 140,  139, ["Special"]),   # 2 subareas
+    LocationData("SpecialDungeonComplete", 1,  "SE Spacial Cliffs", 141,  141, ["Special"]),
+    LocationData("SpecialDungeonComplete", 3,  "SE Dark Ice Mountain", 144,  142, ["Special"]),   # 3 subareas
+    LocationData("SpecialDungeonComplete", 1,  "SE Icicle Forest", 145,  145, ["Special"]),
+    LocationData("SpecialDungeonComplete", 3,  "SE Vast Ice Mountain", 148,  146, ["Special"]),   # 3 subareas
+    LocationData("SpecialDungeonComplete", 1,  "SE Southern Jungle", 149,  149, ["Special"]),
+    LocationData("SpecialDungeonComplete", 3,  "SE Boulder Quarry", 152,  150, ["Special"]),   # 3 subareas
+    LocationData("SpecialDungeonComplete", 1,  "SE Right Cave Path", 153,  153, ["Special"]),
+    LocationData("SpecialDungeonComplete", 1,  "SE Left Cave Path", 154,  154, ["Special"]),
+    LocationData("SpecialDungeonComplete", 3,  "SE Limestone Cavern", 157,  155, ["Special"]),   # 3 subareas
+    LocationData("SpecialDungeonComplete", 2,  "SE Upper Spring Cave", 159,  158, ["Special"]),   # 7 subareas
+    LocationData("SpecialDungeonComplete", 2, "SE Middle Spring Cave", 161, 160, ["Special"]),  # 7 subareas
+    LocationData("SpecialDungeonComplete", 3, "SE Spring Cave Pit", 164, 162, ["Special"]),  # 7 subareas
 
     LocationData("LateDungeonComplete", 1, "Star Cave", 174,  174, ["Mission", "Late"]),
     # Dojo Dungeons
-    LocationData("DojoDungeonComplete", 1, "Dojo Normal/Fly Maze", 180, 180),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Dark/Fire Maze", 181, 181),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Rock/Water Maze", 182, 182),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Grass Maze", 183, 183),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Elec/Steel Maze", 184, 184),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Ice/Ground Maze", 185, 185),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Fight/Psych Maze", 186, 186),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Poison/Bug Maze", 187, 187),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Dragon Maze", 188, 188),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Ghost Maze", 189, 189),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Normal/Fly Maze", 180, 180, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Dark/Fire Maze", 181, 181, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Rock/Water Maze", 182, 182, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Grass Maze", 183, 183, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Elec/Steel Maze", 184, 184, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Ice/Ground Maze", 185, 185, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Fight/Psych Maze", 186, 186, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Poison/Bug Maze", 187, 187, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Dragon Maze", 188, 188, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", 1, "Dojo Ghost Maze", 189, 189, ["Dojo"]),  # 7 subareas
     #LocationData("RuleDungeonComplete", 1, "Dojo Final Maze", 191, 191),  # 7 subareas
 
     LocationData("Event", 0,  "Final Boss", 999, 0),

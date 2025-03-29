@@ -2,7 +2,7 @@ from typing import Dict, TYPE_CHECKING
 
 from worlds.generic.Rules import set_rule, add_rule, forbid_item
 from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id
-from .Items import item_table_by_id
+from .Items import item_table_by_id, EOS_item_table
 from .Options import EOSOptions
 from .RomTypeDefinitions import subX_table
 
@@ -27,8 +27,6 @@ def set_rules(world: "EOSWorld", excluded):
         set_rule(world.multiworld.get_location("Dark Crater", player),
                  lambda state: state.has("Dark Crater", player))
     elif world.options.goal.value == 1:
-        #set_rule(world.multiworld.get_location("Manaphy Leads To Marine Resort", player),
-        #         lambda state: state.has("Manaphy", player))
         set_rule(world.multiworld.get_location("Final Boss", player),
                  lambda state: ready_for_darkrai(state, player, world))
         set_rule(world.multiworld.get_location("Dark Crater", player),
@@ -38,8 +36,7 @@ def set_rules(world: "EOSWorld", excluded):
              lambda state: ready_for_late_game(state, player, world))
     forbid_item(world.multiworld.get_location("Hidden Land", player), "Relic Fragment Shard", player)
     forbid_item(world.multiworld.get_location("Temporal Tower", player), "Relic Fragment Shard", player)
-    #set_rule(world.multiworld.get_entrance("Boss Door", player),
-    #         lambda state: ready_for_final_boss(state, player))
+
     set_rule(world.multiworld.get_location("Hidden Land", player),
              lambda state: ready_for_dialga(state, player, world))
 
@@ -49,41 +46,7 @@ def set_rules(world: "EOSWorld", excluded):
     set_rule(world.multiworld.get_location("The Nightmare", player),
              lambda state: state.can_reach_location("Mt. Bristle", player) and state.has("The Nightmare", player)
                            and ready_for_late_game(state, player, world))
-    #set_rule(world.multiworld.get_location("Progressive Bag loc 2", player),
-    #         lambda state: state.has("Mt. Bristle", player))
-    #set_rule(world.multiworld.get_location("Progressive Bag loc 3", player),
-    #         lambda state: state.has("Apple Woods", player))
-    #set_rule(world.multiworld.get_location("Progressive Bag loc 4", player),
-    #         lambda state: state.has("Steam Cave", player))
-    #set_rule(world.multiworld.get_location("Progressive Bag loc 5", player),
-    #         lambda state: state.has("Mystifying Forest", player))
 
-    #set_rule(world.multiworld.get_location("Manaphy Egg Hatch", player),
-    #         lambda state: state.has("Surrounded Sea", player))
-    #set_rule(world.multiworld.get_location("Manaphy Fed", player),
-    #         lambda state: state.has("Surrounded Sea", player))
-    #set_rule(world.multiworld.get_location("Manaphy Healed", player),
-    #         lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
-    #set_rule(world.multiworld.get_location("Manaphy Join Team", player),
-    #         lambda state: state.has("Surrounded Sea", player) and state.has("Miracle Sea", player))
-
-    #set_rule(world.multiworld.get_location("SecretRank", player),
-    #         lambda state: state.has("Crevice Cave", player))
-    #set_rule(world.multiworld.get_entrance("Early Game Door", player),
-    #         lambda state: state.has("Beach Cave", player))
-    #for location_num in location_Dict_by_id:
-    #    location_start = location_Dict_by_id[location_num].dungeon_start_id
-    #    if location_start in item_table_by_id:
-    #        if location_start == 0:
-    #            continue
-    #        item_name = item_table_by_id[location_start].name
-    #        if (item_name == "Beach Cave") or (location_start > 43):
-    #            continue
-    #        #forbid_item(world.multiworld.get_location(location_Dict_by_id[location_num].name, player),
-    #        #            item_name,
-    #        #            player)
-    #        set_rule(world.multiworld.get_location(location_Dict_by_id[location_num].name, player),
-    #                 lambda state: state.has(item_name, player))
 
 
 def ready_for_dialga(state, player, world):
@@ -300,183 +263,24 @@ def ready_for_darkrai(state, player, world):
 
 
 def dungeon_locations_behind_items(world, player):
-    set_rule(world.multiworld.get_location("Drenched Bluff", player),
-             lambda state: state.has("Drenched Bluff", player))
-    set_rule(world.multiworld.get_location("Mt. Bristle", player),
-             lambda state: state.has("Mt. Bristle", player))
-    set_rule(world.multiworld.get_location("Waterfall Cave", player),
-             lambda state: state.has("Waterfall Cave", player))
-    set_rule(world.multiworld.get_location("Apple Woods", player),
-             lambda state: state.has("Apple Woods", player))
-    set_rule(world.multiworld.get_location("Craggy Coast", player),
-             lambda state: state.has("Craggy Coast", player))
-    set_rule(world.multiworld.get_location("Side Path", player),
-             lambda state: state.has("Side Path", player))
-    set_rule(world.multiworld.get_location("Mt. Horn", player),
-             lambda state: state.has("Mt. Horn", player))
-    set_rule(world.multiworld.get_location("Rock Path", player),
-             lambda state: state.has("Rock Path", player))
-    set_rule(world.multiworld.get_location("Foggy Forest", player),
-             lambda state: state.has("Foggy Forest", player))
-    set_rule(world.multiworld.get_location("Forest Path", player),
-             lambda state: state.has("Forest Path", player))
-    set_rule(world.multiworld.get_location("Steam Cave", player),
-             lambda state: state.has("Steam Cave", player))
-    set_rule(world.multiworld.get_location("Amp Plains", player),
-             lambda state: state.has("Amp Plains", player))
-    set_rule(world.multiworld.get_location("Northern Desert", player),
-             lambda state: state.has("Northern Desert", player))
-    set_rule(world.multiworld.get_location("Quicksand Cave", player),
-             lambda state: state.has("Quicksand Cave", player))
-    set_rule(world.multiworld.get_location("Crystal Cave", player),
-             lambda state: state.has("Crystal Cave", player))
-    set_rule(world.multiworld.get_location("Crystal Crossing", player),
-             lambda state: state.has("Crystal Crossing", player))
-    set_rule(world.multiworld.get_location("Chasm Cave", player),
-             lambda state: state.has("Chasm Cave", player))
-    set_rule(world.multiworld.get_location("Dark Hill", player),
-             lambda state: state.has("Dark Hill", player))
-    set_rule(world.multiworld.get_location("Sealed Ruin", player),
-             lambda state: state.has("Sealed Ruin", player))
-    set_rule(world.multiworld.get_location("Dusk Forest", player),
-             lambda state: state.has("Dusk Forest", player))
-    set_rule(world.multiworld.get_location("Deep Dusk Forest", player),
-             lambda state: state.has("Deep Dusk Forest", player))
-    set_rule(world.multiworld.get_location("Treeshroud Forest", player),
-             lambda state: state.has("Treeshroud Forest", player))
-    set_rule(world.multiworld.get_location("Brine Cave", player),
-             lambda state: state.has("Brine Cave", player))
-    #set_rule(world.multiworld.get_location("Hidden Land", player),
-    #         lambda state: state.has("Hidden Land", player))
-    #set_rule(world.multiworld.get_location("Temporal Tower", player),
-    #         lambda state: state.has("Temporal Tower", player))
-    set_rule(world.multiworld.get_location("Mystifying Forest", player),
-             lambda state: state.has("Mystifying Forest", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Blizzard Island", player),
-             lambda state: state.has("Blizzard Island", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Crevice Cave", player),
-             lambda state: state.has("Crevice Cave", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Surrounded Sea", player),
-             lambda state: state.has("Surrounded Sea", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Miracle Sea", player),
-             lambda state: state.has("Miracle Sea", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Mt. Travail", player),
-             lambda state: state.has("Mt. Travail", player) and ready_for_late_game(state, player, world))
-    #set_rule(world.multiworld.get_location("The Nightmare", player),
-    #         lambda state: state.has("The Nightmare", player))
-    set_rule(world.multiworld.get_location("Spacial Rift", player),
-             lambda state: state.has("Spacial Rift", player) and ready_for_late_game(state, player, world))
-    #set_rule(world.multiworld.get_location("Dark Crater", player),
-    #         lambda state: state.has("Dark Crater", player))
-    set_rule(world.multiworld.get_location("Concealed Ruins", player),
-             lambda state: state.has("Concealed Ruins", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Marine Resort", player),
-             lambda state: state.has("Marine Resort", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Bottomless Sea", player),
-             lambda state: state.has("Bottomless Sea", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Shimmer Desert", player),
-             lambda state: state.has("Shimmer Desert", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Mt. Avalanche", player),
-             lambda state: state.has("Mt. Avalanche", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Giant Volcano", player),
-             lambda state: state.has("Giant Volcano", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("World Abyss", player),
-             lambda state: state.has("World Abyss", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Sky Stairway", player),
-             lambda state: state.has("Sky Stairway", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Mystery Jungle", player),
-             lambda state: state.has("Mystery Jungle", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Serenity River", player),
-             lambda state: state.has("Serenity River", player))
-    set_rule(world.multiworld.get_location("Landslide Cave", player),
-             lambda state: state.has("Landslide Cave", player))
-    set_rule(world.multiworld.get_location("Lush Prairie", player),
-             lambda state: state.has("Lush Prairie", player))
-    set_rule(world.multiworld.get_location("Tiny Meadow", player),
-             lambda state: state.has("Tiny Meadow", player))
-    set_rule(world.multiworld.get_location("Labyrinth Cave", player),
-             lambda state: state.has("Labyrinth Cave", player))
-    set_rule(world.multiworld.get_location("Oran Forest", player),
-             lambda state: state.has("Oran Forest", player))
-    set_rule(world.multiworld.get_location("Lake Afar", player),
-             lambda state: state.has("Lake Afar", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Happy Outlook", player),
-             lambda state: state.has("Happy Outlook", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Mt. Mistral", player),
-             lambda state: state.has("Mt. Mistral", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Shimmer Hill", player),
-             lambda state: state.has("Shimmer Hill", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Lost Wilderness", player),
-             lambda state: state.has("Lost Wilderness", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Midnight Forest", player),
-             lambda state: state.has("Midnight Forest", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Zero Isle North", player),
-             lambda state: state.has("Zero Isle North", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Zero Isle East", player),
-             lambda state: state.has("Zero Isle East", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Zero Isle West", player),
-             lambda state: state.has("Zero Isle West", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Zero Isle South", player),
-             lambda state: state.has("Zero Isle South", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Zero Isle Center", player),
-             lambda state: state.has("Zero Isle Center", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Destiny Tower", player),
-             lambda state: state.has("Destiny Tower", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Oblivion Forest", player),
-             lambda state: state.has("Oblivion Forest", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Treacherous Waters", player),
-             lambda state: state.has("Treacherous Waters", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Southeastern Islands", player),
-             lambda state: state.has("Southeastern Islands", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Inferno Cave", player),
-             lambda state: state.has("Inferno Cave", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("1st Station Pass", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("2nd Station Pass", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("3rd Station Pass", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("4th Station Pass", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("5th Station Pass", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("6th Station Pass", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("7th Station Pass", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("8th Station Pass", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("9th Station Pass", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Sky Peak Summit", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("5th Station Clearing", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Sky Peak Summit", player),
-             lambda state: state.has("1st Station Pass", player) and ready_for_late_game(state, player, world))
-    set_rule(world.multiworld.get_location("Star Cave", player),
-             lambda state: state.has("Star Cave", player) and ready_for_late_game(state, player, world))
+    for location in EOS_location_table:
+        if "Early" in location.group or "Dojo" in location.group:
+            set_rule(world.multiworld.get_location(location.name, player),
+                     lambda state, ln=location.name: state.has(ln, player))
+        elif "Station" in location.group:
+            set_rule(world.multiworld.get_location(location.name, player),
+                     lambda state, ln=location.name: state.has("1st Station Pass", player)
+                                                     and ready_for_late_game(state, player, world))
+        elif "Late" in location.group:
+            set_rule(world.multiworld.get_location(location.name, player),
+                     lambda state, ln=location.name: state.has(ln, player) and ready_for_late_game(state, player, world))
+        elif "Rule" in location.group:
+            set_rule(world.multiworld.get_location(location.name, player),
+                     lambda state, ln=location.name: state.has(ln, player) and ready_for_late_game(state, player, world))
+        elif "Special" in location.group:
+            continue
 
-    set_rule(world.multiworld.get_location("Dojo Normal/Fly Maze", player),
-             lambda state: state.has("Dojo Normal/Fly Maze", player))
-    set_rule(world.multiworld.get_location("Dojo Dark/Fire Maze", player),
-             lambda state: state.has("Dojo Dark/Fire Maze", player))
-    set_rule(world.multiworld.get_location("Dojo Rock/Water Maze", player),
-             lambda state: state.has("Dojo Rock/Water Maze", player))
-    set_rule(world.multiworld.get_location("Dojo Grass Maze", player),
-             lambda state: state.has("Dojo Grass Maze", player))
-    set_rule(world.multiworld.get_location("Dojo Elec/Steel Maze", player),
-             lambda state: state.has("Dojo Elec/Steel Maze", player))
-    set_rule(world.multiworld.get_location("Dojo Ice/Ground Maze", player),
-             lambda state: state.has("Dojo Ice/Ground Maze", player))
-    set_rule(world.multiworld.get_location("Dojo Fight/Psych Maze", player),
-             lambda state: state.has("Dojo Fight/Psych Maze", player))
-    set_rule(world.multiworld.get_location("Dojo Poison/Bug Maze", player),
-             lambda state: state.has("Dojo Poison/Bug Maze", player))
-    set_rule(world.multiworld.get_location("Dojo Dragon Maze", player),
-             lambda state: state.has("Dojo Dragon Maze", player))
-    set_rule(world.multiworld.get_location("Dojo Ghost Maze", player),
-             lambda state: state.has("Dojo Ghost Maze", player))
+
 
 
 def mission_rules(world, player):
@@ -486,37 +290,37 @@ def mission_rules(world, player):
         if location.name == "Beach Cave":
             continue
         elif location.classification == "EarlyDungeonComplete":
-            for j in range(world.options.early_mission_checks.value):
+            for j in range(world.multiworld.options.early_mission_checks.value):
                 set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
                          lambda state, ln=location.name, p=player: state.has(ln, p))
-            for j in range(world.options.early_outlaw_checks.value):
-                set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
+            for j in range(world.multiworld.options.early_outlaw_checks.value):
+                set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
                          lambda state, ln=location.name, p=player: state.has(ln, p))
 
         elif location.classification in ["LateDungeonComplete", "BossDungeonComplete"]:
-            if world.options.goal.value == 1:
+            if world.multiworld.options.goal.value == 1:
                 if "Station" in location.group:
-                    for j in range(world.options.late_mission_checks.value):
-                        set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
+                    for j in range(world.multiworld.options.late_mission_checks.value):
+                        set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}"),
                                  lambda state, ln="1st Station Pass", p=player: state.has(ln, p))
-                        for j in range(world.options.late_outlaw_checks.value):
-                            set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
+                        for j in range(world.multiworld.options.late_outlaw_checks.value):
+                            set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
                                      lambda state, ln="1st Station Pass", p=player: state.has(ln, p))
                 elif location.name == "Hidden Land":
-                    for j in range(world.options.late_mission_checks.value):
-                        set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
+                    for j in range(world.multiworld.options.late_mission_checks.value):
+                        set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}"),
                                  lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world))
 
-                    for j in range(world.options.late_outlaw_checks.value):
-                        set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
+                    for j in range(world.multiworld.options.late_outlaw_checks.value):
+                        set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
                                  lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world))
                 else:
-                    for j in range(world.options.late_mission_checks.value):
-                        set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
+                    for j in range(world.multiworld.options.late_mission_checks.value):
+                        set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}"),
                                  lambda state, ln=location.name, p=player: state.has(ln, p))
 
-                    for j in range(world.options.late_outlaw_checks.value):
-                        set_rule(world.get_location(f"{location.name} Outlaw {j + 1}"),
+                    for j in range(world.multiworld.options.late_outlaw_checks.value):
+                        set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
                                  lambda state, ln=location.name, p=player: state.has(ln, p))
 
 
@@ -525,30 +329,31 @@ def subx_rules(world, player):
     for item in subX_table:
         if item.flag_definition == "Unused":
             continue
-        if (item.flag_definition == "Manaphy's Discovery") and world.options.goal.value == 0:
+        if (item.flag_definition == "Manaphy's Discovery") and world.multiworld.options.goal.value == 0:
             continue
         for requirement in item.prerequisites:
             if requirement == "Defeat Dialga":
-                add_rule(world.get_location(item.flag_definition),
-                         lambda state, req="Relic Fragment Shard", p=player, num=world.options.shard_fragments.value,
-                         req2="Temporal Tower": state.has(req, p, num) and state.has(req2, p))
+                add_rule(world.multiworld.get_location(item.flag_definition),
+                         lambda state, req="Relic Fragment Shard", p=player,
+                                num=world.multiworld.options.shard_fragments.value, req2="Temporal Tower":
+                                state.has(req, p, num) and state.has(req2, p))
 
             elif requirement in ["ProgressiveBag1", "ProgressiveBag2", "ProgressiveBag3"]:
                 bag_num_str = requirement[-1]
                 bag_num = int(bag_num_str)
-                add_rule(world.get_location(item.flag_definition),
+                add_rule(world.multiworld.get_location(item.flag_definition),
                      lambda state, req="Bag Upgrade", p=player, num=bag_num: state.has(req, p, num))
 
             elif requirement == "Hidden Land":
-                add_rule(world.get_location(item.flag_definition),
-                         lambda state, req="Relic Fragment Shard", p=player, num=world.options.shard_fragments.value:
-                         state.has(req, p, num))
+                add_rule(world.multiworld.get_location(item.flag_definition),
+                         lambda state, req="Relic Fragment Shard", p=player,
+                                num=world.multiworld.options.shard_fragments.value: state.has(req, p, num))
 
             elif requirement == "All Mazes":
-                add_rule(world.get_location(item.flag_definition),
+                add_rule(world.multiworld.get_location(item.flag_definition),
                          lambda state, req="Dojo Dungeons", p=player: state.has_group(req, p, 10))
 
             else:
-                add_rule(world.get_location(item.flag_definition),
+                add_rule(world.multiworld.get_location(item.flag_definition),
                      lambda state, req=requirement, p=player: state.has(req, p))
 
