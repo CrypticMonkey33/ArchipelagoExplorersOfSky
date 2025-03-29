@@ -127,9 +127,40 @@ def dungeon_locations_behind_items(world, player):
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player))
         elif "Station" in location.group:
-            set_rule(world.multiworld.get_location(location.name, player),
-                     lambda state, ln=location.name: state.has("1st Station Pass", player)
-                                                     and ready_for_late_game(state, player, world))
+            if world.options.sky_peak_type.value == 1:  # progressive
+                if location.name == "Sky Peak Summit":
+                    set_rule(world.multiworld.get_location(location.name, player),
+                             lambda state: state.has("Progressive Sky Peak", player, 10)
+                                           and ready_for_late_game(state, player, world))
+                elif location.name == "5th Station Clearing":
+                    set_rule(world.multiworld.get_location(location.name, player),
+                             lambda state: state.has("Progressive Sky Peak", player, 5)
+                                           and ready_for_late_game(state, player, world))
+                else:
+                    set_rule(world.multiworld.get_location(location.name, player),
+                             lambda state, req_num=(location.id - 110):
+                             state.has("Progressive Sky Peak", player, req_num)
+                             and ready_for_late_game(state, player, world))
+
+            elif world.options.sky_peak_type.value == 2:  # all random
+                if location.name == "Sky Peak Summit":
+                    set_rule(world.multiworld.get_location(location.name, player),
+                             lambda state: state.has("Sky Peak Summit Pass", player)
+                                           and ready_for_late_game(state, player, world))
+                elif location.name == "5th Station Clearing":
+                    set_rule(world.multiworld.get_location(location.name, player),
+                             lambda state: state.has("5th Station Pass", player)
+                                           and ready_for_late_game(state, player, world))
+                else:
+                    set_rule(world.multiworld.get_location(location.name, player),
+                             lambda state, ln=location.name: state.has(ln, player)
+                                                             and ready_for_late_game(state, player, world))
+
+            elif world.options.sky_peak_type.value == 3:  # all open from 1st station pass
+                set_rule(world.multiworld.get_location(location.name, player),
+                         lambda state: state.has("1st Station Pass", player)
+                                       and ready_for_late_game(state, player, world))
+
         elif "Late" in location.group:
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player) and ready_for_late_game(state, player,

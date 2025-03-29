@@ -289,6 +289,8 @@ class EOSWorld(World):
             "Deathlink": self.options.deathlink.value,
             "LegendaryAmount": self.options.legendaries.value,
             "AllowedLegendaries": self.options.allowed_legendaries.value,
+            "SkyPeakType": self.options.sky_peak_type.value,
+            "SpecialEpisodeSanity": self.options.special_episode_sanity.value,
         }
 
     def create_items(self) -> None:
@@ -350,6 +352,35 @@ class EOSWorld(World):
                 classification = ItemClassification.progression
                 if (self.options.goal.value == 0) and "LateDungeons" in item_table[item_name].group:
                     classification = ItemClassification.useful
+                if "Sky Peak" in item_table[item_name].group:
+                    if self.options.sky_peak_type.value == 1:
+                        if item_name == "Progressive Sky Peak":
+                            if self.options.goal.value == 0:
+                                classification = ItemClassification.useful
+                            else:
+                                classification = ItemClassification.progression
+                            for i in range(10):
+                                required_items.append(self.create_item(item_name, classification))
+                            continue
+                        else:
+                            continue
+                    elif self.options.sky_peak_type.value == 2:
+                        if item_name == "Progressive Sky Peak":
+                            continue
+                        else:
+                            if self.options.goal.value == 0:
+                                classification = ItemClassification.useful
+                            else:
+                                classification = ItemClassification.progression
+                    elif self.options.sky_peak_type.value == 3:
+                        if item_name == "1st Station Pass":
+                            if self.options.goal.value == 0:
+                                classification = ItemClassification.useful
+                            else:
+                                classification = ItemClassification.progression
+
+                        else:
+                            continue
                 required_items.append(self.create_item(item_name, classification))
 
             else:

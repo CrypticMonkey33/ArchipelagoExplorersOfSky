@@ -209,7 +209,8 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 1, "5th Station Clearing", 121, 121, ["Late", "Station"]),
     LocationData("LateDungeonComplete", 1, "Sky Peak Summit", 122, 122, ["Late", "Station"]),
     # Special Episode Dungeons
-    LocationData("SpecialDungeonComplete", 5, "SE Star Cave", 127, 123, ["Special"]),
+    LocationData("SpecialDungeonComplete", 3, "SE Deep Star Cave", 125, 123, ["Special"]),
+    LocationData("SpecialDungeonComplete", 2, "SE Star Cave Pit", 127, 126, ["Special"]),
     LocationData("SpecialDungeonComplete", 1,  "SE Murky Forest", 128,  128, ["Special"]),
     LocationData("SpecialDungeonComplete", 1,  "SE Eastern Cave", 129,  129, ["Special"]),
     LocationData("SpecialDungeonComplete", 3,  "SE Fortune Ravine", 132,  130, ["Special"]),   # 3 subareas

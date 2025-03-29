@@ -4,12 +4,6 @@ from Options import DefaultOnToggle, Toggle, Choice, PerGameCommonOptions, Start
     DeathLink, OptionSet
 
 
-class DungeonNameRandomizer(DefaultOnToggle):
-    """NOT IMPLEMENTED YET
-    Randomizes the names of the dungeons. IDs and completion requirements stay the same"""
-    display_name = "Dungeon Name Randomization"
-
-
 class Goal(Choice):
     """Change the desired goal to complete the game
     Dialga - Get X relic fragment shards to unlock hidden land. Find Temporal Tower location
@@ -46,36 +40,6 @@ class ExtraShards(NamedRange):
         "extreme": 0
     }
     default = 4
-
-
-class AllowedLegendaries(OptionSet):
-    """ Set which Legendaries will be available for the item pool as recruits
-    """
-    display_name = "Allowed Legendary Recruits"
-    valid_keys = [
-        "Regirock",
-        "Regice",
-        "Registeel",
-        "Groudon",
-        "Uxie",
-        "Mespirit",
-        "Azelf",
-        "Dialga",
-        "Palkia",
-        "Regigigas",
-        "Giratina",
-        "Celebi",
-        "Articuno",
-        "Heatran",
-        "Primal Dialga",
-        "Mew",
-        "Phione",
-        "Cresselia",
-        "Rayquaza",
-        "Kyogre",
-        "Shaymin",
-    ]
-    default = valid_keys.copy()
 
 
 class RequiredInstruments(NamedRange):
@@ -162,6 +126,13 @@ class LateOutlawChecks(NamedRange):
     default = 2
 
 
+class StartWithBag(DefaultOnToggle):
+    """Start with bag? If False all bag upgrades will be randomized in the game.
+    If true, you will get one bag upgrade (16 slots) and the rest will be randomized"""
+
+    display_name = "Start with Bag?"
+
+
 class Recruitment(DefaultOnToggle):
     """Start with recruitment enabled?
     If false, recruitment will be an item available in game"""
@@ -195,14 +166,6 @@ class LevelScaling(DefaultOnToggle):
     display_name = "Level Scaling"
 
 
-class TypeSanity(Toggle):
-    """ Allow for your partner to share a type with your main character
-    WARNING: The game is not balanced around this, and we have not done anything to change that.
-    Use at your own risk
-    """
-    display_name = "Type Sanity"
-
-
 class StarterOption(Choice):
     """How would you like your starter and partner to be chosen?
     Vanilla: You do the quiz and are stuck with what the quiz gives you. Choose your partner as normal
@@ -218,6 +181,20 @@ class StarterOption(Choice):
     option_override = 2
     option_choose = 3
     default = 2
+
+
+class TypeSanity(Toggle):
+    """ Allow for your partner to share a type with your main character
+    WARNING: The game is not balanced around this, and we have not done anything to change that.
+    Use at your own risk
+    """
+    display_name = "Type Sanity"
+
+
+class SpecialEpisodeSanity(Toggle):
+    """ Start the game with one of the special episodes and NOT the main game.
+    Unlock the main game through an item"""
+    display_name = "Special Episode Sanity"
 
 
 class IqScaling(Range):
@@ -245,11 +222,16 @@ class XpScaling(Range):
     default = 1
 
 
-class StartWithBag(DefaultOnToggle):
-    """Start with bag? If False all bag upgrades will be randomized in the game.
-    If true, you will get one bag upgrade (16 slots) and the rest will be randomized"""
-
-    display_name = "Start with Bag?"
+class SkyPeakType(Choice):
+    """How do you want sky peak to work?
+    1: Progressive (unlock dungeons sequentially when you pick up a sky peak item)
+    2. All Random (unlock sky peak dungeons completely at random based on which sky peak item you pick up
+    3: All unlocked from one item (there will be one sky peak item that unlocks all sky peak checks)"""
+    display_name = "Sky Peak Type"
+    option_progressive = 1
+    option_random = 2
+    option_unlock = 3
+    default = 1
 
 
 class DojoDungeons(Choice):
@@ -274,6 +256,36 @@ class LegendariesInPool(Range):
     default = 3
 
 
+class AllowedLegendaries(OptionSet):
+    """ Set which Legendaries will be available for the item pool as recruits
+    """
+    display_name = "Allowed Legendary Recruits"
+    valid_keys = [
+        "Regirock",
+        "Regice",
+        "Registeel",
+        "Groudon",
+        "Uxie",
+        "Mespirit",
+        "Azelf",
+        "Dialga",
+        "Palkia",
+        "Regigigas",
+        "Giratina",
+        "Celebi",
+        "Articuno",
+        "Heatran",
+        "Primal Dialga",
+        "Mew",
+        "Phione",
+        "Cresselia",
+        "Rayquaza",
+        "Kyogre",
+        "Shaymin",
+    ]
+    default = valid_keys.copy()
+
+
 class DeathlinkType(Toggle):
     """What type of deathlink do you want?
     Currently False is death even if you have revival seeds
@@ -285,7 +297,7 @@ class DeathlinkType(Toggle):
 @dataclass
 class EOSOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
-    dungeon_rando: DungeonNameRandomizer
+    sky_peak_type: SkyPeakType
     goal: Goal
     recruit: Recruitment
     recruit_evo: RecruitmentEvolution
@@ -310,4 +322,5 @@ class EOSOptions(PerGameCommonOptions):
     deathlink_type: DeathlinkType
     legendaries: LegendariesInPool
     allowed_legendaries: AllowedLegendaries
+    special_episode_sanity: SpecialEpisodeSanity
 

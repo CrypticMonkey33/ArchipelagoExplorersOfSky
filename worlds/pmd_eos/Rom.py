@@ -75,6 +75,8 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         "deathlink": world.options.deathlink.value,
         "deathlink_type": world.options.deathlink_type.value,
         "legendaries": world.options.legendaries.value,
+        "sky_peak_type": world.options.sky_peak_type.value,
+        "special_sanity": world.options.special_episode_sanity.value,
 
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
