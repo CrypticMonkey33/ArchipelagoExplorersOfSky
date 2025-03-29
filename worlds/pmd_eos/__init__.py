@@ -68,6 +68,7 @@ class EOSWorld(World):
     item_name_groups = item_table_by_groups
     disabled_locations: Set[str] = []
     extra_locations_added = 0
+    mission_start_id = 1000
 
     def generate_early(self) -> None:
         if self.options.bag_on_start.value:
@@ -121,14 +122,14 @@ class EOSWorld(World):
                 if "Mission" in location.group:
                     for j in range(self.options.early_mission_checks.value):
                         location_name: str = f"{location.name} Mission {j + 1}"
-                        location_id = location.id + 500 + (100 * location.id) + j
+                        location_id = location.id + self.mission_start_id + (100 * location.id) + j
                         menu_region.locations.append(EOSLocation(self.player, location_name,
                                                                  location_id, menu_region))
 
                         self.extra_locations_added += 1
                     for j in range(self.options.early_outlaw_checks.value):
                         location_name = f"{location.name} Outlaw {j + 1}"
-                        location_id = location.id + 500 + (100 * location.id) + j + 50
+                        location_id = location.id + self.mission_start_id + (100 * location.id) + j + 50
                         menu_region.locations.append(EOSLocation(self.player, location_name,
                                                                  location_id, menu_region))
 
@@ -142,7 +143,7 @@ class EOSWorld(World):
                 if "Mission" in location.group:
                     for j in range(self.options.early_mission_checks.value):
                         location_name = f"{location.name} Mission {j + 1}"
-                        location_id = location.id + 500 + (100 * location.id) + j
+                        location_id = location.id + self.mission_start_id + (100 * location.id) + j
                         early_dungeons_region.locations.append(EOSLocation(self.player, location_name,
                                                                            location_id, early_dungeons_region))
 
@@ -152,7 +153,7 @@ class EOSWorld(World):
 
                     for j in range(self.options.early_outlaw_checks.value):
                         location_name = f"{location.name} Outlaw {j + 1}"
-                        location_id = location.id + 500 + (100 * location.id) + j + 50
+                        location_id = location.id + self.mission_start_id + (100 * location.id) + j + 50
                         early_dungeons_region.locations.append(EOSLocation(self.player, location_name,
                                                                            location_id, early_dungeons_region))
 
@@ -174,7 +175,7 @@ class EOSWorld(World):
                 if self.options.goal.value == 1 and ("Mission" in location.group):
                     for j in range(self.options.late_mission_checks.value):
                         location_name = f"{location.name} Mission {j + 1}"
-                        location_id = location.id + 500 + (100 * location.id) + j
+                        location_id = location.id + self.mission_start_id + (100 * location.id) + j
                         late_dungeons_region.locations.append(EOSLocation(self.player, location_name,
                                                                           location_id, late_dungeons_region))
 
@@ -184,7 +185,7 @@ class EOSWorld(World):
 
                     for j in range(self.options.late_outlaw_checks.value):
                         location_name = f"{location.name} Outlaw {j + 1}"
-                        location_id = location.id + 500 + (100 * location.id) + j + 50
+                        location_id = location.id + self.mission_start_id + (100 * location.id) + j + 50
                         late_dungeons_region.locations.append(EOSLocation(self.player, location_name,
                                                                           location_id, late_dungeons_region))
 
@@ -212,7 +213,7 @@ class EOSWorld(World):
                 if (self.options.goal.value == 1) and ("Mission" in location.group):
                     for j in range(self.options.late_mission_checks.value):
                         location_name = f"{location.name} Mission {j + 1}"
-                        location_id = location.id + 500 + (100 * location.id) + j
+                        location_id = location.id + self.mission_start_id + (100 * location.id) + j
                         late_dungeons_region.locations.append(EOSLocation(self.player, location_name,
                                                                           location_id, late_dungeons_region))
 
@@ -222,7 +223,7 @@ class EOSWorld(World):
 
                     for j in range(self.options.late_outlaw_checks.value):
                         location_name = f"{location.name} Outlaw {j + 1}"
-                        location_id = location.id + 500 + (100 * location.id) + j + 50
+                        location_id = location.id + self.mission_start_id + (100 * location.id) + j + 50
                         late_dungeons_region.locations.append(EOSLocation(self.player, location_name,
                                                                           location_id, late_dungeons_region))
 

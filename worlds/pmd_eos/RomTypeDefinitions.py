@@ -13,11 +13,11 @@ class SubXBitfield (NamedTuple):
 
 
 subX_table = [
-    SubXBitfield(0, 1, 0, 0, "Bag Upgrade 0", [], "Bag Upgrade", "ProgressiveBagUpgrade"),
-    SubXBitfield(1, 1, 0, 1, "Bag Upgrade 1", ["Mt. Bristle"], "Bag Upgrade", "ProgressiveBagUpgrade"),
-    SubXBitfield(2, 1, 0, 2, "Bag Upgrade 2", ["Apple Woods"], "Bag Upgrade", "ProgressiveBagUpgrade"),
-    SubXBitfield(3, 1, 0, 3, "Bag Upgrade 3", ["Steam Cave"], "Bag Upgrade", "ProgressiveBagUpgrade"),
-    SubXBitfield(4, 1, 0, 4, "Bag Upgrade 4", ["Mystifying Forest"], "Bag Upgrade", "ProgressiveBagUpgrade"),
+    SubXBitfield(0, 1, 0, 0, "Bag Upgrade 1", [], "Bag Upgrade", "ProgressiveBagUpgrade"),
+    SubXBitfield(1, 1, 0, 1, "Bag Upgrade 2", ["Mt. Bristle"], "Bag Upgrade", "ProgressiveBagUpgrade"),
+    SubXBitfield(2, 1, 0, 2, "Bag Upgrade 3", ["Apple Woods"], "Bag Upgrade", "ProgressiveBagUpgrade"),
+    SubXBitfield(3, 1, 0, 3, "Bag Upgrade 4", ["Steam Cave"], "Bag Upgrade", "ProgressiveBagUpgrade"),
+    SubXBitfield(4, 1, 0, 4, "Bag Upgrade 5", ["Mystifying Forest"], "Bag Upgrade", "ProgressiveBagUpgrade"),
     SubXBitfield(5, 1, 0, 5, "Bidoof's Wish Location", [], "Bidoof's SE", "Free"),
     SubXBitfield(6, 1, 0, 6, "Igglybuff the Prodigy Location", [], "Igglybuff's SE", "Free"),
     SubXBitfield(7, 1, 0, 7, 'Today\'s "Oh My Gosh" Location', [], "Sunflora's SE", "Free"),
