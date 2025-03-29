@@ -281,8 +281,6 @@ def dungeon_locations_behind_items(world, player):
             continue
 
 
-
-
 def mission_rules(world, player):
     for i, location in enumerate(EOS_location_table):
         if "Mission" not in location.group:
