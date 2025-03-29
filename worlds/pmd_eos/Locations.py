@@ -45,7 +45,7 @@ def get_location_table_by_groups() -> Dict[str, set[str]]:
     return new_dict
 
 
-def get_subX_table() -> List[LocationData]:
+def get_subx_table() -> List[LocationData]:
     new_list: List[LocationData] = []
     subX_start_id = 300
     for item in subX_table:
@@ -116,7 +116,7 @@ def get_location_table_by_start_id() -> Dict[int, set[str]]:
     return new_dict
 
 
-subx_location_list = get_subX_table()
+subx_location_list = get_subx_table()
 subx_location_dict = {location.name: location for location in subx_location_list}
 
 EOS_location_table: typing.List[LocationData] = [
@@ -153,14 +153,14 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 1, "Surrounded Sea", 50, 50, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Miracle Sea", 52, 51, ["Mission", "Late"]),  # 3 subareas
     # LocationData("DungeonComplete", 8,  "Ice Aegis Cave", 60,  54),   # 8 subareas             we hate aegis cave. also it's kinda broken rn so we're gonna remove it for now
-    LocationData("LateDungeonComplete", 1,  "Ice Aegis Cave", 54,  54, ["Late", "Aegis"]),
-    LocationData("LateDungeonComplete", 1,  "Regice Chamber", 55,  55, ["Late", "Aegis"]),
-    LocationData("LateDungeonComplete", 1,  "Rock Aegis Cave", 56,  56, ["Late", "Aegis"]),
-    LocationData("LateDungeonComplete", 1,  "Regirock Chamber", 57,  57, ["Late", "Aegis"]),
-    LocationData("LateDungeonComplete", 1,  "Steel Aegis Cave", 58,  58, ["Late", "Aegis"]),
-    LocationData("LateDungeonComplete", 1,  "Registeel Chamber", 59,  59, ["Late", "Aegis"]),
-    LocationData("LateDungeonComplete", 1,  "Aegis Cave Pit", 60,  60, ["Late", "Aegis"]),
-    LocationData("LateDungeonComplete", 1,  "Regigigas Chamber", 61,  61, ["Late", "Aegis"]),
+    LocationData("LateDungeonComplete", 1,  "Ice Aegis Cave", 54,  54, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", 1,  "Regice Chamber", 55,  55, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", 1,  "Rock Aegis Cave", 56,  56, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", 1,  "Regirock Chamber", 57,  57, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", 1,  "Steel Aegis Cave", 58,  58, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", 1,  "Registeel Chamber", 59,  59, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", 1,  "Aegis Cave Pit", 60,  60, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", 1,  "Regigigas Chamber", 61,  61, ["Late", "Aegis", "Optional"]),
     LocationData("LateDungeonComplete", 1, "Mt. Travail", 62, 62, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 1, "The Nightmare", 63, 63, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Spacial Rift", 66, 64, ["Mission", "Late"]),  # 3 subareas

@@ -237,9 +237,13 @@ class EOSWorld(World):
                 extra_items_region.locations.append(EOSLocation(self.player, location.name,
                                                                 location.id, extra_items_region))
             elif location.classification in ["RuleDungeonComplete", "OptionalSubX"]:
-                location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
-                location.progress_type = LocationProgressType.EXCLUDED
-                rule_dungeons_region.locations.append(location)
+                if self.options.long_location.value == 0:
+                    location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
+                    location.progress_type = LocationProgressType.EXCLUDED
+                    rule_dungeons_region.locations.append(location)
+                else:
+                    location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
+                    rule_dungeons_region.locations.append(location)
 
         menu_region.connect(extra_items_region)
 
@@ -296,6 +300,8 @@ class EOSWorld(World):
             "TrapsAllowed": self.options.allow_traps.value,
             "InvisibleTraps": self.options.invisible_traps.value,
             "TrapPercentage": self.options.trap_percent.value,
+            "LongLocations": self.options.long_location.value,
+            "CursedAegisCave": self.options.cursed_aegis_cave.value
         }
 
     def create_items(self) -> None:
@@ -359,6 +365,23 @@ class EOSWorld(World):
                 classification = ItemClassification.progression
                 if (self.options.goal.value == 0) and "LateDungeons" in item_table[item_name].group:
                     classification = ItemClassification.useful
+                if "Aegis" in item_table[item_name].group:
+                    if self.options.goal.value == 0:
+                        classification = ItemClassification.useful
+                    else:
+                        classification = ItemClassification.progression
+                    if self.options.cursed_aegis_cave.value == 0:
+                        if item_name == "Progressive Seal":
+                            for i in range(3):
+                                required_items.append(self.create_item(item_name, classification))
+                        else:
+                            continue
+                    else:
+                        if item_name == "Progressive Seal":
+                            continue
+                        else:
+                            required_items.append(self.create_item(item_name, classification))
+
                 if "SkyPeak" in item_table[item_name].group:
                     if self.options.sky_peak_type.value == 1:
                         if item_name == "Progressive Sky Peak":

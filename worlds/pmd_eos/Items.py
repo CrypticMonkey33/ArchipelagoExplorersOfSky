@@ -220,6 +220,7 @@ EOS_item_table = [
     ItemData("Ice Seal", 203, ItemClassification.progression, 0, ["Aegis"], 0x00),
     ItemData("Rock Seal", 204, ItemClassification.progression, 0, ["Aegis"], 0x00),
     ItemData("Steel Seal", 205, ItemClassification.progression, 0, ["Aegis"], 0x00),
+    ItemData("Progressive Seal", 206, ItemClassification.progression, 0, ["Aegis"], 0x00),
 
     ItemData("Victory", 300, ItemClassification.progression, 0, [], 0x00),
     ItemData("Bag Upgrade", 370, ItemClassification.progression, 0, ["ProgressiveBag", "Generic"], 0x00),

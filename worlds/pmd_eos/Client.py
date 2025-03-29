@@ -40,6 +40,7 @@ class EoSClient(BizHawkClient):
     instruments_collected = 0
     required_instruments = 0
     skypeaks_open = 0
+    aegis_seals = 0
     dialga_complete = False
     #item_boxes_collected: List[ItemData] = []
     random: Random = Random()
@@ -173,13 +174,13 @@ class EoSClient(BizHawkClient):
                      "key": self.player_name + "GenericStorage",
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "instruments_collected": 0, "required_instruments": 0,
-                                 "dialga_complete": False, "skypeaks_open": 0},
+                                 "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0},
                      "want_reply": True,
                      "operations": [{"operation": "default", "value":
                          {"goal_complete": False, "bag_given": False,
                           "macguffins_collected": 0, "macguffin_unlock_amount": 0,
                           "instruments_collected": 0, "required_instruments": 0,
-                          "dialga_complete": False, "skypeaks_open": 0}}]
+                          "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0}}]
                      }
                 ]))
             await asyncio.sleep(0.1)
@@ -243,6 +244,8 @@ class EoSClient(BizHawkClient):
                 self.instruments_collected = stored["instruments_collected"]
                 self.dialga_complete = stored["dialga_complete"]
                 self.skypeaks_open = stored["skypeaks_open"]
+                self.aegis_seals = stored["aegis_seals"]
+
 
             else:
 
@@ -385,6 +388,7 @@ class EoSClient(BizHawkClient):
 
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                     await asyncio.sleep(0.1)
+
                 elif (("EarlyDungeons" in item_data.group) or ("LateDungeons" in item_data.group)
                         or ("Dojo Dungeons" in item_data.group) or ("BossDungeons" in item_data.group)
                         or ("ExtraDungeons" in item_data.group) or ("RuleDungeons" in item_data.group)
@@ -623,7 +627,13 @@ class EoSClient(BizHawkClient):
                         {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}]
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Aegis" in item_data.group:
-                    main_offset_for_seals = item_data.id - 200
+                    main_offset_for_seals = 0
+                    if ctx.slot_data["CursedAegisCave"] == 0:
+                        self.aegis_seals += 1
+                        main_offset_for_seals = 2+self.aegis_seals
+                    elif ctx.slot_data["CursedAegisCave"] == 1:
+                        main_offset_for_seals = item_data.id - 200
+
                     if ((scenario_main_bitfield_list[5] >> main_offset_for_seals) & 1) == 0:
                         write_byte = scenario_main_bitfield_list[5] | (0x1 << main_offset_for_seals)
                         scenario_main_bitfield_list[5] = write_byte
@@ -1202,13 +1212,14 @@ class EoSClient(BizHawkClient):
                      "key": self.player_name + "GenericStorage",
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "cresselia_feather_acquired": False,
-                                 "dialga_complete": False, "skypeaks_open": 0},
+                                 "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value":
                          {"goal_complete": self.goal_complete, "bag_given": self.bag_given,
                           "macguffins_collected": self.macguffins_collected, "macguffin_unlock_amount": self.macguffin_unlock_amount,
                           "required_instruments": self.required_instruments, "instruments_collected": self.instruments_collected,
-                          "dialga_complete": self.dialga_complete, "skypeaks_open": self.skypeaks_open}}]
+                          "dialga_complete": self.dialga_complete, "skypeaks_open": self.skypeaks_open,
+                          "aegis_seals": self.aegis_seals}}]
                      }
                 ]))
             await asyncio.sleep(0.1)

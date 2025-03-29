@@ -321,6 +321,16 @@ class TrapPercentage(Range):
     default = 20
 
 
+class CursedAegisCave(Toggle):
+    """Do you want Aegis cave to logically require you to beat a regi you don't have a seal for?"""
+    display_name = "Cursed Aegis Cave"
+
+class LongLocationsInclusion(Toggle):
+    """Include Rule dungeons, master ranks, clearing all dojos, and final dojo in
+    logic"""
+    display_name = "Long Locations"
+
+
 @dataclass
 class EOSOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -353,3 +363,5 @@ class EOSOptions(PerGameCommonOptions):
     allow_traps: AllowTraps
     invisible_traps: InvisibleTraps
     trap_percent: TrapPercentage
+    long_location: LongLocationsInclusion
+    cursed_aegis_cave: CursedAegisCave

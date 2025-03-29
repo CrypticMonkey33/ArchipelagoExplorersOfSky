@@ -80,6 +80,8 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         "traps_allowed": world.options.allow_traps.value,
         "invisible_traps": world.options.invisible_traps.value,
         "trap_percentage": world.options.trap_percent.value,
+        "long_locations": world.options.long_location.value,
+        "cursed_aegis_cave": world.options.cursed_aegis_cave.value,
 
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
