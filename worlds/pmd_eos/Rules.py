@@ -264,7 +264,9 @@ def ready_for_darkrai(state, player, world):
 
 def dungeon_locations_behind_items(world, player):
     for location in EOS_location_table:
-        if "Early" in location.group or "Dojo" in location.group:
+        if location.name == "Beach Cave":
+            continue
+        elif "Early" in location.group or "Dojo" in location.group:
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player))
         elif "Station" in location.group:
@@ -288,36 +290,36 @@ def mission_rules(world, player):
         if location.name == "Beach Cave":
             continue
         elif location.classification == "EarlyDungeonComplete":
-            for j in range(world.multiworld.options.early_mission_checks.value):
+            for j in range(world.options.early_mission_checks.value):
                 set_rule(world.get_location(f"{location.name} Mission {j + 1}"),
                          lambda state, ln=location.name, p=player: state.has(ln, p))
-            for j in range(world.multiworld.options.early_outlaw_checks.value):
+            for j in range(world.options.early_outlaw_checks.value):
                 set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
                          lambda state, ln=location.name, p=player: state.has(ln, p))
 
         elif location.classification in ["LateDungeonComplete", "BossDungeonComplete"]:
-            if world.multiworld.options.goal.value == 1:
+            if world.options.goal.value == 1:
                 if "Station" in location.group:
-                    for j in range(world.multiworld.options.late_mission_checks.value):
+                    for j in range(world.options.late_mission_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}"),
                                  lambda state, ln="1st Station Pass", p=player: state.has(ln, p))
-                        for j in range(world.multiworld.options.late_outlaw_checks.value):
+                        for j in range(world.options.late_outlaw_checks.value):
                             set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
                                      lambda state, ln="1st Station Pass", p=player: state.has(ln, p))
                 elif location.name == "Hidden Land":
-                    for j in range(world.multiworld.options.late_mission_checks.value):
+                    for j in range(world.options.late_mission_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}"),
                                  lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world))
 
-                    for j in range(world.multiworld.options.late_outlaw_checks.value):
+                    for j in range(world.options.late_outlaw_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
                                  lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world))
                 else:
-                    for j in range(world.multiworld.options.late_mission_checks.value):
+                    for j in range(world.options.late_mission_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}"),
                                  lambda state, ln=location.name, p=player: state.has(ln, p))
 
-                    for j in range(world.multiworld.options.late_outlaw_checks.value):
+                    for j in range(world.options.late_outlaw_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}"),
                                  lambda state, ln=location.name, p=player: state.has(ln, p))
 
@@ -327,31 +329,31 @@ def subx_rules(world, player):
     for item in subX_table:
         if item.flag_definition == "Unused":
             continue
-        if (item.flag_definition == "Manaphy's Discovery") and world.multiworld.options.goal.value == 0:
+        if (item.flag_definition == "Manaphy's Discovery") and world.options.goal.value == 0:
             continue
         for requirement in item.prerequisites:
             if requirement == "Defeat Dialga":
-                add_rule(world.multiworld.get_location(item.flag_definition),
+                add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state, req="Relic Fragment Shard", p=player,
-                                num=world.multiworld.options.shard_fragments.value, req2="Temporal Tower":
+                                num=world.options.shard_fragments.value, req2="Temporal Tower":
                                 state.has(req, p, num) and state.has(req2, p))
 
             elif requirement in ["ProgressiveBag1", "ProgressiveBag2", "ProgressiveBag3"]:
                 bag_num_str = requirement[-1]
                 bag_num = int(bag_num_str)
-                add_rule(world.multiworld.get_location(item.flag_definition),
+                add_rule(world.multiworld.get_location(item.flag_definition, player),
                      lambda state, req="Bag Upgrade", p=player, num=bag_num: state.has(req, p, num))
 
             elif requirement == "Hidden Land":
-                add_rule(world.multiworld.get_location(item.flag_definition),
+                add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state, req="Relic Fragment Shard", p=player,
-                                num=world.multiworld.options.shard_fragments.value: state.has(req, p, num))
+                                num=world.options.shard_fragments.value: state.has(req, p, num))
 
             elif requirement == "All Mazes":
-                add_rule(world.multiworld.get_location(item.flag_definition),
+                add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state, req="Dojo Dungeons", p=player: state.has_group(req, p, 10))
 
             else:
-                add_rule(world.multiworld.get_location(item.flag_definition),
+                add_rule(world.multiworld.get_location(item.flag_definition, player),
                      lambda state, req=requirement, p=player: state.has(req, p))
 
