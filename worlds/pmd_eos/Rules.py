@@ -27,8 +27,8 @@ def set_rules(world: "EOSWorld", excluded):
         set_rule(world.multiworld.get_location("Dark Crater", player),
                  lambda state: state.has("Dark Crater", player))
     elif world.options.goal.value == 1:
-        set_rule(world.multiworld.get_location("Manaphy Leads To Marine Resort", player),
-                 lambda state: state.has("Manaphy", player))
+        #set_rule(world.multiworld.get_location("Manaphy Leads To Marine Resort", player),
+        #         lambda state: state.has("Manaphy", player))
         set_rule(world.multiworld.get_location("Final Boss", player),
                  lambda state: ready_for_darkrai(state, player, world))
         set_rule(world.multiworld.get_location("Dark Crater", player),
