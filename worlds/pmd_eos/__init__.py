@@ -1,3 +1,4 @@
+import math
 import typing
 import os
 import json
@@ -403,8 +404,8 @@ class EOSWorld(World):
             item_weights += item_weights
             trap_weights += trap_weights
         if self.options.allow_traps.value in [1, 2]:
-            filler_items_toadd = remaining * (100 - self.options.trap_percent) / 100
-            traps_toadd = remaining * self.options.trap_percent / 100
+            filler_items_toadd = math.ceil(remaining * (100 - self.options.trap_percent) / 100)
+            traps_toadd = math.floor(remaining * self.options.trap_percent / 100)
             self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
                                          in self.random.sample(filler_items, filler_items_toadd, counts=item_weights)]
             self.multiworld.itempool += [self.create_item(trap.name) for trap

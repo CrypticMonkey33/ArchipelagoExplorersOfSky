@@ -173,7 +173,7 @@ class EoSClient(BizHawkClient):
                      "key": self.player_name + "GenericStorage",
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "instruments_collected": 0, "required_instruments": 0,
-                                 "dialga_complete": False},
+                                 "dialga_complete": False, "skypeaks_open": 0},
                      "want_reply": True,
                      "operations": [{"operation": "default", "value":
                          {"goal_complete": False, "bag_given": False,
@@ -1202,7 +1202,7 @@ class EoSClient(BizHawkClient):
                      "key": self.player_name + "GenericStorage",
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "cresselia_feather_acquired": False,
-                                 "dialga_complete": False},
+                                 "dialga_complete": False, "skypeaks_open": 0},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value":
                          {"goal_complete": self.goal_complete, "bag_given": self.bag_given,
