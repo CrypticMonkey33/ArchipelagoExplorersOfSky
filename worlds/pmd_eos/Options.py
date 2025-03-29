@@ -294,6 +294,33 @@ class DeathlinkType(Toggle):
     display_name = "Deathlink Type"
 
 
+class AllowTraps(Choice):
+    """Would you like to allow traps in the filler items of the game?
+    0: No traps allowed
+    1: regular traps allowed, nothing too crazy
+    2: mean traps allowed (possibility of getting two traps at the same time *unown sentry duty*)
+    1 and 2 are currently the same, not yet implemented mean traps"""
+    display_name = "Allow Traps"
+    option_disabled = 0
+    option_regular = 1
+    option_mean = 2
+
+
+class InvisibleTraps(Toggle):
+    """Make all traps invisible so when they come in from the client you don't know what happens until you get the trap
+    activated
+    NOT YET IMPLEMENTED"""
+    display_name = "Invisible Traps"
+
+
+class TrapPercentage(Range):
+    """What percentage of filler items should be traps? Range from 0 to 100 (affected by allowed traps)"""
+    display_name = "Trap Percentage"
+    range_start = 0
+    range_end = 100
+    default = 20
+
+
 @dataclass
 class EOSOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -323,4 +350,6 @@ class EOSOptions(PerGameCommonOptions):
     legendaries: LegendariesInPool
     allowed_legendaries: AllowedLegendaries
     special_episode_sanity: SpecialEpisodeSanity
-
+    allow_traps: AllowTraps
+    invisible_traps: InvisibleTraps
+    trap_percent: TrapPercentage

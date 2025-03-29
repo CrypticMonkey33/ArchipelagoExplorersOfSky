@@ -77,6 +77,9 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         "legendaries": world.options.legendaries.value,
         "sky_peak_type": world.options.sky_peak_type.value,
         "special_sanity": world.options.special_episode_sanity.value,
+        "traps_allowed": world.options.allow_traps.value,
+        "invisible_traps": world.options.invisible_traps.value,
+        "trap_percentage": world.options.trap_percent.value,
 
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]

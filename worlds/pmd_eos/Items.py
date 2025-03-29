@@ -311,11 +311,6 @@ filler_items = [
     ItemData("Golden Seed", 393, ItemClassification.filler, 3, ["Item", "Single"], 0x5D),
     ItemData("Ginseng", 394, ItemClassification.filler, 1, ["Item", "Single"], 0x58),
     #ItemData("Gold Ribbon", 395, ItemClassification.filler, 0, ["Item"], 0x20),
-    ItemData("Inspiration Strikes!", 400, ItemClassification.trap, 20, ["Trap"], 0x0),
-    ItemData("Get Unowned!", 401, ItemClassification.trap, 20, ["Trap"], 0x0),
-    ItemData("Nap Time!", 402, ItemClassification.trap, 20, ["Trap"], 0x0),
-    ItemData("Sentry Duty!", 403, ItemClassification.trap, 20, ["Trap"], 0x0),
-    ItemData("Touch Grass", 404, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Protein", 480, ItemClassification.filler, 10, ["Item", "Single"], 0x64),
     ItemData("Calcium", 481, ItemClassification.filler, 10, ["Item", "Single"], 0x65),
     ItemData("Iron", 482, ItemClassification.filler, 10, ["Item", "Single"], 0x66),
@@ -381,8 +376,18 @@ filler_items = [
     ItemData("Purify Veil", 463, ItemClassification.filler, 3, ["Item", "Exclusive"], 0x547),  # Shaymin
 
 ]
+trap_items = [
+    ItemData("Inspiration Strikes!", 400, ItemClassification.trap, 20, ["Trap"], 0x0),
+    ItemData("Get Unowned!", 401, ItemClassification.trap, 20, ["Trap"], 0x0),
+    ItemData("Nap Time!", 402, ItemClassification.trap, 20, ["Trap"], 0x0),
+    ItemData("Sentry Duty!", 403, ItemClassification.trap, 20, ["Trap"], 0x0),
+    ItemData("Touch Grass", 404, ItemClassification.trap, 20, ["Trap"], 0x0),
+]
 filler_item_weights = [item.start_number for item in filler_items]
 filler_item_table: Dict[str, ItemData] = {item.name: item for item in filler_items}
+
+trap_item_weights = [item.start_number for item in trap_items]
+trap_item_table: Dict[str, ItemData] = {item.name: item for item in trap_items}
 
 item_frequencies: Dict[str, int] = {
     "Bag Upgrade": 5
@@ -390,6 +395,7 @@ item_frequencies: Dict[str, int] = {
 
 item_table: Dict[str, ItemData] = {item.name: item for item in EOS_item_table}
 item_table.update(filler_item_table)
+item_table.update(trap_item_table)
 item_table_by_id: Dict[int, ItemData] = {item.id: item for item in item_table.values()}
 
 item_table_by_groups = get_item_table_by_groups()
