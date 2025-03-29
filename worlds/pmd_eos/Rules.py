@@ -206,8 +206,7 @@ def dungeon_locations_behind_items(world, player):
                 elif location.id in [59, 60, 61]:  # Registeel Chamber
                     set_rule(world.multiworld.get_location(location.name, player),
                              lambda state: state.has("Ice Aegis Cave", player)
-                                           and ready_for_late_game(state, player, world) and state.has("Rock Seal",
-                                                                                                       player)
+                                           and ready_for_late_game(state, player, world)
                                            and state.has("Progressive Seal", player, 3))
 
             else:
