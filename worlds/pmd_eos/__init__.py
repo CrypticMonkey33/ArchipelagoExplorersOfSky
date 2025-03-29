@@ -10,7 +10,7 @@ from .Items import (EOSItem, item_table, item_frequencies, item_table_by_id, ite
                     filler_item_table, filler_item_weights)
 from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table
 from .Options import EOSOptions
-from .Rules import set_rules, ready_for_late_game, ready_for_dialga
+from .Rules import set_rules, ready_for_late_game, has_relic_shards
 from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType, Item
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import set_rule, forbid_item

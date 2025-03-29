@@ -151,7 +151,7 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 1, "Blizzard Island", 46, 46, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Crevice Cave", 49, 47, ["Mission", "Late"]),  # 3 subareas
     LocationData("LateDungeonComplete", 1, "Surrounded Sea", 50, 50, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 3, "Miracle Sea", 53, 51, ["Mission", "Late"]),  # 3 subareas
+    LocationData("LateDungeonComplete", 3, "Miracle Sea", 52, 51, ["Mission", "Late"]),  # 3 subareas
     # LocationData("DungeonComplete", 8,  "Ice Aegis Cave", 60,  54),   # 8 subareas             we hate aegis cave. also it's kinda broken rn so we're gonna remove it for now
     LocationData("LateDungeonComplete", 1,  "Ice Aegis Cave", 54,  54, ["Late"]),
     LocationData("LateDungeonComplete", 1,  "Regice Chamber", 55,  55, ["Late"]),
