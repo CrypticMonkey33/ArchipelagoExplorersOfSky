@@ -18,6 +18,7 @@ def set_rules(world: "EOSWorld", excluded):
     subx_rules(world, player)
     dungeon_locations_behind_items(world, player)
     mission_rules(world, player)
+    forbid_items_behind_locations(world, player)
 
     if world.options.goal.value == 0:
         set_rule(world.multiworld.get_location("Final Boss", player),
@@ -44,9 +45,6 @@ def set_rules(world: "EOSWorld", excluded):
              lambda state: state.can_reach_location("Mt. Bristle", player) and state.has("The Nightmare", player)
                            and ready_for_late_game(state, player, world))
 
-    forbid_item(world.multiworld.get_location("Hidden Land", player), "Relic Fragment Shard", player)
-    forbid_item(world.multiworld.get_location("Temporal Tower", player), "Relic Fragment Shard", player)
-
 
 def has_relic_shards(state, player, world):
     return state.has("Relic Fragment Shard", player, world.options.shard_fragments.value)
@@ -58,9 +56,38 @@ def ready_for_late_game(state, player, world):
             and state.has("Temporal Tower", player))
 
 
+def forbid_items_behind_locations(world, player):
+    forbid_item(world.multiworld.get_location("Hidden Land", player), "Relic Fragment Shard", player)
+    forbid_item(world.multiworld.get_location("Temporal Tower", player), "Relic Fragment Shard", player)
+    if world.options.sky_peak_type == 1:
+        forbid_item(world.multiworld.get_location("1st Station Pass", player), "Progressive Sky Peak", player)
+        forbid_item(world.multiworld.get_location("2nd Station Pass", player), "Progressive Sky Peak", player)
+        forbid_item(world.multiworld.get_location("3rd Station Pass", player), "Progressive Sky Peak", player)
+        forbid_item(world.multiworld.get_location("4th Station Pass", player), "Progressive Sky Peak", player)
+        forbid_item(world.multiworld.get_location("5th Station Pass", player), "Progressive Sky Peak", player)
+        forbid_item(world.multiworld.get_location("6th Station Pass", player), "Progressive Sky Peak", player)
+        forbid_item(world.multiworld.get_location("7th Station Pass", player), "Progressive Sky Peak", player)
+        forbid_item(world.multiworld.get_location("8th Station Pass", player), "Progressive Sky Peak", player)
+        forbid_item(world.multiworld.get_location("9th Station Pass", player), "Progressive Sky Peak", player)
+        forbid_item(world.multiworld.get_location("Sky Peak Summit Pass", player), "Progressive Sky Peak", player)
+        forbid_item(world.multiworld.get_location("5th Station Clearing", player), "Progressive Sky Peak", player)
+        forbid_item(world.multiworld.get_location("Sky Peak Summit", player), "Progressive Sky Peak", player)
+        if world.options.goal.value == 1:
+            for i in range(111, 120):
+                location = location_Dict_by_id[i]
+                for j in range(world.options.late_mission_checks.value):
+                    forbid_item(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
+                                "Progressive Sky Peak", player)
+                for j in range(world.options.late_outlaw_checks.value):
+                    forbid_item(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
+                                "Progressive Sky Peak", player)
+
+
 def special_episodes_rules(world, player):
     # Bidoof Special Episode Checks
-    set_rule(world.multiworld.get_location("SE Star Cave", player),
+    set_rule(world.multiworld.get_location("SE Deep Star Cave", player),
+             lambda state: state.has("Bidoof\'s Wish", player))
+    set_rule(world.multiworld.get_location("SE Star Cave Pit", player),
              lambda state: state.has("Bidoof\'s Wish", player))
 
     # Igglybuff Special Episode checks
@@ -160,7 +187,31 @@ def dungeon_locations_behind_items(world, player):
                 set_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("1st Station Pass", player)
                                        and ready_for_late_game(state, player, world))
-
+        elif "Aegis" in location.group:
+            if location.id in [54, 56, 58, 60]:
+                set_rule(world.multiworld.get_location(location.name, player),
+                         lambda state: state.has("Ice Aegis Cave", player)
+                                       and ready_for_late_game(state, player, world))
+            elif location.id == 55:  # Regice Chamber
+                set_rule(world.multiworld.get_location(location.name, player),
+                         lambda state: state.has("Ice Aegis Cave", player)
+                                       and ready_for_late_game(state, player, world)
+                                       and state.has("Ice Seal", player))
+            elif location.id == 57:  # Regirock Chamber
+                set_rule(world.multiworld.get_location(location.name, player),
+                         lambda state: state.has("Ice Aegis Cave", player)
+                                       and ready_for_late_game(state, player, world)
+                                       and state.has("Rock Seal", player))
+            elif location.id == 59:  # Registeel Chamber
+                set_rule(world.multiworld.get_location(location.name, player),
+                         lambda state: state.has("Ice Aegis Cave", player)
+                                       and ready_for_late_game(state, player, world)
+                                       and state.has("Steel Seal", player))
+            elif location.id == 61:  # Regigigas Chamber
+                set_rule(world.multiworld.get_location(location.name, player),
+                         lambda state: state.has("Ice Aegis Cave", player) and state.has("Ice Seal", player)
+                                       and ready_for_late_game(state, player, world) and state.has("Rock Seal", player)
+                                       and state.has("Steel Seal", player))
         elif "Late" in location.group:
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player) and ready_for_late_game(state, player,
@@ -177,8 +228,10 @@ def mission_rules(world, player):
     for i, location in enumerate(EOS_location_table):
         if "Mission" not in location.group:
             continue
+
         if location.name == "Beach Cave":
             continue
+
         elif location.classification == "EarlyDungeonComplete":
             for j in range(world.options.early_mission_checks.value):
                 set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
@@ -190,12 +243,36 @@ def mission_rules(world, player):
         elif location.classification in ["LateDungeonComplete", "BossDungeonComplete"]:
             if world.options.goal.value == 1:
                 if "Station" in location.group:
-                    for j in range(world.options.late_mission_checks.value):
-                        set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
-                                 lambda state, ln="1st Station Pass", p=player: state.has(ln, p))
+                    if world.options.sky_peak_type == 1:
+                        for j in range(world.options.late_mission_checks.value):
+                            set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
+                                     lambda state, ln="Progressive Sky Peak", num=(location.id - 110), p=player:
+                                     state.has(ln, p, num) and ready_for_late_game(state, player, world))
                         for j in range(world.options.late_outlaw_checks.value):
                             set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
-                                     lambda state, ln="1st Station Pass", p=player: state.has(ln, p))
+                                     lambda state, ln="Progressive Sky Peak", num=(location.id - 110), p=player:
+                                     state.has(ln, p, num) and ready_for_late_game(state, player, world))
+
+                    elif world.options.sky_peak_type == 2:
+                        for j in range(world.options.late_mission_checks.value):
+                            set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
+                                     lambda state, ln=location.name, p=player:
+                                     state.has(ln, p) and ready_for_late_game(state, player, world))
+                        for j in range(world.options.late_outlaw_checks.value):
+                            set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
+                                     lambda state, ln=location.name, p=player:
+                                     state.has(ln, p) and ready_for_late_game(state, player, world))
+
+                    elif world.options.sky_peak_type == 3:
+                        for j in range(world.options.late_mission_checks.value):
+                            set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
+                                     lambda state, ln="1st Station Pass", p=player:
+                                     state.has(ln, p) and ready_for_late_game(state, player, world))
+                        for j in range(world.options.late_outlaw_checks.value):
+                            set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
+                                     lambda state, ln="1st Station Pass", p=player:
+                                     state.has(ln, p) and ready_for_late_game(state, player, world))
+
                 elif location.name == "Hidden Land":
                     for j in range(world.options.late_mission_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
@@ -204,14 +281,17 @@ def mission_rules(world, player):
                     for j in range(world.options.late_outlaw_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                  lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world))
+
                 else:
                     for j in range(world.options.late_mission_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
-                                 lambda state, ln=location.name, p=player: state.has(ln, p))
+                                 lambda state, ln=location.name, p=player:
+                                 state.has(ln, p) and ready_for_late_game(state, player, world))
 
                     for j in range(world.options.late_outlaw_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
-                                 lambda state, ln=location.name, p=player: state.has(ln, p))
+                                 lambda state, ln=location.name, p=player:
+                                 state.has(ln, p) and ready_for_late_game(state, player, world))
 
 
 def subx_rules(world, player):

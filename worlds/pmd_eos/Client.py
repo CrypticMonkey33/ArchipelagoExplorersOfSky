@@ -622,6 +622,20 @@ class EoSClient(BizHawkClient):
                     legendaries_recruited += [
                         {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}]
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
+                elif "Aegis" in item_data.group:
+                    main_offset_for_seals = item_data.id - 200
+                    if ((scenario_main_bitfield_list[5] >> main_offset_for_seals) & 1) == 0:
+                        write_byte = scenario_main_bitfield_list[5] | (0x1 << main_offset_for_seals)
+                        scenario_main_bitfield_list[5] = write_byte
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (scenario_main_bitfield_offset + 0x5, int.to_bytes(write_byte),
+                                 self.ram_mem_domain),
+                            ]
+                        )
+                    await self.update_received_items(ctx, received_items_offset, received_index, i)
+
                 elif "Trap" in item_data.group:
                     if item_data.name == "Inspiration Strikes!":
                         if ((performance_progress_bitfield[4] >> 0) & 1) == 0:

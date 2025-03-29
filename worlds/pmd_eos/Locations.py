@@ -153,14 +153,14 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 1, "Surrounded Sea", 50, 50, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Miracle Sea", 52, 51, ["Mission", "Late"]),  # 3 subareas
     # LocationData("DungeonComplete", 8,  "Ice Aegis Cave", 60,  54),   # 8 subareas             we hate aegis cave. also it's kinda broken rn so we're gonna remove it for now
-    LocationData("LateDungeonComplete", 1,  "Ice Aegis Cave", 54,  54, ["Late"]),
-    LocationData("LateDungeonComplete", 1,  "Regice Chamber", 55,  55, ["Late"]),
-    LocationData("LateDungeonComplete", 1,  "Rock Aegis Cave", 56,  56, ["Late"]),
-    LocationData("LateDungeonComplete", 1,  "Regirock Chamber", 57,  57, ["Late"]),
-    LocationData("LateDungeonComplete", 1,  "Steel Aegis Cave", 58,  58, ["Late"]),
-    LocationData("LateDungeonComplete", 1,  "Registeel Chamber", 59,  59, ["Late"]),
-    LocationData("LateDungeonComplete", 1,  "Aegis Cave Pit", 60,  60, ["Late"]),
-    LocationData("LateDungeonComplete", 1,  "Regigigas Chamber", 61,  61, ["Late"]),
+    LocationData("LateDungeonComplete", 1,  "Ice Aegis Cave", 54,  54, ["Late", "Aegis"]),
+    LocationData("LateDungeonComplete", 1,  "Regice Chamber", 55,  55, ["Late", "Aegis"]),
+    LocationData("LateDungeonComplete", 1,  "Rock Aegis Cave", 56,  56, ["Late", "Aegis"]),
+    LocationData("LateDungeonComplete", 1,  "Regirock Chamber", 57,  57, ["Late", "Aegis"]),
+    LocationData("LateDungeonComplete", 1,  "Steel Aegis Cave", 58,  58, ["Late", "Aegis"]),
+    LocationData("LateDungeonComplete", 1,  "Registeel Chamber", 59,  59, ["Late", "Aegis"]),
+    LocationData("LateDungeonComplete", 1,  "Aegis Cave Pit", 60,  60, ["Late", "Aegis"]),
+    LocationData("LateDungeonComplete", 1,  "Regigigas Chamber", 61,  61, ["Late", "Aegis"]),
     LocationData("LateDungeonComplete", 1, "Mt. Travail", 62, 62, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 1, "The Nightmare", 63, 63, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Spacial Rift", 66, 64, ["Mission", "Late"]),  # 3 subareas

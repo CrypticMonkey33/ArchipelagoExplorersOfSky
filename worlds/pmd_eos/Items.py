@@ -89,7 +89,7 @@ EOS_item_table = [
              0x32),
     ItemData("Miracle Sea", 51, ItemClassification.progression, 51, ["Unique", "LateDungeons", "MissionDungeons"],
              0x33),
-    ItemData("Ice Aegis Cave", 54, ItemClassification.useful, 54, ["Unique", "Dungeons"], 0x36),
+    ItemData("Ice Aegis Cave", 54, ItemClassification.useful, 54, ["Unique", "LateDungeons"], 0x36),
     ItemData("Mt. Travail", 62, ItemClassification.progression, 62, ["Unique", "LateDungeons", "MissionDungeons"],
              0x3E),
     ItemData("The Nightmare", 63, ItemClassification.progression, 63, ["Unique", "LateDungeons", "MissionDungeons"],
@@ -215,7 +215,11 @@ EOS_item_table = [
     ItemData("Dojo Ghost Maze", 189, ItemClassification.progression, 189, ["Unique", "Dojo Dungeons"], 0xBD),
     ItemData("Dojo Final Maze", 191, ItemClassification.progression, 191, ["Unique", "Final Dojo"], 0xBF),  # 7 subareas
     ItemData("Relic Fragment Shard", 200, ItemClassification.progression_skip_balancing, 200, ["Macguffin"], 0x00),
-    ItemData("Progressive Sky Peak", 201, ItemClassification.progression, 201, ["SkyPeak"], 0x00),
+    ItemData("Progressive Sky Peak", 201, ItemClassification.progression, 0, ["SkyPeak"], 0x00),
+
+    ItemData("Ice Seal", 203, ItemClassification.progression, 0, ["Aegis"], 0x00),
+    ItemData("Rock Seal", 204, ItemClassification.progression, 0, ["Aegis"], 0x00),
+    ItemData("Steel Seal", 205, ItemClassification.progression, 0, ["Aegis"], 0x00),
 
     ItemData("Victory", 300, ItemClassification.progression, 0, [], 0x00),
     ItemData("Bag Upgrade", 370, ItemClassification.progression, 0, ["ProgressiveBag", "Generic"], 0x00),

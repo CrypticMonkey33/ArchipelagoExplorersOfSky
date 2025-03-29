@@ -357,7 +357,7 @@ class EOSWorld(World):
                 classification = ItemClassification.progression
                 if (self.options.goal.value == 0) and "LateDungeons" in item_table[item_name].group:
                     classification = ItemClassification.useful
-                if "Sky Peak" in item_table[item_name].group:
+                if "SkyPeak" in item_table[item_name].group:
                     if self.options.sky_peak_type.value == 1:
                         if item_name == "Progressive Sky Peak":
                             if self.options.goal.value == 0:
@@ -431,3 +431,4 @@ class EOSWorld(World):
             output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
         )
         patch.write(rom_path)
+

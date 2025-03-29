@@ -229,8 +229,8 @@ class SkyPeakType(Choice):
     3: All unlocked from one item (there will be one sky peak item that unlocks all sky peak checks)"""
     display_name = "Sky Peak Type"
     option_progressive = 1
-    option_random = 2
-    option_unlock = 3
+    option_all_random = 2
+    option_unlock_all = 3
     default = 1
 
 
