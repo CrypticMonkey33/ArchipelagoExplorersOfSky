@@ -126,6 +126,20 @@ class LateOutlawChecks(NamedRange):
     default = 2
 
 
+class SpindaDrinkEvents(Range):
+    """How many drink events should be checks?"""
+    default_name = "Spinda Drink Events"
+    range_start = 0
+    range_end = 24
+    special_range_names = {
+        "few": 5,
+        "some": 10,
+        "lots": 15,
+        "all": 24
+    }
+    default = 0
+
+
 class StartWithBag(DefaultOnToggle):
     """Start with bag? If False all bag upgrades will be randomized in the game.
     If true, you will get one bag upgrade (16 slots) and the rest will be randomized"""
@@ -325,10 +339,21 @@ class CursedAegisCave(Toggle):
     """Do you want Aegis cave to logically require you to beat a regi you don't have a seal for?"""
     display_name = "Cursed Aegis Cave"
 
+
 class LongLocationsInclusion(Toggle):
     """Include Rule dungeons, master ranks, clearing all dojos, and final dojo in
     logic"""
     display_name = "Long Locations"
+
+
+class EarlyMissionFloors(DefaultOnToggle):
+    """Allow missions to start on floor 2 of dungeons instead on (floors/2)"""
+    display_name = "Mission on Early Floors"
+
+
+class MoveShortcutMenu(DefaultOnToggle):
+    """Enable the Move Shortcut Menu by holding (default L button)"""
+    display_name = "Move Shortcut Menu"
 
 
 @dataclass
@@ -365,3 +390,6 @@ class EOSOptions(PerGameCommonOptions):
     trap_percent: TrapPercentage
     long_location: LongLocationsInclusion
     cursed_aegis_cave: CursedAegisCave
+    drink_events: SpindaDrinkEvents
+    early_mission_floors: EarlyMissionFloors
+    move_shortcuts: MoveShortcutMenu

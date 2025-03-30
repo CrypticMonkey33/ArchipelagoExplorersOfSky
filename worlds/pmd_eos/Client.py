@@ -613,6 +613,8 @@ class EoSClient(BizHawkClient):
                         elif relic_shards_amount > self.macguffins_collected:
                             # uhhhh I don't know how this could happen? Also what do I do????
                             self.macguffins_collected = relic_shards_amount
+                            self.macguffins_collected += 1
+                            relic_shards_amount += 1
                         else:
                             relic_shards_amount += 1
                             await bizhawk.write(
@@ -968,6 +970,8 @@ class EoSClient(BizHawkClient):
                             elif instruments_amount > self.instruments_collected:
                                 # uhhhh I don't know how this could happen? Also what do I do????
                                 self.instruments_collected = instruments_amount
+                                self.instruments_collected += 1
+                                instruments_amount += 1
                             else:
                                 instruments_amount += 1
                                 await bizhawk.write(
@@ -1092,6 +1096,8 @@ class EoSClient(BizHawkClient):
                             elif instruments_amount > self.instruments_collected:
                                 # uhhhh I don't know how this could happen? Also what do I do????
                                 self.instruments_collected = instruments_amount
+                                self.instruments_collected += 1
+                                instruments_amount += 1
                             else:
                                 instruments_amount += 1
                                 await bizhawk.write(

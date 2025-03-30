@@ -202,7 +202,10 @@ class EOSWorld(World):
                     if location.name == "Manaphy's Discovery":
                         continue
                 late_dungeons_region.locations.append(late_dungeon)
+            elif location.classification in ["SpindaDrinkEvent", "SpindaDrink"]:
 
+                menu_region.locations.append(EOSLocation(self.player, location.name,
+                                                         location.id, menu_region))
             elif location.classification == "BossDungeonComplete":
                 location_data = EOSLocation(self.player, location.name,
                                                              location.id, end_game_region)
@@ -301,7 +304,8 @@ class EOSWorld(World):
             "InvisibleTraps": self.options.invisible_traps.value,
             "TrapPercentage": self.options.trap_percent.value,
             "LongLocations": self.options.long_location.value,
-            "CursedAegisCave": self.options.cursed_aegis_cave.value
+            "CursedAegisCave": self.options.cursed_aegis_cave.value,
+            "DrinkEvents": self.options.drink_events.value,
         }
 
     def create_items(self) -> None:
@@ -384,6 +388,7 @@ class EOSWorld(World):
                         if item_name == "Progressive Seal":
                             for i in range(3):
                                 required_items.append(self.create_item(item_name, classification))
+                                continue
                         else:
                             continue
                     else:
@@ -391,6 +396,7 @@ class EOSWorld(World):
                             continue
                         else:
                             required_items.append(self.create_item(item_name, classification))
+                            continue
 
                 if "SkyPeak" in item_table[item_name].group:
                     if self.options.sky_peak_type.value == 1:

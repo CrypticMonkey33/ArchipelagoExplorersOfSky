@@ -82,6 +82,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         "trap_percentage": world.options.trap_percent.value,
         "long_locations": world.options.long_location.value,
         "cursed_aegis_cave": world.options.cursed_aegis_cave.value,
+        "drink_events": world.options.drink_events.value,
 
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
@@ -109,6 +110,12 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     # Take the options and bake them into the rom, so they can be applied on runtime
     write_byte = 0
     write_byte = write_byte | world.options.iq_scaling.value
+    if world.options.early_mission_floors.value:
+        write_byte = write_byte | (0x1 << 4)
+
+    if world.options.move_shortcuts.value:
+        write_byte = write_byte | (0x1 << 5)
+
     if world.options.level_scale.value:
         write_byte = write_byte | (0x1 << 7)
 

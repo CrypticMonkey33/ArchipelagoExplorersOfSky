@@ -56,6 +56,13 @@ def ready_for_late_game(state, player, world):
             and state.has("Temporal Tower", player))
 
 
+def spinda_drink_events(player, world):
+    amount = world.options.drink_events
+    for i in range(amount):
+        set_rule(world.multiworld.get_location("Spinda Drink Event" + str(i), player),
+                 lambda state: state.has("Bag Upgrade", player))
+
+
 def forbid_items_behind_locations(world, player):
     forbid_item(world.multiworld.get_location("Hidden Land", player), "Relic Fragment Shard", player)
     forbid_item(world.multiworld.get_location("Temporal Tower", player), "Relic Fragment Shard", player)
