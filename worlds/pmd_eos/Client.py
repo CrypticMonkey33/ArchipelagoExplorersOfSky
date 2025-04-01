@@ -213,7 +213,7 @@ class EoSClient(BizHawkClient):
             death_link_ally_death_message_offset = death_link_offset + 0x2 + 128 # ally death message
             death_link_ally_name_offset = death_link_offset + 0x2 + 256  # ally death name
             hintable_items_offset = custom_save_area_offset + 0x29A
-            main_game_unlocked_offset = custom_save_area_offset + 0x2A6
+            main_game_unlocked_offset = custom_save_area_offset + 0x2A7
 
             if (self.player_name + "Dungeon Missions") in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
