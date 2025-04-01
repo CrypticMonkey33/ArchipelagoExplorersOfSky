@@ -213,6 +213,7 @@ class EoSClient(BizHawkClient):
             death_link_ally_death_message_offset = death_link_offset + 0x2 + 128 # ally death message
             death_link_ally_name_offset = death_link_offset + 0x2 + 256  # ally death name
             hintable_items_offset = custom_save_area_offset + 0x29A
+            main_game_unlocked_offset = custom_save_area_offset + 0x2A6
 
             if (self.player_name + "Dungeon Missions") in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
@@ -290,6 +291,7 @@ class EoSClient(BizHawkClient):
                     (player_gold_offset, 4, self.ram_mem_domain),
                     (relic_shards_offset, 1, self.ram_mem_domain),
                     (instruments_offset, 1, self.ram_mem_domain),
+                    (main_game_unlocked_offset, 1, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -335,11 +337,19 @@ class EoSClient(BizHawkClient):
             locs_to_send = set()
             relic_shards_amount = int.from_bytes(read_state[21])
             instruments_amount = int.from_bytes(read_state[22])
+            main_game_unlocked = int.from_bytes(read_state[23])
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
             #    for i in range(10):
             #        network_item = ctx.locations_info[310+i]
-
+            if (main_game_unlocked & 1) == 0:
+                main_game_unlocked = main_game_unlocked | 0x1
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [
+                        (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
+                         self.ram_mem_domain)],
+                )
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received) - received_index):
