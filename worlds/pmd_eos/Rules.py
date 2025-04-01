@@ -345,6 +345,12 @@ def subx_rules(world, player):
                 add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state, req="Bag Upgrade", p=player, num=bag_num: state.has(req, p, num))
 
+            elif requirement in ["5 Early", "10 Early"]:
+                dungeon_num_str = requirement[0:2]
+                dungeon_num = int(dungeon_num_str)
+                add_rule(world.multiworld.get_location(item.flag_definition, player),
+                         lambda state, req="EarlyDungeons", p=player, num=dungeon_num: state.has_group(req, p, num))
+
             elif requirement == "Hidden Land":
                 add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state, req="Relic Fragment Shard", p=player,

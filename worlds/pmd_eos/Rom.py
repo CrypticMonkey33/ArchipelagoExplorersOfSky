@@ -110,6 +110,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     # Take the options and bake them into the rom, so they can be applied on runtime
     write_byte = 0
     write_byte = write_byte | world.options.iq_scaling.value
+    write_byte = write_byte | (world.options.xp_scaling.value << 12)
     if world.options.early_mission_floors.value:
         write_byte = write_byte | (0x1 << 4)
 
@@ -117,24 +118,24 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         write_byte = write_byte | (0x1 << 5)
 
     if world.options.level_scale.value:
-        write_byte = write_byte | (0x1 << 7)
+        write_byte = write_byte | (0x1 << 6)
 
     if world.options.type_sanity.value:
-        write_byte = write_byte | (0x1 << 8)
+        write_byte = write_byte | (0x1 << 7)
 
     if world.options.starter_option.value == 1:
-        write_byte = write_byte | (0x1 << 9)
+        write_byte = write_byte | (0x1 << 8)
 
     elif world.options.starter_option.value == 2:
-        write_byte = write_byte | (0x1 << 10)
+        write_byte = write_byte | (0x1 << 9)
 
     elif world.options.starter_option.value == 3:
-        write_byte = write_byte | ((0x1 << 9) + (0x1 << 10))
+        write_byte = write_byte | ((0x1 << 8) + (0x1 << 9))
 
     if world.options.deathlink.value and world.options.deathlink_type.value == 0:
-        write_byte = write_byte | (0x1 << 12)
-    elif world.options.deathlink.value and world.options.deathlink.value == 1:
         write_byte = write_byte | (0x1 << 11)
+    elif world.options.deathlink.value and world.options.deathlink.value == 1:
+        write_byte = write_byte | (0x1 << 10)
 
     late_missions_count = 0
     late_outlaws_count = 0

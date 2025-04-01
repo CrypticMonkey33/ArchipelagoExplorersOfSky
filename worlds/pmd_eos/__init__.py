@@ -137,7 +137,7 @@ class EOSWorld(World):
             elif location.classification == "Free":
                 menu_region.locations.append(EOSLocation(self.player, location.name,
                                                          location.id, menu_region))
-            elif location.classification in ["EarlyDungeonComplete", "EarlySubX"]:
+            elif location.classification in ["EarlyDungeonComplete", "EarlySubX", "Rank"]:
                 early_dungeons_region.locations.append(EOSLocation(self.player, location.name,
                                                                    location.id, early_dungeons_region))
                 if "Mission" in location.group:
