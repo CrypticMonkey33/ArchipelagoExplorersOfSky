@@ -23,14 +23,17 @@ def set_rules(world: "EOSWorld", excluded):
     if world.options.goal.value == 0:
         set_rule(world.multiworld.get_location("Final Boss", player),
                  lambda state: state.has("Temporal Tower", player) and has_relic_shards(state, player, world))
-        set_rule(world.multiworld.get_location("Dark Crater", player),
-                 lambda state: state.has("Dark Crater", player) and ready_for_late_game(state, player, world))
+        #set_rule(world.multiworld.get_location("Dark Crater", player),
+                 #lambda state: state.has("Dark Crater", player) and ready_for_late_game(state, player, world))
 
     elif world.options.goal.value == 1:
         set_rule(world.multiworld.get_location("Final Boss", player),
                  lambda state: ready_for_darkrai(state, player, world))
         set_rule(world.multiworld.get_location("Dark Crater", player),
                  lambda state: ready_for_darkrai(state, player, world))
+        set_rule(world.multiworld.get_location("The Nightmare", player),
+                 lambda state: state.can_reach_location("Mt. Bristle", player) and state.has("The Nightmare", player)
+                               and ready_for_late_game(state, player, world))
 
     set_rule(world.multiworld.get_entrance("Late Game Door", player),
              lambda state: ready_for_late_game(state, player, world))
@@ -41,9 +44,7 @@ def set_rules(world: "EOSWorld", excluded):
     set_rule(world.multiworld.get_location("Temporal Tower", player),
              lambda state: state.has("Temporal Tower", player) and has_relic_shards(state, player, world))
 
-    set_rule(world.multiworld.get_location("The Nightmare", player),
-             lambda state: state.can_reach_location("Mt. Bristle", player) and state.has("The Nightmare", player)
-                           and ready_for_late_game(state, player, world))
+
 
 
 def has_relic_shards(state, player, world):
@@ -66,7 +67,7 @@ def spinda_drink_events(player, world):
 def forbid_items_behind_locations(world, player):
     forbid_item(world.multiworld.get_location("Hidden Land", player), "Relic Fragment Shard", player)
     forbid_item(world.multiworld.get_location("Temporal Tower", player), "Relic Fragment Shard", player)
-    if world.options.sky_peak_type == 1:
+    if world.options.goal.value == 1 and world.options.sky_peak_type == 1:
         forbid_item(world.multiworld.get_location("1st Station Pass", player), "Progressive Sky Peak", player)
         forbid_item(world.multiworld.get_location("2nd Station Pass", player), "Progressive Sky Peak", player)
         forbid_item(world.multiworld.get_location("3rd Station Pass", player), "Progressive Sky Peak", player)
@@ -79,15 +80,15 @@ def forbid_items_behind_locations(world, player):
         forbid_item(world.multiworld.get_location("Sky Peak Summit Pass", player), "Progressive Sky Peak", player)
         forbid_item(world.multiworld.get_location("5th Station Clearing", player), "Progressive Sky Peak", player)
         forbid_item(world.multiworld.get_location("Sky Peak Summit", player), "Progressive Sky Peak", player)
-        if world.options.goal.value == 1:
-            for i in range(111, 120):
-                location = location_Dict_by_id[i]
-                for j in range(world.options.late_mission_checks.value):
-                    forbid_item(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
-                                "Progressive Sky Peak", player)
-                for j in range(world.options.late_outlaw_checks.value):
-                    forbid_item(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
-                                "Progressive Sky Peak", player)
+        # if world.options.goal.value == 1:
+        for i in range(111, 120):
+            location = location_Dict_by_id[i]
+            for j in range(world.options.late_mission_checks.value):
+                forbid_item(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
+                            "Progressive Sky Peak", player)
+            for j in range(world.options.late_outlaw_checks.value):
+                forbid_item(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
+                            "Progressive Sky Peak", player)
 
 
 def special_episodes_rules(world, player):
@@ -160,7 +161,7 @@ def dungeon_locations_behind_items(world, player):
         elif "Early" in location.group or "Dojo" in location.group:
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player))
-        elif "Station" in location.group:
+        elif "Station" in location.group and world.options.goal.value == 1:
             if world.options.sky_peak_type.value == 1:  # progressive
                 if location.name == "Sky Peak Summit":
                     set_rule(world.multiworld.get_location(location.name, player),
@@ -194,7 +195,7 @@ def dungeon_locations_behind_items(world, player):
                 set_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("1st Station Pass", player)
                                        and ready_for_late_game(state, player, world))
-        elif "Aegis" in location.group:
+        elif "Aegis" in location.group and world.options.goal.value == 1:
             if world.options.cursed_aegis_cave.value == 0:
                 if location.id in [54]:
                     set_rule(world.multiworld.get_location(location.name, player),
@@ -221,11 +222,11 @@ def dungeon_locations_behind_items(world, player):
                          lambda state: state.has("Ice Aegis Cave", player)
                                        and ready_for_late_game(state, player, world))
 
-        elif "Late" in location.group:
+        elif "Late" in location.group and world.options.goal.value == 1:
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player) and ready_for_late_game(state, player,
                                                                                                    world))
-        elif "Rule" in location.group:
+        elif "Rule" in location.group and world.options.goal.value == 1:
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player) and ready_for_late_game(state, player,
                                                                                                    world))
@@ -250,6 +251,7 @@ def mission_rules(world, player):
                          lambda state, ln=location.name, p=player: state.has(ln, p))
 
         elif location.classification in ["LateDungeonComplete", "BossDungeonComplete"]:
+
             if world.options.goal.value == 1:
                 if "Station" in location.group:
                     if world.options.sky_peak_type == 1:
@@ -307,8 +309,13 @@ def subx_rules(world, player):
     for item in subX_table:
         if item.flag_definition == "Unused":
             continue
-        if (item.flag_definition == "Manaphy's Discovery") and world.options.goal.value == 0:
+        if world.options.goal.value == 0 and item.classification in ["Manaphy", "LateSubX", "Legendary", "Instrument",
+                                                                     "OptionalSubX", "SecretRank"]:
             continue
+        if world.options.goal.value == 0 and item.flag_definition == "Bag Upgrade 5":
+            continue
+        # if (item.flag_definition == "Manaphy's Discovery") and world.options.goal.value == 0:
+        # continue
         for requirement in item.prerequisites:
             if requirement == "Defeat Dialga":
                 add_rule(world.multiworld.get_location(item.flag_definition, player),

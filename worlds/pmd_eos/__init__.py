@@ -69,6 +69,7 @@ class EOSWorld(World):
     disabled_locations: Set[str] = []
     extra_locations_added = 0
     mission_start_id = 1000
+    excluded_locations = 0
 
     def generate_early(self) -> None:
         if self.options.bag_on_start.value:
@@ -169,7 +170,8 @@ class EOSWorld(World):
                 late_dungeon = EOSLocation(self.player, location.name,
                                                                   location.id, late_dungeons_region)
                 if self.options.goal.value == 0:  # if dialga is the goal, make the location excluded
-                    late_dungeon.progress_type = LocationProgressType.EXCLUDED
+                    self.excluded_locations += 1
+                    continue
 
                 late_dungeons_region.locations.append(late_dungeon)
                 if self.options.goal.value == 1 and ("Mission" in location.group):
@@ -193,14 +195,17 @@ class EOSWorld(World):
                                  lambda state, ln=location.name, p=self.player: state.has(ln, p))
 
                         self.extra_locations_added += 1
-            elif location.classification in ["Manaphy", "SecretRank", "Legendary", "Instrument"]:
+            elif (location.classification in ["Manaphy", "SecretRank", "Legendary", "Instrument"]
+                  or location.name == "Bag Upgrade 5"):
                 late_dungeon = EOSLocation(self.player, location.name,
                                                                   location.id, late_dungeons_region)
                 if self.options.goal.value == 0:  # if dialga is the goal, make the location excluded
-                    late_dungeon.progress_type = LocationProgressType.EXCLUDED
+                    self.excluded_locations += 1
+                    continue
+                    #late_dungeon.progress_type = LocationProgressType.EXCLUDED
                     #Manaphy's discovery can only be collected if manaphy is in the game
-                    if location.name == "Manaphy's Discovery":
-                        continue
+                    #if location.name == "Manaphy's Discovery":
+                    #    continue
                 late_dungeons_region.locations.append(late_dungeon)
             elif location.classification in ["SpindaDrinkEvent", "SpindaDrink"]:
 
@@ -241,9 +246,11 @@ class EOSWorld(World):
                                                                 location.id, extra_items_region))
             elif location.classification in ["RuleDungeonComplete", "OptionalSubX"]:
                 if self.options.long_location.value == 0:
-                    location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
-                    location.progress_type = LocationProgressType.EXCLUDED
-                    rule_dungeons_region.locations.append(location)
+                    self.excluded_locations += 1
+                    continue
+                    #location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
+                    #location.progress_type = LocationProgressType.EXCLUDED
+                    #rule_dungeons_region.locations.append(location)
                 else:
                     location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
                     rule_dungeons_region.locations.append(location)
@@ -271,7 +278,10 @@ class EOSWorld(World):
 
     def create_item(self, name: str, classification: ItemClassification = None) -> EOSItem:
         item_data = item_table[name]
-        return EOSItem(item_data.name, item_data.classification, item_data.id, self.player)
+        if classification is not None:
+            return EOSItem(item_data.name, classification, item_data.id, self.player)
+        else:
+            return EOSItem(item_data.name, item_data.classification, item_data.id, self.player)
 
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
@@ -315,7 +325,6 @@ class EOSWorld(World):
         trap_weights = []
         instruments = []
         item_weights = []
-        excluded_locations = 0
         if self.options.goal.value == 1:
             instruments_to_add = 0
             if self.options.total_instruments.value < self.options.req_instruments.value:
@@ -341,7 +350,8 @@ class EOSWorld(World):
         if self.options.goal == 1:
             required_items.append(self.create_item("Manaphy", ItemClassification.progression))
         else:
-            excluded_locations += 1
+            # self.excluded_locations += 1
+            test = 0
         if self.options.goal.value == 1 and (self.options.legendaries.value > len(self.options.allowed_legendaries.value)):
             for item in self.options.allowed_legendaries.value:
                 required_items.append(self.create_item(item, ItemClassification.useful))
@@ -366,7 +376,7 @@ class EOSWorld(World):
             elif "Legendary" in item_table[item_name].group:
                 continue
             elif "Instrument" in item_table[item_name].group:
-               continue
+                continue
             elif item_table[item_name].classification == ItemClassification.filler:
                 if item_name in ["Golden Apple", "Gold Ribbon"]:
                     continue
@@ -378,10 +388,13 @@ class EOSWorld(World):
             elif item_table[item_name].classification == ItemClassification.progression:
                 classification = ItemClassification.progression
                 if (self.options.goal.value == 0) and "LateDungeons" in item_table[item_name].group:
-                    classification = ItemClassification.useful
+                    continue
+                    #classification = ItemClassification.useful
+
                 if "Aegis" in item_table[item_name].group:
                     if self.options.goal.value == 0:
-                        classification = ItemClassification.useful
+                        #classification = ItemClassification.useful
+                        continue
                     else:
                         classification = ItemClassification.progression
                     if self.options.cursed_aegis_cave.value == 0:
@@ -402,7 +415,8 @@ class EOSWorld(World):
                     if self.options.sky_peak_type.value == 1:
                         if item_name == "Progressive Sky Peak":
                             if self.options.goal.value == 0:
-                                classification = ItemClassification.useful
+                                continue
+                                #classification = ItemClassification.useful
                             else:
                                 classification = ItemClassification.progression
                             for i in range(10):
@@ -415,25 +429,29 @@ class EOSWorld(World):
                             continue
                         else:
                             if self.options.goal.value == 0:
-                                classification = ItemClassification.useful
+                                #classification = ItemClassification.useful
+                                continue
                             else:
                                 classification = ItemClassification.progression
                     elif self.options.sky_peak_type.value == 3:
                         if item_name == "1st Station Pass":
                             if self.options.goal.value == 0:
-                                classification = ItemClassification.useful
+                                continue
+                                #classification = ItemClassification.useful
                             else:
                                 classification = ItemClassification.progression
 
                         else:
                             continue
+
                 required_items.append(self.create_item(item_name, classification))
+
 
             else:
                 required_items.append(self.create_item(item_name, ItemClassification.useful))
 
         remaining = len(EOS_location_table) + self.extra_locations_added - len(
-            required_items) - 1 - excluded_locations  # subtracting 1 for the event check
+            required_items) - 1 - self.excluded_locations  # subtracting 1 for the event check
 
         self.multiworld.itempool += required_items
         item_weights += filler_item_weights
