@@ -50,6 +50,8 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     macguffin_max_offset = 0x36F9E
     spinda_drinks_offset = 0x3713C
     hintable_items_offset = ov36_mem_loc + 0x36FA2
+    custom_save_area_offset = 0x3B0000
+    main_game_unlocked_offset = custom_save_area_offset + 0x2A7
 
     # recruitment_offset = 0x3702C
     # recruitment_evo_offset = 0x37030

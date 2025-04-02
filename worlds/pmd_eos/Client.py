@@ -176,7 +176,8 @@ class EoSClient(BizHawkClient):
                      "key": self.player_name + "GenericStorage",
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "instruments_collected": 0, "required_instruments": 0,
-                                 "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0},
+                                 "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
+                                 "spinda_events": 0, "spinda_drinks": 0},
                      "want_reply": True,
                      "operations": [{"operation": "default", "value":
                          {"goal_complete": False, "bag_given": False,
