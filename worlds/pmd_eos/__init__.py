@@ -168,7 +168,7 @@ class EOSWorld(World):
 
             elif location.classification in ["LateDungeonComplete", "LateSubX"]:
                 late_dungeon = EOSLocation(self.player, location.name,
-                                                                  location.id, late_dungeons_region)
+                                           location.id, late_dungeons_region)
                 if self.options.goal.value == 0:  # if dialga is the goal, make the location excluded
                     self.excluded_locations += 1
                     continue
@@ -198,7 +198,7 @@ class EOSWorld(World):
             elif (location.classification in ["Manaphy", "SecretRank", "Legendary", "Instrument"]
                   or location.name == "Bag Upgrade 5"):
                 late_dungeon = EOSLocation(self.player, location.name,
-                                                                  location.id, late_dungeons_region)
+                                           location.id, late_dungeons_region)
                 if self.options.goal.value == 0:  # if dialga is the goal, make the location excluded
                     self.excluded_locations += 1
                     continue
@@ -207,13 +207,22 @@ class EOSWorld(World):
                     #if location.name == "Manaphy's Discovery":
                     #    continue
                 late_dungeons_region.locations.append(late_dungeon)
-            elif location.classification in ["SpindaDrinkEvent", "SpindaDrink"]:
+            elif location.classification == "SpindaDrinkEvent":
+                if int(location.name[-2:]) <= self.options.drink_events:
+                    menu_region.locations.append(EOSLocation(self.player, location.name,
+                                                             location.id, menu_region))
+                else:
+                    self.excluded_locations += 1
+            elif location.classification == "SpindaDrink":
+                if int(location.name[-2:]) <= self.options.spinda_drinks:
+                    menu_region.locations.append(EOSLocation(self.player, location.name,
+                                                             location.id, menu_region))
+                else:
+                    self.excluded_locations += 1
 
-                menu_region.locations.append(EOSLocation(self.player, location.name,
-                                                         location.id, menu_region))
             elif location.classification == "BossDungeonComplete":
                 location_data = EOSLocation(self.player, location.name,
-                                                             location.id, end_game_region)
+                                            location.id, end_game_region)
                 if location.name == "Dark Crater" and self.options.goal.value == 0:
                     location_data.progress_type = LocationProgressType.EXCLUDED
 
@@ -352,11 +361,13 @@ class EOSWorld(World):
         else:
             # self.excluded_locations += 1
             test = 0
-        if self.options.goal.value == 1 and (self.options.legendaries.value > len(self.options.allowed_legendaries.value)):
+        if self.options.goal.value == 1 and (
+                self.options.legendaries.value > len(self.options.allowed_legendaries.value)):
             for item in self.options.allowed_legendaries.value:
                 required_items.append(self.create_item(item, ItemClassification.useful))
         elif self.options.goal.value == 1:
-            new_list = self.random.sample(sorted(self.options.allowed_legendaries.value), self.options.legendaries.value)
+            new_list = self.random.sample(sorted(self.options.allowed_legendaries.value),
+                                          self.options.legendaries.value)
             for item in new_list:
                 required_items.append(self.create_item(item, ItemClassification.useful))
 
@@ -482,10 +493,9 @@ class EOSWorld(World):
         patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/archipelago-base.bsdiff"))
         hint_item_list: list[Item] = []
         for i in range(10):
-            hint_item_list += [self.multiworld.get_location(f"Shop Item {1+i}", self.player).item]
+            hint_item_list += [self.multiworld.get_location(f"Shop Item {1 + i}", self.player).item]
         write_tokens(self, patch, hint_item_list)
         rom_path = os.path.join(
             output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
         )
         patch.write(rom_path)
-

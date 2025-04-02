@@ -49,6 +49,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     mission_max_offset = 0x36F9A
     macguffin_max_offset = 0x36F9E
     hintable_items_offset = ov36_mem_loc + 0x36FA2
+
     # recruitment_offset = 0x3702C
     # recruitment_evo_offset = 0x37030
     # team_formation_offset = 0x37034
@@ -151,16 +152,20 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x2, int.to_bytes(late_missions_count))
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x3, int.to_bytes(late_outlaws_count))
     patch.write_file("token_data.bin", patch.get_token_binary())
+    #testnum = find_ov36_mem_location()
 
 
 def find_ov36_mem_location() -> int:
     # Not currently used. Was an attempt to search the entire rom for the identifier and return where it found it
     # Would simplify having to change the start value of ov 36 every time the base patch changes
     rom = get_base_rom_as_bytes()
-    for byte_i, byte in enumerate(rom):
-
-        hex_search_value = 0x0DF0ADBA
-        hex_searched = int.from_bytes(rom[byte_i:(byte_i+3)])
+    test = range(0x296000, 0x300000)
+    for byte_i in range(0x297000, 0x300000):
+        # , byte in enumerate(rom)
+        intest= 0x297000 / 2
+        hex_search_value = 0xBAADF00D
+        hex_searched = int.from_bytes((rom[byte_i:(byte_i+4)]))
+        test2 = rom[byte_i:(byte_i+4)]
         if hex_searched == hex_search_value:
             return byte_i
 

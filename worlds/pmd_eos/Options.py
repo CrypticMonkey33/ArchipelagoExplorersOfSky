@@ -130,14 +130,28 @@ class SpindaDrinkEvents(Range):
     """How many drink events should be checks?"""
     default_name = "Spinda Drink Events"
     range_start = 0
-    range_end = 24
+    range_end = 20
     special_range_names = {
         "few": 5,
         "some": 10,
         "lots": 15,
-        "all": 24
+        "all": 20
     }
-    default = 0
+    default = 5
+
+
+class SpindaBasicDrinks(Range):
+    """How many Spinda Drinks should be checks?"""
+    display_name = "Spinda Drinks"
+    range_start = 0
+    range_end = 20
+    special_range_names = {
+        "few": 5,
+        "some": 10,
+        "lots": 15,
+        "all": 20
+    }
+    default = 5
 
 
 class StartWithBag(DefaultOnToggle):
@@ -393,3 +407,4 @@ class EOSOptions(PerGameCommonOptions):
     drink_events: SpindaDrinkEvents
     early_mission_floors: EarlyMissionFloors
     move_shortcuts: MoveShortcutMenu
+    spinda_drinks: SpindaBasicDrinks

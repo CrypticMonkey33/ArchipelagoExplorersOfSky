@@ -39,6 +39,8 @@ class EoSClient(BizHawkClient):
     macguffin_unlock_amount = 0
     instruments_collected = 0
     required_instruments = 0
+    spinda_events = 0
+    spinda_drinks = 0
     skypeaks_open = 0
     aegis_seals = 0
     dialga_complete = False
@@ -180,7 +182,8 @@ class EoSClient(BizHawkClient):
                          {"goal_complete": False, "bag_given": False,
                           "macguffins_collected": 0, "macguffin_unlock_amount": 0,
                           "instruments_collected": 0, "required_instruments": 0,
-                          "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0}}]
+                          "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
+                          "spinda_events": 0, "spinda_drinks": 0}}]
                      }
                 ]))
             await asyncio.sleep(0.1)
@@ -214,6 +217,7 @@ class EoSClient(BizHawkClient):
             death_link_ally_name_offset = death_link_offset + 0x2 + 256  # ally death name
             hintable_items_offset = custom_save_area_offset + 0x29A
             main_game_unlocked_offset = custom_save_area_offset + 0x2A7
+            spinda_drink_offset = custom_save_area_offset + 0x2A5
 
             if (self.player_name + "Dungeon Missions") in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
@@ -246,14 +250,15 @@ class EoSClient(BizHawkClient):
                 self.dialga_complete = stored["dialga_complete"]
                 self.skypeaks_open = stored["skypeaks_open"]
                 self.aegis_seals = stored["aegis_seals"]
-
+                self.spinda_events = stored["spinda_events"]
+                self.spinda_drinks = stored["spinda_drinks"]
 
             else:
 
                 return
 
             if ctx.slot_data:
-                if ("Deathlink" in ctx.slot_data):
+                if "Deathlink" in ctx.slot_data:
                     if ("DeathLink" not in ctx.tags) and ctx.slot_data["Deathlink"]:
                         await ctx.update_death_link(True)
                     elif ("DeathLink" in ctx.tags) and not ctx.slot_data["Deathlink"]:
@@ -292,6 +297,8 @@ class EoSClient(BizHawkClient):
                     (relic_shards_offset, 1, self.ram_mem_domain),
                     (instruments_offset, 1, self.ram_mem_domain),
                     (main_game_unlocked_offset, 1, self.ram_mem_domain),
+                    (spinda_drink_offset, 2, self.ram_mem_domain),
+                    (scenario_talk_bitfield_offset + 0x1E, 1, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -338,6 +345,8 @@ class EoSClient(BizHawkClient):
             relic_shards_amount = int.from_bytes(read_state[21])
             instruments_amount = int.from_bytes(read_state[22])
             main_game_unlocked = int.from_bytes(read_state[23])
+            spinda_drinks_ram = array.array('i', [item for item in read_state[24]])
+            scenario_talk_bitfield_240_list = int.from_bytes(read_state[25])
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
             #    for i in range(10):
@@ -1223,6 +1232,29 @@ class EoSClient(BizHawkClient):
                 )
                 await asyncio.sleep(0.1)
 
+            # Check for Spinda flag and release the spinda checks based on the amount in ram
+            if ((scenario_talk_bitfield_240_list >> 7) & 1) == 1:
+
+                if spinda_drinks_ram[0] > self.spinda_events:
+                    spinda_events_start_id = 900
+                    for spindaid in range(self.spinda_events, spinda_drinks_ram[0]):
+                        locs_to_send.add(spinda_events_start_id + spindaid)
+                    self.spinda_events = spinda_drinks_ram[0]
+                if spinda_drinks_ram[1] > self.spinda_drinks:
+                    spinda_drinks_start_id = 920
+                    for spindaid in range(self.spinda_events, spinda_drinks_ram[1]):
+                        locs_to_send.add(spinda_drinks_start_id + spindaid)
+                    self.spinda_drinks = spinda_drinks_ram[1]
+                    scenario_talk_bitfield_240_list = scenario_talk_bitfield_240_list & 0x7F
+                await bizhawk.write(
+                    ctx.bizhawk_ctx,
+                    [
+                        (scenario_talk_bitfield_offset + 0x1E, int.to_bytes(scenario_talk_bitfield_240_list),
+                         self.ram_mem_domain),
+                    ]
+                )
+
+
             # Update data storage
             await (ctx.send_msgs(
                 [
@@ -1254,14 +1286,16 @@ class EoSClient(BizHawkClient):
                      "key": self.player_name + "GenericStorage",
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "cresselia_feather_acquired": False,
-                                 "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0},
+                                 "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
+                                 "spinda_events": 0, "spinda_drinks": 0},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value":
                          {"goal_complete": self.goal_complete, "bag_given": self.bag_given,
                           "macguffins_collected": self.macguffins_collected, "macguffin_unlock_amount": self.macguffin_unlock_amount,
                           "required_instruments": self.required_instruments, "instruments_collected": self.instruments_collected,
                           "dialga_complete": self.dialga_complete, "skypeaks_open": self.skypeaks_open,
-                          "aegis_seals": self.aegis_seals}}]
+                          "aegis_seals": self.aegis_seals, "spinda_events": self.spinda_events,
+                          "spinda_drinks": self.spinda_drinks}}]
                      }
                 ]))
             await asyncio.sleep(0.1)
