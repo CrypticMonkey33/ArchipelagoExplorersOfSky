@@ -50,7 +50,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     macguffin_max_offset = 0x36F9E
     spinda_drinks_offset = 0x3713C
     hintable_items_offset = ov36_mem_loc + 0x36FA2
-    custom_save_area_offset = 0x3B0000
+    custom_save_area_offset = ov36_mem_loc + 0x8F80
     main_game_unlocked_offset = custom_save_area_offset + 0x2A7
 
     # recruitment_offset = 0x3702C
@@ -140,6 +140,10 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         write_byte = write_byte | (0x1 << 11)
     elif world.options.deathlink.value and world.options.deathlink.value == 1:
         write_byte = write_byte | (0x1 << 10)
+
+    if world.options.special_episode_sanity.value:
+        patch.write_token(APTokenTypes.WRITE, main_game_unlocked_offset,
+                          int.to_bytes(0x1))
 
     late_missions_count = 0
     late_outlaws_count = 0
