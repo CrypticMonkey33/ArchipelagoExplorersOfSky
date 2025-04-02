@@ -126,7 +126,7 @@ class LateOutlawChecks(NamedRange):
     default = 2
 
 
-class SpindaDrinkEvents(Range):
+class SpindaDrinkEvents(NamedRange):
     """How many drink events should be checks?"""
     default_name = "Spinda Drink Events"
     range_start = 0
@@ -140,7 +140,7 @@ class SpindaDrinkEvents(Range):
     default = 5
 
 
-class SpindaBasicDrinks(Range):
+class SpindaBasicDrinks(NamedRange):
     """How many Spinda Drinks should be checks?"""
     display_name = "Spinda Drinks"
     range_start = 0

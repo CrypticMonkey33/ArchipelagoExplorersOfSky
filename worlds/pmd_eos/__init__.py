@@ -325,6 +325,7 @@ class EOSWorld(World):
             "LongLocations": self.options.long_location.value,
             "CursedAegisCave": self.options.cursed_aegis_cave.value,
             "DrinkEvents": self.options.drink_events.value,
+            "SpindaDrinks": self.options.spinda_drinks.value,
         }
 
     def create_items(self) -> None:
