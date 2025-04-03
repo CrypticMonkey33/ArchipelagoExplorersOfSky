@@ -433,6 +433,16 @@ def subx_rules(world, player):
             continue
         if world.options.goal.value == 0 and item.flag_definition == "Bag Upgrade 5":
             continue
+        if item.classification == "Rank":
+            rank_toid_dict = {"Bronze Rank": 1, "Silver Rank": 2, "Gold Rank": 3, "Diamond Rank": 4, "Super Rank": 5,
+                              "Ultra Rank": 6, "Hyper Rank": 7, "Master Rank": 8, "Master ★ Rank": 9,
+                              "Master ★★ Rank": 10, "Master ★★★ Rank": 11, "Guildmaster Rank": 12}
+            if rank_toid_dict[item.flag_definition] > world.options.max_rank:
+                continue
+            # if dialga is the goal, we can't add master star rank+
+            if world.options.goal.value == 0 and rank_toid_dict[item.flag_definition] > 8:
+                continue
+
         if world.options.special_episode_sanity.value == 1:
             add_rule(world.multiworld.get_location(item.flag_definition, player),
                      lambda state: state.has("Main Game Unlock", player))

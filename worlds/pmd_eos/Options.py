@@ -370,6 +370,24 @@ class MoveShortcutMenu(DefaultOnToggle):
     display_name = "Move Shortcut Menu"
 
 
+class MaxRequiredRank(Choice):
+    """What is the maximum required rank you want to be logically necessary"""
+    display_name = "Max Required Rank"
+    option_disabled = 0
+    option_bronze = 1
+    option_silver = 2
+    option_gold = 3
+    option_diamond = 4
+    option_super = 5
+    option_ultra = 6
+    option_hyper = 7
+    option_master = 8
+    option_master_1star = 9
+    option_master_2star = 10
+    option_master_3start = 11
+    option_guildmaster = 12
+
+
 @dataclass
 class EOSOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
@@ -408,3 +426,4 @@ class EOSOptions(PerGameCommonOptions):
     early_mission_floors: EarlyMissionFloors
     move_shortcuts: MoveShortcutMenu
     spinda_drinks: SpindaBasicDrinks
+    max_rank: MaxRequiredRank

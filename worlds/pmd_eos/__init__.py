@@ -143,7 +143,26 @@ class EOSWorld(World):
             elif location.classification == "Free":
                 menu_region.locations.append(EOSLocation(self.player, location.name,
                                                          location.id, menu_region))
-            elif location.classification in ["EarlyDungeonComplete", "EarlySubX", "Rank"]:
+            elif location.classification == "Rank":
+                rank_toid_dict = {"Bronze Rank": 1, "Silver Rank": 2, "Gold Rank": 3, "Diamond Rank": 4,
+                                  "Super Rank": 5,
+                                  "Ultra Rank": 6, "Hyper Rank": 7, "Master Rank": 8, "Master ★ Rank": 9,
+                                  "Master ★★ Rank": 10, "Master ★★★ Rank": 11, "Guildmaster Rank": 12}
+                if rank_toid_dict[location.name] > self.options.max_rank:
+                    continue
+                # if dialga is the goal, we can't add master star rank+
+                if self.options.goal.value == 0 and rank_toid_dict[location.name] > 8:
+                    continue
+
+                if rank_toid_dict[location.name] <= 8:
+                    early_dungeons_region.locations.append(EOSLocation(self.player, location.name,
+                                                                       location.id, early_dungeons_region))
+                else:
+                    late_dungeon = EOSLocation(self.player, location.name,
+                                               location.id, late_dungeons_region)
+                    late_dungeons_region.locations.append(late_dungeon)
+
+            elif location.classification in ["EarlyDungeonComplete", "EarlySubX"]:
                 early_dungeons_region.locations.append(EOSLocation(self.player, location.name,
                                                                    location.id, early_dungeons_region))
                 if "Mission" in location.group:
