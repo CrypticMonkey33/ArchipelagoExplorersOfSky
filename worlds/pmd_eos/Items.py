@@ -281,7 +281,7 @@ EOS_item_table = [
     ItemData("Formation Control", 553, ItemClassification.progression, 0, ["Generic"], 0),
     ItemData("Miracle Chest", 464, ItemClassification.useful, 0, ["Item", "Single"], 0x42),  # Boosts Exp
     ItemData("Wonder Chest", 465, ItemClassification.useful, 0, ["Item", "Single"], 0x43),  # Boosts Exp
-
+    ItemData("Main Game Unlock", 700, ItemClassification.progression, 0, [], 0),
     # ItemData("Poke x-1000", 570, ItemClassification.trap, 0, ["Money"], 0),
 ]
 filler_items = [

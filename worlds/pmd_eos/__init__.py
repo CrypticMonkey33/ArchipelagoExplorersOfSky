@@ -93,6 +93,11 @@ class EOSWorld(World):
         if self.options.team_form.value:
             item_name = "Formation Control"
             self.multiworld.push_precollected(self.create_item(item_name))
+        if self.options.special_episode_sanity.value:
+            possibleSEs = ["Bidoof\'s Wish", "Igglybuff the Prodigy", "In the Future of Darkness",
+                           "Here Comes Team Charm!", 'Today\'s "Oh My Gosh"']
+            item_name = self.random.choice(possibleSEs)
+            self.multiworld.push_precollected(self.create_item(item_name))
 
     def create_regions(self) -> None:
         menu_region = Region("Menu", self.player, self.multiworld)
@@ -355,7 +360,8 @@ class EOSWorld(World):
             relics_to_add = self.options.total_shards.value
 
         for i in range(relics_to_add):
-            required_items.append(self.create_item("Relic Fragment Shard", ItemClassification.progression))
+            required_items.append(self.create_item("Relic Fragment Shard",
+                                                   ItemClassification.progression_skip_balancing))
 
         if self.options.goal == 1:
             required_items.append(self.create_item("Manaphy", ItemClassification.progression))
@@ -382,7 +388,11 @@ class EOSWorld(World):
 
                 freq = max(freq - precollected.count(item_name), 0)
                 required_items += [self.create_item(item_name) for _ in range(freq)]
-
+            elif item_table[item_name].name == "Main Game Unlock":
+                if self.options.special_episode_sanity == 0:
+                    continue
+                else:
+                    required_items.append(self.create_item(item_name, ItemClassification.progression))
             elif item_table[item_name].name in ["Victory", "Relic Fragment Shard"]:
                 continue
             elif "Legendary" in item_table[item_name].group:
