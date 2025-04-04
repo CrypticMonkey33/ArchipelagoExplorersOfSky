@@ -80,7 +80,7 @@ def spinda_drink_events(world, player):
     sdrinks_amount = world.options.spinda_drinks.value
     for i in range(de_amount):
         set_rule(world.multiworld.get_location("Spinda Drink Event " + str(i+1), player),
-                 lambda state: state.has("Bag Upgrade", player))
+                 lambda state: state.has("Bag Upgrade", player, 3))
         if world.options.special_episode_sanity.value == 1:
             add_rule(world.multiworld.get_location("Spinda Drink Event " + str(i+1), player),
                      lambda state: state.has("Main Game Unlock", player))
