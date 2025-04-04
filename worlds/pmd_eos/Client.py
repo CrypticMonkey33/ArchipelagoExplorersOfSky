@@ -493,7 +493,7 @@ class EoSClient(BizHawkClient):
                             await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
                                                  player_gold_offset, bank_gold_offset)
 
-                    elif item_data.name == "Chatot Repllent":
+                    elif item_data.name == "Chatot Repellent":
                         if ((performance_progress_bitfield[3] >> 1) & 1) == 0:
                             write_byte = performance_progress_bitfield[3] | (0x1 << 1)
                             performance_progress_bitfield[3] = write_byte
@@ -632,6 +632,10 @@ class EoSClient(BizHawkClient):
                         if relic_shards_amount == self.macguffins_collected:
                             self.macguffins_collected += 1
                             relic_shards_amount += 1
+                            logger.info(
+                                "The Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
+                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(relic_shards_amount)
+                            )
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [
@@ -644,8 +648,19 @@ class EoSClient(BizHawkClient):
                             self.macguffins_collected = relic_shards_amount
                             self.macguffins_collected += 1
                             relic_shards_amount += 1
+                            logger.info(
+                                "Something Weird Happened Please tell Cryptic if you see this " +
+                                "\nThe Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
+                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(relic_shards_amount)
+                            )
                         else:
                             relic_shards_amount += 1
+                            logger.info(
+                                "The Rom decided to be lower than the AP count probably due to save states " +
+                                "\nThe Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
+                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(
+                                    relic_shards_amount)
+                            )
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [
