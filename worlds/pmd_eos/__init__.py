@@ -149,9 +149,11 @@ class EOSWorld(World):
                                   "Ultra Rank": 6, "Hyper Rank": 7, "Master Rank": 8, "Master ★ Rank": 9,
                                   "Master ★★ Rank": 10, "Master ★★★ Rank": 11, "Guildmaster Rank": 12}
                 if rank_toid_dict[location.name] > self.options.max_rank:
+                    self.excluded_locations += 1
                     continue
                 # if dialga is the goal, we can't add master star rank+
                 if self.options.goal.value == 0 and rank_toid_dict[location.name] > 8:
+                    self.excluded_locations += 1
                     continue
 
                 if rank_toid_dict[location.name] <= 8:
@@ -508,7 +510,7 @@ class EOSWorld(World):
             self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
                                          in self.random.sample(filler_items, filler_items_toadd, counts=item_weights)]
             self.multiworld.itempool += [self.create_item(trap.name) for trap
-                                         in self.random.sample(trap_items, traps_toadd, counts=trap_item_weights)]
+                                         in self.random.sample(trap_items, traps_toadd, counts=trap_weights)]
 
         else:
             self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
