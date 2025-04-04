@@ -369,7 +369,7 @@ class EoSClient(BizHawkClient):
                     item_memory_offset = 0
                     if ctx.slot_data["SkyPeakType"] == 1:  # progressive
                         self.skypeaks_open += 1
-                        item_memory_offset = 0x6F + self.skypeaks_open
+                        item_memory_offset = 0x6E + self.skypeaks_open
                     elif ctx.slot_data["SkyPeakType"] == 2:  # all random
                         item_memory_offset = item_data.memory_offset
                         # Since our open list is a byte array and our memory offset is bit based
@@ -392,6 +392,7 @@ class EoSClient(BizHawkClient):
                                 )
 
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
+                        continue
 
                     sig_digit = item_memory_offset // 8
                     non_sig_digit = item_memory_offset % 8
