@@ -8,7 +8,9 @@ from typing import List, Dict, Set, Any
 
 import worlds.oot
 from .Items import (EOSItem, item_table, item_frequencies, item_table_by_id, item_table_by_groups,
-                    filler_item_table, filler_item_weights, trap_item_table, trap_item_weights)
+                    filler_item_table, filler_item_weights, trap_item_table, trap_item_weights,
+                    exclusive_filler_item_table, exclusive_filler_item_weights, legendary_pool_dict, filler_items,
+                    exclusive_filler_items)
 from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table
 from .Options import EOSOptions
 from .Rules import set_rules, ready_for_late_game, has_relic_shards
@@ -356,7 +358,8 @@ class EOSWorld(World):
 
     def create_items(self) -> None:
         required_items = []
-        filler_items = []
+        filler_items_pool = []
+        exclusive_filler_pool = []
         trap_items = []
         trap_weights = []
         instruments = []
@@ -423,7 +426,11 @@ class EOSWorld(World):
             elif item_table[item_name].classification == ItemClassification.filler:
                 if item_name in ["Golden Apple", "Gold Ribbon"]:
                     continue
-                filler_items.append(self.create_item(item_name, ItemClassification.filler))
+                if "Exclusive" in item_table[item_name].group:
+                    exclusive_filler_pool.append(self.create_item(item_name, ItemClassification.filler))
+                else:
+                    filler_items_pool.append(self.create_item(item_name, ItemClassification.filler))
+
 
             elif item_table[item_name].classification == ItemClassification.trap:
                 trap_items.append(self.create_item(item_name, ItemClassification.trap))
@@ -499,22 +506,24 @@ class EOSWorld(World):
         self.multiworld.itempool += required_items
         item_weights += filler_item_weights
         trap_weights += trap_item_weights
-        for i in range(6):
-            filler_items += filler_items
+        for i in range(4):
+            filler_items_pool += filler_items_pool
             trap_items += trap_items
             item_weights += item_weights
             trap_weights += trap_weights
+        filler_items_pool += exclusive_filler_pool
+        item_weights += exclusive_filler_item_weights
         if self.options.allow_traps.value in [1, 2]:
             filler_items_toadd = math.ceil(remaining * (100 - self.options.trap_percent) / 100)
             traps_toadd = math.floor(remaining * self.options.trap_percent / 100)
             self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
-                                         in self.random.sample(filler_items, filler_items_toadd, counts=item_weights)]
+                                         in self.random.sample(filler_items_pool, filler_items_toadd, counts=item_weights)]
             self.multiworld.itempool += [self.create_item(trap.name) for trap
                                          in self.random.sample(trap_items, traps_toadd, counts=trap_weights)]
 
         else:
             self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
-                                         in self.random.sample(filler_items, remaining, counts=item_weights)]
+                                         in self.random.sample(filler_items_pool, remaining, counts=item_weights)]
 
     def set_rules(self) -> None:
         set_rules(self, self.disabled_locations)

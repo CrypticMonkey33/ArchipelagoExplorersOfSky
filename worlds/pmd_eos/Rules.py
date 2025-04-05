@@ -300,6 +300,8 @@ def dungeon_locations_behind_items(world, player):
                 add_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Main Game Unlock", player))
         elif "Rule" in location.group and world.options.goal.value == 1:
+            if world.options.long_location == 0:
+                continue
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player) and ready_for_late_game(state, player,
                                                                                                    world))
@@ -432,6 +434,8 @@ def subx_rules(world, player):
                                                                      "OptionalSubX", "SecretRank"]:
             continue
         if world.options.goal.value == 0 and item.flag_definition == "Bag Upgrade 5":
+            continue
+        if world.options.long_location.value == 0 and item.classification in ["OptionalSubX"]:
             continue
         if item.classification == "Rank":
             rank_toid_dict = {"Bronze Rank": 1, "Silver Rank": 2, "Gold Rank": 3, "Diamond Rank": 4, "Super Rank": 5,

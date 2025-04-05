@@ -356,14 +356,14 @@ class EoSClient(BizHawkClient):
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
             #    for i in range(10):
             #        network_item = ctx.locations_info[310+i]
-            if (main_game_unlocked & 1) == 0:
-                main_game_unlocked = main_game_unlocked | 0x1
-                await bizhawk.write(
-                    ctx.bizhawk_ctx,
-                    [
-                        (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
-                         self.ram_mem_domain)],
-                )
+            #if (main_game_unlocked & 1) == 0:
+            #    main_game_unlocked = main_game_unlocked | 0x1
+            #    await bizhawk.write(
+            #        ctx.bizhawk_ctx,
+            #        [
+            #            (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
+            #             self.ram_mem_domain)],
+            #    )
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received) - received_index):
