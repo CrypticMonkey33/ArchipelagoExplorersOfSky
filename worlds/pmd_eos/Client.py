@@ -459,39 +459,28 @@ class EoSClient(BizHawkClient):
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Generic" in item_data.group:
                     if item_data.name == "Bag Upgrade":
+                        if ((performance_progress_bitfield[0] >> 2) & 1) == 0:
+                            write_byte = performance_progress_bitfield[0] | (0x1 << 2)
+                            performance_progress_bitfield[0] = write_byte
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (performance_progress_offset, int.to_bytes(write_byte),
+                                     self.ram_mem_domain),
+                                ]
+                            )
 
-                        write_byte = bag_upgrade_value + 0x1
-                        bag_upgrade_value = write_byte
+                        else:
+                            write_byte = bag_upgrade_value + 0x1
+                            bag_upgrade_value = write_byte
 
-                        await bizhawk.write(
-                            ctx.bizhawk_ctx,
-                            [
-                                (bag_upgrade_offset, int.to_bytes(write_byte),
-                                 self.ram_mem_domain),
-                            ]
-                        )
-
-                        # if ((performance_progress_bitfield[0] >> 2) & 1) == 0:
-                        #    write_byte = performance_progress_bitfield[0] | (0x1 << 2)
-                        #    performance_progress_bitfield[0] = write_byte
-                        #    await bizhawk.write(
-                        #        ctx.bizhawk_ctx,
-                        #        [
-                        #            (performance_progress_offset, int.to_bytes(write_byte),
-                        #            self.ram_mem_domain),
-                        #       ]
-                        #    )
-                    # else:
-
-                    #    write_byte = scenario_balance_byte[0] + 0x1
-                    #     scenario_balance_byte[0] = write_byte
-                    #    await bizhawk.write(
-                    #        ctx.bizhawk_ctx,
-                    #       [
-                    #            (scenario_balance_offset, int.to_bytes(write_byte),
-                    #            self.ram_mem_domain),
-                    #       ]
-                    #   )
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (bag_upgrade_offset, int.to_bytes(write_byte),
+                                     self.ram_mem_domain),
+                                ]
+                            )
 
                     elif item_data.name == "Secret of the Waterfall":
                         if ((performance_progress_bitfield[3] >> 3) & 1) == 0:

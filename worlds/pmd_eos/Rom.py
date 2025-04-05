@@ -48,7 +48,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     ap_settings_offset = 0x36F98
     mission_max_offset = 0x36F9A
     macguffin_max_offset = 0x36F9E
-    spinda_drinks_offset = 0x3713C
+    spinda_drinks_offset = 0x37146
     hintable_items_offset = ov36_mem_loc + 0x36FA2
     custom_save_area_offset = ov36_mem_loc + 0x8F80
     main_game_unlocked_offset = custom_save_area_offset + 0x2A7
