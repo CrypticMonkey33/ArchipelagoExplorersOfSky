@@ -427,14 +427,14 @@ class EoSClient(BizHawkClient):
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                     await asyncio.sleep(0.1)
                 elif item_data.name == "Main Game Unlock":
-                    if (main_game_unlocked & 1) == 0:
-                        main_game_unlocked = main_game_unlocked | 0x1
-                        await bizhawk.write(
-                            ctx.bizhawk_ctx,
-                            [
-                                (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
-                                 self.ram_mem_domain)],
-                        )
+                   # if (main_game_unlocked & 1) == 0:
+                    #    main_game_unlocked = main_game_unlocked | 0x1
+                     #   await bizhawk.write(
+                     #       ctx.bizhawk_ctx,
+                     #       [
+                     #           (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
+                     #            self.ram_mem_domain)],
+                     #   )
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
 
                 elif (("EarlyDungeons" in item_data.group) or ("LateDungeons" in item_data.group)
