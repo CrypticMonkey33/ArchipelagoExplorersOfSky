@@ -141,7 +141,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     elif world.options.deathlink.value and world.options.deathlink.value == 1:
         write_byte = write_byte | (0x1 << 10)
 
-    if world.options.special_episode_sanity.value:
+    if world.options.special_episode_sanity.value == 0:
         patch.write_token(APTokenTypes.WRITE, main_game_unlocked_offset,
                           int.to_bytes(0x1))
 

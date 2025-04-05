@@ -308,8 +308,7 @@ class EoSClient(BizHawkClient):
             # make sure we are actually on the start screen before checking items and such
             scenario_main_list = read_state[6]
             main_game_unlocked = int.from_bytes(read_state[23])
-            if int.from_bytes(scenario_main_list) == 0:
-                return
+
             if (main_game_unlocked & 1) == 0:
                 for network_item in ctx.items_received:
                     if network_item.item == 700:
@@ -321,7 +320,8 @@ class EoSClient(BizHawkClient):
                                 (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
                                  self.ram_mem_domain)],
                         )
-
+            if int.from_bytes(scenario_main_list) == 0:
+                return
             #is_running = await self.is_game_running(ctx)
             LOADED_OVERLAY_GROUP_1 = 0xAFAD4
             overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
