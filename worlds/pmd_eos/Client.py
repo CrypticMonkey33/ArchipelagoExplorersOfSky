@@ -928,11 +928,6 @@ class EoSClient(BizHawkClient):
                      }]))
 
             # Send locations if there are any to send.
-            if locs_to_send != self.local_checked_locations:
-                self.local_checked_locations = locs_to_send
-
-                if locs_to_send is not None:
-                    await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
 
             if "DeathLink" in ctx.tags and ctx.last_death_link + 1 < time.time():
                 if (self.outside_deathlink == 0) and ((deathlink_sender_bit & 1) == 1):
@@ -1309,6 +1304,11 @@ class EoSClient(BizHawkClient):
                          self.ram_mem_domain),
                     ]
                 )
+            if locs_to_send != self.local_checked_locations:
+                self.local_checked_locations = locs_to_send
+
+                if locs_to_send is not None:
+                    await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
 
             # Update data storage
             await (ctx.send_msgs(
