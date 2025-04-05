@@ -100,6 +100,8 @@ class EOSWorld(World):
                            "Here Comes Team Charm!", 'Today\'s "Oh My Gosh"']
             item_name = self.random.choice(possibleSEs)
             self.multiworld.push_precollected(self.create_item(item_name))
+        else:
+            self.multiworld.push_precollected(self.create_item("Main Game Unlock"))
 
     def create_regions(self) -> None:
         menu_region = Region("Menu", self.player, self.multiworld)

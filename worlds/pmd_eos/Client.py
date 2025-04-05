@@ -307,8 +307,21 @@ class EoSClient(BizHawkClient):
             )
             # make sure we are actually on the start screen before checking items and such
             scenario_main_list = read_state[6]
+            main_game_unlocked = int.from_bytes(read_state[23])
             if int.from_bytes(scenario_main_list) == 0:
                 return
+            if (main_game_unlocked & 1) == 0:
+                for network_item in ctx.items_received:
+                    if network_item.item == 700:
+
+                        main_game_unlocked = main_game_unlocked | 0x1
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
+                                 self.ram_mem_domain)],
+                        )
+
             #is_running = await self.is_game_running(ctx)
             LOADED_OVERLAY_GROUP_1 = 0xAFAD4
             overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
@@ -348,7 +361,7 @@ class EoSClient(BizHawkClient):
             locs_to_send = set()
             relic_shards_amount = int.from_bytes(read_state[21])
             instruments_amount = int.from_bytes(read_state[22])
-            main_game_unlocked = int.from_bytes(read_state[23])
+
             spinda_drinks_ram = array.array('i', [item for item in read_state[24]])
             scenario_talk_bitfield_240_list = int.from_bytes(read_state[25])
             bag_upgrade_value = int.from_bytes(read_state[26])
@@ -422,6 +435,8 @@ class EoSClient(BizHawkClient):
                                 (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
                                  self.ram_mem_domain)],
                         )
+                        await self.update_received_items(ctx, received_items_offset, received_index, i)
+
                 elif (("EarlyDungeons" in item_data.group) or ("LateDungeons" in item_data.group)
                       or ("Dojo Dungeons" in item_data.group) or ("BossDungeons" in item_data.group)
                       or ("ExtraDungeons" in item_data.group) or ("RuleDungeons" in item_data.group)
