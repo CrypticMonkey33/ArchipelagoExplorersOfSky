@@ -284,7 +284,7 @@ class EoSClient(BizHawkClient):
                     (received_items_offset, 2, self.ram_mem_domain),
                     (scenario_main_offset, 1, self.ram_mem_domain),
                     (special_episode_offset, 1, self.ram_mem_domain),
-                    (scenario_main_bitfield_offset, 1, self.ram_mem_domain),
+                    (scenario_main_bitfield_offset, 8, self.ram_mem_domain),
                     (item_backup_offset, 4, self.ram_mem_domain),
                     (scenario_talk_bitfield_offset + 0x1F, 1, self.ram_mem_domain),
                     (dungeon_enter_index_offset, 2, self.ram_mem_domain),
