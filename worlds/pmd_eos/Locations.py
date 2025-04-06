@@ -243,7 +243,7 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("DojoDungeonComplete", 1, "Dojo Poison/Bug Maze", 187, 187, ["Dojo"]),  # 7 subareas
     LocationData("DojoDungeonComplete", 1, "Dojo Dragon Maze", 188, 188, ["Dojo"]),  # 7 subareas
     LocationData("DojoDungeonComplete", 1, "Dojo Ghost Maze", 189, 189, ["Dojo"]),  # 7 subareas
-    #LocationData("RuleDungeonComplete", 1, "Dojo Final Maze", 191, 191),  # 7 subareas
+    LocationData("RuleDungeonComplete", 1, "Dojo Final Maze", 191, 191, ["Rule"]),  # 7 subareas
     LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 1", 900, 0, ["Spinda"]),
     LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 2", 901, 0, ["Spinda"]),
     LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 3", 902, 0, ["Spinda"]),

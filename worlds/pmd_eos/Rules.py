@@ -29,7 +29,7 @@ def set_rules(world: "EOSWorld", excluded):
                      lambda state: state.has("Main Game Unlock", player))
 
         #set_rule(world.multiworld.get_location("Dark Crater", player),
-                 #lambda state: state.has("Dark Crater", player) and ready_for_late_game(state, player, world))
+        #lambda state: state.has("Dark Crater", player) and ready_for_late_game(state, player, world))
 
     elif world.options.goal.value == 1:
         set_rule(world.multiworld.get_location("Final Boss", player),
@@ -79,17 +79,19 @@ def spinda_drink_events(world, player):
     de_amount = world.options.drink_events.value
     sdrinks_amount = world.options.spinda_drinks.value
     for i in range(de_amount):
-        set_rule(world.multiworld.get_location("Spinda Drink Event " + str(i+1), player),
+        set_rule(world.multiworld.get_location("Spinda Drink Event " + str(i + 1), player),
                  lambda state: state.has("Bag Upgrade", player, 3))
         if world.options.special_episode_sanity.value == 1:
-            add_rule(world.multiworld.get_location("Spinda Drink Event " + str(i+1), player),
-                     lambda state: state.has("Main Game Unlock", player))
+            add_rule(world.multiworld.get_location("Spinda Drink Event " + str(i + 1), player),
+                     lambda state: state.has("Main Game Unlock", player) or state.has("Bidoof\'s Wish", player)
+                                   or state.has('Today\'s "Oh My Gosh"', player))
     for i in range(sdrinks_amount):
-        set_rule(world.multiworld.get_location("Spinda Drink " + str(i+1), player),
+        set_rule(world.multiworld.get_location("Spinda Drink " + str(i + 1), player),
                  lambda state: state.has("Bag Upgrade", player))
         if world.options.special_episode_sanity.value == 1:
-            add_rule(world.multiworld.get_location("Spinda Drink " + str(i+1), player),
-                     lambda state: state.has("Main Game Unlock", player))
+            add_rule(world.multiworld.get_location("Spinda Drink " + str(i + 1), player),
+                     lambda state: state.has("Main Game Unlock", player) or state.has("Bidoof\'s Wish", player)
+                                   or state.has('Today\'s "Oh My Gosh"', player))
 
 
 def forbid_items_behind_locations(world, player):
@@ -189,12 +191,19 @@ def dungeon_locations_behind_items(world, player):
                 add_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Main Game Unlock", player))
             continue
-        elif "Early" in location.group or "Dojo" in location.group:
+        elif "Early" in location.group:
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player))
             if world.options.special_episode_sanity.value == 1:
                 add_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Main Game Unlock", player))
+        elif "Dojo" in location.group:
+            set_rule(world.multiworld.get_location(location.name, player),
+                     lambda state, ln=location.name: state.has(ln, player))
+            if world.options.special_episode_sanity.value == 1:
+                add_rule(world.multiworld.get_location(location.name, player),
+                         lambda state: state.has("Main Game Unlock", player) or state.has("Bidoof\'s Wish", player)
+                                       or state.has('Today\'s "Oh My Gosh"', player))
         elif "Station" in location.group and world.options.goal.value == 1:
             if world.options.sky_peak_type.value == 1:  # progressive
                 if location.name == "Sky Peak Summit":
@@ -321,7 +330,7 @@ def mission_rules(world, player):
             if world.options.special_episode_sanity.value == 1:
                 for j in range(world.options.early_mission_checks.value):
                     add_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
-                            lambda state: state.has("Main Game Unlock", player))
+                             lambda state: state.has("Main Game Unlock", player))
                 for j in range(world.options.early_outlaw_checks.value):
                     add_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                              lambda state: state.has("Main Game Unlock", player))
@@ -433,6 +442,9 @@ def subx_rules(world, player):
         if world.options.goal.value == 0 and item.classification in ["Manaphy", "LateSubX", "Legendary", "Instrument",
                                                                      "OptionalSubX", "SecretRank"]:
             continue
+        if world.options.goal.value == 0 and item.flag_definition in ["Recycle Shop Dungeon #4",
+                                                                      "Recycle Shop Dungeon #5"]:
+            continue
         if world.options.goal.value == 0 and item.flag_definition == "Bag Upgrade 5":
             continue
         if world.options.long_location.value == 0 and item.classification in ["OptionalSubX"]:
@@ -446,8 +458,11 @@ def subx_rules(world, player):
             # if dialga is the goal, we can't add master star rank+
             if world.options.goal.value == 0 and rank_toid_dict[item.flag_definition] > 8:
                 continue
-
-        if world.options.special_episode_sanity.value == 1:
+        if (world.options.special_episode_sanity.value == 1) and item.classification in ["Free", "ShopItem"]:
+            add_rule(world.multiworld.get_location(item.flag_definition, player),
+                     lambda state: state.has("Main Game Unlock", player) or state.has("Bidoof\'s Wish", player)
+                                   or state.has('Today\'s "Oh My Gosh"', player))
+        elif world.options.special_episode_sanity.value == 1:
             add_rule(world.multiworld.get_location(item.flag_definition, player),
                      lambda state: state.has("Main Game Unlock", player))
         # if (item.flag_definition == "Manaphy's Discovery") and world.options.goal.value == 0:

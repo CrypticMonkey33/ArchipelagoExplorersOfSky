@@ -226,7 +226,7 @@ class EOSWorld(World):
 
                         self.extra_locations_added += 1
             elif (location.classification in ["Manaphy", "SecretRank", "Legendary", "Instrument"]
-                  or location.name == "Bag Upgrade 5"):
+                  or location.name in ["Bag Upgrade 5", "Recycle Shop Dungeon #4", "Recycle Shop Dungeon #5"]):
                 late_dungeon = EOSLocation(self.player, location.name,
                                            location.id, late_dungeons_region)
                 if self.options.goal.value == 0:  # if dialga is the goal, make the location excluded
