@@ -318,7 +318,7 @@ EOS_location_table: typing.List[LocationData] = [
     #LocationData("SecretRank", 0, "SecretRank", 347, 0),
 
     #LocationData("Legendary", 0, "Recruit Uxie", 325, 0),
-    #LocationData("Legendary", 0, "Recruit Mespirit", 326, 0),
+    #LocationData("Legendary", 0, "Recruit Mesprit", 326, 0),
     #LocationData("Legendary", 0, "Recruit Azelf", 327, 0),
     #LocationData("Legendary", 0, "Recruit Dialga", 328, 0),
     #LocationData("Legendary", 0, "Recruit Phione", 329, 0),

@@ -313,7 +313,7 @@ Pokemon Mystery Dungeon Explorers of Sky:
 
   allowed_legendaries:
     # Set which Legendaries will be available for the item pool as recruits
-    ['Regirock', 'Regice', 'Registeel', 'Groudon', 'Uxie', 'Mespirit', 'Azelf', 'Dialga', 'Palkia', 'Regigigas', 'Giratina', 'Celebi', 'Articuno', 'Heatran', 'Primal Dialga', 'Mew', 'Phione', 'Cresselia', 'Rayquaza', 'Kyogre', 'Shaymin']
+    ['Regirock', 'Regice', 'Registeel', 'Groudon', 'Uxie', 'Mesprit', 'Azelf', 'Dialga', 'Palkia', 'Regigigas', 'Giratina', 'Celebi', 'Articuno', 'Heatran', 'Primal Dialga', 'Mew', 'Phione', 'Cresselia', 'Rayquaza', 'Kyogre', 'Shaymin']
 
   # Item & Location Options
   local_items:
