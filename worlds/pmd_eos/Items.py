@@ -283,7 +283,7 @@ EOS_item_table = [
     ItemData("Miracle Chest", 464, ItemClassification.useful, 0, ["Item", "Single"], 0x42),  # Boosts Exp
     ItemData("Wonder Chest", 465, ItemClassification.useful, 0, ["Item", "Single"], 0x43),  # Boosts Exp
     ItemData("Main Game Unlock", 700, ItemClassification.progression, 0, [], 0),
-    # ItemData("Poke x-1000", 570, ItemClassification.trap, 0, ["Money"], 0),
+
 ]
 filler_items = [
     ItemData("Heavy Box", 301, ItemClassification.filler, 10, ["Item", "Box"], 0x171),
@@ -325,7 +325,10 @@ filler_items = [
     ItemData("Max Elixir", 484, ItemClassification.filler, 10, ["Item", "Single"], 0x63),
     ItemData("Gabite Scale", 485, ItemClassification.filler, 10, ["Item", "Single"], 0x5c),
     ItemData("Zinc", 486, ItemClassification.filler, 10, ["Item", "Single"], 0x6c),
-
+    ItemData("Recycle Count +1", 571, ItemClassification.filler, 10, ["Recycles"], 1),
+    ItemData("Recycle Count +5", 572, ItemClassification.filler, 10, ["Recycles"], 5),
+    ItemData("Recycle Count +10", 573, ItemClassification.filler, 10, ["Recycles"], 10),
+    ItemData("Recycle Count +20", 574, ItemClassification.filler, 10, ["Recycles"], 20),
 ]
 exclusive_filler_items = [
     # specific item Types
@@ -390,6 +393,8 @@ trap_items = [
     ItemData("Nap Time!", 402, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Sentry Duty!", 403, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Touch Grass", 404, ItemClassification.trap, 20, ["Trap"], 0x0),
+    # ItemData("Poke x-1000", 570, ItemClassification.trap, 0, ["Money"], 0),
+
 ]
 filler_item_weights = [item.start_number for item in filler_items]
 filler_item_table: Dict[str, ItemData] = {item.name: item for item in filler_items}

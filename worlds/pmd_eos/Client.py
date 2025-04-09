@@ -205,6 +205,7 @@ class EoSClient(BizHawkClient):
             dungeon_enter_index_offset = await (self.load_script_variable_raw(0x29, ctx))
             scenario_talk_bitfield_offset = await (self.load_script_variable_raw(0x12, ctx))
             event_local_offset = await (self.load_script_variable_raw(0x5C, ctx))
+            recycle_amount_offset = await (self.load_script_variable_raw(0x6C, ctx))
             bank_gold_offset = 0x2A5504  # await (self.load_script_variable_raw(0x3D, ctx))
             player_gold_offset = 0x2A54F8
             custom_save_area_offset = 0x3B0000
@@ -303,6 +304,7 @@ class EoSClient(BizHawkClient):
                     (spinda_drink_offset, 2, self.ram_mem_domain),
                     (scenario_talk_bitfield_offset + 0x1E, 1, self.ram_mem_domain),
                     (bag_upgrade_offset, 1, self.ram_mem_domain),
+                    (recycle_amount_offset, 4, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -365,6 +367,7 @@ class EoSClient(BizHawkClient):
             spinda_drinks_ram = array.array('i', [item for item in read_state[24]])
             scenario_talk_bitfield_240_list = int.from_bytes(read_state[25])
             bag_upgrade_value = int.from_bytes(read_state[26])
+            recycle_amount = int.from_bytes(read_state[27])
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
             #    for i in range(10):
@@ -511,6 +514,8 @@ class EoSClient(BizHawkClient):
                         else:
                             await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
                                                  player_gold_offset, bank_gold_offset)
+                            logger.info(
+                                "But you already own one so instead you get 500 Poké")
 
                     elif item_data.name == "Chatot Repellent":
                         if ((performance_progress_bitfield[3] >> 1) & 1) == 0:
@@ -526,6 +531,8 @@ class EoSClient(BizHawkClient):
                         else:
                             await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
                                                  player_gold_offset, bank_gold_offset)
+                            logger.info(
+                                "But you already own one so instead you get 500 Poké")
                     elif item_data.name == "Sky Jukebox":
                         if ((performance_progress_bitfield[3] >> 2) & 1) == 0:
                             write_byte = performance_progress_bitfield[3] | (0x1 << 2)
@@ -540,6 +547,8 @@ class EoSClient(BizHawkClient):
                         else:
                             await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
                                                  player_gold_offset, bank_gold_offset)
+                            logger.info(
+                                "But you already own one so instead you get 500 Poké")
 
                     elif item_data.name == "Recruitment Sensor":
                         if ((performance_progress_bitfield[3] >> 5) & 1) == 0:
@@ -555,6 +564,8 @@ class EoSClient(BizHawkClient):
                         else:
                             await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
                                                  player_gold_offset, bank_gold_offset)
+                            logger.info(
+                                "But you already own one so instead you get 500 Poké")
 
                     elif item_data.name == "Mystery of the Quicksand":
                         if ((performance_progress_bitfield[3] >> 4) & 1) == 0:
@@ -570,6 +581,8 @@ class EoSClient(BizHawkClient):
                         else:
                             await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
                                                  player_gold_offset, bank_gold_offset)
+                            logger.info(
+                                "But you already own one so instead you get 500 Poké")
 
                     elif item_data.name == "Hero Evolution":
                         write_byte = performance_progress_bitfield[1] | (0x1 << 2)
@@ -633,6 +646,19 @@ class EoSClient(BizHawkClient):
                              self.ram_mem_domain),
                             (player_gold_offset, int.to_bytes(player_gold_amount, 4, "little"),
                              self.ram_mem_domain)
+                        ],
+                    )
+                    await self.update_received_items(ctx, received_items_offset, received_index, i)
+                elif "Recycles" in item_data.group:
+                    recycle_increment = item_data.memory_offset
+                    recycle_amount += recycle_increment
+                    if recycle_amount > 99999:
+                        recycle_amount = 99999
+                    await bizhawk.write(
+                        ctx.bizhawk_ctx,
+                        [
+                            (recycle_amount_offset, int.to_bytes(recycle_amount, 4, "little"),
+                             self.ram_mem_domain),
                         ],
                     )
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
