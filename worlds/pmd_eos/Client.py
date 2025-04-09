@@ -4,6 +4,7 @@ import time
 import re
 import binascii
 
+from BaseClasses import ItemClassification
 from Utils import async_start
 from NetUtils import ClientStatus
 from .Locations import EOSLocation, EOS_location_table, location_Dict_by_id, location_dict_by_start_id, \
@@ -631,7 +632,12 @@ class EoSClient(BizHawkClient):
                         )
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Money" in item_data.group:
-                    player_gold_amount += item_data.memory_offset
+                    if item_data.classification == ItemClassification.trap:
+                        player_gold_amount -= item_data.memory_offset
+                        if player_gold_amount < 0:
+                            player_gold_amount = 0
+                    else:
+                        player_gold_amount += item_data.memory_offset
                     #bank_gold_amount += item_data.memory_offset
                     if player_gold_amount > 99999:
                         extra_money = player_gold_amount - 99999
