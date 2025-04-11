@@ -357,6 +357,7 @@ class EOSWorld(World):
             "DrinkEvents": self.options.drink_events.value,
             "SpindaDrinks": self.options.spinda_drinks.value,
             "ExcludeSpecial": self.options.exclude_special.value,
+            "HintLocationList": self.hint_locations(),
         }
 
     def create_items(self) -> None:
@@ -551,6 +552,7 @@ class EOSWorld(World):
         set_rules(self, self.disabled_locations)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
 
+
     def generate_output(self, output_directory: str) -> None:
         patch = EOSProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
         patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/archipelago-base.bsdiff"))
@@ -562,3 +564,7 @@ class EOSWorld(World):
             output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
         )
         patch.write(rom_path)
+
+    def hint_locations(self) -> list[int]:
+
+        return []
