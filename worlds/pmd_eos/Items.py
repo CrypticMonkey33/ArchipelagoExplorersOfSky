@@ -394,6 +394,15 @@ trap_items = [
     ItemData("Sentry Duty!", 403, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Touch Grass", 404, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Poke x-1000", 570, ItemClassification.trap, 1000, ["Money"], 0),
+    ItemData("Denched Bluff", 2, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x2),
+    ItemData("Mt. Brinstar", 5, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x5),
+    ItemData("Froggy Forest", 15, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0xF),
+    ItemData("Steamy Cave", 16, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x10),
+    ItemData("Craggy Cost", 18, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x12),
+    ItemData("Special Rift", 65, ItemClassification.trap, 20, ["Trap", "Late", "Unique", "Dungeon"], 0x41),
+    ItemData("Congealed Ruins", 71, ItemClassification.trap, 20, ["Trap", "Late", "Unique", "Dungeon"], 0x47),
+    ItemData("Labyrinth Cove", 86, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x56),
+    ItemData("Dojo Ghast Maze", 190, ItemClassification.trap, 20, ["Trap", "Dojo", "Unique", "Dungeon"], 0xBE),
 
 ]
 filler_item_weights = [item.start_number for item in filler_items]

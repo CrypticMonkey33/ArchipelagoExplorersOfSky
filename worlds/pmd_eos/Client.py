@@ -448,7 +448,7 @@ class EoSClient(BizHawkClient):
                 elif (("EarlyDungeons" in item_data.group) or ("LateDungeons" in item_data.group)
                       or ("Dojo Dungeons" in item_data.group) or ("BossDungeons" in item_data.group)
                       or ("ExtraDungeons" in item_data.group) or ("RuleDungeons" in item_data.group)
-                      or ("Final Dojo" in item_data.group)):
+                      or ("Final Dojo" in item_data.group) or ("Dungeon" in item_data.group)):
                     item_memory_offset = item_data.memory_offset
                     # Since our open list is a byte array and our memory offset is bit based
                     # We have to grab our significant byte digits

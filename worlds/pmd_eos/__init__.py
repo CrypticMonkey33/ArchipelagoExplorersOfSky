@@ -363,8 +363,10 @@ class EOSWorld(World):
         required_items = []
         filler_items_pool = []
         exclusive_filler_pool = []
-        trap_items = []
-        trap_weights = []
+        non_unique_trap_items = []
+        non_unique_trap_weights = []
+        unique_trap_items = []
+        unique_trap_weights = []
         instruments = []
         item_weights = []
         if self.options.goal.value == 1:
@@ -440,9 +442,15 @@ class EOSWorld(World):
                 else:
                     filler_items_pool.append(self.create_item(item_name, ItemClassification.filler))
 
-
             elif item_table[item_name].classification == ItemClassification.trap:
-                trap_items.append(self.create_item(item_name, ItemClassification.trap))
+                if "Late" in item_table[item_name].group and self.options.goal.value == 0:
+                    continue
+                elif "Unique" in item_table[item_name].group:
+                    unique_trap_items.append(self.create_item(item_name, ItemClassification.trap))
+                    unique_trap_weights.append(item_table[item_name].start_number)
+                else:
+                    non_unique_trap_items.append(self.create_item(item_name, ItemClassification.trap))
+                    non_unique_trap_weights.append(item_table[item_name].start_number)
 
             elif item_table[item_name].classification == ItemClassification.progression:
                 classification = ItemClassification.progression
@@ -514,21 +522,26 @@ class EOSWorld(World):
 
         self.multiworld.itempool += required_items
         item_weights += filler_item_weights
-        trap_weights += trap_item_weights
         for i in range(4):
             filler_items_pool += filler_items_pool
-            trap_items += trap_items
+            non_unique_trap_items += non_unique_trap_items
             item_weights += item_weights
-            trap_weights += trap_weights
+            non_unique_trap_weights += non_unique_trap_weights
         filler_items_pool += exclusive_filler_pool
         item_weights += exclusive_filler_item_weights
+        all_traps = []
+        all_traps += non_unique_trap_items
+        all_traps += unique_trap_items
+        all_trap_weights = []
+        all_trap_weights += non_unique_trap_weights
+        all_trap_weights += unique_trap_weights
         if self.options.allow_traps.value in [1, 2]:
             filler_items_toadd = math.ceil(remaining * (100 - self.options.trap_percent) / 100)
             traps_toadd = math.floor(remaining * self.options.trap_percent / 100)
             self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
                                          in self.random.sample(filler_items_pool, filler_items_toadd, counts=item_weights)]
             self.multiworld.itempool += [self.create_item(trap.name) for trap
-                                         in self.random.sample(trap_items, traps_toadd, counts=trap_weights)]
+                                         in self.random.sample(all_traps, traps_toadd, counts=all_trap_weights)]
 
         else:
             self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
