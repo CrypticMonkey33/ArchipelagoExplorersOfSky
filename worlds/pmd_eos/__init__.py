@@ -192,7 +192,7 @@ class EOSWorld(World):
                                  lambda state, ln=location.name, p=self.player: state.has(ln, p))
                         self.extra_locations_added += 1
 
-            elif location.classification == "SpecialDungeonComplete":
+            elif location.classification == "SpecialDungeonComplete" and not self.options.exclude_special.value:
                 early_dungeons_region.locations.append(EOSLocation(self.player, location.name,
                                                                    location.id, early_dungeons_region))
 
@@ -356,6 +356,7 @@ class EOSWorld(World):
             "CursedAegisCave": self.options.cursed_aegis_cave.value,
             "DrinkEvents": self.options.drink_events.value,
             "SpindaDrinks": self.options.spinda_drinks.value,
+            "ExcludeSpecial": self.options.exclude_special.value,
         }
 
     def create_items(self) -> None:
@@ -414,8 +415,14 @@ class EOSWorld(World):
 
                 freq = max(freq - precollected.count(item_name), 0)
                 required_items += [self.create_item(item_name) for _ in range(freq)]
+            elif "Special Dungeons" in item_table[item_name].group:
+                if self.options.exclude_special.value:
+                    continue
+                else:
+                    classification = ItemClassification.progression
+                    required_items.append(self.create_item(item_name, classification))
             elif item_table[item_name].name == "Main Game Unlock":
-                if self.options.special_episode_sanity == 0:
+                if not self.options.special_episode_sanity.value or self.options.exclude_special.value:
                     continue
                 else:
                     required_items.append(self.create_item(item_name, ItemClassification.progression))

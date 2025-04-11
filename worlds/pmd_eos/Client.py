@@ -50,6 +50,7 @@ class EoSClient(BizHawkClient):
     outside_deathlink = 0
     deathlink_sender = ""
     deathlink_message: str = ""
+    item_box_count = 0
 
     def __init__(self) -> None:
         super().__init__()
@@ -179,14 +180,14 @@ class EoSClient(BizHawkClient):
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "instruments_collected": 0, "required_instruments": 0,
                                  "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
-                                 "spinda_events": 0, "spinda_drinks": 0},
+                                 "spinda_events": 0, "spinda_drinks": 0, "box_number": 0},
                      "want_reply": True,
                      "operations": [{"operation": "default", "value":
                          {"goal_complete": False, "bag_given": False,
                           "macguffins_collected": 0, "macguffin_unlock_amount": 0,
                           "instruments_collected": 0, "required_instruments": 0,
                           "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
-                          "spinda_events": 0, "spinda_drinks": 0}}]
+                          "spinda_events": 0, "spinda_drinks": 0, "box_number": 0}}]
                      }
                 ]))
             await asyncio.sleep(0.1)
@@ -207,6 +208,7 @@ class EoSClient(BizHawkClient):
             scenario_talk_bitfield_offset = await (self.load_script_variable_raw(0x12, ctx))
             event_local_offset = await (self.load_script_variable_raw(0x5C, ctx))
             recycle_amount_offset = await (self.load_script_variable_raw(0x6C, ctx))
+            pelipper_received_counter_offset = await (self.load_script_variable_raw(0x1, ctx))
             bank_gold_offset = 0x2A5504  # await (self.load_script_variable_raw(0x3D, ctx))
             player_gold_offset = 0x2A54F8
             custom_save_area_offset = 0x3B0000
@@ -306,6 +308,7 @@ class EoSClient(BizHawkClient):
                     (scenario_talk_bitfield_offset + 0x1E, 1, self.ram_mem_domain),
                     (bag_upgrade_offset, 1, self.ram_mem_domain),
                     (recycle_amount_offset, 4, self.ram_mem_domain),
+                    (pelipper_received_counter_offset, 4, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -369,6 +372,7 @@ class EoSClient(BizHawkClient):
             scenario_talk_bitfield_240_list = int.from_bytes(read_state[25])
             bag_upgrade_value = int.from_bytes(read_state[26])
             recycle_amount = int.from_bytes(read_state[27])
+            pelipper_received_counter = int.from_bytes(read_state[28])
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
             #    for i in range(10):
@@ -439,7 +443,7 @@ class EoSClient(BizHawkClient):
                      #           (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
                      #            self.ram_mem_domain)],
                      #   )
-                        await self.update_received_items(ctx, received_items_offset, received_index, i)
+                    await self.update_received_items(ctx, received_items_offset, received_index, i)
 
                 elif (("EarlyDungeons" in item_data.group) or ("LateDungeons" in item_data.group)
                       or ("Dojo Dungeons" in item_data.group) or ("BossDungeons" in item_data.group)
@@ -744,8 +748,13 @@ class EoSClient(BizHawkClient):
 
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Item" in item_data.group:
-                    item_boxes_collected += [
-                        {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}]
+                    if received_index + i <= self.item_box_count:
+                        await self.update_received_items(ctx, received_items_offset, received_index, i)
+                        continue
+                    else:
+                        item_boxes_collected += [
+                            {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}]
+                        self.item_box_count = received_index + i
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Legendary" in item_data.group:
                     legendaries_recruited += [
@@ -1014,7 +1023,7 @@ class EoSClient(BizHawkClient):
             if ((performance_progress_bitfield[4] >> 3) & 1) == 0:  # if we are not currently dealing with items
                 if item_boxes_collected != []:
                     # I have an item in my list, add it to the queue and set the performance progress list to true
-                    item_data = item_boxes_collected.pop(0)
+                    item_data = item_boxes_collected[pelipper_received_counter]
                     if item_data["name"] in item_table_by_groups["Single"]:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
@@ -1143,7 +1152,7 @@ class EoSClient(BizHawkClient):
                 if (item_boxes_collected != []) and (((scenario_talk_bitfield_248_list >> 2) & 1) == 1):
                     # I have an item in my list and lappy is already done with the item in the queue,
                     # so add another item to queue and set performance progress to true
-                    item_data = item_boxes_collected.pop(0)
+                    item_data = item_boxes_collected[pelipper_received_counter]
                     if item_data["name"] in item_table_by_groups["Single"]:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
@@ -1374,7 +1383,7 @@ class EoSClient(BizHawkClient):
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "cresselia_feather_acquired": False,
                                  "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
-                                 "spinda_events": 0, "spinda_drinks": 0},
+                                 "spinda_events": 0, "spinda_drinks": 0, "box_number": 0},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value":
                          {"goal_complete": self.goal_complete, "bag_given": self.bag_given,
@@ -1384,7 +1393,7 @@ class EoSClient(BizHawkClient):
                           "instruments_collected": self.instruments_collected,
                           "dialga_complete": self.dialga_complete, "skypeaks_open": self.skypeaks_open,
                           "aegis_seals": self.aegis_seals, "spinda_events": self.spinda_events,
-                          "spinda_drinks": self.spinda_drinks}}]
+                          "spinda_drinks": self.spinda_drinks, "box_number": self.item_box_count}}]
                      }
                 ]))
             await asyncio.sleep(0.1)

@@ -221,8 +221,15 @@ class TypeSanity(Toggle):
 
 class SpecialEpisodeSanity(Toggle):
     """ Start the game with one of the special episodes and NOT the main game.
-    Unlock the main game through an item"""
+    Unlock the main game through an item
+    Overridden by Excluding Special Episodes"""
     display_name = "Special Episode Sanity"
+
+
+class ExcludeSpecialEpisodes(Toggle):
+    """ No special episode items will be added to the game
+    Overrides Special Episode Sanity"""
+    display_name = "Exclude Special Episodes"
 
 
 class IqScaling(Range):
@@ -294,7 +301,7 @@ class AllowedLegendaries(OptionSet):
         "Registeel",
         "Groudon",
         "Uxie",
-        "Mesprit",
+        "Mespirit",
         "Azelf",
         "Dialga",
         "Palkia",
@@ -427,3 +434,4 @@ class EOSOptions(PerGameCommonOptions):
     move_shortcuts: MoveShortcutMenu
     spinda_drinks: SpindaBasicDrinks
     max_rank: MaxRequiredRank
+    exclude_special: ExcludeSpecialEpisodes

@@ -88,6 +88,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         "cursed_aegis_cave": world.options.cursed_aegis_cave.value,
         "drink_events": world.options.drink_events.value,
         "spinda_drinks": world.options.spinda_drinks.value,
+        "exclude_special": world.options.exclude_special.value,
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
