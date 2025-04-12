@@ -1283,10 +1283,6 @@ class EoSClient(BizHawkClient):
                         )
                         await asyncio.sleep(0.1)
 
-                elif item_boxes_collected != []:
-                    # I have items in my list still, but lappy has not processed the item yet, just move on for now
-                    pass
-
                 elif ((scenario_talk_bitfield_248_list >> 2) & 1) == 1:
                     # I don't have items in my list and lappy is done with the item,
                     # add a null to the queue and set performance progress to true
