@@ -301,7 +301,7 @@ class AllowedLegendaries(OptionSet):
         "Registeel",
         "Groudon",
         "Uxie",
-        "Mespirit",
+        "Mesprit",
         "Azelf",
         "Dialga",
         "Palkia",

@@ -51,6 +51,7 @@ class EoSClient(BizHawkClient):
     deathlink_sender = ""
     deathlink_message: str = ""
     item_box_count = 0
+    hint_loc = []
 
     def __init__(self) -> None:
         super().__init__()
@@ -275,6 +276,9 @@ class EoSClient(BizHawkClient):
 
             if self.required_instruments == 0:
                 self.required_instruments = ctx.slot_data["RequiredInstruments"]
+            
+            if self.hint_loc == []:
+                self.hint_loc = ctx.slot_data["HintLocationList"]
 
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
