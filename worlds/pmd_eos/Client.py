@@ -1029,7 +1029,7 @@ class EoSClient(BizHawkClient):
 
             # Sending item boxes on Event Divide
             if ((performance_progress_bitfield[4] >> 3) & 1) == 0:  # if we are not currently dealing with items
-                if item_boxes_collected != []:
+                if item_boxes_collected and (pelipper_received_counter < len(item_boxes_collected)):
                     # I have an item in my list, add it to the queue and set the performance progress list to true
                     item_data = item_boxes_collected[pelipper_received_counter]
                     if item_data["name"] in item_table_by_groups["Single"]:
@@ -1157,7 +1157,8 @@ class EoSClient(BizHawkClient):
                         await asyncio.sleep(0.1)
 
             else:  # if we are dealing with items
-                if (item_boxes_collected != []) and (((scenario_talk_bitfield_248_list >> 2) & 1) == 1):
+                if (item_boxes_collected and (pelipper_received_counter < len(item_boxes_collected))
+                        and (((scenario_talk_bitfield_248_list >> 2) & 1) == 1)):
                     # I have an item in my list and lappy is already done with the item in the queue,
                     # so add another item to queue and set performance progress to true
                     item_data = item_boxes_collected[pelipper_received_counter]
