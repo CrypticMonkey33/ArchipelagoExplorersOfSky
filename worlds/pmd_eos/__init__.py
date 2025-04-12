@@ -4,6 +4,7 @@ import os
 import json
 import pkgutil
 import settings
+import random
 from typing import List, Dict, Set, Any
 
 import worlds.oot
@@ -566,5 +567,23 @@ class EOSWorld(World):
         patch.write(rom_path)
 
     def hint_locations(self) -> list[int]:
-
-        return []
+        hint_loc = []
+        filler = 5
+        useful = 3
+        progressive = 4
+        location_list = list(self.multiworld.get_locations(self.player))
+        random.shuffle(location_list)
+        for location in location_list:
+            if location.address is not None and location.item:
+                if filler <= 0 and useful <= 0 and progressive <= 0:
+                    break 
+                elif progressive > 0 and location.item.advancement:
+                    hint_loc.append(location.address)
+                    progressive -= 1
+                elif filler > 0 and location.item is not (location.item.advancement or location.item.useful):
+                    hint_loc.append(location.address)
+                    filler -= 1
+                elif useful > 0 and location.item.useful:
+                    hint_loc.append(location.address)
+                    useful -= 1
+        return hint_loc
