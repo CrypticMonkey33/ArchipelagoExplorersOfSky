@@ -226,6 +226,7 @@ class EoSClient(BizHawkClient):
             main_game_unlocked_offset = custom_save_area_offset + 0x2A7
             spinda_drink_offset = custom_save_area_offset + 0x2A5
             bag_upgrade_offset = custom_save_area_offset + 0x2F9
+            dimensional_scream_info_offset = custom_save_area_offset + 0x2A8
 
             if (self.player_name + "Dungeon Missions") in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
@@ -313,6 +314,7 @@ class EoSClient(BizHawkClient):
                     (bag_upgrade_offset, 1, self.ram_mem_domain),
                     (recycle_amount_offset, 4, self.ram_mem_domain),
                     (pelipper_received_counter_offset, 4, self.ram_mem_domain),
+                    (dimensional_scream_info_offset, 0x51, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -377,6 +379,7 @@ class EoSClient(BizHawkClient):
             bag_upgrade_value = int.from_bytes(read_state[26])
             recycle_amount = int.from_bytes(read_state[27])
             pelipper_received_counter = int.from_bytes(read_state[28])
+            dimensional_scream_info = int.from_bytes(read_state[29])
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
             #    for i in range(10):
@@ -961,6 +964,7 @@ class EoSClient(BizHawkClient):
                     ]
                 )
                 await asyncio.sleep(0.1)
+                
             hints_to_send = []
             for i in range(10):
                 if hintable_items[i] == 1:

@@ -568,9 +568,15 @@ class EOSWorld(World):
 
     def hint_locations(self) -> list[int]:
         hint_loc = []
-        filler = 5
+        filler = 4
         useful = 3
-        progressive = 4
+        progressive = 7
+        sky_dungeons = []
+        important_sky_items = ["Icy Flute", "Fiery Drum", "Terra Cymbal", "Aqua-Monica", "Rock Horn",
+                               "Grass Cornet", "Sky Melodica", "Stellar Symphony", "Null Bagpipes", "Glimmer Harp",
+                               "Toxic Sax", "Biting Bass", "Knockout Bell", "Spectral Chimes", "Liar's Lyre",
+                               "Charge Synth", "Norma-ccordion", "Psychic Cello", "Dragu-teki", "Steel Guitar",
+                               "Relic Fragment Shard"]
         location_list = list(self.multiworld.get_locations(self.player))
         random.shuffle(location_list)
         for location in location_list:
@@ -578,6 +584,9 @@ class EOSWorld(World):
                 if filler <= 0 and useful <= 0 and progressive <= 0:
                     break 
                 elif progressive > 0 and location.item.advancement:
+                    if location.item.player == self.player and location.item.name not in important_sky_items:
+                        sky_dungeons.append(location.address)
+                        continue
                     hint_loc.append(location.address)
                     progressive -= 1
                 elif filler > 0 and location.item is not (location.item.advancement or location.item.useful):
@@ -586,4 +595,7 @@ class EOSWorld(World):
                 elif useful > 0 and location.item.useful:
                     hint_loc.append(location.address)
                     useful -= 1
+        if progressive > 0:
+            for i in range(progressive):
+                hint_loc.append(sky_dungeons[i])
         return hint_loc
