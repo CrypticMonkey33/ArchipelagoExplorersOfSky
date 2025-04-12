@@ -100,7 +100,7 @@ subX_table = [
                                                           "Formation Control"], "Zero Isle Center", "ShopItem"),
     SubXBitfield(65, 5, 0, 1, "Sneasel's Gratitude", ["Defeat Dialga", "7th Station Pass", "Sky Station Summit Pass"],
                  "Filler", "LateSubX"),
-    SubXBitfield(66, 5, 0, 2, "SE Marowak Dojo's Revival", ["Bidoof\'s Wish"], "Filler", "EarlySubX"),
+    SubXBitfield(66, 5, 0, 2, "SE Marowak Dojo's Revival", ["Bidoof\'s Wish"], "Filler", "SpecialDungeonComplete"),
     SubXBitfield(67, 5, 0, 3, "Clear All Marowak Mazes", ["All Mazes"], "Filler", "OptionalSubX"),
     SubXBitfield(68, 5, 0, 4, "Grandpa's Treasure", ["Dojo Final Maze"], "Filler", "OptionalSubX"),
     SubXBitfield(69, 5, 0, 5, "Regice's Gift", ["Defeat Dialga", "Ice Seal", "Ice Aegis Cave"], "Regice",

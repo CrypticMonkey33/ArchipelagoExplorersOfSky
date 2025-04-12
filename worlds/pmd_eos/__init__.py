@@ -96,7 +96,7 @@ class EOSWorld(World):
         if self.options.team_form.value:
             item_name = "Formation Control"
             self.multiworld.push_precollected(self.create_item(item_name))
-        if self.options.special_episode_sanity.value:
+        if self.options.special_episode_sanity.value and not self.options.exclude_special.value:
             possibleSEs = ["Bidoof\'s Wish", "Igglybuff the Prodigy", "In the Future of Darkness",
                            "Here Comes Team Charm!", 'Today\'s "Oh My Gosh"']
             item_name = self.random.choice(possibleSEs)
@@ -193,9 +193,13 @@ class EOSWorld(World):
                                  lambda state, ln=location.name, p=self.player: state.has(ln, p))
                         self.extra_locations_added += 1
 
-            elif location.classification == "SpecialDungeonComplete" and not self.options.exclude_special.value:
-                early_dungeons_region.locations.append(EOSLocation(self.player, location.name,
+            elif location.classification == "SpecialDungeonComplete":
+                if not self.options.exclude_special.value:
+                    early_dungeons_region.locations.append(EOSLocation(self.player, location.name,
                                                                    location.id, early_dungeons_region))
+                else:
+                    self.excluded_locations += 1
+                    continue
 
             elif location.classification in ["LateDungeonComplete", "LateSubX"]:
                 late_dungeon = EOSLocation(self.player, location.name,
@@ -552,7 +556,6 @@ class EOSWorld(World):
     def set_rules(self) -> None:
         set_rules(self, self.disabled_locations)
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
-
 
     def generate_output(self, output_directory: str) -> None:
         patch = EOSProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])

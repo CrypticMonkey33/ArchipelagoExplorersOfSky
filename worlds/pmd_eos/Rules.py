@@ -24,7 +24,7 @@ def set_rules(world: "EOSWorld", excluded):
     if world.options.goal.value == 0:
         set_rule(world.multiworld.get_location("Final Boss", player),
                  lambda state: state.has("Temporal Tower", player) and has_relic_shards(state, player, world))
-        if world.options.special_episode_sanity.value == 1:
+        if special_episode_sanity_no_exclusion(world, player):
             add_rule(world.multiworld.get_location("Final Boss", player),
                      lambda state: state.has("Main Game Unlock", player))
 
@@ -34,18 +34,18 @@ def set_rules(world: "EOSWorld", excluded):
     elif world.options.goal.value == 1:
         set_rule(world.multiworld.get_location("Final Boss", player),
                  lambda state: ready_for_darkrai(state, player, world))
-        if world.options.special_episode_sanity.value == 1:
+        if special_episode_sanity_no_exclusion(world, player):
             add_rule(world.multiworld.get_location("Final Boss", player),
                      lambda state: state.has("Main Game Unlock", player))
         set_rule(world.multiworld.get_location("Dark Crater", player),
                  lambda state: ready_for_darkrai(state, player, world))
-        if world.options.special_episode_sanity.value == 1:
+        if special_episode_sanity_no_exclusion(world, player):
             add_rule(world.multiworld.get_location("Dark Crater", player),
                      lambda state: state.has("Main Game Unlock", player))
         set_rule(world.multiworld.get_location("The Nightmare", player),
                  lambda state: state.can_reach_location("Mt. Bristle", player) and state.has("The Nightmare", player)
                                and ready_for_late_game(state, player, world))
-        if world.options.special_episode_sanity.value == 1:
+        if special_episode_sanity_no_exclusion(world, player):
             add_rule(world.multiworld.get_location("The Nightmare", player),
                      lambda state: state.has("Main Game Unlock", player))
 
@@ -54,13 +54,13 @@ def set_rules(world: "EOSWorld", excluded):
 
     set_rule(world.multiworld.get_location("Hidden Land", player),
              lambda state: has_relic_shards(state, player, world))
-    if world.options.special_episode_sanity.value == 1:
+    if special_episode_sanity_no_exclusion(world, player):
         add_rule(world.multiworld.get_location("Hidden Land", player),
                  lambda state: state.has("Main Game Unlock", player))
 
     set_rule(world.multiworld.get_location("Temporal Tower", player),
              lambda state: state.has("Temporal Tower", player) and has_relic_shards(state, player, world))
-    if world.options.special_episode_sanity.value == 1:
+    if special_episode_sanity_no_exclusion(world, player):
         add_rule(world.multiworld.get_location("Temporal Tower", player),
                  lambda state: state.has("Main Game Unlock", player))
 
@@ -81,14 +81,14 @@ def spinda_drink_events(world, player):
     for i in range(de_amount):
         set_rule(world.multiworld.get_location("Spinda Drink Event " + str(i + 1), player),
                  lambda state: state.has("Bag Upgrade", player, 3))
-        if world.options.special_episode_sanity.value == 1:
+        if special_episode_sanity_no_exclusion(world, player):
             add_rule(world.multiworld.get_location("Spinda Drink Event " + str(i + 1), player),
                      lambda state: state.has("Main Game Unlock", player) or state.has("Bidoof\'s Wish", player)
                                    or state.has('Today\'s "Oh My Gosh"', player))
     for i in range(sdrinks_amount):
         set_rule(world.multiworld.get_location("Spinda Drink " + str(i + 1), player),
                  lambda state: state.has("Bag Upgrade", player))
-        if world.options.special_episode_sanity.value == 1:
+        if special_episode_sanity_no_exclusion(world, player):
             add_rule(world.multiworld.get_location("Spinda Drink " + str(i + 1), player),
                      lambda state: state.has("Main Game Unlock", player) or state.has("Bidoof\'s Wish", player)
                                    or state.has('Today\'s "Oh My Gosh"', player))
@@ -188,20 +188,20 @@ def ready_for_darkrai(state, player, world):
 def dungeon_locations_behind_items(world, player):
     for location in EOS_location_table:
         if location.name == "Beach Cave":
-            if world.options.special_episode_sanity.value == 1:
+            if special_episode_sanity_no_exclusion(world, player):
                 add_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Main Game Unlock", player))
             continue
         elif "Early" in location.group:
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player))
-            if world.options.special_episode_sanity.value == 1:
+            if special_episode_sanity_no_exclusion(world, player):
                 add_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Main Game Unlock", player))
         elif "Dojo" in location.group:
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player))
-            if world.options.special_episode_sanity.value == 1:
+            if special_episode_sanity_no_exclusion(world, player):
                 add_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Main Game Unlock", player) or state.has("Bidoof\'s Wish", player)
                                        or state.has('Today\'s "Oh My Gosh"', player))
@@ -211,14 +211,14 @@ def dungeon_locations_behind_items(world, player):
                     set_rule(world.multiworld.get_location(location.name, player),
                              lambda state: state.has("Progressive Sky Peak", player, 10)
                                            and ready_for_late_game(state, player, world))
-                    if world.options.special_episode_sanity.value == 1:
+                    if special_episode_sanity_no_exclusion(world, player):
                         add_rule(world.multiworld.get_location(location.name, player),
                                  lambda state: state.has("Main Game Unlock", player))
                 elif location.name == "5th Station Clearing":
                     set_rule(world.multiworld.get_location(location.name, player),
                              lambda state: state.has("Progressive Sky Peak", player, 5)
                                            and ready_for_late_game(state, player, world))
-                    if world.options.special_episode_sanity.value == 1:
+                    if special_episode_sanity_no_exclusion(world, player):
                         add_rule(world.multiworld.get_location(location.name, player),
                                  lambda state: state.has("Main Game Unlock", player))
                 else:
@@ -226,7 +226,7 @@ def dungeon_locations_behind_items(world, player):
                              lambda state, req_num=(location.id - 110):
                              state.has("Progressive Sky Peak", player, req_num)
                              and ready_for_late_game(state, player, world))
-                    if world.options.special_episode_sanity.value == 1:
+                    if special_episode_sanity_no_exclusion(world, player):
                         add_rule(world.multiworld.get_location(location.name, player),
                                  lambda state: state.has("Main Game Unlock", player))
 
@@ -235,21 +235,21 @@ def dungeon_locations_behind_items(world, player):
                     set_rule(world.multiworld.get_location(location.name, player),
                              lambda state: state.has("Sky Peak Summit Pass", player)
                                            and ready_for_late_game(state, player, world))
-                    if world.options.special_episode_sanity.value == 1:
+                    if special_episode_sanity_no_exclusion(world, player):
                         add_rule(world.multiworld.get_location(location.name, player),
                                  lambda state: state.has("Main Game Unlock", player))
                 elif location.name == "5th Station Clearing":
                     set_rule(world.multiworld.get_location(location.name, player),
                              lambda state: state.has("5th Station Pass", player)
                                            and ready_for_late_game(state, player, world))
-                    if world.options.special_episode_sanity.value == 1:
+                    if special_episode_sanity_no_exclusion(world, player):
                         add_rule(world.multiworld.get_location(location.name, player),
                                  lambda state: state.has("Main Game Unlock", player))
                 else:
                     set_rule(world.multiworld.get_location(location.name, player),
                              lambda state, ln=location.name: state.has(ln, player)
                                                              and ready_for_late_game(state, player, world))
-                    if world.options.special_episode_sanity.value == 1:
+                    if special_episode_sanity_no_exclusion(world, player):
                         add_rule(world.multiworld.get_location(location.name, player),
                                  lambda state: state.has("Main Game Unlock", player))
 
@@ -257,7 +257,7 @@ def dungeon_locations_behind_items(world, player):
                 set_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("1st Station Pass", player)
                                        and ready_for_late_game(state, player, world))
-                if world.options.special_episode_sanity.value == 1:
+                if special_episode_sanity_no_exclusion(world, player):
                     add_rule(world.multiworld.get_location(location.name, player),
                              lambda state: state.has("Main Game Unlock", player))
         elif "Aegis" in location.group and world.options.goal.value == 1:
@@ -266,7 +266,7 @@ def dungeon_locations_behind_items(world, player):
                     set_rule(world.multiworld.get_location(location.name, player),
                              lambda state: state.has("Ice Aegis Cave", player)
                                            and ready_for_late_game(state, player, world))
-                    if world.options.special_episode_sanity.value == 1:
+                    if special_episode_sanity_no_exclusion(world, player):
                         add_rule(world.multiworld.get_location(location.name, player),
                                  lambda state: state.has("Main Game Unlock", player))
                 elif location.id in [55, 56]:  # Regice Chamber
@@ -274,7 +274,7 @@ def dungeon_locations_behind_items(world, player):
                              lambda state: state.has("Ice Aegis Cave", player)
                                            and ready_for_late_game(state, player, world)
                                            and state.has("Progressive Seal", player, 1))
-                    if world.options.special_episode_sanity.value == 1:
+                    if special_episode_sanity_no_exclusion(world, player):
                         add_rule(world.multiworld.get_location(location.name, player),
                                  lambda state: state.has("Main Game Unlock", player))
                 elif location.id in [57, 58]:  # Regirock Chamber
@@ -282,7 +282,7 @@ def dungeon_locations_behind_items(world, player):
                              lambda state: state.has("Ice Aegis Cave", player)
                                            and ready_for_late_game(state, player, world)
                                            and state.has("Progressive Seal", player, 2))
-                    if world.options.special_episode_sanity.value == 1:
+                    if special_episode_sanity_no_exclusion(world, player):
                         add_rule(world.multiworld.get_location(location.name, player),
                                  lambda state: state.has("Main Game Unlock", player))
                 elif location.id in [59, 60, 61]:  # Registeel Chamber
@@ -290,7 +290,7 @@ def dungeon_locations_behind_items(world, player):
                              lambda state: state.has("Ice Aegis Cave", player)
                                            and ready_for_late_game(state, player, world)
                                            and state.has("Progressive Seal", player, 3))
-                    if world.options.special_episode_sanity.value == 1:
+                    if special_episode_sanity_no_exclusion(world, player):
                         add_rule(world.multiworld.get_location(location.name, player),
                                  lambda state: state.has("Main Game Unlock", player))
 
@@ -298,7 +298,7 @@ def dungeon_locations_behind_items(world, player):
                 set_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Ice Aegis Cave", player)
                                        and ready_for_late_game(state, player, world))
-                if world.options.special_episode_sanity.value == 1:
+                if special_episode_sanity_no_exclusion(world, player):
                     add_rule(world.multiworld.get_location(location.name, player),
                              lambda state: state.has("Main Game Unlock", player))
 
@@ -306,7 +306,7 @@ def dungeon_locations_behind_items(world, player):
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player) and ready_for_late_game(state, player,
                                                                                                    world))
-            if world.options.special_episode_sanity.value == 1:
+            if special_episode_sanity_no_exclusion(world, player):
                 add_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Main Game Unlock", player))
         elif "Rule" in location.group and world.options.goal.value == 1:
@@ -315,7 +315,7 @@ def dungeon_locations_behind_items(world, player):
             set_rule(world.multiworld.get_location(location.name, player),
                      lambda state, ln=location.name: state.has(ln, player) and ready_for_late_game(state, player,
                                                                                                    world))
-            if world.options.special_episode_sanity.value == 1:
+            if special_episode_sanity_no_exclusion(world, player):
                 add_rule(world.multiworld.get_location(location.name, player),
                          lambda state: state.has("Main Game Unlock", player))
         elif "Special" in location.group:
@@ -328,7 +328,7 @@ def mission_rules(world, player):
             continue
 
         if location.name == "Beach Cave":
-            if world.options.special_episode_sanity.value == 1:
+            if special_episode_sanity_no_exclusion(world, player):
                 for j in range(world.options.early_mission_checks.value):
                     add_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                              lambda state: state.has("Main Game Unlock", player))
@@ -341,13 +341,13 @@ def mission_rules(world, player):
             for j in range(world.options.early_mission_checks.value):
                 set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                          lambda state, ln=location.name, p=player: state.has(ln, p))
-                if world.options.special_episode_sanity.value == 1:
+                if special_episode_sanity_no_exclusion(world, player):
                     add_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                              lambda state: state.has("Main Game Unlock", player))
             for j in range(world.options.early_outlaw_checks.value):
                 set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                          lambda state, ln=location.name, p=player: state.has(ln, p))
-                if world.options.special_episode_sanity.value == 1:
+                if special_episode_sanity_no_exclusion(world, player):
                     add_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                              lambda state: state.has("Main Game Unlock", player))
 
@@ -360,14 +360,14 @@ def mission_rules(world, player):
                             set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                      lambda state, ln="Progressive Sky Peak", num=(location.id - 110), p=player:
                                      state.has(ln, p, num) and ready_for_late_game(state, player, world))
-                            if world.options.special_episode_sanity.value == 1:
+                            if special_episode_sanity_no_exclusion(world, player):
                                 add_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                          lambda state: state.has("Main Game Unlock", player))
                         for j in range(world.options.late_outlaw_checks.value):
                             set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                      lambda state, ln="Progressive Sky Peak", num=(location.id - 110), p=player:
                                      state.has(ln, p, num) and ready_for_late_game(state, player, world))
-                            if world.options.special_episode_sanity.value == 1:
+                            if special_episode_sanity_no_exclusion(world, player):
                                 add_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                          lambda state: state.has("Main Game Unlock", player))
 
@@ -376,14 +376,14 @@ def mission_rules(world, player):
                             set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                      lambda state, ln=location.name, p=player:
                                      state.has(ln, p) and ready_for_late_game(state, player, world))
-                            if world.options.special_episode_sanity.value == 1:
+                            if special_episode_sanity_no_exclusion(world, player):
                                 add_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                          lambda state: state.has("Main Game Unlock", player))
                         for j in range(world.options.late_outlaw_checks.value):
                             set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                      lambda state, ln=location.name, p=player:
                                      state.has(ln, p) and ready_for_late_game(state, player, world))
-                            if world.options.special_episode_sanity.value == 1:
+                            if special_episode_sanity_no_exclusion(world, player):
                                 add_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                          lambda state: state.has("Main Game Unlock", player))
 
@@ -392,14 +392,14 @@ def mission_rules(world, player):
                             set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                      lambda state, ln="1st Station Pass", p=player:
                                      state.has(ln, p) and ready_for_late_game(state, player, world))
-                            if world.options.special_episode_sanity.value == 1:
+                            if special_episode_sanity_no_exclusion(world, player):
                                 add_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                          lambda state: state.has("Main Game Unlock", player))
                         for j in range(world.options.late_outlaw_checks.value):
                             set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                      lambda state, ln="1st Station Pass", p=player:
                                      state.has(ln, p) and ready_for_late_game(state, player, world))
-                            if world.options.special_episode_sanity.value == 1:
+                            if special_episode_sanity_no_exclusion(world, player):
                                 add_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                          lambda state: state.has("Main Game Unlock", player))
 
@@ -407,14 +407,14 @@ def mission_rules(world, player):
                     for j in range(world.options.late_mission_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                  lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world))
-                        if world.options.special_episode_sanity.value == 1:
+                        if special_episode_sanity_no_exclusion(world, player):
                             add_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                      lambda state: state.has("Main Game Unlock", player))
 
                     for j in range(world.options.late_outlaw_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                  lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world))
-                        if world.options.special_episode_sanity.value == 1:
+                        if special_episode_sanity_no_exclusion(world, player):
                             add_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                      lambda state: state.has("Main Game Unlock", player))
 
@@ -423,7 +423,7 @@ def mission_rules(world, player):
                         set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                  lambda state, ln=location.name, p=player:
                                  state.has(ln, p) and ready_for_late_game(state, player, world))
-                        if world.options.special_episode_sanity.value == 1:
+                        if special_episode_sanity_no_exclusion(world, player):
                             add_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
                                      lambda state: state.has("Main Game Unlock", player))
 
@@ -431,7 +431,7 @@ def mission_rules(world, player):
                         set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                  lambda state, ln=location.name, p=player:
                                  state.has(ln, p) and ready_for_late_game(state, player, world))
-                        if world.options.special_episode_sanity.value == 1:
+                        if special_episode_sanity_no_exclusion(world, player):
                             add_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                      lambda state: state.has("Main Game Unlock", player))
 
@@ -459,11 +459,11 @@ def subx_rules(world, player):
             # if dialga is the goal, we can't add master star rank+
             if world.options.goal.value == 0 and rank_toid_dict[item.flag_definition] > 8:
                 continue
-        if (world.options.special_episode_sanity.value == 1) and item.classification in ["Free", "ShopItem"]:
+        if (special_episode_sanity_no_exclusion(world, player)) and item.classification in ["Free", "ShopItem"]:
             add_rule(world.multiworld.get_location(item.flag_definition, player),
                      lambda state: state.has("Main Game Unlock", player) or state.has("Bidoof\'s Wish", player)
                                    or state.has('Today\'s "Oh My Gosh"', player))
-        elif world.options.special_episode_sanity.value == 1:
+        elif special_episode_sanity_no_exclusion(world, player):
             add_rule(world.multiworld.get_location(item.flag_definition, player),
                      lambda state: state.has("Main Game Unlock", player))
         # if (item.flag_definition == "Manaphy's Discovery") and world.options.goal.value == 0:
@@ -532,7 +532,19 @@ def subx_rules(world, player):
             elif requirement == "All Mazes":
                 add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state, req="Dojo Dungeons", p=player: state.has_group(req, p, 10))
+            elif requirement == "Bidoof\'s Wish":
+                if world.options.exclude_special.value:
+                    continue
+                add_rule(world.multiworld.get_location(item.flag_definition, player),
+                         lambda state, req=requirement, p=player: state.has(req, p))
 
             else:
                 add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state, req=requirement, p=player: state.has(req, p))
+
+
+def special_episode_sanity_no_exclusion(world, player) -> bool:
+    if world.options.special_episode_sanity.value == 1 and not world.options.exclude_special.value:
+        return True
+    else:
+        return False
