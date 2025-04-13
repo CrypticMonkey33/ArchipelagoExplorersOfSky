@@ -110,6 +110,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
 
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
+
     instruments_required = world.options.req_instruments.value
     macguffins_required = world.options.required_fragments.value
     # Take the options and bake them into the rom, so they can be applied on runtime

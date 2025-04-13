@@ -377,9 +377,9 @@ class EoSClient(BizHawkClient):
             spinda_drinks_ram = array.array('i', [item for item in read_state[24]])
             scenario_talk_bitfield_240_list = int.from_bytes(read_state[25])
             bag_upgrade_value = int.from_bytes(read_state[26])
-            recycle_amount = int.from_bytes(read_state[27])
-            pelipper_received_counter = int.from_bytes(read_state[28])
-            dimensional_scream_info = int.from_bytes(read_state[29])
+            recycle_amount = int.from_bytes(read_state[27], "little")
+            pelipper_received_counter = int.from_bytes(read_state[28], "little")
+            dimensional_scream_info = int.from_bytes(read_state[29], "little")
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
             #    for i in range(10):
