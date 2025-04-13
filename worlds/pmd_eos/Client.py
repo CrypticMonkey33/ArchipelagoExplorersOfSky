@@ -261,6 +261,7 @@ class EoSClient(BizHawkClient):
                 self.aegis_seals = stored["aegis_seals"]
                 self.spinda_events = stored["spinda_events"]
                 self.spinda_drinks = stored["spinda_drinks"]
+                self.item_box_count = stored["box_number"]
 
             else:
 
