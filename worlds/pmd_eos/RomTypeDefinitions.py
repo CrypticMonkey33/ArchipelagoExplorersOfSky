@@ -89,7 +89,7 @@ subX_table = [
     SubXBitfield(55, 4, 0, 7, "Master ★ Rank", ["Secret Rank", "Defeat Dialga"], "Treacherous Waters", "Rank"),
     SubXBitfield(56, 4, 1, 0, "Master ★★ Rank", ["Secret Rank", "Defeat Dialga"], "Southeastern Islands", "Rank"),
     SubXBitfield(57, 4, 1, 1, "Master ★★★ Rank", ["Secret Rank", "Defeat Dialga"], "Inferno Cave", "Rank"),
-    SubXBitfield(58, 4, 1, 2, "Guildmaster Rank", ["Secret Rank", "Defeat Dialga"], "Inferno Cave", "Rank"),
+    SubXBitfield(58, 4, 1, 2, "Guildmaster Rank", ["Secret Rank", "Defeat Dialga", "ProgressiveBag3"], "Inferno Cave", "Rank"),
     SubXBitfield(59, 4, 1, 3, "Recycle Shop Treasure Found", [], "Filler", "ShopItem"),
     SubXBitfield(60, 4, 1, 4, "Recycle Shop Dungeon #1", ["ProgressiveBag3"], "Landslide Cave", "ShopItem"),
     SubXBitfield(61, 4, 1, 5, "Recycle Shop Dungeon #2", ["ProgressiveBag3"], "Tiny Meadow", "ShopItem"),
