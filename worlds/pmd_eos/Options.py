@@ -391,7 +391,7 @@ class MaxRequiredRank(Choice):
     option_master = 8
     option_master_1star = 9
     option_master_2star = 10
-    option_master_3start = 11
+    option_master_3star = 11
     option_guildmaster = 12
 
 

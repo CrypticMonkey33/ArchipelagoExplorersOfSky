@@ -1258,9 +1258,9 @@ class EoSClient(BizHawkClient):
                             )
                             logger.info(
                                 "The Rom decided to be lower than the AP count probably due to save states " +
-                                "\nThe Instrument count from AP is " + str(self.macguffins_collected) +
+                                "\nThe Instrument count from AP is " + str(self.instruments_collected) +
                                 "\nAnd the Instruments written to the ROM should now be: " + str(
-                                    relic_shards_amount)
+                                    instruments_amount)
                             )
                             await asyncio.sleep(0.1)
 
