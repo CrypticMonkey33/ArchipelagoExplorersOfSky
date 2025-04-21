@@ -193,6 +193,7 @@ class EoSClient(BizHawkClient):
                 ]))
             await asyncio.sleep(0.1)
 
+
             item_boxes_collected: List[Dict] = []
             legendaries_recruited: List[Dict] = []
             open_list_total_offset: int = await (self.load_script_variable_raw(0x4F, ctx))
@@ -281,6 +282,15 @@ class EoSClient(BizHawkClient):
             
             if self.hint_loc == []:
                 self.hint_loc = ctx.slot_data["HintLocationList"]
+
+            if not ctx.locations_info:
+                await (ctx.send_msgs(
+                    [
+                        {"cmd": "LocationScouts",
+                         "locations": self.hint_loc,
+                         "create_as_hint": 0
+                         }]))
+                
 
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
@@ -1392,6 +1402,22 @@ class EoSClient(BizHawkClient):
 
                 if locs_to_send is not None:
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
+
+            if (performance_progress_bitfield[4] >> 6) & 1 == 1:
+                dimensional_scream_hint_num = 0
+                hint = self.hint_loc[dimensional_scream_hint_num]
+                location_info = ctx.locations_info[hint]
+                finder = location_info.player
+                item_name = location_info.item
+                item_location = location_info.location
+
+                #await ctx.update_data_package()
+                await (ctx.send_msgs(
+                    [
+                        {"cmd": "LocationScouts",
+                         "locations": self.hint_loc,
+                         "create_as_hint": 0
+                         }]))
 
             # Update data storage
             await (ctx.send_msgs(
