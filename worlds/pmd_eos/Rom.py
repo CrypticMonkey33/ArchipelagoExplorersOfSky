@@ -46,12 +46,12 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     seed_offset = 0x36F90
     player_name_offset = 0x36F80
     ap_settings_offset = 0x36F98
-    mission_max_offset = 0x36F9A
-    macguffin_max_offset = 0x36F9E
-    spinda_drinks_offset = 0x37146
-    hintable_items_offset = ov36_mem_loc + 0x36FA2
+    # mission_max_offset = 0x36F9A
+    # macguffin_max_offset = 0x36F9E
+    # spinda_drinks_offset = 0x37146
+    hintable_items_offset = ov36_mem_loc + 0x36FA2  # number from Heckas makefile code
     custom_save_area_offset = ov36_mem_loc + 0x8F80
-    main_game_unlocked_offset = ov36_mem_loc + 0x37148  # custom_save_area_offset + 0x2A7
+    # main_game_unlocked_offset = ov36_mem_loc + 0x37148  # custom_save_area_offset + 0x2A7
 
     # recruitment_offset = 0x3702C
     # recruitment_evo_offset = 0x37030
@@ -111,12 +111,30 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
 
+    late_missions_count = 0
+    late_outlaws_count = 0
+    if world.options.goal == 1:
+        late_missions_count = world.options.late_mission_checks.value
+        late_outlaws_count = world.options.late_outlaw_checks.value
+
     instruments_required = world.options.req_instruments.value
     macguffins_required = world.options.required_fragments.value
+
     # Take the options and bake them into the rom, so they can be applied on runtime
     write_byte = 0
     write_byte = write_byte | world.options.iq_scaling.value
     write_byte = write_byte | (world.options.xp_scaling.value << 12)
+
+    write_byte = write_byte | (instruments_required << 52)
+
+    write_byte = write_byte | (macguffins_required << 48)
+    write_byte = write_byte | (world.options.early_mission_checks.value << 19)
+    write_byte = write_byte | (world.options.early_outlaw_checks.value << 27)
+    write_byte = write_byte | (late_missions_count << 35)
+    write_byte = write_byte | (late_outlaws_count << 43)
+    write_byte = write_byte | (world.options.drink_events.value << 56)
+    write_byte = write_byte | (world.options.spinda_drinks.value << 64)
+
     if world.options.early_mission_floors.value:
         write_byte = write_byte | (0x1 << 4)
 
@@ -144,29 +162,11 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         write_byte = write_byte | (0x1 << 10)
 
     if world.options.special_episode_sanity.value == 0:
-        patch.write_token(APTokenTypes.WRITE, main_game_unlocked_offset,
-                          int.to_bytes(0x1))
+        write_byte = write_byte | (0x1 << 16)
 
-    late_missions_count = 0
-    late_outlaws_count = 0
-    if world.options.goal == 1:
-        late_missions_count = world.options.late_mission_checks.value
-        late_outlaws_count = world.options.late_outlaw_checks.value
     # write the tokens that will be applied and write the token data into the bin for AP
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset,
-                      int.to_bytes(write_byte, length=2, byteorder="little"))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + macguffin_max_offset + 0x1, int.to_bytes(instruments_required))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + macguffin_max_offset, int.to_bytes(macguffins_required))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset,
-                      int.to_bytes(world.options.early_mission_checks.value))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x1,
-                      int.to_bytes(world.options.early_outlaw_checks.value))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x2, int.to_bytes(late_missions_count))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + mission_max_offset + 0x3, int.to_bytes(late_outlaws_count))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + spinda_drinks_offset,
-                      int.to_bytes(world.options.drink_events.value))
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + spinda_drinks_offset + 0x1,
-                      int.to_bytes(world.options.spinda_drinks.value))
+                      int.to_bytes(write_byte, length=9, byteorder="little"))
 
     patch.write_file("token_data.bin", patch.get_token_binary())
     #testnum = find_ov36_mem_location()
