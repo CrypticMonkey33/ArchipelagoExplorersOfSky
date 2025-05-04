@@ -92,9 +92,10 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
-
+    trans_table = {"[": "", "]": "", "~": "", "\\": ""}
+    trans_table = str.maketrans(trans_table)
     # Change the player name so that PMD_EOS can read it correctly and then make it latin1
-    player_name_changed = (world.multiworld.player_name[world.player]).translate("[]~\\")
+    player_name_changed = (world.multiworld.player_name[world.player]).translate(trans_table)
 
     player_name_changed = player_name_changed.encode("latin1", "xmlcharrefreplace")
 
@@ -104,7 +105,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
 
     # Bake names of previewable items into ROM
     for i in range(len(hint_items)):
-        hint_player = world.multiworld.player_name[hint_items[i].player].translate("[]~\\")
+        hint_player = world.multiworld.player_name[hint_items[i].player].translate(trans_table)
         patch.write_token(APTokenTypes.WRITE, hintable_items_offset + 42*i,
                           f"[CS:N]{hint_player[0:10]}[CR]'s {hint_items[i].name[0:20]}".encode("latin1", "xmlcharrefreplace"))
 

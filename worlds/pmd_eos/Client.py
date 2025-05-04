@@ -228,6 +228,9 @@ class EoSClient(BizHawkClient):
             spinda_drink_offset = custom_save_area_offset + 0x2A5
             bag_upgrade_offset = custom_save_area_offset + 0x2F9
             dimensional_scream_info_offset = custom_save_area_offset + 0x2A8
+            trans_table = {"[": "", "]": "", "~": "", "\\": ""}
+            trans_table = str.maketrans(trans_table)
+            trans_table.update({0: 32})
 
             if (self.player_name + "Dungeon Missions") in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
@@ -1007,10 +1010,8 @@ class EoSClient(BizHawkClient):
                 )
                 await asyncio.sleep(0.1)
             if self.outside_deathlink != 0:
-                trans = str.maketrans("[]~\\", "    ")
-                trans.update({0: 32})
-                write_message = self.deathlink_message.translate(trans).split(chr(0))[0].encode("latin1")[0:128]
-                write_message2 = f"[CS:N]{self.deathlink_sender.translate(trans).split(chr(0))[0][0:18]}[CR]".encode(
+                write_message = self.deathlink_message.translate(trans_table).split(chr(0))[0].encode("latin1")[0:128]
+                write_message2 = f"[CS:N]{self.deathlink_sender.translate(trans_table).split(chr(0))[0][0:18]}[CR]".encode(
                     "latin1")
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
