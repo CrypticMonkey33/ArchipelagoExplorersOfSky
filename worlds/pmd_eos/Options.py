@@ -188,10 +188,20 @@ class FullTeamFormationControl(DefaultOnToggle):
     display_name = "Formation Control Enable"
 
 
-class LevelScaling(DefaultOnToggle):
+class LevelScaling(Choice):
     """Allow for dungeons to scale to the highest level of your party members?
     This will not scale bosses at the end of dungeons"""
     display_name = "Level Scaling"
+    option_off = 0
+    option_easy = 1
+    option_difficult = 2
+    default = 0
+
+
+class GuestScaling(Toggle):
+    """Makes the dungeon guests (Bidoof in Cragy Coast, Grovyle in Hidden Land, etc.) scale to your party level
+        Does nothing if Level scaling is off"""
+    display_name = "Guest Scaling"
 
 
 class StarterOption(Choice):
@@ -435,3 +445,4 @@ class EOSOptions(PerGameCommonOptions):
     spinda_drinks: SpindaBasicDrinks
     max_rank: MaxRequiredRank
     exclude_special: ExcludeSpecialEpisodes
+    guest_scaling: GuestScaling

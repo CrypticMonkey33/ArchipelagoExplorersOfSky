@@ -112,17 +112,20 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
 
+    write_byte = 0
     late_missions_count = 0
     late_outlaws_count = 0
-    if world.options.goal == 1:
+    if world.options.goal.value == 1:
         late_missions_count = world.options.late_mission_checks.value
         late_outlaws_count = world.options.late_outlaw_checks.value
+    elif world.options.goal.value == 0:
+        write_byte = write_byte | (0x1 << 17)
 
     instruments_required = world.options.req_instruments.value
     macguffins_required = world.options.required_fragments.value
 
     # Take the options and bake them into the rom, so they can be applied on runtime
-    write_byte = 0
+
     write_byte = write_byte | world.options.iq_scaling.value
     write_byte = write_byte | (world.options.xp_scaling.value << 12)
 
@@ -136,14 +139,24 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     write_byte = write_byte | (world.options.drink_events.value << 56)
     write_byte = write_byte | (world.options.spinda_drinks.value << 64)
 
+    if world.options.long_location.value == 1:
+        write_byte = write_byte | (0x1 << 18)
+
     if world.options.early_mission_floors.value:
         write_byte = write_byte | (0x1 << 4)
 
     if world.options.move_shortcuts.value:
         write_byte = write_byte | (0x1 << 5)
 
-    if world.options.level_scale.value:
-        write_byte = write_byte | (0x1 << 6)
+    if world.options.level_scale.value == 1:
+        write_byte = write_byte | (0x1 << 24)
+    if world.options.level_scale.value == 2:
+        write_byte = write_byte | (0x1 << 25)
+    if world.options.level_scale.value == 3:
+        write_byte = write_byte | (0x1 << 24) | (0x1 << 25)
+
+    if world.options.guest_scaling.value:
+        write_byte = write_byte | (0x1 << 26)
 
     if world.options.type_sanity.value:
         write_byte = write_byte | (0x1 << 7)
