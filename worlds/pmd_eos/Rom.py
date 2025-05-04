@@ -42,16 +42,20 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
 
 
 def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[Item]) -> None:
-    ov36_mem_loc = 0x325200  # find_ov36_mem_location()
+    ov36_mem_loc = 2721280  # find_ov36_mem_location()
     seed_offset = 0x36F90
     player_name_offset = 0x36F80
     ap_settings_offset = 0x36F98
+    dimensional_total_offset = 3298816
     # mission_max_offset = 0x36F9A
     # macguffin_max_offset = 0x36F9E
     # spinda_drinks_offset = 0x37146
     hintable_items_offset = 0x298200  # number from Heckas makefile code
     custom_save_area_offset = ov36_mem_loc + 0x8F80
     # main_game_unlocked_offset = ov36_mem_loc + 0x37148  # custom_save_area_offset + 0x2A7
+    dimensional_scream_who_offset = dimensional_total_offset + 0x4
+    dimensional_scream_what_offset = dimensional_total_offset + 0x202
+    dimensional_scream_where_offset = dimensional_total_offset + 0x5E0
 
     # recruitment_offset = 0x3702C
     # recruitment_evo_offset = 0x37030
@@ -94,7 +98,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
     trans_table = {"[": "", "]": "", "~": "", "\\": ""}
     trans_table = str.maketrans(trans_table)
-    # Change the player name so that PMD_EOS can read it correctly and then make it latin1
+    # Change the player name so that PMD_EOS can read it correctly and then make it latin
     player_name_changed = (world.multiworld.player_name[world.player]).translate(trans_table)
 
     player_name_changed = player_name_changed.encode("latin1", "xmlcharrefreplace")
@@ -108,6 +112,22 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
         hint_player = world.multiworld.player_name[hint_items[i].player].translate(trans_table)
         patch.write_token(APTokenTypes.WRITE, hintable_items_offset + 42*i,
                           f"[CS:N]{hint_player[0:10]}[CR]'s {hint_items[i].name[0:20]}".encode("latin1", "xmlcharrefreplace"))
+
+
+    # Bake the dimensional Scream Hints into the ROM
+    dimensional_scream_hints = get_dimensional_hints(world)
+    for i in range(len(dimensional_scream_hints)):
+        hint_player = world.multiworld.player_name[dimensional_scream_hints[i].player].translate(trans_table)
+        patch.write_token(APTokenTypes.WRITE, dimensional_scream_who_offset + 18 * i,
+                          hint_player[0:15].encode("latin1", "xmlcharrefreplace"))
+
+        hint_loc_name = dimensional_scream_hints[i].name.translate(trans_table)
+        patch.write_token(APTokenTypes.WRITE, dimensional_scream_where_offset + 34 * i,
+                          hint_loc_name[0:31].encode("latin1", "xmlcharrefreplace"))
+
+        hint_item = dimensional_scream_hints[i].item.name.translate(trans_table)
+        patch.write_token(APTokenTypes.WRITE, dimensional_scream_what_offset + 34 * i,
+                          hint_item[0:31].encode("latin1", "xmlcharrefreplace"))
 
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
@@ -184,6 +204,42 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
 
     patch.write_file("token_data.bin", patch.get_token_binary())
     #testnum = find_ov36_mem_location()
+
+
+def get_dimensional_hints(world: "EOSWorld") -> list[Location]:
+    # getting the hint items for the dimensional scream hints
+    hint_loc = []
+    filler = 8
+    useful = 10
+    progressive = 12
+    sky_dungeons = []
+    important_sky_items = ["Icy Flute", "Fiery Drum", "Terra Cymbal", "Aqua-Monica", "Rock Horn",
+                           "Grass Cornet", "Sky Melodica", "Stellar Symphony", "Null Bagpipes", "Glimmer Harp",
+                           "Toxic Sax", "Biting Bass", "Knockout Bell", "Spectral Chimes", "Liar's Lyre",
+                           "Charge Synth", "Norma-ccordion", "Psychic Cello", "Dragu-teki", "Steel Guitar",
+                           "Relic Fragment Shard"]
+    location_list = list(world.multiworld.get_locations(world.player))
+    random.shuffle(location_list)
+    for location in location_list:
+        if location.address is not None and location.item:
+            if filler <= 0 and useful <= 0 and progressive <= 0:
+                break
+            elif progressive > 0 and location.item.advancement:
+                if location.item.player == world.player and location.item.name not in important_sky_items:
+                    sky_dungeons.append(location)
+                    continue
+                hint_loc.append(location.address)
+                progressive -= 1
+            elif filler > 0 and location.item is not (location.item.advancement or location.item.useful):
+                hint_loc.append(location)
+                filler -= 1
+            elif useful > 0 and location.item.useful:
+                hint_loc.append(location)
+                useful -= 1
+    if progressive > 0:
+        for i in range(progressive):
+            hint_loc.append(sky_dungeons[i])
+    return hint_loc
 
 
 def find_ov36_mem_location() -> int:

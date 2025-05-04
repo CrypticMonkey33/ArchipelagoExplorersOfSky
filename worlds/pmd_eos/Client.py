@@ -1412,12 +1412,7 @@ class EoSClient(BizHawkClient):
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
 
             if (performance_progress_bitfield[4] >> 6) & 1 == 1:
-                dimensional_scream_hint_num = 0
-                hint = self.hint_loc[dimensional_scream_hint_num]
-                location_info = ctx.locations_info[hint]
-                finder = location_info.player
-                item_name = location_info.item
-                item_location = location_info.location
+
 
                 #await ctx.update_data_package()
                 await (ctx.send_msgs(
