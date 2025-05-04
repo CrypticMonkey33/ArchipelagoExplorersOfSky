@@ -515,8 +515,15 @@ class EoSClient(BizHawkClient):
                             )
 
                         else:
-                            write_byte = bag_upgrade_value + 0x1
-                            bag_upgrade_value = write_byte
+                            if bag_upgrade_value in [0, 1, 2]:
+                                write_byte = bag_upgrade_value + 0x1
+                                bag_upgrade_value = write_byte
+                            elif bag_upgrade_value in [3, 4, 5]:
+                                write_byte = 6
+                                bag_upgrade_value = write_byte
+                            else:
+                                write_byte = 7
+                                bag_upgrade_value = write_byte
 
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
