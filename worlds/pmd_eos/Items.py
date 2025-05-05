@@ -283,7 +283,7 @@ EOS_item_table = [
     ItemData("Miracle Chest", 464, ItemClassification.useful, 0, ["Item", "Single"], 0x42),  # Boosts Exp
     ItemData("Wonder Chest", 465, ItemClassification.useful, 0, ["Item", "Single"], 0x43),  # Boosts Exp
     ItemData("Main Game Unlock", 700, ItemClassification.progression, 0, [], 0),
-    ItemData("Inspiration Strikes!", 466, ItemClassification.trap, 0, ["Trap"], 0x0),
+    ItemData("Inspiration Strikes!", 466, ItemClassification.useful, 0, ["Trap"], 0x0),
 
 ]
 filler_items = [
