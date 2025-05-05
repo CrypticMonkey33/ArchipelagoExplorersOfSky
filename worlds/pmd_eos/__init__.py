@@ -560,9 +560,9 @@ class EOSWorld(World):
     def generate_output(self, output_directory: str) -> None:
         patch = EOSProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
         patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/archipelago-base.bsdiff"))
-        hint_item_list: list[Item] = []
+        hint_item_list: list[Location] = []
         for i in range(10):
-            hint_item_list += [self.multiworld.get_location(f"Shop Item {1 + i}", self.player).item]
+            hint_item_list += [self.multiworld.get_location(f"Shop Item {1 + i}", self.player)]
         write_tokens(self, patch, hint_item_list)
         rom_path = os.path.join(
             output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"

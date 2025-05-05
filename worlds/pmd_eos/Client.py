@@ -1411,16 +1411,16 @@ class EoSClient(BizHawkClient):
                 if locs_to_send is not None:
                     await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
 
-            if (performance_progress_bitfield[4] >> 6) & 1 == 1:
+            #if (performance_progress_bitfield[4] >> 6) & 1 == 1:
 
 
                 #await ctx.update_data_package()
-                await (ctx.send_msgs(
-                    [
-                        {"cmd": "LocationScouts",
-                         "locations": self.hint_loc,
-                         "create_as_hint": 0
-                         }]))
+                #await (ctx.send_msgs(
+                   # [
+                   #     {"cmd": "LocationScouts",
+                   #      "locations": self.hint_loc,
+                   #      "create_as_hint": 0
+                   #      }]))
 
             # Update data storage
             await (ctx.send_msgs(

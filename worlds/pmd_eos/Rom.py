@@ -41,21 +41,20 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
         return get_base_rom_as_bytes()
 
 
-def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[Item]) -> None:
+def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[Location]) -> None:
     ov36_mem_loc = 2721280  # find_ov36_mem_location()
     seed_offset = 0x36F90
     player_name_offset = 0x36F80
     ap_settings_offset = 0x36F98
-    dimensional_total_offset = 3298816
     # mission_max_offset = 0x36F9A
     # macguffin_max_offset = 0x36F9E
     # spinda_drinks_offset = 0x37146
     hintable_items_offset = 3298816  # number from Heckas makefile code
     custom_save_area_offset = ov36_mem_loc + 0x8F80
     # main_game_unlocked_offset = ov36_mem_loc + 0x37148  # custom_save_area_offset + 0x2A7
-    dimensional_scream_who_offset = dimensional_total_offset + 0x4
-    dimensional_scream_what_offset = dimensional_total_offset + 0x202
-    dimensional_scream_where_offset = dimensional_total_offset + 0x5E0
+    dimensional_scream_who_offset = hintable_items_offset + 0x4
+    dimensional_scream_what_offset = hintable_items_offset + 0x202
+    dimensional_scream_where_offset = hintable_items_offset + 0x5E0
 
     # recruitment_offset = 0x3702C
     # recruitment_evo_offset = 0x37030
@@ -110,23 +109,31 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     # Bake names of previewable items into ROM
     for i in range(len(hint_items)):
         hint_player = world.multiworld.player_name[hint_items[i].player].translate(trans_table)
-        patch.write_token(APTokenTypes.WRITE, hintable_items_offset + 42*i,
-                          f"[CS:N]{hint_player[0:10]}[CR]'s {hint_items[i].name[0:20]}".encode("latin1", "xmlcharrefreplace"))
+        patch.write_token(APTokenTypes.WRITE, dimensional_scream_who_offset + 18 * i,
+                          hint_player[0:15].encode("latin1", "xmlcharrefreplace"))
+
+        hint_loc_name = hint_items[i].name.translate(trans_table)
+        patch.write_token(APTokenTypes.WRITE, dimensional_scream_where_offset + 34 * i,
+                          hint_loc_name[0:31].encode("latin1", "xmlcharrefreplace"))
+
+        hint_item = hint_items[i].item.name.translate(trans_table)
+        patch.write_token(APTokenTypes.WRITE, dimensional_scream_what_offset + 34 * i,
+                          hint_item[0:31].encode("latin1", "xmlcharrefreplace"))
 
 
     # Bake the dimensional Scream Hints into the ROM
     dimensional_scream_hints = get_dimensional_hints(world)
     for i in range(len(dimensional_scream_hints)):
         hint_player = world.multiworld.player_name[dimensional_scream_hints[i].player].translate(trans_table)
-        patch.write_token(APTokenTypes.WRITE, dimensional_scream_who_offset + 18 * i,
+        patch.write_token(APTokenTypes.WRITE, dimensional_scream_who_offset + 18 * (i + 10),
                           hint_player[0:15].encode("latin1", "xmlcharrefreplace"))
 
         hint_loc_name = dimensional_scream_hints[i].name.translate(trans_table)
-        patch.write_token(APTokenTypes.WRITE, dimensional_scream_where_offset + 34 * i,
+        patch.write_token(APTokenTypes.WRITE, dimensional_scream_where_offset + 34 * (i + 10),
                           hint_loc_name[0:31].encode("latin1", "xmlcharrefreplace"))
 
         hint_item = dimensional_scream_hints[i].item.name.translate(trans_table)
-        patch.write_token(APTokenTypes.WRITE, dimensional_scream_what_offset + 34 * i,
+        patch.write_token(APTokenTypes.WRITE, dimensional_scream_what_offset + 34 * (i + 10),
                           hint_item[0:31].encode("latin1", "xmlcharrefreplace"))
 
     # Bake seed name into ROM
@@ -209,9 +216,9 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
 def get_dimensional_hints(world: "EOSWorld") -> list[Location]:
     # getting the hint items for the dimensional scream hints
     hint_loc = []
-    filler = 8
-    useful = 10
-    progressive = 12
+    filler = 5
+    useful = 6
+    progressive = 9
     sky_dungeons = []
     important_sky_items = ["Icy Flute", "Fiery Drum", "Terra Cymbal", "Aqua-Monica", "Rock Horn",
                            "Grass Cornet", "Sky Melodica", "Stellar Symphony", "Null Bagpipes", "Glimmer Harp",
