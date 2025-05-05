@@ -228,7 +228,7 @@ def get_dimensional_hints(world: "EOSWorld") -> list[Location]:
                 if location.item.player == world.player and location.item.name not in important_sky_items:
                     sky_dungeons.append(location)
                     continue
-                hint_loc.append(location.address)
+                hint_loc.append(location)
                 progressive -= 1
             elif filler > 0 and location.item is not (location.item.advancement or location.item.useful):
                 hint_loc.append(location)

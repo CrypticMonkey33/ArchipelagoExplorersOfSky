@@ -19,7 +19,7 @@ class FragmentShards(NamedRange):
     """ How many Relic Fragment Shards should be in the game (Macguffins)
      that you must get to unlock Hidden Land"""
     range_start = 4
-    range_end = 20
+    range_end = 15
     special_range_names = {
         "easy": 4,
         "normal": 6,
@@ -47,7 +47,7 @@ class RequiredInstruments(NamedRange):
      that you must get to unlock Dark Crater if victory condition is Darkrai
      Instruments are not added to the item pool if the goal is Dialga"""
     range_start = 4
-    range_end = 20
+    range_end = 15
     special_range_names = {
         "easy": 4,
         "normal": 6,
@@ -74,12 +74,12 @@ class EarlyMissionChecks(NamedRange):
     """ How many Missions per dungeon pre dialga should be checks?
         0 equals missions are not checks"""
     range_start = 0
-    range_end = 50
+    range_end = 31
     special_range_names = {
         "off": 0,
         "some": 4,
         "lots": 10,
-        "insanity": 50
+        "insanity": 31
     }
     default = 4
 
@@ -88,12 +88,12 @@ class LateMissionChecks(NamedRange):
     """ How many Missions per dungeon post-dialga (including Hidden Land
     and Temporal Tower) should be checks? 0 equals missions are not checks"""
     range_start = 0
-    range_end = 50
+    range_end = 31
     special_range_names = {
         "off": 0,
         "some": 4,
         "lots": 10,
-        "insanity": 50
+        "insanity": 31
     }
     default = 4
 
@@ -102,12 +102,12 @@ class EarlyOutlawChecks(NamedRange):
     """ How many outlaws per dungeon pre dialga should be checks?
         0 equals outlaws are not checks"""
     range_start = 0
-    range_end = 50
+    range_end = 31
     special_range_names = {
         "off": 0,
         "some": 2,
         "lots": 10,
-        "insanity": 50
+        "insanity": 31
     }
     default = 2
 
@@ -116,12 +116,12 @@ class LateOutlawChecks(NamedRange):
     """ How many Missions per dungeon post-dialga (including Hidden Land
     and Temporal Tower) should be checks? 0 equals outlaws are not checks"""
     range_start = 0
-    range_end = 50
+    range_end = 31
     special_range_names = {
         "off": 0,
         "some": 2,
         "lots": 10,
-        "insanity": 50
+        "insanity": 31
     }
     default = 2
 
