@@ -41,7 +41,8 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
         return get_base_rom_as_bytes()
 
 
-def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[Location]) -> None:
+def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[Location],
+                 dimensional_screams: list[Location]) -> None:
     ov36_mem_loc = 2721280  # find_ov36_mem_location()
     seed_offset = 0x36F90
     player_name_offset = 0x36F80
@@ -55,7 +56,9 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
     dimensional_scream_who_offset = hintable_items_offset + 0x4
     dimensional_scream_what_offset = hintable_items_offset + 0x202
     dimensional_scream_where_offset = hintable_items_offset + 0x5E0
-
+    #dimensional_scream_hints = get_dimensional_hints(world)
+    dimensional_scream_hints = dimensional_screams
+    #writable_screams = [k.address for k in dimensional_scream_hints]
     # recruitment_offset = 0x3702C
     # recruitment_evo_offset = 0x37030
     # team_formation_offset = 0x37034
@@ -92,6 +95,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
         "drink_events": world.options.drink_events.value,
         "spinda_drinks": world.options.spinda_drinks.value,
         "exclude_special": world.options.exclude_special.value,
+        # "dimensional_screams": writable_screams,
     }
     seed = world.multiworld.seed_name.encode("UTF-8")[0:7]
     patch.write_file("options.json", json.dumps(options_dict).encode("UTF-8"))
@@ -122,7 +126,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
 
 
     # Bake the dimensional Scream Hints into the ROM
-    dimensional_scream_hints = get_dimensional_hints(world)
+
     for i in range(len(dimensional_scream_hints)):
         hint_player = world.multiworld.player_name[dimensional_scream_hints[i].player].translate(trans_table)
         patch.write_token(APTokenTypes.WRITE, dimensional_scream_who_offset + 18 * (i + 10),

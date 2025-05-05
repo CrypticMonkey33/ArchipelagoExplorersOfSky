@@ -73,6 +73,8 @@ class EOSWorld(World):
     extra_locations_added = 0
     mission_start_id = 1000
     excluded_locations = 0
+    dimensional_scream_list = []
+    dimensional_scream_list_ints = []
 
     def generate_early(self) -> None:
         if self.options.bag_on_start.value:
@@ -362,7 +364,7 @@ class EOSWorld(World):
             "DrinkEvents": self.options.drink_events.value,
             "SpindaDrinks": self.options.spinda_drinks.value,
             "ExcludeSpecial": self.options.exclude_special.value,
-            "HintLocationList": self.hint_locations(),
+            "HintLocationList": self.dimensional_scream_list_ints,
         }
 
     def create_items(self) -> None:
@@ -561,19 +563,21 @@ class EOSWorld(World):
         patch = EOSProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
         patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/archipelago-base.bsdiff"))
         hint_item_list: list[Location] = []
+        self.dimensional_scream_list = self.hint_locations()
+        self.dimensional_scream_list_ints = [k.address for k in self.dimensional_scream_list]
         for i in range(10):
             hint_item_list += [self.multiworld.get_location(f"Shop Item {1 + i}", self.player)]
-        write_tokens(self, patch, hint_item_list)
+        write_tokens(self, patch, hint_item_list, self.dimensional_scream_list)
         rom_path = os.path.join(
             output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
         )
         patch.write(rom_path)
 
-    def hint_locations(self) -> list[int]:
+    def hint_locations(self) -> list[Location]:
         hint_loc = []
-        filler = 4
-        useful = 3
-        progressive = 7
+        filler = 5
+        useful = 6
+        progressive = 9
         sky_dungeons = []
         important_sky_items = ["Icy Flute", "Fiery Drum", "Terra Cymbal", "Aqua-Monica", "Rock Horn",
                                "Grass Cornet", "Sky Melodica", "Stellar Symphony", "Null Bagpipes", "Glimmer Harp",
@@ -585,18 +589,18 @@ class EOSWorld(World):
         for location in location_list:
             if location.address is not None and location.item:
                 if filler <= 0 and useful <= 0 and progressive <= 0:
-                    break 
+                    break
                 elif progressive > 0 and location.item.advancement:
                     if location.item.player == self.player and location.item.name not in important_sky_items:
-                        sky_dungeons.append(location.address)
+                        sky_dungeons.append(location)
                         continue
-                    hint_loc.append(location.address)
+                    hint_loc.append(location)
                     progressive -= 1
                 elif filler > 0 and location.item is not (location.item.advancement or location.item.useful):
-                    hint_loc.append(location.address)
+                    hint_loc.append(location)
                     filler -= 1
                 elif useful > 0 and location.item.useful:
-                    hint_loc.append(location.address)
+                    hint_loc.append(location)
                     useful -= 1
         if progressive > 0:
             for i in range(progressive):

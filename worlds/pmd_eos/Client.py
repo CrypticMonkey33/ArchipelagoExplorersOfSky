@@ -52,6 +52,7 @@ class EoSClient(BizHawkClient):
     deathlink_message: str = ""
     item_box_count = 0
     hint_loc = []
+    hints_hinted: List[int] = []
 
     def __init__(self) -> None:
         super().__init__()
@@ -177,6 +178,12 @@ class EoSClient(BizHawkClient):
                      "operations": [{"operation": "default", "value": {0: []}}]
                      },
                     {"cmd": "Set",
+                     "key": self.player_name + "Hinted Hints",
+                     "default": {0: []},
+                     "want_reply": True,
+                     "operations": [{"operation": "default", "value": {0: []}}]
+                     },
+                    {"cmd": "Set",
                      "key": self.player_name + "GenericStorage",
                      "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                  "macguffin_unlock_amount": 0, "instruments_collected": 0, "required_instruments": 0,
@@ -252,6 +259,11 @@ class EoSClient(BizHawkClient):
             else:
                 legendaries_recruited = []
                 return
+            if (self.player_name + "Hinted Hints") in ctx.stored_data:
+                self.hints_hinted = ctx.stored_data[self.player_name + "Hinted Hints"]["0"]
+            else:
+                self.hints_hinted = []
+                return
             if (self.player_name + "GenericStorage") in ctx.stored_data:
                 stored = ctx.stored_data[self.player_name + "GenericStorage"]
                 self.goal_complete = stored["goal_complete"]
@@ -283,16 +295,16 @@ class EoSClient(BizHawkClient):
             if self.required_instruments == 0:
                 self.required_instruments = ctx.slot_data["RequiredInstruments"]
             
-            if self.hint_loc == []:
+            if not self.hint_loc:
                 self.hint_loc = ctx.slot_data["HintLocationList"]
 
-            if not ctx.locations_info:
-                await (ctx.send_msgs(
-                    [
-                        {"cmd": "LocationScouts",
-                         "locations": self.hint_loc,
-                         "create_as_hint": 0
-                         }]))
+            #if not ctx.locations_info:
+            #    await (ctx.send_msgs(
+            #        [
+            #            {"cmd": "LocationScouts",
+            #             "locations": self.hint_loc,
+            #             "create_as_hint": 0
+            #             }]))
                 
 
             # read the open and conquest lists with the offsets we found
@@ -989,7 +1001,16 @@ class EoSClient(BizHawkClient):
             hints_to_send = []
             for i in range(10):
                 if hintable_items[i] == 1:
-                    hints_to_send += [i + 310]
+                    k = i + 310
+                    if k not in self.hints_hinted:
+                        self.hints_hinted.append(k)
+                        hints_to_send += [k]
+            for l in range(20):
+                if hintable_items[l + 10] == 1:
+                    j = self.hint_loc[l]
+                    if j not in self.hints_hinted:
+                        self.hints_hinted.append(j)
+                        hints_to_send += [j]
             await (ctx.send_msgs(
                 [
                     {"cmd": "LocationScouts",
@@ -1448,6 +1469,12 @@ class EoSClient(BizHawkClient):
                      "default": {},
                      "want_reply": True,
                      "operations": [{"operation": "replace", "value": {0: legendaries_recruited}}]
+                     },
+                    {"cmd": "Set",
+                     "key": self.player_name + "Hinted Hints",
+                     "default": {},
+                     "want_reply": True,
+                     "operations": [{"operation": "default", "value": {0: self.hints_hinted}}]
                      },
                     {"cmd": "Set",
                      "key": self.player_name + "GenericStorage",
