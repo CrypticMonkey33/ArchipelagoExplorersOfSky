@@ -50,7 +50,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[I
     # mission_max_offset = 0x36F9A
     # macguffin_max_offset = 0x36F9E
     # spinda_drinks_offset = 0x37146
-    hintable_items_offset = 0x298200  # number from Heckas makefile code
+    hintable_items_offset = 3298816  # number from Heckas makefile code
     custom_save_area_offset = ov36_mem_loc + 0x8F80
     # main_game_unlocked_offset = ov36_mem_loc + 0x37148  # custom_save_area_offset + 0x2A7
     dimensional_scream_who_offset = dimensional_total_offset + 0x4
