@@ -472,14 +472,14 @@ def subx_rules(world, player):
             if requirement == "Defeat Dialga":
                 add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state: ready_for_late_game(state, player, world))
-            elif requirement == "Sky Station Summit Pass":
+            elif requirement == "Sky Peak Summit Pass":
                 if world.options.sky_peak_type == 1:
                     add_rule(world.multiworld.get_location(item.flag_definition, player),
                              lambda state, req="Progressive Sky Peak": ready_for_late_game(state, player, world)
                                                                        and state.has(req, player, 10))
                 elif world.options.sky_peak_type == 2:
                     add_rule(world.multiworld.get_location(item.flag_definition, player),
-                             lambda state, req="Sky Station Summit Pass": ready_for_late_game(state, player, world)
+                             lambda state, req="Sky Peak Summit Pass": ready_for_late_game(state, player, world)
                                                                           and state.has(req, player))
                 elif world.options.sky_peak_type == 3:
                     add_rule(world.multiworld.get_location(item.flag_definition, player),

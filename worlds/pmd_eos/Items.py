@@ -166,7 +166,7 @@ EOS_item_table = [
              ["Unique", "LateDungeons", "SkyPeak", "MissionDungeons"], 0x76),
     ItemData("9th Station Pass", 119, ItemClassification.progression, 119,
              ["Unique", "LateDungeons", "SkyPeak", "MissionDungeons"], 0x77),
-    ItemData("Sky Station Summit Pass", 120, ItemClassification.progression, 120,
+    ItemData("Sky Peak Summit Pass", 120, ItemClassification.progression, 120,
              ["Unique", "LateDungeons", "SkyPeak", "MissionDungeons"], 0x78),
     # ItemData("5th Station Clearing", 121, ItemClassification.progression, 121,
     #        ["Unique", "LateDungeons", "MissionDungeons"], 0x79),

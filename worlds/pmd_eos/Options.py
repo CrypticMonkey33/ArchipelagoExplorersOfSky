@@ -270,7 +270,7 @@ class XpScaling(Range):
 class SkyPeakType(Choice):
     """How do you want sky peak to work?
     1: Progressive (unlock dungeons sequentially when you pick up a sky peak item)
-    2. All Random (unlock sky peak dungeons completely at random based on which sky peak item you pick up
+    2. All Random (unlock sky peak dungeons completely at random based on which sky peak item you pick up)
     3: All unlocked from one item (there will be one sky peak item that unlocks all sky peak checks)"""
     display_name = "Sky Peak Type"
     option_progressive = 1
