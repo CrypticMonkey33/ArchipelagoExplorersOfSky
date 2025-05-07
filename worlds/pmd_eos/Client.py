@@ -231,10 +231,11 @@ class EoSClient(BizHawkClient):
             death_link_ally_death_message_offset = death_link_offset + 0x2 + 128  # ally death message
             death_link_ally_name_offset = death_link_offset + 0x2 + 256  # ally death name
             hintable_items_offset = custom_save_area_offset + 0x29A
-            main_game_unlocked_offset = custom_save_area_offset + 0x2A7
-            spinda_drink_offset = custom_save_area_offset + 0x2A5
-            bag_upgrade_offset = custom_save_area_offset + 0x2F9
-            dimensional_scream_info_offset = custom_save_area_offset + 0x2A8
+            main_game_unlocked_offset = custom_save_area_offset + 0x2BB
+            spinda_drink_offset = custom_save_area_offset + 0x2B9
+            bag_upgrade_offset = custom_save_area_offset + 0x2BC
+            # dimensional_scream_info_offset = custom_save_area_offset + 0x2A8
+            dungeon_traps_bitfield_offset = custom_save_area_offset + 0x2B8
             trans_table = {"[": "", "]": "", "~": "", "\\": ""}
             trans_table = str.maketrans(trans_table)
             trans_table.update({0: 32})
@@ -340,7 +341,8 @@ class EoSClient(BizHawkClient):
                     (bag_upgrade_offset, 1, self.ram_mem_domain),
                     (recycle_amount_offset, 4, self.ram_mem_domain),
                     (pelipper_received_counter_offset, 4, self.ram_mem_domain),
-                    (dimensional_scream_info_offset, 0x51, self.ram_mem_domain),
+                    (dungeon_traps_bitfield_offset, 1, self.ram_mem_domain),
+                    # (dimensional_scream_info_offset, 0x51, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -405,7 +407,8 @@ class EoSClient(BizHawkClient):
             bag_upgrade_value = int.from_bytes(read_state[26])
             recycle_amount = int.from_bytes(read_state[27], "little")
             pelipper_received_counter = int.from_bytes(read_state[28], "little")
-            dimensional_scream_info = int.from_bytes(read_state[29], "little")
+            dungeon_traps_bitfield = int.from_bytes(read_state[29])
+            #dimensional_scream_info = int.from_bytes(read_state[29], "little")
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
             #    for i in range(10):
@@ -881,7 +884,18 @@ class EoSClient(BizHawkClient):
                                 ]
                             )
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
-
+                    elif "DungeonTrap" in item_data.group:
+                        if (dungeon_traps_bitfield >> item_data.memory_offset) == 0:
+                            write_byte = dungeon_traps_bitfield | (0x1 << item_data.memory_offset)
+                            dungeon_traps_bitfield = write_byte
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (dungeon_traps_bitfield_offset, int.to_bytes(write_byte),
+                                     self.ram_mem_domain),
+                                ]
+                            )
+                        await self.update_received_items(ctx, received_items_offset, received_index, i)
             # Check for set location flags in dungeon list
             for byte_i, byte in enumerate(conquest_list):
                 for j in range(8):
