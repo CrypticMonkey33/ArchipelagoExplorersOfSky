@@ -256,9 +256,6 @@ class IqScaling(Range):
 class XpScaling(Range):
     """Do you want to scale XP to gain XP faster? What rate? (1x, 2x, 3x, etc.)
     WARNING: 0x WILL NOT GIVE YOU ANY XP. USE AT YOUR OWN RISK
-
-    NOT CURRENTLY IMPLEMENTED
-
     """
 
     display_name = "XP Scaling"
