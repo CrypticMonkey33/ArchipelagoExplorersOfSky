@@ -443,7 +443,7 @@ class EOSWorld(World):
             elif "Instrument" in item_table[item_name].group:
                 continue
             elif item_table[item_name].classification == ItemClassification.filler:
-                if item_name in ["Golden Apple", "Gold Ribbon"]:
+                if item_name in ["Gold Ribbon"]:
                     continue
                 if "Exclusive" in item_table[item_name].group:
                     exclusive_filler_pool.append(self.create_item(item_name, ItemClassification.filler))
