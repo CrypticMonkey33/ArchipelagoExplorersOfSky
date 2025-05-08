@@ -330,7 +330,7 @@ class EoSClient(BizHawkClient):
                     (death_link_sky_death_message_offset, 128, self.ram_mem_domain),  # sky death message
                     (death_link_ally_death_message_offset, 128, self.ram_mem_domain),  # ally death message
                     (death_link_ally_name_offset, 18, self.ram_mem_domain),  # ally death name
-                    (hintable_items_offset, 0xA, self.ram_mem_domain),
+                    (hintable_items_offset, 0x1E, self.ram_mem_domain),
                     (bank_gold_offset, 4, self.ram_mem_domain),
                     (player_gold_offset, 4, self.ram_mem_domain),
                     (relic_shards_offset, 1, self.ram_mem_domain),
@@ -1019,9 +1019,9 @@ class EoSClient(BizHawkClient):
                     if k not in self.hints_hinted:
                         self.hints_hinted.append(k)
                         hints_to_send += [k]
-            for l in range(20):
-                if hintable_items[l + 10] == 1:
-                    j = self.hint_loc[l]
+            for m in range(20):
+                if hintable_items[m + 10] == 1:
+                    j = self.hint_loc[m]
                     if j not in self.hints_hinted:
                         self.hints_hinted.append(j)
                         hints_to_send += [j]

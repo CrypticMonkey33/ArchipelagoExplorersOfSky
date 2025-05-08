@@ -404,14 +404,14 @@ trap_items = [
     ItemData("Congealed Ruins", 71, ItemClassification.trap, 20, ["Trap", "Late", "Unique", "Dungeon"], 0x47),
     ItemData("Labyrinth Cove", 86, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x56),
     ItemData("Dojo Ghast Maze", 190, ItemClassification.trap, 20, ["Trap", "Dojo", "Unique", "Dungeon"], 0xBE),
-    ItemData("Dungeon Yawn", 470, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x0),
-    ItemData("Dungeon Whiffer", 471, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x1),
-    ItemData("Dungeon DropItems", 472, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x2),
-    ItemData("Dungeon Weather", 473, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x3),
+    ItemData("Dungeon Yawn", 470, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x1),
+    ItemData("Dungeon Whiffer", 471, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x2),
+    ItemData("Dungeon DropItems", 472, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x3),
+    ItemData("Dungeon Weather", 473, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x5),
     ItemData("Dungeon Warp", 474, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x4),
-    ItemData("Dungeon Pitfall", 475, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x5),
-    ItemData("Dungeon Embargo", 476, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x6),
-    ItemData("Dungeon Maze", 477, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x7),
+    ItemData("Dungeon Pitfall", 475, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x6),
+    ItemData("Dungeon Embargo", 476, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x7),
+    ItemData("Dungeon Maze", 477, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x0),
 
 ]
 filler_item_weights = [item.start_number for item in filler_items]
