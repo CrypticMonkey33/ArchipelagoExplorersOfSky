@@ -1,4 +1,5 @@
 import math
+import threading
 import typing
 import os
 import json
@@ -74,9 +75,11 @@ class EOSWorld(World):
     mission_start_id = 1000
     excluded_locations = 0
     dimensional_scream_list = []
-    dimensional_scream_list_ints = []
+    dimensional_scream_list_ints: list[int] = []
+    slot_data_ready = threading.Event
 
     def generate_early(self) -> None:
+        self.slot_data_ready = threading.Event()
         if self.options.bag_on_start.value:
             item_name = "Bag Upgrade"
             self.multiworld.push_precollected(self.create_item(item_name))
@@ -330,6 +333,7 @@ class EOSWorld(World):
             return EOSItem(item_data.name, item_data.classification, item_data.id, self.player)
 
     def fill_slot_data(self) -> Dict[str, Any]:
+        self.slot_data_ready.wait()
         return {
             "Goal": self.options.goal.value,
             "BagOnStart": self.options.bag_on_start.value,
@@ -356,6 +360,7 @@ class EOSWorld(World):
             "AllowedLegendaries": self.options.allowed_legendaries.value,
             "SkyPeakType": self.options.sky_peak_type.value,
             "SpecialEpisodeSanity": self.options.special_episode_sanity.value,
+            "HintLocationList": self.dimensional_scream_list_ints,
             "TrapsAllowed": self.options.allow_traps.value,
             "InvisibleTraps": self.options.invisible_traps.value,
             "TrapPercentage": self.options.trap_percent.value,
@@ -364,7 +369,6 @@ class EOSWorld(World):
             "DrinkEvents": self.options.drink_events.value,
             "SpindaDrinks": self.options.spinda_drinks.value,
             "ExcludeSpecial": self.options.exclude_special.value,
-            "HintLocationList": self.dimensional_scream_list_ints,
         }
 
     def create_items(self) -> None:
@@ -466,6 +470,9 @@ class EOSWorld(World):
                     continue
                     #classification = ItemClassification.useful
 
+                if (self.options.long_location.value == 0) and "RuleDungeons" in item_table[item_name].group:
+                    continue
+
                 if "Aegis" in item_table[item_name].group:
                     if self.options.goal.value == 0:
                         #classification = ItemClassification.useful
@@ -560,11 +567,17 @@ class EOSWorld(World):
         self.multiworld.completion_condition[self.player] = lambda state: state.has("Victory", self.player)
 
     def generate_output(self, output_directory: str) -> None:
-        patch = EOSProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
-        patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/archipelago-base.bsdiff"))
-        hint_item_list: list[Location] = []
-        self.dimensional_scream_list = self.hint_locations()
-        self.dimensional_scream_list_ints = [k.address for k in self.dimensional_scream_list]
+        try:
+            patch = EOSProcedurePatch(player=self.player, player_name=self.multiworld.player_name[self.player])
+            patch.write_file("base_patch.bsdiff4", pkgutil.get_data(__name__, "data/archipelago-base.bsdiff"))
+            hint_item_list: list[Location] = []
+            self.dimensional_scream_list = self.hint_locations()
+            self.dimensional_scream_list_ints = [k.address for k in self.dimensional_scream_list]
+        except Exception:
+            raise
+        finally:
+            self.slot_data_ready.set()
+
         for i in range(10):
             hint_item_list += [self.multiworld.get_location(f"Shop Item {1 + i}", self.player)]
         write_tokens(self, patch, hint_item_list, self.dimensional_scream_list)
@@ -574,6 +587,7 @@ class EOSWorld(World):
         patch.write(rom_path)
 
     def hint_locations(self) -> list[Location]:
+
         hint_loc = []
         filler = 5
         useful = 6

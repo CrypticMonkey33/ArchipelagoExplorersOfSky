@@ -240,6 +240,9 @@ class EoSClient(BizHawkClient):
             trans_table = str.maketrans(trans_table)
             trans_table.update({0: 32})
 
+            if not self.hint_loc:
+                self.hint_loc = ctx.slot_data["HintLocationList"]
+
             if (self.player_name + "Dungeon Missions") in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
             else:
@@ -296,8 +299,7 @@ class EoSClient(BizHawkClient):
             if self.required_instruments == 0:
                 self.required_instruments = ctx.slot_data["RequiredInstruments"]
             
-            if not self.hint_loc:
-                self.hint_loc = ctx.slot_data["HintLocationList"]
+
 
             #if not ctx.locations_info:
             #    await (ctx.send_msgs(
