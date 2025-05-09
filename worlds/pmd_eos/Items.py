@@ -490,7 +490,7 @@ trap_items = [
     ItemData("Nap Time!", 402, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Sentry Duty!", 403, ItemClassification.trap, 20, ["Trap"], 0x0),
     ItemData("Touch Grass", 404, ItemClassification.trap, 20, ["Trap"], 0x0),
-    ItemData("Poke x-1000", 570, ItemClassification.trap, 1000, ["Money"], 0),
+    ItemData("Poke x-1000", 570, ItemClassification.trap, 20, ["Trap", "Money"], 1000),
     ItemData("Denched Bluff", 2, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x2),
     ItemData("Mt. Brinstar", 5, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x5),
     ItemData("Froggy Forest", 15, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0xF),
