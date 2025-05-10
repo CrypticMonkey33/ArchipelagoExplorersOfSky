@@ -374,8 +374,8 @@ class CursedAegisCave(Toggle):
 
 
 class LongLocationsInclusion(Toggle):
-    """Include Rule dungeons, master ranks, clearing all dojos, and final dojo in
-    logic"""
+    """Include Rule dungeons, clearing all dojos, final dojo, ludicolo dance,
+    and duskull bank checks over 20k in logic"""
     display_name = "Long Locations"
 
 
