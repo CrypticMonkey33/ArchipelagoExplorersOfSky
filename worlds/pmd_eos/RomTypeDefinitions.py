@@ -122,7 +122,7 @@ subX_table = [
     SubXBitfield(81, 6, 0, 1, "Duskull 100G Reward", [], "Filler", "ShopItem"),
     SubXBitfield(82, 6, 0, 2, "Duskull 5,000G Reward", ["ProgressiveBag1"], "Filler", "ShopItem"),
     SubXBitfield(83, 6, 0, 3, "Duskull 10,000G Reward", ["ProgressiveBag2"], "Filler", "ShopItem"),
-    SubXBitfield(84, 6, 0, 4, "Duskull 20,000G Reward", ["ProgressiveBag2"], "Filler", "OptionalSubX"),
+    SubXBitfield(84, 6, 0, 4, "Duskull 20,000G Reward", ["ProgressiveBag2"], "Filler", "ShopItem"),
     SubXBitfield(85, 6, 0, 5, "Duskull 50,000G Reward", ["ProgressiveBag3"], "Filler", "OptionalSubX"),
     SubXBitfield(86, 6, 0, 6, "Duskull 100,000G Reward", ["ProgressiveBag3"], "Filler", "OptionalSubX"),
     SubXBitfield(87, 6, 0, 7, "Duskull 9,999,999G Reward", ["ProgressiveBag3", "Defeat Dialga"], "Filler", "OptionalSubX"),

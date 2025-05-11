@@ -231,6 +231,7 @@ EOS_item_table = [
     ItemData("Secret Slab", 501, ItemClassification.useful, 0, ["Item", "Single"], 0xAE),
     ItemData("Amber Tear", 502, ItemClassification.useful, 0, ["Item", "Single"], 0x3A),
     ItemData("Friend Bow", 503, ItemClassification.useful, 0, ["Item", "Single"], 0x35),
+    ItemData("Golden Mask", 546, ItemClassification.useful, 0, ["Item", "Single"], 0x39),
 
     ItemData("Regirock", 504, ItemClassification.useful, 0, ["Legendary"], 0x0),
     ItemData("Regice", 505, ItemClassification.useful, 0, ["Legendary"], 0x1),

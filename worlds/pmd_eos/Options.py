@@ -190,7 +190,7 @@ class FullTeamFormationControl(DefaultOnToggle):
 
 class LevelScaling(Choice):
     """Allow for dungeons to scale to the highest level of your party members?
-    This will not scale bosses at the end of dungeons
+    This will not scale bosses at the end of dungeons, also will not scale Outlaws
     Adjust enemies levels to match the highest party level so you won't have to grind as much.
     Off: Enemy levels are vanilla.
     Easy: Enemies will be bumped down to the highest party level if they're above it.
@@ -385,7 +385,8 @@ class EarlyMissionFloors(DefaultOnToggle):
 
 
 class MoveShortcutMenu(DefaultOnToggle):
-    """Enable the Move Shortcut Menu by holding (default L button)"""
+    """Enable the Move Shortcut Menu by holding (default L button)
+    Disabling this current is not implemented ROMSide"""
     display_name = "Move Shortcut Menu"
 
 
