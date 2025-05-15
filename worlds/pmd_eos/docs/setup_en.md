@@ -8,7 +8,7 @@ The EoS APWorld is still in development, so expect bugs! If you find a bug that 
 ## Required Software
 
 - BizHawk: [Bizhawk Releases from TASVideos](https://tasvideos.org/BizHawk/ReleaseHistory)
-  - Version 2.9.1 is recommended; 2.10 is currently unable to connect.
+  - Version 2.10 is recommended.
   - Detailed installation instructions for BizHawk can be found at the above link.
   - Windows users must run the prerequisite installer first, which can also be found at the above link.
 - The built-in BizHawk client, which can be installed [here](https://github.com/ArchipelagoMW/Archipelago/releases)
@@ -46,4 +46,8 @@ Navigate to your Archipelago install folder and open `data/lua/connector_bizhawk
 
 To connect the client to the multiserver simply put `<address>:<port>` on the textfield on top and press enter (if the
 server uses password, type in the bottom textfield `/connect <address>:<port> [password]`)
+
+### Saving the game
+
+For unknown reasons, BizHawk seems to have issues with saving the game properly. To ensure that your save file is updated properly, make sure to navigate to File > Save RAM > Flush Save Ram (bound to Ctrl+S by default) after saving in-game.
 
