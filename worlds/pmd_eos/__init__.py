@@ -76,6 +76,7 @@ class EOSWorld(World):
     excluded_locations = 0
     dimensional_scream_list = []
     dimensional_scream_list_ints: list[int] = []
+    starting_se: int = 0
     slot_data_ready = threading.Event
 
     def generate_early(self) -> None:
@@ -104,7 +105,9 @@ class EOSWorld(World):
         if self.options.special_episode_sanity.value and not self.options.exclude_special.value:
             possibleSEs = ["Bidoof\'s Wish", "Igglybuff the Prodigy", "In the Future of Darkness",
                            "Here Comes Team Charm!", 'Today\'s "Oh My Gosh"']
-            item_name = self.random.choice(possibleSEs)
+            SE_Num = self.random.randint(1,5)
+            self.starting_se = SE_Num
+            item_name = possibleSEs[SE_Num]
             self.multiworld.push_precollected(self.create_item(item_name))
         else:
             self.multiworld.push_precollected(self.create_item("Main Game Unlock"))
@@ -580,7 +583,7 @@ class EOSWorld(World):
 
         for i in range(10):
             hint_item_list += [self.multiworld.get_location(f"Shop Item {1 + i}", self.player)]
-        write_tokens(self, patch, hint_item_list, self.dimensional_scream_list)
+        write_tokens(self, patch, hint_item_list, self.dimensional_scream_list, self.starting_se)
         rom_path = os.path.join(
             output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
         )

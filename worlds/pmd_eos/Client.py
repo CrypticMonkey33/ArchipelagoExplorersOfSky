@@ -236,6 +236,7 @@ class EoSClient(BizHawkClient):
             bag_upgrade_offset = custom_save_area_offset + 0x2BC
             # dimensional_scream_info_offset = custom_save_area_offset + 0x2A8
             dungeon_traps_bitfield_offset = custom_save_area_offset + 0x2B8
+            sky_peaks_offset = custom_save_area_offset + 0x2BE
             trans_table = {"[": "", "]": "", "~": "", "\\": ""}
             trans_table = str.maketrans(trans_table)
             trans_table.update({0: 32})
@@ -344,6 +345,7 @@ class EoSClient(BizHawkClient):
                     (recycle_amount_offset, 4, self.ram_mem_domain),
                     (pelipper_received_counter_offset, 4, self.ram_mem_domain),
                     (dungeon_traps_bitfield_offset, 1, self.ram_mem_domain),
+                    (custom_save_area_offset, 1, self.ram_mem_domain),
                     # (dimensional_scream_info_offset, 0x51, self.ram_mem_domain),
                 ]
             )
@@ -410,6 +412,7 @@ class EoSClient(BizHawkClient):
             recycle_amount = int.from_bytes(read_state[27], "little")
             pelipper_received_counter = int.from_bytes(read_state[28], "little")
             dungeon_traps_bitfield = int.from_bytes(read_state[29])
+            sky_peaks_ram = int.from_bytes(read_state[30])
             #dimensional_scream_info = int.from_bytes(read_state[29], "little")
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
@@ -431,8 +434,36 @@ class EoSClient(BizHawkClient):
                 if "SkyPeak" in item_data.group:
                     item_memory_offset = 0
                     if ctx.slot_data["SkyPeakType"] == 1:  # progressive
-                        self.skypeaks_open += 1
-                        item_memory_offset = 0x6E + self.skypeaks_open
+                        if sky_peaks_ram == self.skypeaks_open:
+                            self.skypeaks_open += 1
+                            sky_peaks_ram += 1
+                            logger.info(
+                                "The Relic Fragment Shard count from AP is " + str(self.skypeaks_open) +
+                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(
+                                    sky_peaks_ram)
+                            )
+                        elif sky_peaks_ram > self.skypeaks_open:
+                            # uhhhh I don't know how this could happen? Also what do I do????
+                            self.skypeaks_open = sky_peaks_ram
+                            self.skypeaks_open += 1
+                            sky_peaks_ram += 1
+                            logger.info(
+                                "Something Weird Happened Please tell Cryptic if you see this " +
+                                "\nThe Relic Fragment Shard count from AP is " + str(self.skypeaks_open) +
+                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(
+                                    sky_peaks_ram)
+                            )
+                        else:
+                            sky_peaks_ram += 1
+                            logger.info(
+                                "The Rom decided to be lower than the AP count probably due to save states " +
+                                "\nThe Relic Fragment Shard count from AP is " + str(self.skypeaks_open) +
+                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(
+                                    sky_peaks_ram)
+                            )
+
+                        #self.skypeaks_open += 1
+                        item_memory_offset = 0x6E + sky_peaks_ram
                     elif ctx.slot_data["SkyPeakType"] == 2:  # all random
                         item_memory_offset = item_data.memory_offset
                         # Since our open list is a byte array and our memory offset is bit based
@@ -749,6 +780,13 @@ class EoSClient(BizHawkClient):
                             self.macguffins_collected = relic_shards_amount
                             self.macguffins_collected += 1
                             relic_shards_amount += 1
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (relic_shards_offset, int.to_bytes(relic_shards_amount),
+                                     self.ram_mem_domain)],
+                            )
+                            await asyncio.sleep(0.1)
                             logger.info(
                                 "Something Weird Happened Please tell Cryptic if you see this " +
                                 "\nThe Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
@@ -1150,6 +1188,13 @@ class EoSClient(BizHawkClient):
                             self.instruments_collected = instruments_amount
                             self.instruments_collected += 1
                             instruments_amount += 1
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (instruments_offset, int.to_bytes(instruments_amount),
+                                     self.ram_mem_domain)],
+                            )
+                            await asyncio.sleep(0.1)
                             logger.info(
                                 "Something Weird Happened Please tell Cryptic if you see this " +
                                 "\nThe Instrument count from AP is " + str(self.instruments_collected) +
@@ -1297,6 +1342,13 @@ class EoSClient(BizHawkClient):
                             self.instruments_collected = instruments_amount
                             self.instruments_collected += 1
                             instruments_amount += 1
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (instruments_offset, int.to_bytes(instruments_amount),
+                                     self.ram_mem_domain)],
+                            )
+                            await asyncio.sleep(0.1)
                             logger.info(
                                 "Something Weird Happened Please tell Cryptic if you see this " +
                                 "\nThe Instrument count from AP is " + str(self.instruments_collected) +

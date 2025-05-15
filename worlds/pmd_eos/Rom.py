@@ -42,7 +42,7 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
 
 
 def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[Location],
-                 dimensional_screams: list[Location]) -> None:
+                 dimensional_screams: list[Location], starting_se: int) -> None:
     ov36_mem_loc = 2721792  # find_ov36_mem_location()
     seed_offset = 0x36F90
     player_name_offset = 0x36F80
@@ -204,8 +204,12 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
     elif world.options.deathlink.value and world.options.deathlink.value == 1:
         write_byte = write_byte | (0x1 << 10)
 
-    if world.options.special_episode_sanity.value == 0:
-        write_byte = write_byte | (0x1 << 16)
+    # if world.options.special_episode_sanity.value == 0:
+    #    write_byte = write_byte | (0x1 << 16)
+    if starting_se == 0:
+        write_byte = write_byte | (7 << 32)
+    else:
+        write_byte = write_byte | (starting_se << 32)
 
     # write the tokens that will be applied and write the token data into the bin for AP
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset,
