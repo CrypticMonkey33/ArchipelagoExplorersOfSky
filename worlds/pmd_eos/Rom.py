@@ -206,10 +206,9 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
 
     # if world.options.special_episode_sanity.value == 0:
     #    write_byte = write_byte | (0x1 << 16)
-    if starting_se == 0:
-        write_byte = write_byte | (7 << 32)
-    else:
+    if starting_se != 0:
         write_byte = write_byte | (starting_se << 32)
+
 
     # write the tokens that will be applied and write the token data into the bin for AP
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset,
