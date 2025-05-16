@@ -10,6 +10,7 @@ from NetUtils import ClientStatus
 from .Locations import EOSLocation, EOS_location_table, location_Dict_by_id, location_dict_by_start_id, \
     location_table_by_groups
 from .Items import ItemData, item_table_by_id, lootbox_table, item_table_by_groups
+from .docs.DeathMessages import death_message_list, death_message_weights
 from random import Random
 import asyncio
 
@@ -1080,8 +1081,10 @@ class EoSClient(BizHawkClient):
                     deathlink_message_from_sky = re.sub(r"\[.*?]", "", deathlink_message_from_sky)
                     lappyint = self.random.randint(1, 100)
                     #deathlink_message_from_sky = deathlink_message_from_sky.replace("byan", "by an")
-                    if lappyint == 1:
-                        await ctx.send_death(f"{ctx.player_names[ctx.slot]} was defeated by Lappy's silliness")
+                    if lappyint <= 20:
+                        death_string_list = self.random.sample(death_message_list, k=1, counts=death_message_weights)
+                        death_string = death_string_list[0].death_string
+                        await ctx.send_death(f"{ctx.player_names[ctx.slot]}{death_string}")
                     else:
                         await ctx.send_death(f"{ctx.player_names[ctx.slot]}{deathlink_message_from_sky}")
                 await bizhawk.write(
