@@ -129,13 +129,13 @@ class EoSClient(BizHawkClient):
         from CommonClient import logger
         mission_start_id = 1000
         try:
-            if ctx.seed_name is None:
+            if ctx.server_seed_name is None:
                 return
             if not self.seed_verify:
                 # Need to figure out where we are putting the seed and then update this
                 seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE010, 8, self.ram_mem_domain)])
                 seed = seed[0].decode("UTF-8")[0:7]
-                seed_name = ctx.seed_name[0:7]
+                seed_name = ctx.server_seed_name[0:7]
                 if seed != seed_name:
                     logger.info(
                         "ERROR: The ROM you loaded is for a different game of AP. "
