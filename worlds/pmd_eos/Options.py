@@ -200,10 +200,10 @@ class LevelScaling(Choice):
     option_off = 0
     option_easy = 1
     option_difficult = 2
-    default = 0
+    default = 1
 
 
-class GuestScaling(Toggle):
+class GuestScaling(DefaultOnToggle):
     """Makes the dungeon guests (Bidoof in Cragy Coast, Grovyle in Hidden Land, etc.) scale to your party level
         Does nothing if Level scaling is off"""
     display_name = "Guest Scaling"
@@ -255,7 +255,7 @@ class IqScaling(Range):
     display_name = "IQ Scaling"
     range_start = 0
     range_end = 15
-    default = 1
+    default = 2
 
 
 class XpScaling(Range):
@@ -266,7 +266,7 @@ class XpScaling(Range):
     display_name = "XP Scaling"
     range_start = 0
     range_end = 15
-    default = 1
+    default = 2
 
 
 class SkyPeakType(Choice):
@@ -288,7 +288,7 @@ class DojoDungeons(Choice):
     option_all_random = 0
     option_start_with_three = 3
     option_start_with_one = 1
-    default = 0
+    default = 3
 
 
 class LegendariesInPool(Range):

@@ -346,7 +346,7 @@ class EoSClient(BizHawkClient):
                     (recycle_amount_offset, 4, self.ram_mem_domain),
                     (pelipper_received_counter_offset, 4, self.ram_mem_domain),
                     (dungeon_traps_bitfield_offset, 1, self.ram_mem_domain),
-                    (custom_save_area_offset, 1, self.ram_mem_domain),
+                    (sky_peaks_offset, 1, self.ram_mem_domain), # Sky Peaks check
                     # (dimensional_scream_info_offset, 0x51, self.ram_mem_domain),
                 ]
             )
@@ -413,7 +413,7 @@ class EoSClient(BizHawkClient):
             recycle_amount = int.from_bytes(read_state[27], "little")
             pelipper_received_counter = int.from_bytes(read_state[28], "little")
             dungeon_traps_bitfield = int.from_bytes(read_state[29])
-            sky_peaks_ram = int.from_bytes(read_state[30])
+            sky_peaks_ram = int.from_bytes(read_state[30])  # , "little")
             #dimensional_scream_info = int.from_bytes(read_state[29], "little")
 
             #if (310 in ctx.locations_info) and hintable_items[0] == 0:
@@ -439,8 +439,8 @@ class EoSClient(BizHawkClient):
                             self.skypeaks_open += 1
                             sky_peaks_ram += 1
                             logger.info(
-                                "The Relic Fragment Shard count from AP is " + str(self.skypeaks_open) +
-                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(
+                                "The Sky Peak count from AP is " + str(self.skypeaks_open) +
+                                "\nAnd the Sky Peaks written to the ROM should now be: " + str(
                                     sky_peaks_ram)
                             )
                         elif sky_peaks_ram > self.skypeaks_open:
@@ -450,16 +450,16 @@ class EoSClient(BizHawkClient):
                             sky_peaks_ram += 1
                             logger.info(
                                 "Something Weird Happened Please tell Cryptic if you see this " +
-                                "\nThe Relic Fragment Shard count from AP is " + str(self.skypeaks_open) +
-                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(
+                                "\nThe Sky Peak count from AP is " + str(self.skypeaks_open) +
+                                "\nAnd the Sky Peaks written to the ROM should now be: " + str(
                                     sky_peaks_ram)
                             )
                         else:
                             sky_peaks_ram += 1
                             logger.info(
                                 "The Rom decided to be lower than the AP count probably due to save states " +
-                                "\nThe Relic Fragment Shard count from AP is " + str(self.skypeaks_open) +
-                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(
+                                "\nThe Sky Peak count from AP is " + str(self.skypeaks_open) +
+                                "\nAnd the Sky Peaks written to the ROM should now be: " + str(
                                     sky_peaks_ram)
                             )
 
@@ -483,24 +483,30 @@ class EoSClient(BizHawkClient):
                                     ctx.bizhawk_ctx,
                                     [
                                         (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
-                                         self.ram_mem_domain)],
+                                         self.ram_mem_domain)
+                                    ],
+
+
                                 )
 
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
                         continue
+                    if item_data != 0:
+                        sig_digit = item_memory_offset // 8
+                        non_sig_digit = item_memory_offset % 8
+                        if ((open_list[sig_digit] >> non_sig_digit) & 1) == 0:
+                            # Since we are writing bytes, we need to add the bit to the specific byte
+                            write_byte = open_list[sig_digit] | (1 << non_sig_digit)
+                            open_list[sig_digit] = write_byte
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
+                                     self.ram_mem_domain),
+                                    (sky_peaks_offset, int.to_bytes(sky_peaks_ram),
+                                     self.ram_mem_domain)],
 
-                    sig_digit = item_memory_offset // 8
-                    non_sig_digit = item_memory_offset % 8
-                    if ((open_list[sig_digit] >> non_sig_digit) & 1) == 0:
-                        # Since we are writing bytes, we need to add the bit to the specific byte
-                        write_byte = open_list[sig_digit] | (1 << non_sig_digit)
-                        open_list[sig_digit] = write_byte
-                        await bizhawk.write(
-                            ctx.bizhawk_ctx,
-                            [
-                                (open_list_total_offset + sig_digit, int.to_bytes(write_byte),
-                                 self.ram_mem_domain)],
-                        )
+                            )
 
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                     await asyncio.sleep(0.1)
