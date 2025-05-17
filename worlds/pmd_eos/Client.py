@@ -1545,7 +1545,7 @@ class EoSClient(BizHawkClient):
                      "key": self.player_name + "Hinted Hints",
                      "default": {},
                      "want_reply": True,
-                     "operations": [{"operation": "default", "value": {0: self.hints_hinted}}]
+                     "operations": [{"operation": "update", "value": {0: self.hints_hinted}}]
                      },
                     {"cmd": "Set",
                      "key": self.player_name + "GenericStorage",
