@@ -24,16 +24,16 @@ subX_table = [
     SubXBitfield(8, 1, 1, 0, "Here Comes Team Charm! Location", [], "Team Charm SE", "Free"),
     SubXBitfield(9, 1, 1, 1, "In the Future of Darkness Location", ["Hidden Land"], "Grovyle + Dusknoir SE",
                  "SEDungeonUnlock"),
-    SubXBitfield(10, 1, 1, 2, "Shop Item 1", ["ProgressiveBag3"], "Filler", "ShopItem"),
-    SubXBitfield(11, 1, 1, 3, "Shop Item 2", ["ProgressiveBag2"], "Filler", "ShopItem"),
-    SubXBitfield(12, 1, 1, 4, "Shop Item 3", ["ProgressiveBag2"], "Filler", "ShopItem"),
-    SubXBitfield(13, 1, 1, 5, "Shop Item 4", ["ProgressiveBag2"], "Filler", "ShopItem"),
-    SubXBitfield(14, 1, 1, 6, "Shop Item 5", ["ProgressiveBag2"], "Filler", "ShopItem"),
-    SubXBitfield(15, 1, 1, 7, "Shop Item 6", ["ProgressiveBag2"], "Filler", "ShopItem"),
-    SubXBitfield(16, 2, 0, 0, "Shop Item 7", ["ProgressiveBag2"], "Filler", "ShopItem"),
-    SubXBitfield(17, 2, 0, 1, "Shop Item 8", ["ProgressiveBag2"], "Filler", "ShopItem"),
-    SubXBitfield(18, 2, 0, 2, "Shop Item 9", ["ProgressiveBag3"], "Filler", "ShopItem"),
-    SubXBitfield(19, 2, 0, 3, "Shop Item 10", [], "Filler", "Free"),
+    SubXBitfield(10, 1, 1, 2, "Shop Item 1", ["ProgressiveBag3", "Main Game"], "Filler", "ShopItem"),  # 5k
+    SubXBitfield(11, 1, 1, 3, "Shop Item 2", ["ProgressiveBag2", "Main Game"], "Filler", "ShopItem"),  # 1k
+    SubXBitfield(12, 1, 1, 4, "Shop Item 3", ["ProgressiveBag2", "Main Game"], "Filler", "ShopItem"),  # 1k
+    SubXBitfield(13, 1, 1, 5, "Shop Item 4", ["ProgressiveBag2", "Main Game"], "Filler", "ShopItem"),  # 1k
+    SubXBitfield(14, 1, 1, 6, "Shop Item 5", ["ProgressiveBag2"], "Filler", "ShopItem"),  # 500
+    SubXBitfield(15, 1, 1, 7, "Shop Item 6", ["ProgressiveBag2"], "Filler", "ShopItem"),  # 500
+    SubXBitfield(16, 2, 0, 0, "Shop Item 7", ["ProgressiveBag2", "Main Game"], "Filler", "ShopItem"),  # 5k
+    SubXBitfield(17, 2, 0, 1, "Shop Item 8", ["ProgressiveBag2", "Main Game"], "Filler", "ShopItem"),  # 1k
+    SubXBitfield(18, 2, 0, 2, "Shop Item 9", ["ProgressiveBag3", "Main Game"], "Filler", "ShopItem"),  # 1k
+    SubXBitfield(19, 2, 0, 3, "Shop Item 10", [], "Filler", "Free"),  # 100
     SubXBitfield(20, 2, 0, 4, "Blue Goomi #1", ["Defeat Dialga", "Surrounded Sea"], "Filler", "Manaphy"),
     SubXBitfield(21, 2, 0, 5, "Blue Goomi #2", ["Defeat Dialga", "Surrounded Sea"], "Filler", "Manaphy"),
     SubXBitfield(22, 2, 0, 6, "Manaphy Healed", ["Defeat Dialga", "Surrounded Sea", "Miracle Sea"], "Filler", "Manaphy"),
@@ -92,12 +92,12 @@ subX_table = [
     SubXBitfield(58, 4, 1, 2, "Guildmaster Rank", ["Secret Rank", "Defeat Dialga", "ProgressiveBag3"], "Inferno Cave", "Rank"),
     SubXBitfield(59, 4, 1, 3, "Recycle Shop Treasure Found", [], "Filler", "ShopItem"),
     SubXBitfield(60, 4, 1, 4, "Recycle Shop Dungeon #1", ["ProgressiveBag3"], "Landslide Cave", "ShopItem"),
-    SubXBitfield(61, 4, 1, 5, "Recycle Shop Dungeon #2", ["ProgressiveBag3"], "Tiny Meadow", "ShopItem"),
-    SubXBitfield(62, 4, 1, 6, "Recycle Shop Dungeon #3", ["ProgressiveBag3"], "Oran Forest", "ShopItem"),
-    SubXBitfield(63, 4, 1, 7, "Recycle Shop Dungeon #4", ["ProgressiveBag3", "Defeat Dialga", "Formation Control"], "Lake Afar",
+    SubXBitfield(61, 4, 1, 5, "Recycle Shop Dungeon #2", ["ProgressiveBag3", "Main Game"], "Tiny Meadow", "ShopItem"),
+    SubXBitfield(62, 4, 1, 6, "Recycle Shop Dungeon #3", ["ProgressiveBag3", "Main Game"], "Oran Forest", "ShopItem"),
+    SubXBitfield(63, 4, 1, 7, "Recycle Shop Dungeon #4", ["ProgressiveBag3", "Main Game", "Defeat Dialga", "Formation Control"], "Lake Afar",
                  "ShopItem"),
     SubXBitfield(64, 5, 0, 0, "Recycle Shop Dungeon #5", ["ProgressiveBag3", "Defeat Dialga",
-                                                          "Formation Control"], "Zero Isle Center", "ShopItem"),
+                                                          "Formation Control", "Main Game"], "Zero Isle Center", "ShopItem"),
     SubXBitfield(65, 5, 0, 1, "Sneasel's Gratitude", ["Defeat Dialga", "7th Station Pass", "Sky Peak Summit Pass"],
                  "Filler", "LateSubX"),
     SubXBitfield(66, 5, 0, 2, "SE Marowak Dojo's Revival", ["Bidoof\'s Wish"], "Filler", "SpecialDungeonComplete"),
@@ -121,8 +121,8 @@ subX_table = [
     SubXBitfield(80, 6, 0, 0, "Master Rank", ["10 Early"], "Filler", "Rank"),
     SubXBitfield(81, 6, 0, 1, "Duskull 100G Reward", [], "Filler", "ShopItem"),
     SubXBitfield(82, 6, 0, 2, "Duskull 5,000G Reward", ["ProgressiveBag1"], "Filler", "ShopItem"),
-    SubXBitfield(83, 6, 0, 3, "Duskull 10,000G Reward", ["ProgressiveBag2"], "Filler", "ShopItem"),
-    SubXBitfield(84, 6, 0, 4, "Duskull 20,000G Reward", ["ProgressiveBag2"], "Filler", "ShopItem"),
+    SubXBitfield(83, 6, 0, 3, "Duskull 10,000G Reward", ["ProgressiveBag2", "Main Game"], "Filler", "ShopItem"),
+    SubXBitfield(84, 6, 0, 4, "Duskull 20,000G Reward", ["ProgressiveBag2", "Main Game"], "Filler", "ShopItem"),
     SubXBitfield(85, 6, 0, 5, "Duskull 50,000G Reward", ["ProgressiveBag3"], "Filler", "OptionalSubX"),
     SubXBitfield(86, 6, 0, 6, "Duskull 100,000G Reward", ["ProgressiveBag3"], "Filler", "OptionalSubX"),
     SubXBitfield(87, 6, 0, 7, "Duskull 9,999,999G Reward", ["ProgressiveBag3", "Defeat Dialga"], "Filler", "OptionalSubX"),
