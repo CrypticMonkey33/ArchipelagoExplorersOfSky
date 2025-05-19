@@ -784,21 +784,29 @@ class EoSClient(BizHawkClient):
                             await asyncio.sleep(0.1)
                         elif relic_shards_amount > self.macguffins_collected:
                             # uhhhh I don't know how this could happen? Also what do I do????
+                            old_macguffins = self.macguffins_collected
                             self.macguffins_collected = relic_shards_amount
                             self.macguffins_collected += 1
+                            old_relic_shards_amount = relic_shards_amount
                             relic_shards_amount += 1
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [
+                                    relic_shards_amount.to_bytes(),
                                     (relic_shards_offset, int.to_bytes(relic_shards_amount),
                                      self.ram_mem_domain)],
                             )
                             await asyncio.sleep(0.1)
                             logger.info(
                                 "Something Weird Happened Please tell Cryptic if you see this " +
+                                "\nThe Relic Fragment Shard count from AP was " + str(old_macguffins) +
                                 "\nThe Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
+                                "\nThe Relic Fragment Shard count from ROM was" + str(old_relic_shards_amount) +
                                 "\nAnd the Relic Fragments written to the ROM should now be: " + str(
-                                    relic_shards_amount)
+                                    relic_shards_amount) +
+                                "\n And just for Hecka, the bytes written are " + str(int.to_bytes(relic_shards_amount)) +
+                                "\n And just for Hecka, doing it the other way would result in " +
+                                str(relic_shards_amount.to_bytes())
                             )
                         else:
                             relic_shards_amount += 1
@@ -1194,6 +1202,8 @@ class EoSClient(BizHawkClient):
                             await asyncio.sleep(0.1)
                         elif instruments_amount > self.instruments_collected:
                             # uhhhh I don't know how this could happen? Also what do I do????
+                            old_instruments_ap = self.instruments_collected
+                            old_instruments_rom = instruments_amount
                             self.instruments_collected = instruments_amount
                             self.instruments_collected += 1
                             instruments_amount += 1
@@ -1206,9 +1216,15 @@ class EoSClient(BizHawkClient):
                             await asyncio.sleep(0.1)
                             logger.info(
                                 "Something Weird Happened Please tell Cryptic if you see this " +
+                                "\nThe Instrument count from AP was " + str(old_instruments_ap) +
                                 "\nThe Instrument count from AP is " + str(self.instruments_collected) +
+                                "\nAnd the Instrument written to the ROM was: " + str(
+                                    old_instruments_rom) +
                                 "\nAnd the Instrument written to the ROM should now be: " + str(
-                                    instruments_amount)
+                                    instruments_amount) +
+                                "\n And just for Hecka, the bytes written are " + str(int.to_bytes(relic_shards_amount)) +
+                                "\n And just for Hecka, doing it the other way would result in " +
+                                str(relic_shards_amount.to_bytes())
                             )
                         else:
                             instruments_amount += 1
@@ -1348,6 +1364,8 @@ class EoSClient(BizHawkClient):
                             await asyncio.sleep(0.1)
                         elif instruments_amount > self.instruments_collected:
                             # uhhhh I don't know how this could happen? Also what do I do????
+                            old_instruments_ap = self.instruments_collected
+                            old_instruments_rom = instruments_amount
                             self.instruments_collected = instruments_amount
                             self.instruments_collected += 1
                             instruments_amount += 1
@@ -1360,9 +1378,16 @@ class EoSClient(BizHawkClient):
                             await asyncio.sleep(0.1)
                             logger.info(
                                 "Something Weird Happened Please tell Cryptic if you see this " +
+                                "\nThe Instrument count from AP was " + str(old_instruments_ap) +
                                 "\nThe Instrument count from AP is " + str(self.instruments_collected) +
+                                "\nAnd the Instrument written to the ROM was: " + str(
+                                    old_instruments_rom) +
                                 "\nAnd the Instrument written to the ROM should now be: " + str(
-                                    instruments_amount)
+                                    instruments_amount) +
+                                "\n And just for Hecka, the bytes written are " + str(
+                                    int.to_bytes(relic_shards_amount)) +
+                                "\n And just for Hecka, doing it the other way would result in " +
+                                str(relic_shards_amount.to_bytes())
                             )
                         else:
                             instruments_amount += 1

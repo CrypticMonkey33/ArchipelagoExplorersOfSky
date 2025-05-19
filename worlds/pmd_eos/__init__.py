@@ -601,7 +601,7 @@ class EOSWorld(World):
                                "Toxic Sax", "Biting Bass", "Knockout Bell", "Spectral Chimes", "Liar's Lyre",
                                "Charge Synth", "Norma-ccordion", "Psychic Cello", "Dragu-teki", "Steel Guitar",
                                "Relic Fragment Shard"]
-        location_list = list(self.multiworld.get_locations(self.player))
+        location_list = list(self.multiworld.get_locations())
         random.shuffle(location_list)
         for location in location_list:
             if location.address is not None and location.item:

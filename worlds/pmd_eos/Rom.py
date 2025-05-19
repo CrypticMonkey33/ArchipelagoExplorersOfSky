@@ -218,42 +218,6 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
     #testnum = find_ov36_mem_location()
 
 
-def get_dimensional_hints(world: "EOSWorld") -> list[Location]:
-    # getting the hint items for the dimensional scream hints
-    hint_loc = []
-    filler = 5
-    useful = 6
-    progressive = 9
-    sky_dungeons = []
-    important_sky_items = ["Icy Flute", "Fiery Drum", "Terra Cymbal", "Aqua-Monica", "Rock Horn",
-                           "Grass Cornet", "Sky Melodica", "Stellar Symphony", "Null Bagpipes", "Glimmer Harp",
-                           "Toxic Sax", "Biting Bass", "Knockout Bell", "Spectral Chimes", "Liar's Lyre",
-                           "Charge Synth", "Norma-ccordion", "Psychic Cello", "Dragu-teki", "Steel Guitar",
-                           "Relic Fragment Shard"]
-    location_list = list(world.multiworld.get_locations(world.player))
-    random.shuffle(location_list)
-    for location in location_list:
-        if location.address is not None and location.item:
-            if filler <= 0 and useful <= 0 and progressive <= 0:
-                break
-            elif progressive > 0 and location.item.advancement:
-                if location.item.player == world.player and location.item.name not in important_sky_items:
-                    sky_dungeons.append(location)
-                    continue
-                hint_loc.append(location)
-                progressive -= 1
-            elif filler > 0 and location.item is not (location.item.advancement or location.item.useful):
-                hint_loc.append(location)
-                filler -= 1
-            elif useful > 0 and location.item.useful:
-                hint_loc.append(location)
-                useful -= 1
-    if progressive > 0:
-        for i in range(progressive):
-            hint_loc.append(sky_dungeons[i])
-    return hint_loc
-
-
 def find_ov36_mem_location() -> int:
     # Not currently used. Was an attempt to search the entire rom for the identifier and return where it found it
     # Would simplify having to change the start value of ov 36 every time the base patch changes
