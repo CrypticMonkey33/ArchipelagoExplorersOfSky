@@ -296,13 +296,22 @@ class EOSWorld(World):
                           location.classification == "SEDungeonUnlock")):
                 extra_items_region.locations.append(EOSLocation(self.player, location.name,
                                                                 location.id, extra_items_region))
-            elif location.classification in ["RuleDungeonComplete", "OptionalSubX"]:
+            elif location.classification in ["RuleDungeonComplete"]:
                 if self.options.long_location.value == 0:
                     self.excluded_locations += 1
                     continue
                     #location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
                     #location.progress_type = LocationProgressType.EXCLUDED
                     #rule_dungeons_region.locations.append(location)
+                else:
+                    location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
+                    rule_dungeons_region.locations.append(location)
+
+            elif location.classification == "OptionalSubX":
+                if self.options.long_location.value == 0:
+                    location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
+                    location.progress_type = LocationProgressType.EXCLUDED
+                    rule_dungeons_region.locations.append(location)
                 else:
                     location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
                     rule_dungeons_region.locations.append(location)
