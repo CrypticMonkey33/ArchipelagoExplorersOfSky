@@ -49,7 +49,7 @@ def get_subx_table() -> List[LocationData]:
     new_list: List[LocationData] = []
     subX_start_id = 300
     for item in subX_table:
-        if item.flag_definition == "Unused":
+        if item.flag_definition == "Unused" or item.default_item == "ignore":
             continue
         new_location = LocationData(classification=item.classification,dungeon_length=0, name=item.flag_definition,
                                     id=subX_start_id+item.bitfield_bit_number, dungeon_start_id=0, group=["SubX"])

@@ -438,7 +438,7 @@ def mission_rules(world, player):
 
 def subx_rules(world, player):
     for item in subX_table:
-        if item.flag_definition == "Unused":
+        if item.flag_definition == "Unused" or item.default_item == "ignore":
             continue
         if world.options.goal.value == 0 and item.classification in ["Manaphy", "LateSubX", "Legendary", "Instrument",
                                                                      "OptionalSubX", "SecretRank"]:
