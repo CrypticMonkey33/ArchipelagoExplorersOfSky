@@ -2,15 +2,13 @@ from typing import TYPE_CHECKING, Optional, Set, List, Dict
 import array
 import time
 import re
-import binascii
 
 from BaseClasses import ItemClassification
-from Utils import async_start
 from NetUtils import ClientStatus
-from .Locations import EOSLocation, EOS_location_table, location_Dict_by_id, location_dict_by_start_id, \
+from .Locations import location_Dict_by_id, location_dict_by_start_id, \
     location_table_by_groups
-from .Items import ItemData, item_table_by_id, lootbox_table, item_table_by_groups
-from .docs.DeathMessages import death_message_list, death_message_weights
+from .Items import item_table_by_id, lootbox_table, item_table_by_groups
+from .DeathMessages import death_message_list, death_message_weights
 from random import Random
 import asyncio
 

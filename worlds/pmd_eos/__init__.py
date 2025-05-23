@@ -105,7 +105,7 @@ class EOSWorld(World):
         if self.options.special_episode_sanity.value and not self.options.exclude_special.value:
             possibleSEs = ["Bidoof\'s Wish", "Igglybuff the Prodigy", "In the Future of Darkness",
                            "Here Comes Team Charm!", 'Today\'s "Oh My Gosh"']
-            SE_Num = self.random.randint(1,5)
+            SE_Num = self.random.randint(0, 4)
             self.starting_se = SE_Num
             item_name = possibleSEs[SE_Num]
             self.multiworld.push_precollected(self.create_item(item_name))
@@ -345,7 +345,7 @@ class EOSWorld(World):
             return EOSItem(item_data.name, item_data.classification, item_data.id, self.player)
 
     def fill_slot_data(self) -> Dict[str, Any]:
-        self.slot_data_ready.wait()
+
         return {
             "Goal": self.options.goal.value,
             "BagOnStart": self.options.bag_on_start.value,
@@ -632,3 +632,8 @@ class EOSWorld(World):
             for i in range(progressive):
                 hint_loc.append(sky_dungeons[i])
         return hint_loc
+
+    def modify_multidata(self, multidata: Dict[str, Any]) -> None:
+        self.slot_data_ready.wait()
+        if self.dimensional_scream_list_ints:
+            multidata["HintLocationList"] = self.dimensional_scream_list_ints

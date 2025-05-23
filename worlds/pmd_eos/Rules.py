@@ -459,8 +459,8 @@ def subx_rules(world, player):
             # if dialga is the goal, we can't add master star rank+
             if world.options.goal.value == 0 and rank_toid_dict[item.flag_definition] > 8:
                 continue
-        if (special_episode_sanity_no_exclusion(world, player)) and item.classification in ["Free", "ShopItem"]\
-                and "Main Game" not in item.prerequisites:
+        if ((special_episode_sanity_no_exclusion(world, player)) and item.classification in ["Free", "ShopItem"]
+                and "Main Game" not in item.prerequisites):
             add_rule(world.multiworld.get_location(item.flag_definition, player),
                      lambda state: state.has("Main Game Unlock", player) or state.has("Bidoof\'s Wish", player)
                                    or state.has('Today\'s "Oh My Gosh"', player))
@@ -538,7 +538,8 @@ def subx_rules(world, player):
                     continue
                 add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state, req=requirement, p=player: state.has(req, p))
-
+            elif requirement == "Main Game":
+                continue
             else:
                 add_rule(world.multiworld.get_location(item.flag_definition, player),
                          lambda state, req=requirement, p=player: state.has(req, p))
