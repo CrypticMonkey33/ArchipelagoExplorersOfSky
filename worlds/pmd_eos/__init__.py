@@ -636,4 +636,4 @@ class EOSWorld(World):
     def modify_multidata(self, multidata: Dict[str, Any]) -> None:
         self.slot_data_ready.wait()
         if self.dimensional_scream_list_ints:
-            multidata["HintLocationList"] = self.dimensional_scream_list_ints
+            multidata["slot_data"][1]["HintLocationList"] = self.dimensional_scream_list_ints
