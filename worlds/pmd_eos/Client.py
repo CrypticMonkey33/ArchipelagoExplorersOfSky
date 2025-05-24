@@ -801,10 +801,10 @@ class EoSClient(BizHawkClient):
                                 "\nThe Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
                                 "\nThe Relic Fragment Shard count from ROM was" + str(old_relic_shards_amount) +
                                 "\nAnd the Relic Fragments written to the ROM should now be: " + str(
-                                    relic_shards_amount) +
-                                "\n And just for Hecka, the bytes written are " + str(int.to_bytes(relic_shards_amount)) +
-                                "\n And just for Hecka, doing it the other way would result in " +
-                                str(relic_shards_amount.to_bytes())
+                                    relic_shards_amount)
+                                #"\n And just for Hecka, the bytes written are " + str(int.to_bytes(relic_shards_amount)) +
+                                #"\n And just for Hecka, doing it the other way would result in " +
+                                #str(relic_shards_amount.to_bytes())
                             )
                         else:
                             relic_shards_amount += 1
