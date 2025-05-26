@@ -66,8 +66,8 @@ class EOSWorld(World):
     location_name_to_id = {location.name: location.id for
                            location in expanded_EOS_location_table}
 
-    required_client_version = (0, 5, 1)
-    required_server_version = (0, 5, 1)
+    required_client_version = (0, 6, 1)
+    required_server_version = (0, 6, 1)
 
     item_name_groups = item_table_by_groups
     disabled_locations: Set[str] = []
