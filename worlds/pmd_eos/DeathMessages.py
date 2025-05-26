@@ -43,6 +43,7 @@ death_message_list = [
     DeathMessages(" made an enemy of 'Keckleon'", rare_weight),
     DeathMessages(" got lost in the Premier Inn", ultra_rare_weight),
     DeathMessages(" accidentally found themselves in MLSS", ultra_rare_weight),
+    DeathMessages(" picked up the Apple of Doom", rare_weight),
 ]
 
 death_message_weights = [message.message_weight for message in death_message_list]
