@@ -790,7 +790,7 @@ class EoSClient(BizHawkClient):
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [
-                                    relic_shards_amount.to_bytes(),
+                                    #relic_shards_amount.to_bytes(),
                                     (relic_shards_offset, int.to_bytes(relic_shards_amount),
                                      self.ram_mem_domain)],
                             )

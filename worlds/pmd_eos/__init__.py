@@ -548,6 +548,10 @@ class EOSWorld(World):
             required_items) - 1 - self.excluded_locations  # subtracting 1 for the event check
 
         self.multiworld.itempool += required_items
+        #Forcefully add one Team Name into the apworld
+        self.multiworld.itempool += [self.create_item("Inspiration Strikes!")]
+        remaining -= 1
+
         item_weights += filler_item_weights
         for i in range(4):
             filler_items_pool += filler_items_pool
@@ -562,6 +566,7 @@ class EOSWorld(World):
         all_trap_weights = []
         all_trap_weights += non_unique_trap_weights
         all_trap_weights += unique_trap_weights
+
         if self.options.allow_traps.value in [1, 2]:
             filler_items_toadd = math.ceil(remaining * (100 - self.options.trap_percent) / 100)
             traps_toadd = math.floor(remaining * self.options.trap_percent / 100)
