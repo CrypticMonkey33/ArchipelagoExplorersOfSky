@@ -549,8 +549,9 @@ class EOSWorld(World):
 
         self.multiworld.itempool += required_items
         #Forcefully add one Team Name into the apworld
-        self.multiworld.itempool += [self.create_item("Inspiration Strikes!")]
-        remaining -= 1
+        if remaining > 0:
+            self.multiworld.itempool += [self.create_item("Inspiration Strikes!")]
+            remaining -= 1
 
         item_weights += filler_item_weights
         for i in range(4):
