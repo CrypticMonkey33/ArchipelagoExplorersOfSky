@@ -540,7 +540,6 @@ class EOSWorld(World):
 
                 required_items.append(self.create_item(item_name, classification))
 
-
             else:
                 required_items.append(self.create_item(item_name, ItemClassification.useful))
 
@@ -548,10 +547,7 @@ class EOSWorld(World):
             required_items) - 1 - self.excluded_locations  # subtracting 1 for the event check
 
         self.multiworld.itempool += required_items
-        #Forcefully add one Team Name into the apworld
-        if remaining > 0:
-            self.multiworld.itempool += [self.create_item("Inspiration Strikes!")]
-            remaining -= 1
+
 
         item_weights += filler_item_weights
         for i in range(4):

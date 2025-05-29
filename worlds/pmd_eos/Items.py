@@ -3,42 +3,47 @@ from typing import NamedTuple, Dict, Set, List
 from BaseClasses import ItemClassification, Item
 
 
-# BASE_OFFSET = 100000000 #Need to figure out what to set this to. The offset for Archipelago to make it unique
-
-
+# Specific ItemData for this game, based off of the Archipelago ItemData class
 class ItemData(NamedTuple):
     name: str
-    id: int
+    id: int  # All dungeons have the same id as their id in the base game for ease of use
     classification: ItemClassification
-    start_number: int
+    start_number: int  # originally inteded to have the start id of the dungeon, ended up changed to the same value.
+    # also can be used for weights for filler items and traps
+
     group: list[str]
-    memory_offset: int
+    memory_offset: int  # memory address for where the item is in the game usually per game table
 
 
+# Game specific Item that extends the Archipelago Item. Only thing this changes is sets the game name so that AP knows
+# what game the item comes from
 class EOSItem(Item):
     game: str = "Pokemon Mystery Dungeon Explorers of Sky"
 
 
+# Make a dictionary that separates the item table based on the different groups for being able to search for all items
+# under a specific group
 def get_item_table_by_groups() -> Dict[str, set[str]]:
     #groups: Set[str] = set()
     new_dict: Dict[str, set[str]] = {}
     for item_name in item_table:
         if item_table[item_name].group:
             for group in item_table[item_name].group:
-                #groups.add(group)
                 if group in new_dict:
                     new_dict[group].add(item_name)
                 else:
-                    test_set = set("")
-                    test_set.add(item_name)
-                    new_dict.update({group: test_set})
+                    group_set = set("")
+                    group_set.add(item_name)
+                    new_dict.update({group: group_set})
 
     return new_dict
 
 
+# Item table for all the EOS items that can be in the game. Does not include filler or trap items.
 EOS_item_table = [
-    # "Test Dungeon"0, ItemClassification.progression, ["Unique", "Dungeons"],0x0),
-    #ItemData("Beach Cave", 1, ItemClassification.progression, 1, ["Unique", "EarlyDungeons"], 0x1),
+    # "Test Dungeon"0, ItemClassification.progression, ["Unique", "Dungeons"],0x0), Test Dungeon does not actually exist
+    # ItemData("Beach Cave", 1, ItemClassification.progression, 1, ["Unique", "EarlyDungeons"], 0x1), Beach cave is open
+    # by default
     ItemData("Drenched Bluff", 3, ItemClassification.progression, 3, ["Unique", "EarlyDungeons", "MissionDungeons"],
              0x3),
     ItemData("Mt. Bristle", 4, ItemClassification.progression, 4, ["Unique", "EarlyDungeons", "MissionDungeons"], 0x4),
@@ -77,7 +82,8 @@ EOS_item_table = [
              ["Unique", "EarlyDungeons", "MissionDungeons"], 0x22),
     ItemData("Brine Cave", 35, ItemClassification.progression, 35, ["Unique", "EarlyDungeons", "MissionDungeons"],
              0x23),
-    #ItemData("Hidden Land", 38, ItemClassification.progression, 38, ["Unique", "BossDungeons"], 0x26),
+    # Hidden Land is opened by relic fragment shards (Macguffins)
+    # ItemData("Hidden Land", 38, ItemClassification.progression, 38, ["Unique", "BossDungeons"], 0x26),
     ItemData("Temporal Tower", 41, ItemClassification.progression, 41, ["Unique", "BossDungeons"], 0x29),
     ItemData("Mystifying Forest", 44, ItemClassification.progression, 44, ["Unique", "LateDungeons", "MissionDungeons"],
              0x2C),
@@ -168,10 +174,13 @@ EOS_item_table = [
              ["Unique", "LateDungeons", "SkyPeak", "MissionDungeons"], 0x77),
     ItemData("Sky Peak Summit Pass", 120, ItemClassification.progression, 120,
              ["Unique", "LateDungeons", "SkyPeak", "MissionDungeons"], 0x78),
+    # Boss parts of the dungeons do not need to be unlocked by the client
     # ItemData("5th Station Clearing", 121, ItemClassification.progression, 121,
     #        ["Unique", "LateDungeons", "MissionDungeons"], 0x79),
     # ItemData("Sky Peak Summit", 122, ItemClassification.progression, 122,
     #        ["Unique", "LateDungeons", "MissionDungeons"], 0x7A),
+
+    # SPECIAL EPISODES // All special episodes are unlocked by their beginning dungeon
     ItemData("Bidoof\'s Wish", 123, ItemClassification.progression, 123, ["Unique", "Special Dungeons"], 0x0),
     # ItemData("SE Star Cave", 123, ItemClassification.useful, 123, ["Unique", "Special Dungeons"], 0x7B),
     ItemData("Igglybuff the Prodigy", 128, ItemClassification.progression, 128, ["Unique", "Special Dungeons"], 0x1),
@@ -196,14 +205,15 @@ EOS_item_table = [
     # ItemData("Limestone Cavern", 155, ItemClassification.useful, 155, ["Unique", "Special Dungeons"], 0x9B),
     ItemData('Today\'s "Oh My Gosh"', 158, ItemClassification.progression, 158, ["Unique", "Special Dungeons"], 0x2),
     # ItemData("Spring Cave", 158, ItemClassification.useful, 158, ["Unique", "Special Dungeons"], 0x9E),
+
+    # PMD EOS Why do you have three things to open after the SEs >:(
     ItemData("Star Cave", 174, ItemClassification.progression, 174, ["Unique", "LateDungeons", "MissionDungeons"],
              0xAE),
     ItemData("Shaymin Village", 175, ItemClassification.useful, 175, ["Unique", "ExtraDungeons"], 0xAF),
     #ItemData("Luminous Spring", 177, ItemClassification.useful, 177, ["Unique", "ExtraDungeons"], 0xB1),
     ItemData("Hot Spring", 178, ItemClassification.useful, 178, ["Unique", "ExtraDungeons"], 0xB2),
 
-    #ItemData("Dojo Normal/Fly Maze", 180, ItemClassification.progression, 180, ["Unique", "Dojo Dungeons"], 0xB4),
-
+    # DOJO DUNGEONS
     ItemData("Dojo Normal/Fly Maze", 180, ItemClassification.progression, 180, ["Unique", "Dojo Dungeons"], 0xB4),
     ItemData("Dojo Dark/Fire Maze", 181, ItemClassification.progression, 181, ["Unique", "Dojo Dungeons"], 0xB5),
     ItemData("Dojo Rock/Water Maze", 182, ItemClassification.progression, 182, ["Unique", "Dojo Dungeons"], 0xB6),
@@ -215,24 +225,40 @@ EOS_item_table = [
     ItemData("Dojo Dragon Maze", 188, ItemClassification.progression, 188, ["Unique", "Dojo Dungeons"], 0xBC),
     ItemData("Dojo Ghost Maze", 189, ItemClassification.progression, 189, ["Unique", "Dojo Dungeons"], 0xBD),
     ItemData("Dojo Final Maze", 191, ItemClassification.progression, 191, ["Unique", "Final Dojo"], 0xBF),  # 7 subareas
+
+    # Macguffin for opening Hidden Land
     ItemData("Relic Fragment Shard", 200, ItemClassification.progression_skip_balancing, 200, ["Macguffin"], 0x00),
+
+    # Item for the progressive sky peak option. Does not exist outside that option
     ItemData("Progressive Sky Peak", 201, ItemClassification.progression, 0, ["SkyPeak"], 0x00),
 
+    # Seals for Aegis Cave. Unlock the ability to progress in the cave without getting cursed
     ItemData("Ice Seal", 203, ItemClassification.progression, 0, ["Aegis"], 0x00),
     ItemData("Rock Seal", 204, ItemClassification.progression, 0, ["Aegis"], 0x00),
     ItemData("Steel Seal", 205, ItemClassification.progression, 0, ["Aegis"], 0x00),
+
+    # Progressive version of seals for Aegis Cave
     ItemData("Progressive Seal", 206, ItemClassification.progression, 0, ["Aegis"], 0x00),
 
+    # Need an item that can get claimed to tell AP that victory has been accomplished. Just an event.
     ItemData("Victory", 300, ItemClassification.progression, 0, [], 0x00),
+
+    # Progressively upgrade the player's bag
     ItemData("Bag Upgrade", 370, ItemClassification.progression, 0, ["ProgressiveBag", "Generic"], 0x00),
 
+    # Secret rank which unlocks the ability to get the checks for recruiting legendaries late game
     ItemData("Secret Rank", 409, ItemClassification.progression, 0, ["Rank"], 0x0),
+
+    # Useful Items to be put in the apworld
     ItemData("Mystery Part", 500, ItemClassification.useful, 0, ["Item", "Single"], 0xAD),
     ItemData("Secret Slab", 501, ItemClassification.useful, 0, ["Item", "Single"], 0xAE),
     ItemData("Amber Tear", 502, ItemClassification.useful, 0, ["Item", "Single"], 0x3A),
     ItemData("Friend Bow", 503, ItemClassification.useful, 0, ["Item", "Single"], 0x35),
     ItemData("Golden Mask", 546, ItemClassification.useful, 0, ["Item", "Single"], 0x39),
+    ItemData("Miracle Chest", 464, ItemClassification.useful, 0, ["Item", "Single"], 0x42),  # Boosts Exp
+    ItemData("Wonder Chest", 465, ItemClassification.useful, 0, ["Item", "Single"], 0x43),  # Boosts Exp
 
+    # LEGENDARIES
     ItemData("Regirock", 504, ItemClassification.useful, 0, ["Legendary"], 0x0),
     ItemData("Regice", 505, ItemClassification.useful, 0, ["Legendary"], 0x1),
     ItemData("Registeel", 506, ItemClassification.useful, 0, ["Legendary"], 0x2),
@@ -256,6 +282,8 @@ EOS_item_table = [
     ItemData("Kyogre", 524, ItemClassification.useful, 0, ["Legendary"], 0x14),
     ItemData("Shaymin", 525, ItemClassification.useful, 0, ["Legendary"], 0x15),
 
+    # Instruments which are also Macguffins for Dark Crater. Includes some extra instruments that we have added for fun
+    # and flavor
     ItemData("Icy Flute", 526, ItemClassification.progression_skip_balancing, 0, ["Item", "Instrument"], 0x3B),
     ItemData("Fiery Drum", 527, ItemClassification.progression_skip_balancing, 0, ["Item", "Instrument"], 0x3C),
     ItemData("Terra Cymbal", 528, ItemClassification.progression_skip_balancing, 0, ["Item", "Instrument"], 0x3D),
@@ -277,41 +305,58 @@ EOS_item_table = [
     ItemData("Dragu-teki", 544, ItemClassification.progression_skip_balancing, 0, ["Item", "Instrument"], 0x576),
     ItemData("Steel Guitar", 545, ItemClassification.progression_skip_balancing, 0, ["Item", "Instrument"], 0x577),
 
+    # Items that give the player an overall buff or ability to do something new in game
     ItemData("Hero Evolution", 550, ItemClassification.useful, 0, ["Generic"], 0),
     ItemData("Recruit Evolution", 551, ItemClassification.useful, 0, ["Generic"], 0),
     ItemData("Recruitment", 552, ItemClassification.useful, 0, ["Generic"], 0),
     ItemData("Formation Control", 553, ItemClassification.progression, 0, ["Generic"], 0),
-    ItemData("Miracle Chest", 464, ItemClassification.useful, 0, ["Item", "Single"], 0x42),  # Boosts Exp
-    ItemData("Wonder Chest", 465, ItemClassification.useful, 0, ["Item", "Single"], 0x43),  # Boosts Exp
+
+    # Unlocking the main game for Special Episode Sanity
     ItemData("Main Game Unlock", 700, ItemClassification.progression, 0, [], 0),
-    ItemData("Inspiration Strikes!", 466, ItemClassification.useful, 0, ["Trap"], 0x0),
+
+    # Adding one team name trap so players can actually get their team name at leasst once in the game
+    ItemData("Inspiration Strikes!!", 466, ItemClassification.useful, 0, ["Trap"], 0x0),
 
 ]
 filler_items = [
+    # Item boxes as "loot boxes" as defined in a later section what they contain
     ItemData("Heavy Box", 301, ItemClassification.filler, 10, ["Item", "Box"], 0x171),
     ItemData("Shiny Box", 302, ItemClassification.filler, 10, ["Item", "Box"], 0x174),
     ItemData("Nifty Box", 303, ItemClassification.filler, 10, ["Item", "Box"], 0x177),
-    #ItemData("Dainty Box", 304, ItemClassification.filler, 10, ["Item", "Box"], 0x17A),
-    #ItemData("Glittery Box", 305, ItemClassification.filler, 10, ["Item", "Box"], 0x17D),
+    # ItemData("Dainty Box", 304, ItemClassification.filler, 10, ["Item", "Box"], 0x17A),
+    # ItemData("Glittery Box", 305, ItemClassification.filler, 10, ["Item", "Box"], 0x17D),
     ItemData("Pretty Box", 306, ItemClassification.filler, 10, ["Item", "Box"], 0x180),
     # ItemData("Deluxe Box", 307, ItemClassification.filler, 10, ["Item", "Box"], 0x183),
     ItemData("Light Box", 308, ItemClassification.filler, 10, ["Item", "Box"], 0x186),
     ItemData("Cute Box", 309, ItemClassification.filler, 10, ["Item", "Box"], 0x189),
     # ItemData("Hard Box", 310, ItemClassification.filler, 10, ["Item", "Box"], 0x18C),
     # ItemData("Sinister Box", 311, ItemClassification.filler, 10, ["Item", "Box"], 0x18F),
+
     ItemData("Link Box", 312, ItemClassification.filler, 10, ["Item", "Single"], 0x16A),
     ItemData("Sky Gift", 313, ItemClassification.filler, 10, ["Item", "Single"], 0xB4),
+
+    # MONEY
     ItemData("Poké x100", 560, ItemClassification.filler, 20, ["Money"], 100),
     ItemData("Poké x500", 561, ItemClassification.filler, 20, ["Money"], 500),
     ItemData("Poké x1000", 562, ItemClassification.filler, 20, ["Money"], 1000),
     ItemData("Poké x5000", 563, ItemClassification.filler, 5, ["Money"], 5000),
     ItemData("Poké x200", 564, ItemClassification.filler, 20, ["Money"], 200),
     ItemData("Poké x1", 565, ItemClassification.filler, 50, ["Money"], 1),
+
+    # Time to be a little nice to the players by incrementing recycle shop
+    ItemData("Recycle Count +1", 571, ItemClassification.filler, 10, ["Recycles"], 1),
+    ItemData("Recycle Count +5", 572, ItemClassification.filler, 10, ["Recycles"], 5),
+    ItemData("Recycle Count +10", 573, ItemClassification.filler, 10, ["Recycles"], 10),
+    ItemData("Recycle Count +20", 574, ItemClassification.filler, 10, ["Recycles"], 20),
+
+    # General filler stuff that mostly is just flavor from the main game
     ItemData("Secret of the Waterfall", 405, ItemClassification.filler, 2, ["Generic"], 0x0),
     ItemData("Mystery of the Quicksand", 299, ItemClassification.filler, 2, ["Generic"], 0x0),
     ItemData("Chatot Repellent", 406, ItemClassification.filler, 2, ["Generic"], 0x0),
     ItemData("Sky Jukebox", 407, ItemClassification.filler, 2, ["Generic"], 0x0),
     ItemData("Recruitment Sensor", 408, ItemClassification.filler, 2, ["Generic"], 0x0),
+
+    # Backpack Items
     ItemData("Rare Fossil", 410, ItemClassification.filler, 10, ["Item", "Multi"], 0xA),
     ItemData("Reviver Seed", 411, ItemClassification.filler, 5, ["Item", "Single"], 0x49),
     ItemData("Oran Berry", 412, ItemClassification.filler, 20, ["Item", "Single"], 0x46),
@@ -327,10 +372,6 @@ filler_items = [
     ItemData("Max Elixir", 484, ItemClassification.filler, 10, ["Item", "Single"], 0x63),
     ItemData("Gabite Scale", 485, ItemClassification.filler, 10, ["Item", "Single"], 0x5c),
     ItemData("Zinc", 486, ItemClassification.filler, 10, ["Item", "Single"], 0x6c),
-    ItemData("Recycle Count +1", 571, ItemClassification.filler, 10, ["Recycles"], 1),
-    ItemData("Recycle Count +5", 572, ItemClassification.filler, 10, ["Recycles"], 5),
-    ItemData("Recycle Count +10", 573, ItemClassification.filler, 10, ["Recycles"], 10),
-    ItemData("Recycle Count +20", 574, ItemClassification.filler, 10, ["Recycles"], 20),
     ItemData("Sitrus Berry", 701, ItemClassification.filler, 10, ["Item", "Single"], 0x47),
     ItemData("Eyedrop Seed", 702, ItemClassification.filler, 10, ["Item", "Single"], 0x48),
     ItemData("Blinker Seed", 703, ItemClassification.filler, 10, ["Item", "Single"], 0x4A),
@@ -428,6 +469,8 @@ filler_items = [
     ItemData("All-Hit Orb", 795, ItemClassification.filler, 10, ["Item", "Single"], 0x166),
     ItemData("Foe-Seal Orb", 796, ItemClassification.filler, 10, ["Item", "Single"], 0x167),
 ]
+
+# filler tiems that there can only be one of in the game, specifically the "typed" items
 exclusive_filler_items = [
     # specific item Types
     ItemData("Joy Globe", 487, ItemClassification.filler, 1, ["Item", "Exclusive"], 0x1FD),  # Normal
@@ -485,13 +528,22 @@ exclusive_filler_items = [
     #ItemData("Eclipse Robe", 462, ItemClassification.filler, 1, ["Item", "Exclusive"], 0x1F9),  # Darkrai
     ItemData("Purify Veil", 463, ItemClassification.filler, 1, ["Item", "Exclusive"], 0x547),  # Shaymin
 ]
+
+# OOH FUN TRAPS
 trap_items = [
+    # Team Name
     ItemData("Inspiration Strikes!", 400, ItemClassification.trap, 20, ["Trap"], 0x0),
+    # gives the player unown font until they sleep (also cannot interact with most shops)
     ItemData("Get Unowned!", 401, ItemClassification.trap, 20, ["Trap"], 0x0),
+    # send the player to bed
     ItemData("Nap Time!", 402, ItemClassification.trap, 20, ["Trap"], 0x0),
+    # force the player to do sentry duty for the day, they must succeed to clear the trap
     ItemData("Sentry Duty!", 403, ItemClassification.trap, 20, ["Trap"], 0x0),
+    # Makes the player take a short break
     ItemData("Touch Grass", 404, ItemClassification.trap, 20, ["Trap"], 0x0),
+    # Bye Bye inventory cash
     ItemData("Poke x-1000", 570, ItemClassification.trap, 20, ["Trap", "Money"], 1000),
+    # lookalike dungeons
     ItemData("Denched Bluff", 2, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x2),
     ItemData("Mt. Brinstar", 5, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x5),
     ItemData("Froggy Forest", 15, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0xF),
@@ -501,6 +553,8 @@ trap_items = [
     ItemData("Congealed Ruins", 71, ItemClassification.trap, 20, ["Trap", "Late", "Unique", "Dungeon"], 0x47),
     ItemData("Labyrinth Cove", 86, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x56),
     ItemData("Dojo Ghast Maze", 190, ItemClassification.trap, 20, ["Trap", "Dojo", "Unique", "Dungeon"], 0xBE),
+
+    # In dungeon traps that give a status to the player
     ItemData("Dungeon Yawn", 470, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x1),
     ItemData("Dungeon Whiffer", 471, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x2),
     ItemData("Dungeon DropItems", 472, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x3),
@@ -508,9 +562,11 @@ trap_items = [
     ItemData("Dungeon Warp", 474, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x4),
     ItemData("Dungeon Pitfall", 475, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x6),
     ItemData("Dungeon Embargo", 476, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x7),
+    # Ooh look your next floor is a maze!
     ItemData("Dungeon Maze", 477, ItemClassification.trap, 20, ["Trap", "DungeonTrap"], 0x0),
 
 ]
+# create dictionaries and tables for later use
 filler_item_weights = [item.start_number for item in filler_items]
 filler_item_table: Dict[str, ItemData] = {item.name: item for item in filler_items}
 
@@ -520,10 +576,12 @@ exclusive_filler_item_table: Dict[str, ItemData] = {item.name: item for item in 
 trap_item_weights = [item.start_number for item in trap_items]
 trap_item_table: Dict[str, ItemData] = {item.name: item for item in trap_items}
 
+# for items that appear multiple times, defined here
 item_frequencies: Dict[str, int] = {
     "Bag Upgrade": 5
 }
 
+# Create a table of all the possible items in the game for AP
 item_table: Dict[str, ItemData] = {item.name: item for item in EOS_item_table}
 item_table.update(filler_item_table)
 item_table.update(exclusive_filler_item_table)
@@ -531,6 +589,8 @@ item_table.update(trap_item_table)
 item_table_by_id: Dict[int, ItemData] = {item.id: item for item in item_table.values()}
 
 item_table_by_groups = get_item_table_by_groups()
+
+# definition of what can be inside the different loot boxes. Some got taken away with the addition of more filler items
 lootbox_table: Dict[str, Dict[str, int]] = {
     "Gorgeous Box": {
         "Gold Ribbon": 0x20,
@@ -826,6 +886,7 @@ lootbox_table: Dict[str, Dict[str, int]] = {
 
 }
 
+# map the legendaries to their possible ids
 legendary_pool_dict = {
     "Regirock": [504, 440],
     "Regice": [505, 441],
@@ -841,7 +902,7 @@ legendary_pool_dict = {
     "Celebi": [515, 439],
     "Articuno": [516, 429],
     "Heatran": [517, 455],
-    #"Primal Dialga": [518],
+    # "Primal Dialga": [518],
     "Mew": [519, 433],
     "Manaphy": [520, 461],
     "Phione": [521, 459, 460],

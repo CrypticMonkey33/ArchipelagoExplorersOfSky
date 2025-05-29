@@ -877,7 +877,7 @@ class EoSClient(BizHawkClient):
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
 
                 elif "Trap" in item_data.group:
-                    if item_data.name == "Inspiration Strikes!":
+                    if item_data.name in ["Inspiration Strikes!", "Inspiration Strikes!!"]:
                         if ((performance_progress_bitfield[4] >> 0) & 1) == 0:
                             write_byte = performance_progress_bitfield[4] | 0x1
                             performance_progress_bitfield[4] = write_byte

@@ -9,7 +9,7 @@ class SubXBitfield (NamedTuple):
     flag_definition: str  # name
     prerequisites: List[str]  # What item / state is needed for this check to be accessible
     default_item: str  # what item is normally there?
-    classification: str = ""
+    classification: str = ""  # internal group name for referencing in the rules or initialization phases
 
 
 subX_table = [

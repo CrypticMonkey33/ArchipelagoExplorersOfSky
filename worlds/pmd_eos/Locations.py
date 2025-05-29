@@ -5,6 +5,7 @@ from typing import Dict, List
 from BaseClasses import Location
 from .RomTypeDefinitions import subX_table
 
+
 class LocationData:
     name: str = ""
     classification: str = ""
