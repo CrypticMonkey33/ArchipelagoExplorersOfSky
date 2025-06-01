@@ -606,13 +606,16 @@ class EOSWorld(World):
         filler = 5
         useful = 6
         progressive = 9
+        min_internal_progressive = 4
+        max_external_progressive = progressive - min_internal_progressive
         sky_dungeons = []
+        external_items = []
         important_sky_items = ["Icy Flute", "Fiery Drum", "Terra Cymbal", "Aqua-Monica", "Rock Horn",
                                "Grass Cornet", "Sky Melodica", "Stellar Symphony", "Null Bagpipes", "Glimmer Harp",
                                "Toxic Sax", "Biting Bass", "Knockout Bell", "Spectral Chimes", "Liar's Lyre",
                                "Charge Synth", "Norma-ccordion", "Psychic Cello", "Dragu-teki", "Steel Guitar",
                                "Relic Fragment Shard"]
-        location_list = list(self.multiworld.get_locations())
+        location_list = list(self.multiworld.get_locations(self.player))
         random.shuffle(location_list)
         for location in location_list:
             if location.address is not None and location.item:
@@ -622,8 +625,17 @@ class EOSWorld(World):
                     if location.item.player == self.player and location.item.name not in important_sky_items:
                         sky_dungeons.append(location)
                         continue
-                    hint_loc.append(location)
-                    progressive -= 1
+                    if location.item.player != self.player:
+                        if max_external_progressive > 0:
+                            hint_loc.append(location)
+                            max_external_progressive -= 1
+                            progressive -= 1
+                        else:
+                            external_items.append(location)
+                            continue
+                    if location.item.player == self.player and location.item.name in important_sky_items:
+                        hint_loc.append(location)
+                        progressive -= 1
                 elif filler > 0 and location.item is not (location.item.advancement or location.item.useful):
                     hint_loc.append(location)
                     filler -= 1
@@ -632,7 +644,14 @@ class EOSWorld(World):
                     useful -= 1
         if progressive > 0:
             for i in range(progressive):
-                hint_loc.append(sky_dungeons[i])
+                if i > len(sky_dungeons):
+                    if i - len(sky_dungeons) > len(external_items):
+                        break
+                    else:
+                        hint_loc.append(external_items[i - len(sky_dungeons)])
+                else:
+                    hint_loc.append(sky_dungeons[i])
+
         return hint_loc
 
     def modify_multidata(self, multidata: Dict[str, Any]) -> None:
