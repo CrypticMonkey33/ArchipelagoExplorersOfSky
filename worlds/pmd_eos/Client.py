@@ -443,11 +443,16 @@ class EoSClient(BizHawkClient):
                             )
                         elif sky_peaks_ram > self.skypeaks_open:
                             # uhhhh I don't know how this could happen? Also what do I do????
+                            old_sky_peaks = self.skypeaks_open
+                            rom_old_sky = sky_peaks_ram
                             self.skypeaks_open = sky_peaks_ram
                             self.skypeaks_open += 1
                             sky_peaks_ram += 1
                             logger.info(
                                 "Something Weird Happened Please tell Cryptic if you see this " +
+                                "\nThe Sky Peak count from AP was " + str(old_sky_peaks) +
+                                "\nAnd the Sky Peaks read from the rom was: " + str(
+                                    rom_old_sky) +
                                 "\nThe Sky Peak count from AP is " + str(self.skypeaks_open) +
                                 "\nAnd the Sky Peaks written to the ROM should now be: " + str(
                                     sky_peaks_ram)
@@ -1219,10 +1224,10 @@ class EoSClient(BizHawkClient):
                                 "\nAnd the Instrument written to the ROM was: " + str(
                                     old_instruments_rom) +
                                 "\nAnd the Instrument written to the ROM should now be: " + str(
-                                    instruments_amount) +
-                                "\n And just for Hecka, the bytes written are " + str(int.to_bytes(relic_shards_amount)) +
-                                "\n And just for Hecka, doing it the other way would result in " +
-                                str(relic_shards_amount.to_bytes())
+                                    instruments_amount)
+                                #"\n And just for Hecka, the bytes written are " + str(int.to_bytes(relic_shards_amount)) +
+                                #"\n And just for Hecka, doing it the other way would result in " +
+                                #str(relic_shards_amount.to_bytes())
                             )
                         else:
                             instruments_amount += 1
@@ -1381,11 +1386,11 @@ class EoSClient(BizHawkClient):
                                 "\nAnd the Instrument written to the ROM was: " + str(
                                     old_instruments_rom) +
                                 "\nAnd the Instrument written to the ROM should now be: " + str(
-                                    instruments_amount) +
-                                "\n And just for Hecka, the bytes written are " + str(
-                                    int.to_bytes(relic_shards_amount)) +
-                                "\n And just for Hecka, doing it the other way would result in " +
-                                str(relic_shards_amount.to_bytes())
+                                    instruments_amount)
+                                #"\n And just for Hecka, the bytes written are " + str(
+                                #    int.to_bytes(relic_shards_amount)) +
+                                #"\n And just for Hecka, doing it the other way would result in " +
+                                #str(relic_shards_amount.to_bytes())
                             )
                         else:
                             instruments_amount += 1
