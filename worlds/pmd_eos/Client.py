@@ -150,54 +150,54 @@ class EoSClient(BizHawkClient):
             #            "locations": [310, 311, 312, 313, 314, 315, 316, 317, 318, 319]
             #        }]
             #    )
-            await (ctx.send_msgs(
-                [
-                    {"cmd": "Set",
-                     "key": self.player_name + "Dungeon Missions",
-                     "default": {location: 0 for location in location_table_by_groups["Mission"]},
-                     "want_reply": True,
-                     "operations": [{"operation": "update", "value": {}}]
-                     },
-                    {"cmd": "Set",
-                     "key": self.player_name + "Dungeon Outlaws",
-                     "default": {location: 0 for location in location_table_by_groups["Mission"]},
-                     "want_reply": True,
-                     "operations": [{"operation": "update", "value": {}}]
-                     },
-                    {"cmd": "Set",
-                     "key": self.player_name + "Item Boxes Collected",
-                     "default": {0: []},
-                     "want_reply": True,
-                     "operations": [{"operation": "default", "value": {0: []}}]
-                     },
-                    {"cmd": "Set",
-                     "key": self.player_name + "Legendaries Recruited",
-                     "default": {0: []},
-                     "want_reply": True,
-                     "operations": [{"operation": "default", "value": {0: []}}]
-                     },
-                    {"cmd": "Set",
-                     "key": self.player_name + "Hinted Hints",
-                     "default": {0: []},
-                     "want_reply": True,
-                     "operations": [{"operation": "default", "value": {0: []}}]
-                     },
-                    {"cmd": "Set",
-                     "key": self.player_name + "GenericStorage",
-                     "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
-                                 "macguffin_unlock_amount": 0, "instruments_collected": 0, "required_instruments": 0,
-                                 "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
-                                 "spinda_events": 0, "spinda_drinks": 0, "box_number": 0},
-                     "want_reply": True,
-                     "operations": [{"operation": "default", "value":
-                         {"goal_complete": False, "bag_given": False,
-                          "macguffins_collected": 0, "macguffin_unlock_amount": 0,
-                          "instruments_collected": 0, "required_instruments": 0,
-                          "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
-                          "spinda_events": 0, "spinda_drinks": 0, "box_number": 0}}]
-                     }
-                ]))
-            await asyncio.sleep(0.1)
+            if (self.player_name + "GenericStorage") not in ctx.stored_data:
+                await (ctx.send_msgs(
+                    [
+                        {"cmd": "Set",
+                         "key": self.player_name + "Dungeon Missions",
+                         "default": {location: 0 for location in location_table_by_groups["Mission"]},
+                         "want_reply": True,
+                         "operations": [{"operation": "update", "value": {}}]
+                         },
+                        {"cmd": "Set",
+                         "key": self.player_name + "Dungeon Outlaws",
+                         "default": {location: 0 for location in location_table_by_groups["Mission"]},
+                         "want_reply": True,
+                         "operations": [{"operation": "update", "value": {}}]
+                         },
+                        {"cmd": "Set",
+                         "key": self.player_name + "Item Boxes Collected",
+                         "default": {0: []},
+                         "want_reply": True,
+                         "operations": [{"operation": "default", "value": {0: []}}]
+                         },
+                        {"cmd": "Set",
+                         "key": self.player_name + "Legendaries Recruited",
+                         "default": {0: []},
+                         "want_reply": True,
+                         "operations": [{"operation": "default", "value": {0: []}}]
+                         },
+                        {"cmd": "Set",
+                         "key": self.player_name + "Hinted Hints",
+                         "default": {0: []},
+                         "want_reply": True,
+                         "operations": [{"operation": "default", "value": {0: []}}]
+                         },
+                        {"cmd": "Set",
+                         "key": self.player_name + "GenericStorage",
+                         "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
+                                     "macguffin_unlock_amount": 0, "instruments_collected": 0, "required_instruments": 0,
+                                     "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
+                                     "spinda_events": 0, "spinda_drinks": 0, "box_number": 0},
+                         "want_reply": True,
+                         "operations": [{"operation": "default", "value": {"goal_complete": False, "bag_given": False,
+                              "macguffins_collected": 0, "macguffin_unlock_amount": 0,
+                              "instruments_collected": 0, "required_instruments": 0,
+                              "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
+                              "spinda_events": 0, "spinda_drinks": 0, "box_number": 0}}]
+                         }
+                    ]))
+                await asyncio.sleep(0.1)
 
 
             item_boxes_collected: List[Dict] = []
@@ -272,16 +272,16 @@ class EoSClient(BizHawkClient):
                 stored = ctx.stored_data[self.player_name + "GenericStorage"]
                 self.goal_complete = stored["goal_complete"]
                 self.bag_given = stored["bag_given"]
-                self.macguffins_collected = stored["macguffins_collected"]
+                self.macguffins_collected = max(stored["macguffins_collected"], self.macguffins_collected)
                 self.macguffin_unlock_amount = stored["macguffin_unlock_amount"]
                 self.required_instruments = stored["required_instruments"]
-                self.instruments_collected = stored["instruments_collected"]
+                self.instruments_collected = max(stored["instruments_collected"], self.instruments_collected)
                 self.dialga_complete = stored["dialga_complete"]
-                self.skypeaks_open = stored["skypeaks_open"]
-                self.aegis_seals = stored["aegis_seals"]
-                self.spinda_events = stored["spinda_events"]
-                self.spinda_drinks = stored["spinda_drinks"]
-                self.item_box_count = stored["box_number"]
+                self.skypeaks_open = max(stored["skypeaks_open"], self.skypeaks_open)
+                self.aegis_seals = max(stored["aegis_seals"], self.aegis_seals)
+                self.spinda_events = max(stored["spinda_events"], self.spinda_events)
+                self.spinda_drinks = max(stored["spinda_drinks"], self.spinda_drinks)
+                self.item_box_count = max(stored["box_number"], self.item_box_count)
 
             else:
 
@@ -1548,40 +1548,31 @@ class EoSClient(BizHawkClient):
                 [
                     {"cmd": "Set",
                      "key": self.player_name + "Dungeon Missions",
-                     "default": {},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value": dungeon_missions_dict}]
                      },
                     {"cmd": "Set",
                      "key": self.player_name + "Dungeon Outlaws",
-                     "default": {},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value": dungeon_outlaws_dict}]
                      },
                     {"cmd": "Set",
                      "key": self.player_name + "Item Boxes Collected",
-                     "default": {},
                      "want_reply": True,
                      "operations": [{"operation": "replace", "value": {0: item_boxes_collected}}]
                      },
                     {"cmd": "Set",
                      "key": self.player_name + "Legendaries Recruited",
-                     "default": {},
                      "want_reply": True,
                      "operations": [{"operation": "replace", "value": {0: legendaries_recruited}}]
                      },
                     {"cmd": "Set",
                      "key": self.player_name + "Hinted Hints",
-                     "default": {},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value": {0: self.hints_hinted}}]
                      },
                     {"cmd": "Set",
                      "key": self.player_name + "GenericStorage",
-                     "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
-                                 "macguffin_unlock_amount": 0, "cresselia_feather_acquired": False,
-                                 "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
-                                 "spinda_events": 0, "spinda_drinks": 0, "box_number": 0},
                      "want_reply": True,
                      "operations": [{"operation": "update", "value":
                          {"goal_complete": self.goal_complete, "bag_given": self.bag_given,
