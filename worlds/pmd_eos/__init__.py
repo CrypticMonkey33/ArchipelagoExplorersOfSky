@@ -103,11 +103,11 @@ class EOSWorld(World):
             item_name = "Formation Control"
             self.multiworld.push_precollected(self.create_item(item_name))
         if self.options.special_episode_sanity.value and not self.options.exclude_special.value:
-            possibleSEs = ["Bidoof\'s Wish", "Igglybuff the Prodigy", "In the Future of Darkness",
-                           "Here Comes Team Charm!", 'Today\'s "Oh My Gosh"']
-            SE_Num = self.random.randint(0, 4)
-            self.starting_se = SE_Num
-            item_name = possibleSEs[SE_Num]
+            possible_se = ["Bidoof\'s Wish", "Igglybuff the Prodigy", 'Today\'s "Oh My Gosh"', "Here Comes Team Charm!",
+                           "In the Future of Darkness"]
+            se_num = self.random.randint(0, 4)
+            self.starting_se = se_num
+            item_name = possible_se[se_num]
             self.multiworld.push_precollected(self.create_item(item_name))
         else:
             self.multiworld.push_precollected(self.create_item("Main Game Unlock"))
@@ -594,7 +594,7 @@ class EOSWorld(World):
 
         for i in range(10):
             hint_item_list += [self.multiworld.get_location(f"Shop Item {1 + i}", self.player)]
-        write_tokens(self, patch, hint_item_list, self.dimensional_scream_list, self.starting_se)
+        write_tokens(self, patch, hint_item_list, self.dimensional_scream_list, self.starting_se + 1)
         rom_path = os.path.join(
             output_directory, f"{self.multiworld.get_out_file_name_base(self.player)}" f"{patch.patch_file_ending}"
         )
