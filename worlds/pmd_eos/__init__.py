@@ -434,10 +434,10 @@ class EOSWorld(World):
         for item_name in item_table:
             if (item_name == "Dark Crater") and (self.options.goal.value == 1):
                 continue
-            if (item_name in precollected) or (item_name in item_frequencies):
+            if item_name in item_frequencies:
                 freq = 0
-                if item_name in item_frequencies:
-                    freq = item_frequencies.get(item_name, 1)
+
+                freq = item_frequencies.get(item_name, 1)
 
                 freq = max(freq - precollected.count(item_name), 0)
                 required_items += [self.create_item(item_name) for _ in range(freq)]
@@ -547,7 +547,6 @@ class EOSWorld(World):
             required_items) - 1 - self.excluded_locations  # subtracting 1 for the event check
 
         self.multiworld.itempool += required_items
-
 
         item_weights += filler_item_weights
         for i in range(4):
