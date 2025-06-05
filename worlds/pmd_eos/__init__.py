@@ -609,6 +609,8 @@ class EOSWorld(World):
         max_external_progressive = progressive - min_internal_progressive
         sky_dungeons = []
         external_items = []
+        extra_useful_items = []
+        extra_filler_items = []
         important_sky_items = ["Icy Flute", "Fiery Drum", "Terra Cymbal", "Aqua-Monica", "Rock Horn",
                                "Grass Cornet", "Sky Melodica", "Stellar Symphony", "Null Bagpipes", "Glimmer Harp",
                                "Toxic Sax", "Biting Bass", "Knockout Bell", "Spectral Chimes", "Liar's Lyre",
@@ -638,18 +640,30 @@ class EOSWorld(World):
                 elif filler > 0 and location.item is not (location.item.advancement or location.item.useful):
                     hint_loc.append(location)
                     filler -= 1
+                elif location.item is not (location.item.advancement or location.item.useful):
+                    extra_filler_items.append(location)
                 elif useful > 0 and location.item.useful:
                     hint_loc.append(location)
                     useful -= 1
+                elif location.item.useful:
+                    extra_useful_items.append(location)
         if progressive > 0:
             for i in range(progressive):
-                if i > len(sky_dungeons):
-                    if i - len(sky_dungeons) > len(external_items):
-                        break
-                    else:
-                        hint_loc.append(external_items[i - len(sky_dungeons)])
-                else:
+                if i < len(sky_dungeons):
                     hint_loc.append(sky_dungeons[i])
+                else:
+                    if i - len(sky_dungeons) < len(external_items):
+                        hint_loc.append(external_items[i - len(sky_dungeons)])
+                    else:
+                        if i - len(sky_dungeons) - len(external_items) < len(extra_useful_items):
+                            hint_loc.append(extra_useful_items[i - len(sky_dungeons) - len(external_items)])
+                        else:
+                            if (i - len(sky_dungeons) - len(external_items) -
+                                    len(extra_useful_items) < len(extra_filler_items)):
+                                hint_loc.append(extra_filler_items[i - len(sky_dungeons) - len(external_items) -
+                                                                   len(extra_useful_items)])
+                            else:
+                                break
 
         return hint_loc
 
