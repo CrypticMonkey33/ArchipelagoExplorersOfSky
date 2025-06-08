@@ -43,14 +43,14 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
 
 def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[Location],
                  dimensional_screams: list[Location], starting_se: int) -> None:
-    ov36_mem_loc = 2722304  # find_ov36_mem_location()
+    ov36_mem_loc = 2722816  # find_ov36_mem_location()
     seed_offset = 0x36F90
     player_name_offset = 0x36F80
     ap_settings_offset = 0x36F98
     # mission_max_offset = 0x36F9A
     # macguffin_max_offset = 0x36F9E
     # spinda_drinks_offset = 0x37146
-    hintable_items_offset = 3300352  # number from Heckas makefile code
+    hintable_items_offset = 3300864  # number from Heckas makefile code
     custom_save_area_offset = ov36_mem_loc + 0x8F80
     # main_game_unlocked_offset = ov36_mem_loc + 0x37148  # custom_save_area_offset + 0x2A7
     dimensional_scream_who_offset = hintable_items_offset + 0x4
