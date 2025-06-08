@@ -637,10 +637,10 @@ class EOSWorld(World):
                     if location.item.player == self.player and location.item.name in important_sky_items:
                         hint_loc.append(location)
                         progressive -= 1
-                elif filler > 0 and location.item is not (location.item.advancement or location.item.useful):
+                elif filler > 0 and not (location.item.advancement or location.item.useful):
                     hint_loc.append(location)
                     filler -= 1
-                elif location.item is not (location.item.advancement or location.item.useful):
+                elif not (location.item.advancement or location.item.useful):
                     extra_filler_items.append(location)
                 elif useful > 0 and location.item.useful:
                     hint_loc.append(location)
