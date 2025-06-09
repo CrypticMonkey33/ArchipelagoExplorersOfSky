@@ -856,6 +856,66 @@ class EoSClient(BizHawkClient):
                         item_boxes_collected += [
                             {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}]
                         self.item_box_count = received_index + i
+                        if "Instrument" in item_data.group:
+                            if instruments_amount == self.instruments_collected:
+                                self.instruments_collected += 1
+                                instruments_amount += 1
+
+                                await bizhawk.write(
+                                    ctx.bizhawk_ctx,
+                                    [
+                                        (instruments_offset, int.to_bytes(instruments_amount),
+                                         self.ram_mem_domain)],
+                                )
+                                logger.info(
+                                    "The Instrument count from AP is " + str(self.instruments_collected) +
+                                    "\nAnd the instruments written to the ROM should now be: " + str(
+                                        instruments_amount)
+                                )
+
+                                await asyncio.sleep(0.1)
+                            elif instruments_amount > self.instruments_collected:
+                                # uhhhh I don't know how this could happen? Also what do I do????
+                                old_instruments_ap = self.instruments_collected
+                                old_instruments_rom = instruments_amount
+                                self.instruments_collected = instruments_amount
+                                self.instruments_collected += 1
+                                instruments_amount += 1
+                                await bizhawk.write(
+                                    ctx.bizhawk_ctx,
+                                    [
+                                        (instruments_offset, int.to_bytes(instruments_amount),
+                                         self.ram_mem_domain)],
+                                )
+                                await asyncio.sleep(0.1)
+                                logger.info(
+                                    "Something Weird Happened Please tell Cryptic if you see this " +
+                                    "\nThe Instrument count from AP was " + str(old_instruments_ap) +
+                                    "\nThe Instrument count from AP is " + str(self.instruments_collected) +
+                                    "\nAnd the Instrument written to the ROM was: " + str(
+                                        old_instruments_rom) +
+                                    "\nAnd the Instrument written to the ROM should now be: " + str(
+                                        instruments_amount)
+                                    # "\n And just for Hecka, the bytes written are " + str(int.to_bytes(relic_shards_amount)) +
+                                    # "\n And just for Hecka, doing it the other way would result in " +
+                                    # str(relic_shards_amount.to_bytes())
+                                )
+                            else:
+                                instruments_amount += 1
+                                await bizhawk.write(
+                                    ctx.bizhawk_ctx,
+                                    [
+                                        (instruments_offset, int.to_bytes(instruments_amount),
+                                         self.ram_mem_domain)],
+                                )
+                                await asyncio.sleep(0.1)
+                                logger.info(
+                                    "The Rom decided to be lower than the AP count probably due to save states " +
+                                    "\nThe Instrument count from AP is " + str(self.instruments_collected) +
+                                    "\nAnd the Instruments written to the ROM should now be: " + str(
+                                        instruments_amount)
+                                )
+
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Legendary" in item_data.group:
                     legendaries_recruited += [
@@ -1186,64 +1246,6 @@ class EoSClient(BizHawkClient):
                         performance_progress_bitfield[4] = write_byte
                         write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
                         scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
-                        if instruments_amount == self.instruments_collected:
-                            self.instruments_collected += 1
-                            instruments_amount += 1
-
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (instruments_offset, int.to_bytes(instruments_amount),
-                                     self.ram_mem_domain)],
-                            )
-                            logger.info(
-                                "The Instrument count from AP is " + str(self.instruments_collected) +
-                                "\nAnd the instruments written to the ROM should now be: " + str(
-                                    instruments_amount)
-                            )
-
-                            await asyncio.sleep(0.1)
-                        elif instruments_amount > self.instruments_collected:
-                            # uhhhh I don't know how this could happen? Also what do I do????
-                            old_instruments_ap = self.instruments_collected
-                            old_instruments_rom = instruments_amount
-                            self.instruments_collected = instruments_amount
-                            self.instruments_collected += 1
-                            instruments_amount += 1
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (instruments_offset, int.to_bytes(instruments_amount),
-                                     self.ram_mem_domain)],
-                            )
-                            await asyncio.sleep(0.1)
-                            logger.info(
-                                "Something Weird Happened Please tell Cryptic if you see this " +
-                                "\nThe Instrument count from AP was " + str(old_instruments_ap) +
-                                "\nThe Instrument count from AP is " + str(self.instruments_collected) +
-                                "\nAnd the Instrument written to the ROM was: " + str(
-                                    old_instruments_rom) +
-                                "\nAnd the Instrument written to the ROM should now be: " + str(
-                                    instruments_amount)
-                                #"\n And just for Hecka, the bytes written are " + str(int.to_bytes(relic_shards_amount)) +
-                                #"\n And just for Hecka, doing it the other way would result in " +
-                                #str(relic_shards_amount.to_bytes())
-                            )
-                        else:
-                            instruments_amount += 1
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (instruments_offset, int.to_bytes(instruments_amount),
-                                     self.ram_mem_domain)],
-                            )
-                            await asyncio.sleep(0.1)
-                            logger.info(
-                                "The Rom decided to be lower than the AP count probably due to save states " +
-                                "\nThe Instrument count from AP is " + str(self.instruments_collected) +
-                                "\nAnd the Instruments written to the ROM should now be: " + str(
-                                    instruments_amount)
-                            )
 
                         await bizhawk.write(
                             ctx.bizhawk_ctx,
@@ -1350,63 +1352,6 @@ class EoSClient(BizHawkClient):
                         performance_progress_bitfield[4] = write_byte
                         write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
                         scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
-                        if instruments_amount == self.instruments_collected:
-                            self.instruments_collected += 1
-                            instruments_amount += 1
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (instruments_offset, int.to_bytes(instruments_amount),
-                                     self.ram_mem_domain)],
-                            )
-                            logger.info(
-                                "The Instrument count from AP is " + str(self.instruments_collected) +
-                                "\nAnd the Instruments written to the ROM should now be: " + str(
-                                    instruments_amount)
-                            )
-                            await asyncio.sleep(0.1)
-                        elif instruments_amount > self.instruments_collected:
-                            # uhhhh I don't know how this could happen? Also what do I do????
-                            old_instruments_ap = self.instruments_collected
-                            old_instruments_rom = instruments_amount
-                            self.instruments_collected = instruments_amount
-                            self.instruments_collected += 1
-                            instruments_amount += 1
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (instruments_offset, int.to_bytes(instruments_amount),
-                                     self.ram_mem_domain)],
-                            )
-                            await asyncio.sleep(0.1)
-                            logger.info(
-                                "Something Weird Happened Please tell Cryptic if you see this " +
-                                "\nThe Instrument count from AP was " + str(old_instruments_ap) +
-                                "\nThe Instrument count from AP is " + str(self.instruments_collected) +
-                                "\nAnd the Instrument written to the ROM was: " + str(
-                                    old_instruments_rom) +
-                                "\nAnd the Instrument written to the ROM should now be: " + str(
-                                    instruments_amount)
-                                #"\n And just for Hecka, the bytes written are " + str(
-                                #    int.to_bytes(relic_shards_amount)) +
-                                #"\n And just for Hecka, doing it the other way would result in " +
-                                #str(relic_shards_amount.to_bytes())
-                            )
-                        else:
-                            instruments_amount += 1
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (instruments_offset, int.to_bytes(instruments_amount),
-                                     self.ram_mem_domain)],
-                            )
-                            logger.info(
-                                "The Rom decided to be lower than the AP count probably due to save states " +
-                                "\nThe Instrument count from AP is " + str(self.instruments_collected) +
-                                "\nAnd the Instruments written to the ROM should now be: " + str(
-                                    instruments_amount)
-                            )
-                            await asyncio.sleep(0.1)
 
                         await bizhawk.write(
                             ctx.bizhawk_ctx,
@@ -1420,6 +1365,7 @@ class EoSClient(BizHawkClient):
                             ]
                         )
                         await asyncio.sleep(0.1)
+
                     elif item_data["name"] in item_table_by_groups["Exclusive"]:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
