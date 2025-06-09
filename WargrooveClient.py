@@ -446,6 +446,6 @@ if __name__ == '__main__':
     parser = get_base_parser(description="Wargroove Client, for text interfacing.")
 
     args, rest = parser.parse_known_args()
-    colorama.just_fix_windows_console()
+    colorama.init()
     asyncio.run(main(args))
     colorama.deinit()
