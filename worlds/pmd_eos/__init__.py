@@ -368,6 +368,7 @@ class EOSWorld(World):
             "ExtraInstruments": self.options.total_instruments.value,
             "HeroEvolution": self.options.hero_evolution.value,
             "Deathlink": self.options.deathlink.value,
+            "DeathlinkType": self.options.deathlink_type.value,
             "LegendaryAmount": self.options.legendaries.value,
             "AllowedLegendaries": self.options.allowed_legendaries.value,
             "SkyPeakType": self.options.sky_peak_type.value,
@@ -381,6 +382,11 @@ class EOSWorld(World):
             "DrinkEvents": self.options.drink_events.value,
             "SpindaDrinks": self.options.spinda_drinks.value,
             "ExcludeSpecial": self.options.exclude_special.value,
+            "AllowMissionsEarly": self.options.early_mission_floors.value,
+            "MaxRank": self.options.max_rank.value,
+            "GuestScaling": self.options.guest_scaling.value,
+            "MoveShortcuts": self.options.move_shortcuts.value,
+            "StartInventoryFromPool": self.options.start_inventory_from_pool.value,
         }
 
     def create_items(self) -> None:
