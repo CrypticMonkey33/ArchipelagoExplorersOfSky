@@ -30,7 +30,8 @@ class FragmentShards(NamedRange):
 
 
 class ExtraShards(NamedRange):
-    """ How many total Fragment Shards should be in the game?"""
+    """ How many total Fragment Shards should be in the game?
+    If the extra shards is less than required shards, the total shard amount is equal to the required shard amount"""
     range_start = 0
     range_end = 20
     special_range_names = {
@@ -58,7 +59,9 @@ class RequiredInstruments(NamedRange):
 
 
 class ExtraInstruments(NamedRange):
-    """ How many total Instruments should be in the game?"""
+    """ How many total Instruments should be in the game?
+    If the extra insturments is less than required instuments,
+     the total instrument amount is equal to the required instrument amount"""
     range_start = 0
     range_end = 20
     special_range_names = {
@@ -346,7 +349,7 @@ class AllowTraps(Choice):
     0: No traps allowed
     1: regular traps allowed, nothing too crazy
     2: mean traps allowed (possibility of getting two traps at the same time *unown sentry duty*)
-    1 and 2 are currently the same, not yet implemented mean traps"""
+    MEAN TRAPS NOT CURRENTLY IMPLEMENTED CURRENTLY 1 AND 2 DO THE SAME THING WHICH IS JUST ENABLE TRAPS"""
     display_name = "Allow Traps"
     option_disabled = 0
     option_regular = 1
