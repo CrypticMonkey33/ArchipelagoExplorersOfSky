@@ -32,7 +32,7 @@ description: Default Pokemon Mystery Dungeon Explorers of Sky Template
 
 game: Pokemon Mystery Dungeon Explorers of Sky
 requires:
-  version: 0.5.1 # Version of Archipelago required for this yaml to work as expected.
+  version: 0.6.1 # Version of Archipelago required for this yaml to work as expected.
 
 Pokemon Mystery Dungeon Explorers of Sky:
   # Game Options
@@ -60,12 +60,6 @@ Pokemon Mystery Dungeon Explorers of Sky:
     full: 50
     minimal: 0
 
-  dungeon_rando:
-    # NOT IMPLEMENTED YET
-    # Randomizes the names of the dungeons. IDs and completion requirements stay the same
-    'false': 0
-    'true': 50
-
   goal:
     # Change the desired goal to complete the game
     # Dialga - Get X relic fragment shards to unlock hidden land. Find Temporal Tower location
@@ -73,6 +67,68 @@ Pokemon Mystery Dungeon Explorers of Sky:
     # Darkrai - Beat Dialga (all the same requirements), then get X instruments to unlock Dark Crater
     dialga: 50
     darkrai: 0
+
+  required_fragments:
+    # How many Relic Fragment Shards should be required in the game (Macguffins)
+    #  that you must get to unlock Hidden Land
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 4
+    # Maximum value is 15
+    random: 0
+    random-low: 0
+    random-high: 0
+    easy: 0 # equivalent to 4
+    normal: 50 # equivalent to 6
+    hard: 0 # equivalent to 8
+    extreme: 0 # equivalent to 10
+
+  total_shards:
+    # How many total Fragment Shards should be in the game?
+    # If the total shards is less than required shards, the total shard amount is equal to the required shard amount
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 20
+    random: 0
+    random-low: 0
+    random-high: 0
+    easy: 0 # equivalent to 16
+    normal: 50 # equivalent to 12
+    hard: 0 # equivalent to 8
+    extreme: 0 # equivalent to 0
+
+  req_instruments:
+    # How many Instruments should be required in the game (Macguffins)
+    #  that you must get to unlock Dark Crater if victory condition is Darkrai
+    #  Instruments are not added to the item pool if the goal is Dialga
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 4
+    # Maximum value is 15
+    random: 0
+    random-low: 0
+    random-high: 0
+    easy: 0 # equivalent to 4
+    normal: 50 # equivalent to 6
+    hard: 0 # equivalent to 8
+    extreme: 0 # equivalent to 10
+
+  total_instruments:
+    # How many total Instruments should be in the game?
+    # If the total instruments is less than required instruments,
+    #  the total instrument amount is equal to the required instrument amount
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 20
+    random: 0
+    random-low: 0
+    random-high: 0
+    easy: 0 # equivalent to 16
+    normal: 50 # equivalent to 12
+    hard: 0 # equivalent to 8
+    extreme: 0 # equivalent to 0
 
   recruit:
     # Start with recruitment enabled?
@@ -93,9 +149,11 @@ Pokemon Mystery Dungeon Explorers of Sky:
     'false': 0
     'true': 50
 
-  level_scale:
-    # Allow for dungeons to scale to the highest level of your party members?
-    # This will not scale bosses at the end of dungeons
+  hero_evolution:
+    # Start with Hero/Partner Evolution Enabled?
+    # If false, hero evolution will be an item available in game.
+    # Note: hero evolution does nothing until recruitment
+    # evolution has been unlocked
     'false': 0
     'true': 50
 
@@ -108,38 +166,9 @@ Pokemon Mystery Dungeon Explorers of Sky:
   dojo_dungeons:
     # How many dojo dungeons should be randomized?
     all_open: 0
-    all_random: 50
-    start_with_three: 0
+    all_random: 0
+    start_with_three: 50
     start_with_one: 0
-
-  shard_fragments:
-    # How many Relic Fragment Shards should be in the game (Macguffins)
-    #  that you must get to unlock Hidden Land
-    #
-    # You can define additional values between the minimum and maximum values.
-    # Minimum value is 4
-    # Maximum value is 10
-    random: 0
-    random-low: 0
-    random-high: 0
-    easy: 0 # equivalent to 4
-    normal: 50 # equivalent to 6
-    hard: 0 # equivalent to 8
-    extreme: 0 # equivalent to 10
-
-  extra_shards:
-    # How many extra Fragment Shards should be in the game?
-    #
-    # You can define additional values between the minimum and maximum values.
-    # Minimum value is 0
-    # Maximum value is 10
-    random: 0
-    random-low: 0
-    random-high: 0
-    easy: 0 # equivalent to 6
-    normal: 50 # equivalent to 4
-    hard: 0 # equivalent to 2
-    extreme: 0 # equivalent to 0
 
   early_mission_checks:
     # How many Missions per dungeon pre dialga should be checks?
@@ -147,14 +176,14 @@ Pokemon Mystery Dungeon Explorers of Sky:
     #
     # You can define additional values between the minimum and maximum values.
     # Minimum value is 0
-    # Maximum value is 50
+    # Maximum value is 31
     random: 0
     random-low: 0
     random-high: 0
     off: 0 # equivalent to 0
     some: 50 # equivalent to 4
     lots: 0 # equivalent to 10
-    insanity: 0 # equivalent to 50
+    insanity: 0 # equivalent to 31
 
   late_mission_checks:
     # How many Missions per dungeon post-dialga (including Hidden Land
@@ -162,14 +191,14 @@ Pokemon Mystery Dungeon Explorers of Sky:
     #
     # You can define additional values between the minimum and maximum values.
     # Minimum value is 0
-    # Maximum value is 50
+    # Maximum value is 31
     random: 0
     random-low: 0
     random-high: 0
     off: 0 # equivalent to 0
     some: 50 # equivalent to 4
     lots: 0 # equivalent to 10
-    insanity: 0 # equivalent to 50
+    insanity: 0 # equivalent to 31
 
   early_outlaw_checks:
     # How many outlaws per dungeon pre dialga should be checks?
@@ -177,14 +206,14 @@ Pokemon Mystery Dungeon Explorers of Sky:
     #
     # You can define additional values between the minimum and maximum values.
     # Minimum value is 0
-    # Maximum value is 50
+    # Maximum value is 31
     random: 0
     random-low: 0
     random-high: 0
     off: 0 # equivalent to 0
     some: 50 # equivalent to 2
     lots: 0 # equivalent to 10
-    insanity: 0 # equivalent to 50
+    insanity: 0 # equivalent to 31
 
   late_outlaw_checks:
     # How many Missions per dungeon post-dialga (including Hidden Land
@@ -192,14 +221,14 @@ Pokemon Mystery Dungeon Explorers of Sky:
     #
     # You can define additional values between the minimum and maximum values.
     # Minimum value is 0
-    # Maximum value is 50
+    # Maximum value is 31
     random: 0
     random-low: 0
     random-high: 0
     off: 0 # equivalent to 0
     some: 50 # equivalent to 2
     lots: 0 # equivalent to 10
-    insanity: 0 # equivalent to 50
+    insanity: 0 # equivalent to 31
 
   type_sanity:
     # Allow for your partner to share a type with your main character
@@ -229,7 +258,7 @@ Pokemon Mystery Dungeon Explorers of Sky:
     # You can define additional values between the minimum and maximum values.
     # Minimum value is 0
     # Maximum value is 15
-    1: 50
+    2: 50
     random: 0
     random-low: 0
     random-high: 0
@@ -237,52 +266,30 @@ Pokemon Mystery Dungeon Explorers of Sky:
   xp_scaling:
     # Do you want to scale XP to gain XP faster? What rate? (1x, 2x, 3x, etc.)
     # WARNING: 0x WILL NOT GIVE YOU ANY XP. USE AT YOUR OWN RISK
-    # 
-    # NOT CURRENTLY IMPLEMENTED
     #
     # You can define additional values between the minimum and maximum values.
     # Minimum value is 0
     # Maximum value is 15
-    1: 50
+    2: 50
     random: 0
     random-low: 0
     random-high: 0
 
-  req_instruments:
-    # How many Instruments should be in the game (Macguffins)
-    #  that you must get to unlock Dark Crater if victory condition is Darkrai
-    #  Instruments are not added to the item pool if the goal is Dialga
-    #
-    # You can define additional values between the minimum and maximum values.
-    # Minimum value is 4
-    # Maximum value is 10
-    random: 0
-    random-low: 0
-    random-high: 0
-    easy: 0 # equivalent to 4
-    normal: 50 # equivalent to 6
-    hard: 0 # equivalent to 8
-    extreme: 0 # equivalent to 10
+  level_scale:
+    # Allow for dungeons to scale to the highest level of your party members?
+    # This will not scale bosses at the end of dungeons, also will not scale Outlaws
+    # Adjust enemies levels to match the highest party level so you won't have to grind as much.
+    # Off: Enemy levels are vanilla.
+    # Easy: Enemies will be bumped down to the highest party level if they're above it.
+    # Difficult: Enemies will be bumped either down or up to match the party level regardless of their vanilla level
+    # Regardless of your choice, bosses at the end of dungeons will NOT scale.
+    'off': 0
+    easy: 50
+    difficult: 0
 
-  extra_instruments:
-    # How many extra Instruments should be in the game?
-    #
-    # You can define additional values between the minimum and maximum values.
-    # Minimum value is 0
-    # Maximum value is 10
-    random: 0
-    random-low: 0
-    random-high: 0
-    easy: 0 # equivalent to 6
-    normal: 50 # equivalent to 4
-    hard: 0 # equivalent to 2
-    extreme: 0 # equivalent to 0
-
-  hero_evolution:
-    # Start with Hero/Partner Evolution Enabled?
-    # If false, hero evolution will be an item available in game.
-    # Note: hero evolution does nothing until recruitment
-    # evolution has been unlocked
+  guest_scaling:
+    # Makes the dungeon guests (Bidoof in Cragy Coast, Grovyle in Hidden Land, etc.) scale to your party level
+    #     Does nothing if Level scaling is off
     'false': 0
     'true': 50
 
@@ -312,8 +319,126 @@ Pokemon Mystery Dungeon Explorers of Sky:
     random-high: 0
 
   allowed_legendaries:
-    # Set which Legendaries will be available for the item pool as recruits
+    # Set which Legendaries will be available for the item pool as recruits.
+    # NOTE: legendaries normally found in dungeons are not yet randomized. This only includes legendary recruits at the ends of dungeons
     ['Regirock', 'Regice', 'Registeel', 'Groudon', 'Uxie', 'Mesprit', 'Azelf', 'Dialga', 'Palkia', 'Regigigas', 'Giratina', 'Celebi', 'Articuno', 'Heatran', 'Primal Dialga', 'Mew', 'Phione', 'Cresselia', 'Rayquaza', 'Kyogre', 'Shaymin']
+
+  special_episode_sanity:
+    # Start the game with one of the special episodes and NOT the main game.
+    # Unlock the main game through an item
+    # Overridden by Excluding Special Episodes
+    'false': 50
+    'true': 0
+
+  exclude_special:
+    # No special episode items will be added to the game
+    # Overrides Special Episode Sanity
+    'false': 50
+    'true': 0
+
+  sky_peak_type:
+    # How do you want sky peak to work?
+    # 1: Progressive (unlock dungeons sequentially when you pick up a sky peak item)
+    # 2. All Random (unlock sky peak dungeons completely at random based on which sky peak item you pick up)
+    # 3: All unlocked from one item (there will be one sky peak item that unlocks all sky peak checks)
+    progressive: 50
+    all_random: 0
+    unlock_all: 0
+
+  allow_traps:
+    # Would you like to allow traps in the filler items of the game?
+    # 0: No traps allowed
+    # 1: regular traps allowed, nothing too crazy
+    # 2: mean traps allowed (possibility of getting two traps at the same time *unown sentry duty*)
+    # MEAN TRAPS NOT CURRENTLY IMPLEMENTED CURRENTLY 1 AND 2 DO THE SAME THING WHICH IS JUST ENABLE TRAPS
+    disabled: 50
+    regular: 0
+    mean: 0
+
+  invisible_traps:
+    # Make all traps invisible so when they come in from the client you don't know what happens until you get the trap
+    # activated
+    # NOT YET IMPLEMENTED
+    'false': 50
+    'true': 0
+
+  trap_percent:
+    # What percentage of filler items should be traps? Range from 0 to 100 (affected by allowed traps)
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 100
+    20: 50
+    random: 0
+    random-low: 0
+    random-high: 0
+
+  long_location:
+    # Include Rule dungeons, clearing all dojos, final dojo, ludicolo dance,
+    # and duskull bank checks over 20k in logic
+    'false': 50
+    'true': 0
+
+  cursed_aegis_cave:
+    # Do you want Aegis cave to logically require you to beat a regi you don't have a seal for?
+    'false': 50
+    'true': 0
+
+  early_mission_floors:
+    # Allow missions to start on floor 2 of dungeons instead on (floors/2)
+    'false': 0
+    'true': 50
+
+  move_shortcuts:
+    # Enable the Move Shortcut Menu by holding (default L button)
+    # Disabling this current is not implemented ROMSide
+    'false': 0
+    'true': 50
+
+  spinda_drinks:
+    # How many Spinda Drinks should be checks?
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 20
+    random: 0
+    random-low: 0
+    random-high: 0
+    few: 50 # equivalent to 5
+    some: 0 # equivalent to 10
+    lots: 0 # equivalent to 15
+    all: 0 # equivalent to 20
+
+  drink_events:
+    # How many drink events should be checks?
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 20
+    random: 0
+    random-low: 0
+    random-high: 0
+    few: 50 # equivalent to 5
+    some: 0 # equivalent to 10
+    lots: 0 # equivalent to 15
+    all: 0 # equivalent to 20
+
+  max_rank:
+    # What is the maximum required rank you want to be logically necessary
+    # If your goal is dialga and your max rank is above master rank, your max will be set to master rank
+    disabled: 50
+    bronze: 0
+    silver: 0
+    gold: 0
+    diamond: 0
+    super: 0
+    ultra: 0
+    hyper: 0
+    master: 0
+    master_1star: 0
+    master_2star: 0
+    master_3star: 0
+    guildmaster: 0
 
   # Item & Location Options
   local_items:
@@ -326,6 +451,12 @@ Pokemon Mystery Dungeon Explorers of Sky:
 
   start_inventory:
     # Start with these items.
+    {}
+
+  start_inventory_from_pool:
+    # Start with these items and don't place them in the world.
+    # 
+    # The game decides what the replacement items will be.
     {}
 
   start_hints:
@@ -347,9 +478,3 @@ Pokemon Mystery Dungeon Explorers of Sky:
   item_links:
     # Share part of your item pool with other players.
     []
-
-  start_inventory_from_pool:
-    # Start with these items and don't place them in the world.
-    # 
-    # The game decides what the replacement items will be.
-    {}
