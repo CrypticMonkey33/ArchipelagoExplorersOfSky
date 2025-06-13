@@ -394,7 +394,8 @@ class MoveShortcutMenu(DefaultOnToggle):
 
 
 class MaxRequiredRank(Choice):
-    """What is the maximum required rank you want to be logically necessary"""
+    """What is the maximum required rank you want to be logically necessary
+    If your goal is dialga and your max rank is above master rank, your max will be set to master rank"""
     display_name = "Max Required Rank"
     option_disabled = 0
     option_bronze = 1
