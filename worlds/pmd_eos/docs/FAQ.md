@@ -42,6 +42,7 @@ tracker through Other->Options->Top Screen
 
 There will be an item called Main Game Unlocked that you will get from one of the special episode checks that will unlock the main game.
 
+***
 
 ### How do I unlock Hidden Land and get to Temporal Tower?
 
@@ -49,6 +50,7 @@ In order to access Temporal Tower, you have to have Hidden Land which can be acc
 Relic Fragment Shards. You will also need the item "Temporal Tower." Once you have cleared Hidden Land for the first time, Lapras will 
 take you straight to Temporal Tower if you want.  
 
+---
 
 ### There are some instruments in the game that I don't recognize!
 
@@ -58,6 +60,9 @@ and Glimmer Harp.
 * Glimmer Harp - Increase the chance to recruit mono-type pokemon
 * Stellar Symphony - Increases the chance to recruit dual-type pokemon
 * Null Bagpipes - Decreases the change to spawn pokemon in the dungeon
+
+
+___
 
 ### How do I skip cutscenes?
 
