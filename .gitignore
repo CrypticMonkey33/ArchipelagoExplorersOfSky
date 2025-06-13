@@ -4,11 +4,13 @@
 *_Spoiler.txt
 *.bmbp
 *.apbp
+*.apcivvi
 *.apl2ac
 *.apm3
 *.apmc
 *.apz5
 *.aptloz
+*.aptww
 *.apemerald
 *.pyc
 *.pyd
@@ -200,12 +202,3 @@ minecraft_versions.json
 .LSOverride
 Thumbs.db
 [Dd]esktop.ini
-/worlds/pmd_eos/data/archipelago-base.bsdiff
-/worlds/pmd_eos/data/dungeons.txt
-/worlds/pmd_eos/data/ItemsNew.txt
-/worlds/pmd_eos/data/LocationBackup.txt
-/worlds/pmd_eos/data/LocationsNew.txt
-/worlds/pmd_eos/data/Lookalikes.txt
-/worlds/pmd_eos/data/Moves.txt
-/worlds/pmd_eos/data/Notes.txt
-/worlds/pmd_eos/data/Testers
