@@ -40,7 +40,7 @@ ___
 Yes, two actually! There is a poptracker developed by ScarredSceptile which you can find at 
 [EOS Poptracker](https://github.com/ScarredSceptile/pmd_eos-AP-poptracker/releases/tag/v0.2.0-rc1).  
 There is also an in game tracker that you can find in your menus! You can also set your top screen to always display the 
-tracker through Other->Options->Top Screen
+tracker through Other→Options→Top Screen
 
 ___
 
