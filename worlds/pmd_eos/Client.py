@@ -76,6 +76,7 @@ class EoSClient(BizHawkClient):
 
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
 
+        from CommonClient import logger
         try:
             # Check ROM name/patch version
             rom_name_bytes = await bizhawk.read(ctx.bizhawk_ctx, [(0x3FFA80, 16, self.ram_mem_domain)])
@@ -86,6 +87,12 @@ class EoSClient(BizHawkClient):
             return False
         except bizhawk.RequestFailedError:
             return False  # Should verify on the next pass
+
+        eos_version = "v0.3.0rc13"
+        logger.info(
+            "You are currently playing on the Archipelago Pokemon Mystery Dungeon: Explorer's of Sky version "
+            + eos_version
+        )
 
         ctx.game = self.game
         ctx.items_handling = 0b111
@@ -125,6 +132,7 @@ class EoSClient(BizHawkClient):
                 self.deathlink_message = "Died from unknown causes"
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
+
         from CommonClient import logger
         mission_start_id = 1000
         try:
