@@ -37,7 +37,28 @@ Yes, two actually! There is a poptracker developed by ScarredSceptile which you 
 There is also an in game tracker that you can find in your menus! You can also set your top screen to always display the 
 tracker through Other->Options->Top Screen
 
-  
+
+### How do I unlock the Main Game if I have Special Episode sanity on?
+
+There will be an item called Main Game Unlocked that you will get from one of the special episode checks that will unlock the main game.
+
+
+### How do I unlock Hidden Land and get to Temporal Tower?
+
+In order to access Temporal Tower, you have to have Hidden Land which can be access from Lapras on the beach once you have enough 
+Relic Fragment Shards. You will also need the item "Temporal Tower." Once you have cleared Hidden Land for the first time, Lapras will 
+take you straight to Temporal Tower if you want.  
+
+
+### There are some instruments in the game that I don't recognize!
+
+Yeah! We created some new instruments to create a good count for Macguffins to open Dark Crater in Darkrai Goal. All of them 
+are the same as the other instruments, but for their specific typing. The only exceptions are Null Bagpipes, Stellar Symphony, 
+and Glimmer Harp.  
+* Glimmer Harp - Increase the chance to recruit mono-type pokemon
+* Stellar Symphony - Increases the chance to recruit dual-type pokemon
+* Null Bagpipes - Decreases the change to spawn pokemon in the dungeon
+
 ### How do I skip cutscenes?
 
 You can press Select during a cutscene to skip the cutscene
