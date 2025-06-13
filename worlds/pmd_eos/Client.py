@@ -88,7 +88,7 @@ class EoSClient(BizHawkClient):
         except bizhawk.RequestFailedError:
             return False  # Should verify on the next pass
 
-        eos_version = "v0.3.0rc13"
+        eos_version = "v0.3.0"
         logger.info(
             "You are currently playing on the Archipelago Pokemon Mystery Dungeon: Explorer's of Sky version "
             + eos_version
