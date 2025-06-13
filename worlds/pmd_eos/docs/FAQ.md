@@ -78,7 +78,7 @@ Yes! Go talk to Diglett in the Guild, he will let you generate quests for specif
 ### I lost my save game! How do I make sure this doesn't happen again?
 
 In some versions of Bizhawk, there is an option that tries to save the game, but fails. You can turn this options off by
-going to Config->Customize, switching to the advanced tab and turning off AutoSaveRAM. Another way to ensure that Bizhawk 
+going to Config→Customize, switching to the advanced tab and turning off AutoSaveRAM. Another way to ensure that Bizhawk 
 saves properly is by saving the game like normal (at a bed) and then going to File->Save Ram->Flush Save Ram or pressing 
 Control+S
 
@@ -88,6 +88,19 @@ ___
 
 For any trap that effects your game for a long span of time, it will go away once you rest. Sentry Duty, however, will
  not go away until the guildmaster is satisfied with your progress.
+
+___
+
+### I'm getting a message saying "You feel as if you are being watched by a powerful being." What does that mean?
+
+That message tells you that a legendary is waiting for you to recruit them, but they will only be able to be recruited after Dialga
+ is defeated. Just a little flavor we added in.
+___
+
+### My first quiz question is a bunch of gibberish! Is my game broken??
+
+Nope, we changed the first question to be silly if you know how to decode it! Don't worry about it, just choose whichever 
+option sounds best to you!
 
 ___
 
@@ -115,3 +128,4 @@ ___
 
 Yeah, EOS has poor automatic line-breaking so if your hint is excessively long, it might make the the formatting look a little 
 weird. You should be able to see it just fine in the Archipelago Client and Server though!
+

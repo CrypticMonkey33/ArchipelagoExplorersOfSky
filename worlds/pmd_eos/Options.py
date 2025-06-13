@@ -16,7 +16,7 @@ class Goal(Choice):
 
 
 class FragmentShards(NamedRange):
-    """ How many Relic Fragment Shards should be in the game (Macguffins)
+    """ How many Relic Fragment Shards should be required in the game (Macguffins)
      that you must get to unlock Hidden Land"""
     range_start = 4
     range_end = 15
@@ -31,7 +31,7 @@ class FragmentShards(NamedRange):
 
 class ExtraShards(NamedRange):
     """ How many total Fragment Shards should be in the game?
-    If the extra shards is less than required shards, the total shard amount is equal to the required shard amount"""
+    If the total shards is less than required shards, the total shard amount is equal to the required shard amount"""
     range_start = 0
     range_end = 20
     special_range_names = {
@@ -44,7 +44,7 @@ class ExtraShards(NamedRange):
 
 
 class RequiredInstruments(NamedRange):
-    """ How many Instruments should be in the game (Macguffins)
+    """ How many Instruments should be required in the game (Macguffins)
      that you must get to unlock Dark Crater if victory condition is Darkrai
      Instruments are not added to the item pool if the goal is Dialga"""
     range_start = 4
@@ -60,7 +60,7 @@ class RequiredInstruments(NamedRange):
 
 class ExtraInstruments(NamedRange):
     """ How many total Instruments should be in the game?
-    If the extra insturments is less than required instuments,
+    If the total instruments is less than required instruments,
      the total instrument amount is equal to the required instrument amount"""
     range_start = 0
     range_end = 20
@@ -307,7 +307,8 @@ class LegendariesInPool(Range):
 
 
 class AllowedLegendaries(OptionSet):
-    """ Set which Legendaries will be available for the item pool as recruits
+    """ Set which Legendaries will be available for the item pool as recruits.
+    NOTE: legendaries normally found in dungeons are not yet randomized. This only includes legendary recruits at the ends of dungeons
     """
     display_name = "Allowed Legendary Recruits"
     valid_keys = [
@@ -415,16 +416,17 @@ class MaxRequiredRank(Choice):
 @dataclass
 class EOSOptions(PerGameCommonOptions):
     start_inventory_from_pool: StartInventoryPool
-    sky_peak_type: SkyPeakType
     goal: Goal
+    required_fragments: FragmentShards
+    total_shards: ExtraShards
+    req_instruments: RequiredInstruments
+    total_instruments: ExtraInstruments
     recruit: Recruitment
     recruit_evo: RecruitmentEvolution
     team_form: FullTeamFormationControl
-    level_scale: LevelScaling
+    hero_evolution: HeroEvolution
     bag_on_start: StartWithBag
     dojo_dungeons: DojoDungeons
-    required_fragments: FragmentShards
-    total_shards: ExtraShards
     early_mission_checks: EarlyMissionChecks
     late_mission_checks: LateMissionChecks
     early_outlaw_checks: EarlyOutlawChecks
@@ -433,23 +435,22 @@ class EOSOptions(PerGameCommonOptions):
     starter_option: StarterOption
     iq_scaling: IqScaling
     xp_scaling: XpScaling
-    req_instruments: RequiredInstruments
-    total_instruments: ExtraInstruments
-    hero_evolution: HeroEvolution
+    level_scale: LevelScaling
+    guest_scaling: GuestScaling
     deathlink: DeathLink
     deathlink_type: DeathlinkType
     legendaries: LegendariesInPool
     allowed_legendaries: AllowedLegendaries
     special_episode_sanity: SpecialEpisodeSanity
+    exclude_special: ExcludeSpecialEpisodes
+    sky_peak_type: SkyPeakType
     allow_traps: AllowTraps
     invisible_traps: InvisibleTraps
     trap_percent: TrapPercentage
     long_location: LongLocationsInclusion
     cursed_aegis_cave: CursedAegisCave
-    drink_events: SpindaDrinkEvents
     early_mission_floors: EarlyMissionFloors
     move_shortcuts: MoveShortcutMenu
     spinda_drinks: SpindaBasicDrinks
+    drink_events: SpindaDrinkEvents
     max_rank: MaxRequiredRank
-    exclude_special: ExcludeSpecialEpisodes
-    guest_scaling: GuestScaling

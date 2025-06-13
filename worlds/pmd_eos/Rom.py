@@ -206,7 +206,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
 
     # if world.options.special_episode_sanity.value == 0:
     #    write_byte = write_byte | (0x1 << 16)
-    if starting_se != 0:
+    if world.options.special_episode_sanity.value == 1 and starting_se != 0:
         write_byte = write_byte | (starting_se << 32)
 
 
