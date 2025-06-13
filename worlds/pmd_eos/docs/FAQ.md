@@ -61,7 +61,6 @@ and Glimmer Harp.
 * Stellar Symphony - Increases the chance to recruit dual-type pokemon
 * Null Bagpipes - Decreases the change to spawn pokemon in the dungeon
 
-
 ___
 
 ### How do I skip cutscenes?
