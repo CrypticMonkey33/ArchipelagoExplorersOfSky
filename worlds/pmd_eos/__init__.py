@@ -79,6 +79,11 @@ class EOSWorld(World):
     starting_se: int = 0
     slot_data_ready = threading.Event
 
+    def get_filler_item_name(self) -> str:
+        """Called when the item pool needs to be filled with additional items to match location count."""
+        #logging.warning(f"World {self} is generating a filler item without custom filler pool.")
+        return self.multiworld.random.choice(tuple(filler_item_table.keys()))
+
     def generate_early(self) -> None:
         self.slot_data_ready = threading.Event()
         if self.options.bag_on_start.value:
