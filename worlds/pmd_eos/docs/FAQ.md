@@ -1,7 +1,25 @@
 # Frequently Asked Questions
   ***
 
+### What does randomization do to this game?
 
+The Explorers of Sky Randomizer randomizes all dungeon unlocks and end game goals, as well as quite a bit more. Here's a 
+breakdown of what the checks and locations look like:  
+Checks: Dungeon Completion, Mission/Outlaw completions per dungeon, spinda drinks and drink events, legendary recruits, 
+a few shop items, ranks, and donating to the bank among other smaller things.
+
+
+Items: Dungeon Unlocks, Relic Fragment Shards (Macguffins), Special Episode unlocks, Dojo unlocks, Legendaries added to 
+Chimeco assembly, instruments (macguffins), with the addition of a lot of filler items that can be items normally retrieved
+ from the main game
+
+There are two main goals, either beating Dialga (default) or beating Darkrai. Based on which goal you choose, the checks 
+and item lists are configured down to be manageable.
+
+There is a lot of QoL added to the game configurable in the yaml, such as IQ and XP scaling, level scaling, and starter 
+options 
+
+___
 ### How would I dump this game from my console to play it with AP?
 
 Here are a couple guides you can use to get a legal dump of your EU Pokemon Mystery Dungeon: Explorers of Sky  

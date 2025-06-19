@@ -278,13 +278,13 @@ class EoSClient(BizHawkClient):
                 return
             if (self.player_name + "GenericStorage") in ctx.stored_data:
                 stored = ctx.stored_data[self.player_name + "GenericStorage"]
-                self.goal_complete = stored["goal_complete"]
-                self.bag_given = stored["bag_given"]
+                self.goal_complete = max(stored["goal_complete"], self.goal_complete)
+                self.bag_given = max(stored["bag_given"],self.bag_given)
                 self.macguffins_collected = max(stored["macguffins_collected"], self.macguffins_collected)
-                self.macguffin_unlock_amount = stored["macguffin_unlock_amount"]
-                self.required_instruments = stored["required_instruments"]
+                self.macguffin_unlock_amount = max(stored["macguffin_unlock_amount"],self.macguffin_unlock_amount)
+                self.required_instruments = max(stored["required_instruments"],self.required_instruments)
                 self.instruments_collected = max(stored["instruments_collected"], self.instruments_collected)
-                self.dialga_complete = stored["dialga_complete"]
+                self.dialga_complete = max(stored["dialga_complete"], self.dialga_complete)
                 self.skypeaks_open = max(stored["skypeaks_open"], self.skypeaks_open)
                 self.aegis_seals = max(stored["aegis_seals"], self.aegis_seals)
                 self.spinda_events = max(stored["spinda_events"], self.spinda_events)
@@ -304,7 +304,7 @@ class EoSClient(BizHawkClient):
                 else:
                     return
 
-            if self.required_instruments == 0:
+            if not self.required_instruments or self.required_instruments == 0:
                 self.required_instruments = ctx.slot_data["RequiredInstruments"]
             
 
