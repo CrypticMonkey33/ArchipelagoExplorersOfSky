@@ -19,7 +19,7 @@ from .Rules import set_rules, ready_for_late_game, has_relic_shards
 from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType, Item
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import set_rule, forbid_item
-from .Client import EoSClient
+from .Client import EoSClient, game_version
 from .Rom import EOSProcedurePatch, write_tokens
 
 
@@ -363,6 +363,7 @@ class EOSWorld(World):
 
         return {
             "Goal": self.options.goal.value,
+            "ServerVersion": game_version,
             "BagOnStart": self.options.bag_on_start.value,
             "Recruitment": self.options.recruit.value,
             "TeamFormation": self.options.team_form.value,

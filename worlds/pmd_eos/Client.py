@@ -19,6 +19,9 @@ if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
 
 
+game_version = "v0.3.1 from source"
+
+
 class EoSClient(BizHawkClient):
     game = "Pokemon Mystery Dungeon Explorers of Sky"
     system = "NDS"
@@ -52,6 +55,8 @@ class EoSClient(BizHawkClient):
     item_box_count = 0
     hint_loc = []
     hints_hinted: List[int] = []
+    client_version = game_version
+    hint_issue = False
 
     def __init__(self) -> None:
         super().__init__()
@@ -87,11 +92,21 @@ class EoSClient(BizHawkClient):
             return False
         except bizhawk.RequestFailedError:
             return False  # Should verify on the next pass
+        try:
+            if ctx.slot_data["ServerVersion"] != self.client_version:
+                logger.info(
+                    "The server version is different from the client version. You might still be able to play "
+                    + "but there may be unsolvable issues that come up."
+                )
+            logger.info(
+                "The version the host generated from is Explorers of Sky " + ctx.slot_data["ServerVersion"]
+            )
+        except IndexError:
+            logger.info("You are playing on a server version older than 0.3.1 so a server version cannot be found")
 
-        eos_version = "v0.3.0"
         logger.info(
             "You are currently playing on the Archipelago Pokemon Mystery Dungeon: Explorer's of Sky version "
-            + eos_version
+            + self.client_version
         )
 
         ctx.game = self.game
@@ -249,7 +264,11 @@ class EoSClient(BizHawkClient):
             trans_table.update({0: 32})
 
             if not self.hint_loc:
-                self.hint_loc = ctx.slot_data["HintLocationList"]
+                try:
+                    self.hint_loc = ctx.slot_data["HintLocationList"]
+                    logger.info("hint locations correctly initialized")
+                except IndexError:
+                    logger.info("hint locations not initialized. Please tell Cryptic if you see this")
 
             if (self.player_name + "Dungeon Missions") in ctx.stored_data:
                 dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
@@ -441,7 +460,11 @@ class EoSClient(BizHawkClient):
                 if "SkyPeak" in item_data.group:
                     item_memory_offset = 0
                     if ctx.slot_data["SkyPeakType"] == 1:  # progressive
-                        if sky_peaks_ram == self.skypeaks_open:
+                        if self.skypeaks_open >= 8:
+                            logger.info(
+                                "Max Sky Peaks reached, not sending any more to rom"
+                            )
+                        elif sky_peaks_ram == self.skypeaks_open:
                             self.skypeaks_open += 1
                             sky_peaks_ram += 1
                             logger.info(
@@ -521,6 +544,7 @@ class EoSClient(BizHawkClient):
 
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                     await asyncio.sleep(0.1)
+
                 elif item_data.name == "Main Game Unlock":
                    # if (main_game_unlocked & 1) == 0:
                     #    main_game_unlocked = main_game_unlocked | 0x1
@@ -1139,24 +1163,31 @@ class EoSClient(BizHawkClient):
                 await asyncio.sleep(0.1)
                 
             hints_to_send = []
-            for i in range(10):
-                if hintable_items[i] == 1:
-                    k = i + 310
-                    if k not in self.hints_hinted:
-                        self.hints_hinted.append(k)
-                        hints_to_send += [k]
-            for m in range(20):
-                if hintable_items[m + 10] == 1:
-                    j = self.hint_loc[m]
-                    if j not in self.hints_hinted:
-                        self.hints_hinted.append(j)
-                        hints_to_send += [j]
-            await (ctx.send_msgs(
-                [
-                    {"cmd": "LocationScouts",
-                     "locations": hints_to_send,
-                     "create_as_hint": 2
-                     }]))
+
+            try:
+                for i in range(10):
+                    if hintable_items[i] == 1:
+                        k = i + 310
+                        if k not in self.hints_hinted:
+                            self.hints_hinted.append(k)
+                            hints_to_send += [k]
+                for m in range(20):
+                    if hintable_items[m + 10] == 1:
+                        j = self.hint_loc[m]
+                        if j not in self.hints_hinted:
+                            self.hints_hinted.append(j)
+                            hints_to_send += [j]
+                await (ctx.send_msgs(
+                    [
+                        {"cmd": "LocationScouts",
+                         "locations": hints_to_send,
+                         "create_as_hint": 2
+                         }]))
+                self.hint_issue = False
+            except IndexError:
+                if not self.hint_issue:
+                    logger.info("Cannot send hint, list issue")
+                    self.hint_issue = True
 
             # Send locations if there are any to send.
 
