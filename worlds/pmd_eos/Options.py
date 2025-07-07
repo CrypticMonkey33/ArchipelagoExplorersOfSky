@@ -284,13 +284,17 @@ class SkyPeakType(Choice):
     default = 1
 
 
-class DojoDungeons(Choice):
-    """How many dojo dungeons should be randomized?"""
+class DojoDungeons(NamedRange):
+    """How many dojo dungeons should be accessible at start?"""
     display_name = "Dojo Dungeons Randomized"
-    option_all_open = 10
-    option_all_random = 0
-    option_start_with_three = 3
-    option_start_with_one = 1
+    range_start = 0
+    range_end = 10
+    special_range_names = {
+        "all_open": 10,
+        "all_random": 0,
+        "start_with_three": 3,
+        "start_with_one": 1,
+    }
     default = 3
 
 

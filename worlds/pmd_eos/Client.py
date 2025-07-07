@@ -18,7 +18,6 @@ from worlds._bizhawk.client import BizHawkClient
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
 
-
 game_version = "v0.3.1 from source"
 
 
@@ -209,19 +208,21 @@ class EoSClient(BizHawkClient):
                         {"cmd": "Set",
                          "key": self.player_name + "GenericStorage",
                          "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
-                                     "macguffin_unlock_amount": 0, "instruments_collected": 0, "required_instruments": 0,
+                                     "macguffin_unlock_amount": 0, "instruments_collected": 0,
+                                     "required_instruments": 0,
                                      "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
                                      "spinda_events": 0, "spinda_drinks": 0, "box_number": 0},
                          "want_reply": True,
-                         "operations": [{"operation": "default", "value": {"goal_complete": False, "bag_given": False,
-                              "macguffins_collected": 0, "macguffin_unlock_amount": 0,
-                              "instruments_collected": 0, "required_instruments": 0,
-                              "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
-                              "spinda_events": 0, "spinda_drinks": 0, "box_number": 0}}]
+                         "operations": [{"operation": "default",
+                                         "value": {"goal_complete": False, "bag_given": False,
+                                                   "macguffins_collected": 0, "macguffin_unlock_amount": 0,
+                                                   "instruments_collected": 0, "required_instruments": 0,
+                                                   "dialga_complete": False, "skypeaks_open": 0,
+                                                   "aegis_seals": 0, "spinda_events": 0, "spinda_drinks": 0,
+                                                   "box_number": 0}}]
                          }
                     ]))
                 await asyncio.sleep(0.1)
-
 
             item_boxes_collected: List[Dict] = []
             legendaries_recruited: List[Dict] = []
@@ -298,10 +299,10 @@ class EoSClient(BizHawkClient):
             if (self.player_name + "GenericStorage") in ctx.stored_data:
                 stored = ctx.stored_data[self.player_name + "GenericStorage"]
                 self.goal_complete = max(stored["goal_complete"], self.goal_complete)
-                self.bag_given = max(stored["bag_given"],self.bag_given)
+                self.bag_given = max(stored["bag_given"], self.bag_given)
                 self.macguffins_collected = max(stored["macguffins_collected"], self.macguffins_collected)
-                self.macguffin_unlock_amount = max(stored["macguffin_unlock_amount"],self.macguffin_unlock_amount)
-                self.required_instruments = max(stored["required_instruments"],self.required_instruments)
+                self.macguffin_unlock_amount = max(stored["macguffin_unlock_amount"], self.macguffin_unlock_amount)
+                self.required_instruments = max(stored["required_instruments"], self.required_instruments)
                 self.instruments_collected = max(stored["instruments_collected"], self.instruments_collected)
                 self.dialga_complete = max(stored["dialga_complete"], self.dialga_complete)
                 self.skypeaks_open = max(stored["skypeaks_open"], self.skypeaks_open)
@@ -325,8 +326,6 @@ class EoSClient(BizHawkClient):
 
             if not self.required_instruments or self.required_instruments == 0:
                 self.required_instruments = ctx.slot_data["RequiredInstruments"]
-            
-
 
             #if not ctx.locations_info:
             #    await (ctx.send_msgs(
@@ -335,7 +334,6 @@ class EoSClient(BizHawkClient):
             #             "locations": self.hint_loc,
             #             "create_as_hint": 0
             #             }]))
-                
 
             # read the open and conquest lists with the offsets we found
             read_state = await bizhawk.read(
@@ -371,7 +369,7 @@ class EoSClient(BizHawkClient):
                     (recycle_amount_offset, 4, self.ram_mem_domain),
                     (pelipper_received_counter_offset, 4, self.ram_mem_domain),
                     (dungeon_traps_bitfield_offset, 1, self.ram_mem_domain),
-                    (sky_peaks_offset, 1, self.ram_mem_domain), # Sky Peaks check
+                    (sky_peaks_offset, 1, self.ram_mem_domain),  # Sky Peaks check
                     # (dimensional_scream_info_offset, 0x51, self.ram_mem_domain),
                 ]
             )
@@ -382,7 +380,6 @@ class EoSClient(BizHawkClient):
             if (main_game_unlocked & 1) == 0:
                 for network_item in ctx.items_received:
                     if network_item.item == 700:
-
                         main_game_unlocked = main_game_unlocked | 0x1
                         await bizhawk.write(
                             ctx.bizhawk_ctx,
@@ -460,7 +457,7 @@ class EoSClient(BizHawkClient):
                 if "SkyPeak" in item_data.group:
                     item_memory_offset = 0
                     if ctx.slot_data["SkyPeakType"] == 1:  # progressive
-                        if self.skypeaks_open >= 8:
+                        if self.skypeaks_open >= 11:
                             logger.info(
                                 "Max Sky Peaks reached, not sending any more to rom"
                             )
@@ -520,7 +517,6 @@ class EoSClient(BizHawkClient):
                                          self.ram_mem_domain)
                                     ],
 
-
                                 )
 
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
@@ -546,14 +542,14 @@ class EoSClient(BizHawkClient):
                     await asyncio.sleep(0.1)
 
                 elif item_data.name == "Main Game Unlock":
-                   # if (main_game_unlocked & 1) == 0:
+                    # if (main_game_unlocked & 1) == 0:
                     #    main_game_unlocked = main_game_unlocked | 0x1
-                     #   await bizhawk.write(
-                     #       ctx.bizhawk_ctx,
-                     #       [
-                     #           (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
-                     #            self.ram_mem_domain)],
-                     #   )
+                    #   await bizhawk.write(
+                    #       ctx.bizhawk_ctx,
+                    #       [
+                    #           (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
+                    #            self.ram_mem_domain)],
+                    #   )
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
 
                 elif (("EarlyDungeons" in item_data.group) or ("LateDungeons" in item_data.group)
@@ -802,7 +798,15 @@ class EoSClient(BizHawkClient):
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Macguffin" in item_data.group:
                     if item_data.name == "Relic Fragment Shard":
-                        if relic_shards_amount == self.macguffins_collected:
+                        if self.macguffins_collected >= 20:
+                            logger.info("Max Relic Fragment Shards Reached")
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (relic_shards_offset, int.to_bytes(self.macguffins_collected),
+                                     self.ram_mem_domain)],
+                            )
+                        elif relic_shards_amount == self.macguffins_collected:
                             self.macguffins_collected += 1
                             relic_shards_amount += 1
                             logger.info(
@@ -889,6 +893,14 @@ class EoSClient(BizHawkClient):
                             {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}]
                         self.item_box_count = received_index + i
                         if "Instrument" in item_data.group:
+                            if self.instruments_collected >= 20:
+                                logger.info("Max Instrument count reached")
+                                await bizhawk.write(
+                                    ctx.bizhawk_ctx,
+                                    [
+                                        (instruments_offset, int.to_bytes(self.instruments_collected),
+                                         self.ram_mem_domain)],
+                                )
                             if instruments_amount == self.instruments_collected:
                                 self.instruments_collected += 1
                                 instruments_amount += 1
@@ -958,6 +970,8 @@ class EoSClient(BizHawkClient):
                     if ctx.slot_data["CursedAegisCave"] == 0:
                         self.aegis_seals += 1
                         main_offset_for_seals = 2 + self.aegis_seals
+                        if main_offset_for_seals >= 8:
+                            main_offset_for_seals = 7
                     elif ctx.slot_data["CursedAegisCave"] == 1:
                         main_offset_for_seals = item_data.id - 200
 
@@ -1099,7 +1113,7 @@ class EoSClient(BizHawkClient):
                                     for k in range(current_missions_completed - dungeons_complete):
                                         if dungeons_complete < ctx.slot_data["EarlyMissionsAmount"]:
                                             locs_to_send.add(location_id + mission_start_id + (
-                                                        100 * location_id) + dungeons_complete + k)
+                                                    100 * location_id) + dungeons_complete + k)
                                             dungeon_missions_dict[location_name] += 1
                                             # location.id + mission_start_id + (100 * i) + j`
 
@@ -1107,7 +1121,7 @@ class EoSClient(BizHawkClient):
                                     for k in range(current_missions_completed - dungeons_complete):
                                         if dungeons_complete < ctx.slot_data["LateMissionsAmount"]:
                                             locs_to_send.add(location_id + mission_start_id + (
-                                                        100 * location_id) + dungeons_complete + k)
+                                                    100 * location_id) + dungeons_complete + k)
                                             dungeon_missions_dict[location_name] += 1
                                             # location.id + mission_start_id + (100 * i) + j
 
@@ -1140,7 +1154,7 @@ class EoSClient(BizHawkClient):
                                     for k in range(current_missions_completed - dungeons_complete):
                                         if dungeons_complete < ctx.slot_data["EarlyOutlawsAmount"]:
                                             locs_to_send.add(location_id + mission_start_id + 50 + (
-                                                        100 * location_id) + dungeons_complete + k)
+                                                    100 * location_id) + dungeons_complete + k)
                                             dungeon_outlaws_dict[location_name] += 1
                                             # location.id + mission_start_id + (100 * i) + j`
 
@@ -1148,7 +1162,7 @@ class EoSClient(BizHawkClient):
                                     for k in range(current_missions_completed - dungeons_complete):
                                         if dungeons_complete < ctx.slot_data["LateOutlawsAmount"]:
                                             locs_to_send.add(location_id + mission_start_id + 50 + (
-                                                        100 * location_id) + dungeons_complete + k)
+                                                    100 * location_id) + dungeons_complete + k)
                                             dungeon_outlaws_dict[location_name] += 1
                                             # location.id + mission_start_id + (100 * i) + j
 
@@ -1161,7 +1175,7 @@ class EoSClient(BizHawkClient):
                     ]
                 )
                 await asyncio.sleep(0.1)
-                
+
             hints_to_send = []
 
             try:
@@ -1524,14 +1538,13 @@ class EoSClient(BizHawkClient):
 
             #if (performance_progress_bitfield[4] >> 6) & 1 == 1:
 
-
-                #await ctx.update_data_package()
-                #await (ctx.send_msgs(
-                   # [
-                   #     {"cmd": "LocationScouts",
-                   #      "locations": self.hint_loc,
-                   #      "create_as_hint": 0
-                   #      }]))
+            #await ctx.update_data_package()
+            #await (ctx.send_msgs(
+            # [
+            #     {"cmd": "LocationScouts",
+            #      "locations": self.hint_loc,
+            #      "create_as_hint": 0
+            #      }]))
 
             # Update data storage
             await (ctx.send_msgs(

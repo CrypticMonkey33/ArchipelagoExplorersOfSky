@@ -428,6 +428,18 @@ class EOSWorld(World):
                 required_items.append(self.create_item(item, ItemClassification.progression_skip_balancing))
 
         precollected = [item.name for item in self.multiworld.precollected_items[self.player]]
+
+        precollected_from_pool = []
+        for item, value in self.options.start_inventory_from_pool.value.items():
+            for _ in range(value):
+                precollected_from_pool += [item]
+
+        precollected_added = []
+        for item, value in self.options.start_inventory.value.items():
+            for _ in range(value):
+                precollected_added += [item]
+        # precollected_from_pool = [item for item, value in self.multiworld.start_inventory_from_pool[self.player].value.items()]
+        # precollected_added = [item for item, value in self.multiworld.start_inventory[self.player].value.items()]
         relics_to_add = 0
         if self.options.required_fragments.value > self.options.total_shards.value:
             relics_to_add = self.options.required_fragments.value
@@ -461,7 +473,8 @@ class EOSWorld(World):
 
                 freq = item_frequencies.get(item_name, 1)
 
-                freq = max(freq - precollected.count(item_name), 0)
+                freq = max(freq - precollected.count(item_name)+ precollected_added.count(item_name)
+                           + precollected_from_pool.count(item_name), 0)
                 required_items += [self.create_item(item_name) for _ in range(freq)]
             elif "Special Dungeons" in item_table[item_name].group:
                 if self.options.exclude_special.value:
