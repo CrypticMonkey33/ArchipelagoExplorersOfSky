@@ -280,7 +280,9 @@ class EoSClient(BizHawkClient):
                 try:
                     self.hint_loc = ctx.slot_data["HintLocationList"]
                     logger.info("hint locations correctly initialized")
-                except IndexError or TypeError:
+                except IndexError:
+                    logger.info("hint locations not initialized. Please tell Cryptic if you see this")
+                except TypeError:
                     logger.info("hint locations not initialized. Please tell Cryptic if you see this")
 
             if (self.player_name + "Dungeon Missions") in ctx.stored_data:
@@ -1210,9 +1212,13 @@ class EoSClient(BizHawkClient):
                          "create_as_hint": 2
                          }]))
                 self.hint_issue = False
-            except IndexError or TypeError:
+            except IndexError:
                 if not self.hint_issue:
                     logger.info("Cannot send hint, list issue")
+                    self.hint_issue = True
+            except TypeError:
+                if not self.hint_issue:
+                    logger.info("Cannot send hint, Type Error issue")
                     self.hint_issue = True
 
             # Send locations if there are any to send.
