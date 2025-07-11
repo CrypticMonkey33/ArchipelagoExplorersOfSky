@@ -91,22 +91,7 @@ class EoSClient(BizHawkClient):
             return False
         except bizhawk.RequestFailedError:
             return False  # Should verify on the next pass
-        try:
-            if ctx.slot_data["ServerVersion"] != self.client_version:
-                logger.info(
-                    "The server version is different from the client version. You might still be able to play "
-                    + "but there may be unsolvable issues that come up."
-                )
-            logger.info(
-                "The version the host generated from is Explorers of Sky " + ctx.slot_data["ServerVersion"]
-            )
-        except IndexError:
-            logger.info("You are playing on a server version older than 0.3.1 so a server version cannot be found")
 
-        logger.info(
-            "You are currently playing on the Archipelago Pokemon Mystery Dungeon: Explorer's of Sky version "
-            + self.client_version
-        )
 
         ctx.game = self.game
         ctx.items_handling = 0b111
@@ -152,6 +137,11 @@ class EoSClient(BizHawkClient):
         try:
             if ctx.server_seed_name is None:
                 return
+            if ctx.slot_data is None:
+                # logger.info("slot data not initialized")
+                return
+            # else:
+                # logger.info("slot data initialized correctly")
             if not self.seed_verify:
                 # Need to figure out where we are putting the seed and then update this
                 seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE010, 8, self.ram_mem_domain)])
@@ -164,6 +154,28 @@ class EoSClient(BizHawkClient):
                         "and that you have opened the correct ROM."
                     )
                     raise bizhawk.ConnectorError("Loaded ROM is for Incorrect lobby.")
+                try:
+                    if ctx.slot_data["ServerVersion"] != self.client_version:
+                        logger.info(
+                            "The server version is different from the client version. You might still be able to play "
+                            + "but there may be unsolvable issues that come up."
+                        )
+                    logger.info(
+                        "The version the host generated from is Explorers of Sky " + ctx.slot_data["ServerVersion"]
+                    )
+                except IndexError:
+                    logger.info(
+                        "You are playing on a server version older than 0.3.1 so a server version cannot be found" +
+                        " OR something else went wrong")
+                except TypeError:
+                    logger.info(
+                        "You are playing on a server version older than 0.3.1 so a server version cannot be found" +
+                        " OR something else went wrong")
+
+                logger.info(
+                    "You are currently playing on the Archipelago Pokemon Mystery Dungeon: Explorer's of Sky version "
+                    + self.client_version
+                )
                 self.seed_verify = True
             #if 310 not in ctx.locations_info:
             #    await ctx.send_msgs(
@@ -268,7 +280,7 @@ class EoSClient(BizHawkClient):
                 try:
                     self.hint_loc = ctx.slot_data["HintLocationList"]
                     logger.info("hint locations correctly initialized")
-                except IndexError:
+                except IndexError or TypeError:
                     logger.info("hint locations not initialized. Please tell Cryptic if you see this")
 
             if (self.player_name + "Dungeon Missions") in ctx.stored_data:
@@ -1198,7 +1210,7 @@ class EoSClient(BizHawkClient):
                          "create_as_hint": 2
                          }]))
                 self.hint_issue = False
-            except IndexError:
+            except IndexError or TypeError:
                 if not self.hint_issue:
                     logger.info("Cannot send hint, list issue")
                     self.hint_issue = True
