@@ -18,7 +18,7 @@ from worlds._bizhawk.client import BizHawkClient
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
 
-game_version = "v0.3.1 from source"
+game_version = "v0.3.1"
 
 
 class EoSClient(BizHawkClient):
