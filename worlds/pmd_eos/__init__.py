@@ -473,7 +473,7 @@ class EOSWorld(World):
 
                 freq = item_frequencies.get(item_name, 1)
 
-                freq = max(freq - precollected.count(item_name)+ precollected_added.count(item_name)
+                freq = max(freq - precollected.count(item_name) + precollected_added.count(item_name)
                            + precollected_from_pool.count(item_name), 0)
                 required_items += [self.create_item(item_name) for _ in range(freq)]
             elif "Special Dungeons" in item_table[item_name].group:
