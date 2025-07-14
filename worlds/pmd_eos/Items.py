@@ -102,7 +102,8 @@ EOS_item_table = [
              0x3F),
     ItemData("Spacial Rift", 64, ItemClassification.progression, 64, ["Unique", "LateDungeons", "MissionDungeons"],
              0x40),
-    ItemData("Dark Crater", 67, ItemClassification.progression, 67, ["Unique", "BossDungeons"], 0x43),
+    # Dark Crater auto opens if you get the amount of instruments needed
+    # ItemData("Dark Crater", 67, ItemClassification.progression, 67, ["Unique", "BossDungeons"], 0x43),
     ItemData("Concealed Ruins", 70, ItemClassification.progression, 70, ["Unique", "LateDungeons", "MissionDungeons"],
              0x46),
     ItemData("Marine Resort", 72, ItemClassification.progression, 72, ["Unique", "LateDungeons", "MissionDungeons"],

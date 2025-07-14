@@ -466,8 +466,8 @@ class EOSWorld(World):
                 required_items.append(self.create_item(item, ItemClassification.useful))
 
         for item_name in item_table:
-            if (item_name == "Dark Crater") and (self.options.goal.value == 1):
-                continue
+            #if (item_name == "Dark Crater") and (self.options.goal.value == 1):
+                #continue
             if item_name in item_frequencies:
                 freq = 0
 
