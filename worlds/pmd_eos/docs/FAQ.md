@@ -149,3 +149,8 @@ ___
 Yeah, EOS has poor automatic line-breaking so if your hint is excessively long, it might make the the formatting look a little 
 weird. You should be able to see it just fine in the Archipelago Client and Server though!
 
+___
+
+### I see a dungeon that looks close to the correct dungeon name, but not quite. What is that?
+
+That is one of our traps! There are lookalike dungeons (similar to lookalike items) that are silly gimmick dungeons that don't actually give you anything (and thus are traps)
