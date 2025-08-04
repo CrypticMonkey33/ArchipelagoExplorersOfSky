@@ -208,7 +208,7 @@ EOS_item_table = [
     # ItemData("Spring Cave", 158, ItemClassification.useful, 158, ["Unique", "Special Dungeons"], 0x9E),
 
     # PMD EOS Why do you have three things to open after the SEs >:(
-    ItemData("Star Cave", 174, ItemClassification.progression, 174, ["Unique", "LateDungeons", "MissionDungeons"],
+    ItemData("Star Cave", 174, ItemClassification.progression, 174, ["Unique", "EarlyDungeons", "MissionDungeons"],
              0xAE),
     ItemData("Shaymin Village", 175, ItemClassification.useful, 175, ["Unique", "ExtraDungeons"], 0xAF),
     #ItemData("Luminous Spring", 177, ItemClassification.useful, 177, ["Unique", "ExtraDungeons"], 0xB1),

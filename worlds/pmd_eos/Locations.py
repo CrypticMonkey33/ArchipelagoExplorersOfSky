@@ -232,7 +232,7 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("SpecialDungeonComplete", 2, "SE Middle Spring Cave", 161, 160, ["Special"]),  # 7 subareas
     LocationData("SpecialDungeonComplete", 3, "SE Spring Cave Pit", 164, 162, ["Special"]),  # 7 subareas
 
-    LocationData("LateDungeonComplete", 1, "Star Cave", 174,  174, ["Mission", "Late"]),
+    LocationData("EarlyDungeonComplete", 1, "Star Cave", 174,  174, ["Mission", "Late"]),
     # Dojo Dungeons
     LocationData("DojoDungeonComplete", 1, "Dojo Normal/Fly Maze", 180, 180, ["Dojo"]),  # 7 subareas
     LocationData("DojoDungeonComplete", 1, "Dojo Dark/Fire Maze", 181, 181, ["Dojo"]),  # 7 subareas

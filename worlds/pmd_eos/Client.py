@@ -171,7 +171,10 @@ class EoSClient(BizHawkClient):
                     logger.info(
                         "You are playing on a server version older than 0.3.1 so a server version cannot be found" +
                         " OR something else went wrong")
-
+                except KeyError:
+                    logger.info(
+                        "You are playing on a server version older than 0.3.1 so a server version cannot be found" +
+                        " OR something else went wrong")
                 logger.info(
                     "You are currently playing on the Archipelago Pokemon Mystery Dungeon: Explorer's of Sky version "
                     + self.client_version
