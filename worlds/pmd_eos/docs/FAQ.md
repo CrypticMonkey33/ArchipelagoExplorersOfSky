@@ -79,7 +79,7 @@ are the same as the other instruments, but for their specific typing. The only e
 and Glimmer Harp.  
 * Glimmer Harp - Increase the chance to recruit mono-type pokemon
 * Stellar Symphony - Increases the chance to recruit dual-type pokemon
-* Null Bagpipes - Decreases the change to spawn pokemon in the dungeon
+* Null Bagpipes - Decreases the chance to spawn pokemon in the dungeon
 
 ___
 
