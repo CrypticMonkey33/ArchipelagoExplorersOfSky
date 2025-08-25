@@ -11,7 +11,7 @@ The EoS APWorld is still in development, so expect bugs! If you find a bug that 
   - Version 2.10 is recommended.
   - Detailed installation instructions for BizHawk can be found at the above link.
   - Windows users must run the prerequisite installer first, which can also be found at the above link.
-- The built-in BizHawk client, which can be installed [here](https://github.com/ArchipelagoMW/Archipelago/releases)
+- The built-in BizHawk Client, which can be installed [here](https://github.com/ArchipelagoMW/Archipelago/releases)
 - A .nds file for the EU version of Pokémon Mystery Dungeon: Explorers of Sky
 
 ## Configuring your YAML file
@@ -34,7 +34,7 @@ When you join a multiworld game, you will be asked to provide your YAML file to 
 the host will provide you with either a link to download your data file, or with a zip file containing everyone's data
 files. Your data file should have a `.apeos` extension. 
 
-Double-click on your `.apeos` file to start your client and start the ROM patch process. Once the process is finished, the client and the emulator will be started automatically, if you associated the extension to the client as recommended. If the extension isn't associated', select the BizHawk client or the Archipelago Launcher as the program to open the `.apeos` file with.
+Double-click on your `.apeos` file to start your client and start the ROM patch process. Once the process is finished, the client and the emulator will be started automatically, if you associated the extension to the client as recommended. If the extension isn't associated', select the BizHawk Client or the Archipelago Launcher as the program to open the `.apeos` file with.
 
 ### Connect client to emulator
 
