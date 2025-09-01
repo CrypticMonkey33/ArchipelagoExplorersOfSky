@@ -100,7 +100,9 @@ class EoSClient(BizHawkClient):
         self.rom_slot_name = rom_name
         self.seed_verify = False
         name_bytes = (await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE000, 16, self.ram_mem_domain)]))[0]
-        name = bytes([byte for byte in name_bytes if byte != 0]).decode("UTF-8")
+        name = bytes([byte for byte in name_bytes if byte != 0]).decode("cp1252")
+
+        #NEED TO UPDATE THIS
         self.player_name = name
         #self.macguffin_unlock_amount = ctx.slot_data["ShardFragmentAmount"]
 
@@ -116,6 +118,7 @@ class EoSClient(BizHawkClient):
         ctx.auth = self.player_name
 
     def on_package(self, ctx, cmd, args) -> None:
+        from CommonClient import logger
         if cmd == "RoomInfo":
             ctx.seed_name = args["seed_name"]
         if cmd != "Bounced":
@@ -127,6 +130,8 @@ class EoSClient(BizHawkClient):
             self.deathlink_sender = args["data"]["source"]
             if "cause" in args["data"]:
                 self.deathlink_message = args["data"]["cause"]
+                #self.deathlink_message = "Died from unknown causes"
+                #logger.info(args["data"]["cause"])
             else:
                 self.deathlink_message = "Died from unknown causes"
 
@@ -144,7 +149,7 @@ class EoSClient(BizHawkClient):
                 # logger.info("slot data initialized correctly")
             if not self.seed_verify:
                 # Need to figure out where we are putting the seed and then update this
-                seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE010, 8, self.ram_mem_domain)])
+                seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE020, 8, self.ram_mem_domain)])
                 seed = seed[0].decode("UTF-8")[0:7]
                 seed_name = ctx.server_seed_name[0:7]
                 if seed != seed_name:
@@ -437,8 +442,8 @@ class EoSClient(BizHawkClient):
             deathlink_receiver_bit = int.from_bytes(read_state[13])
             deathlink_sender_bit = int.from_bytes(read_state[14])
             deathlink_message_from_sky = ""
-            #deathlink_ally_death_message = read_state[16].decode("latin1")
-            #deathlink_ally_name = read_state[17].decode("latin1")
+            #deathlink_ally_death_message = read_state[16].decode("cp1252")
+            #deathlink_ally_name = read_state[17].decode("cp1252")
             hintable_items = array.array('i', [item for item in read_state[18]])
             bank_gold_amount = int.from_bytes(read_state[19], "little")
             player_gold_amount = int.from_bytes(read_state[20], "little")
@@ -1228,7 +1233,7 @@ class EoSClient(BizHawkClient):
 
             if "DeathLink" in ctx.tags and ctx.last_death_link + 1 < time.time():
                 if (self.outside_deathlink == 0) and ((deathlink_sender_bit & 1) == 1):
-                    deathlink_message_from_sky = read_state[15].decode("latin1").split(chr(0))[0]
+                    deathlink_message_from_sky = read_state[15].decode("cp1252").split(chr(0))[0]
                     deathlink_message_from_sky = re.sub(r"\[.*?]", "", deathlink_message_from_sky)
                     lappyint = self.random.randint(1, 100)
                     #deathlink_message_from_sky = deathlink_message_from_sky.replace("byan", "by an")
@@ -1246,10 +1251,11 @@ class EoSClient(BizHawkClient):
                 )
                 await asyncio.sleep(0.1)
             if self.outside_deathlink != 0:
-                write_message = self.deathlink_message.translate(trans_table).split(chr(0))[0].encode("latin1")[0:128]
-                write_message2 = f"[CS:N]{self.deathlink_sender.translate(trans_table).split(chr(0))[0][0:18]}[CR]".encode(
-                    "latin1")
-                await bizhawk.write(
+
+                write_message = str(self.deathlink_message).translate(trans_table).split(chr(0))[0].encode("cp1252")[0:128]
+                write_message2 = f"[CS:N]{str(self.deathlink_sender).translate(trans_table).split(chr(0))[0][0:18]}[CR]".encode(
+                    "cp1252")
+                await bizhawk.write(    
                     ctx.bizhawk_ctx,
                     [
                         (death_link_ally_death_message_offset, write_message, self.ram_mem_domain),

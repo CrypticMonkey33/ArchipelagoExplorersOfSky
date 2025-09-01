@@ -165,5 +165,5 @@ subX_table = [
     SubXBitfield(124, 8, 1, 4, "Unused", ["-"], "-"),
     SubXBitfield(125, 8, 1, 5, "Unused", ["-"], "-"),
     SubXBitfield(126, 8, 1, 6, "Unused", ["-"], "-"),
-    SubXBitfield(127, 8, 1, 7, "Team Name Location", [], "Team Name Trap", "Free")
+    SubXBitfield(127, 8, 1, 7, "Team Name Location", ["Main Game"], "Team Name Trap", "Team Name")
 ]

@@ -211,7 +211,7 @@ EOS_item_table = [
     ItemData("Star Cave", 174, ItemClassification.progression, 174, ["Unique", "EarlyDungeons", "MissionDungeons"],
              0xAE),
     ItemData("Shaymin Village", 175, ItemClassification.useful, 175, ["Unique", "ExtraDungeons"], 0xAF),
-    #ItemData("Luminous Spring", 177, ItemClassification.useful, 177, ["Unique", "ExtraDungeons"], 0xB1),
+    ItemData("Luminous Spring", 177, ItemClassification.useful, 177, ["Unique", "ExtraDungeons"], 0xB1),
     ItemData("Hot Spring", 178, ItemClassification.useful, 178, ["Unique", "ExtraDungeons"], 0xB2),
 
     # DOJO DUNGEONS
@@ -543,7 +543,7 @@ trap_items = [
     # Makes the player take a short break
     ItemData("Touch Grass", 404, ItemClassification.trap, 20, ["Trap"], 0x0),
     # Bye Bye inventory cash
-    ItemData("Poke x-1000", 570, ItemClassification.trap, 20, ["Trap", "Money"], 1000),
+    ItemData("Poké x-1000", 570, ItemClassification.trap, 20, ["Trap", "Money"], 1000),
     # lookalike dungeons
     ItemData("Denched Bluff", 2, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x2),
     ItemData("Mt. Brinstar", 5, ItemClassification.trap, 20, ["Trap", "Early", "Unique", "Dungeon"], 0x5),
