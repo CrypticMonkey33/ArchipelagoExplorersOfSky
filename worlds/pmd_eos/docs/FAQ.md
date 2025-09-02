@@ -157,10 +157,16 @@ That is one of our traps! There are lookalike dungeons (similar to lookalike ite
 
 ___
 
+### My partner got removed from the party and I can't add them back!
+
+Talk to your partner in the overworld (press R), and select "Add To Team". This will force them back onto the team!
+
+___
+
 ### How to compile from latest
 
 ### CoT
-Our c-of-time repo is what we use to store all the ROMside custom code. The base patch (archipelago-base.bsdiff) is made here. There are pretty detailed steps on how to set up the CoT repo, so go give the readme a look, and if you run into any issues, feel free to ping me. If you do everything right, you'll get a new archipelago-base.bsdiff. Running make everything+b will also output a number, write this down for later.
+Our c-of-time repo is what we use to store all the ROMside custom code. The base patch (archipelago-base.bsdiff) is made here. There are pretty detailed steps on how to set up the CoT repo, so go give the readme a look, and if you run into any issues, feel free to ping Chesyon. If you do everything right, you'll get a new archipelago-base.bsdiff. Running `make everything+b` will also output a number, write this down for later.
 
 ### APWorld
 Once you have your new bsdiff, you'll want to download the main repo as a zip, and extract it. Make your way to worlds/pmd_eos/data, where you'll replace the archipelago-base.bsdiff file with the one you made in the CoT repo. You'll also want to open Rom.py, and replace the value of ov36_mem_loc (line 45) with the number you got from CoT earlier, making sure to remove the 0x. At this point, you'll want to compress the pmd_eos folder (the folder itself, not just the contents!) into a zip, and then rename the zip to pmd_eos.apworld. And tada! You've compiled the APWorld. 
