@@ -164,11 +164,18 @@ Pokemon Mystery Dungeon Explorers of Sky:
     'true': 50
 
   dojo_dungeons:
-    # How many dojo dungeons should be randomized?
-    all_open: 0
-    all_random: 0
-    start_with_three: 50
-    start_with_one: 0
+    # How many dojo dungeons should be accessible at start?
+    #
+    # You can define additional values between the minimum and maximum values.
+    # Minimum value is 0
+    # Maximum value is 10
+    random: 0
+    random-low: 0
+    random-high: 0
+    all_open: 0 # equivalent to 10
+    all_random: 0 # equivalent to 0
+    start_with_three: 50 # equivalent to 3
+    start_with_one: 0 # equivalent to 1
 
   early_mission_checks:
     # How many Missions per dungeon pre dialga should be checks?
