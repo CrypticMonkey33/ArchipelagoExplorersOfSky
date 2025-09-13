@@ -161,6 +161,9 @@ class EOSWorld(World):
             elif location.classification == "Free":
                 menu_region.locations.append(EOSLocation(self.player, location.name,
                                                          location.id, menu_region))
+            elif location.name == "Team Name Location":
+                menu_region.locations.append(EOSLocation(self.player, location.name,
+                                                         location.id, menu_region))
             elif location.classification == "Rank":
                 rank_toid_dict = {"Bronze Rank": 1, "Silver Rank": 2, "Gold Rank": 3, "Diamond Rank": 4,
                                   "Super Rank": 5,
@@ -322,7 +325,7 @@ class EOSWorld(World):
                     location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
                     rule_dungeons_region.locations.append(location)
 
-            elif location.classification == "OptionalSubX":
+            elif location.classification in "OptionalSubX":
                 if self.options.long_location.value == 0:
                     location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
                     location.progress_type = LocationProgressType.EXCLUDED
