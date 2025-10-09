@@ -126,7 +126,7 @@ ___
 
 ### How do I unlock the Main Game if I have Special Episode sanity on?
 
-There will be an item called Main Game Unlocked that you will get from one of the special episode checks that will unlock the main game.
+There will be an item called Main Game Unlock that you will get from one of the special episode checks that will unlock the main game.
 
   ___
 
