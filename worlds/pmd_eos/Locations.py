@@ -95,7 +95,7 @@ def get_mission_location_table() -> typing.List[LocationData]:
             for j in range(50):
                 location_name = f"{location.name} Outlaw {j + 1}"
                 location_id = location.id + mission_start_id + (100 * location.id) + j + 50
-                new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
+                new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
 
     return new_list
 
