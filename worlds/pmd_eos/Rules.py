@@ -441,15 +441,15 @@ def subx_rules(world, player):
         if item.flag_definition == "Unused" or item.default_item == "ignore":
             continue
         if world.options.goal.value == 0 and item.classification in ["Manaphy", "LateSubX", "Legendary", "Instrument",
-                                                                     "OptionalSubX", "SecretRank"]:
+                                                                      "SecretRank"]:
             continue
         if world.options.goal.value == 0 and item.flag_definition in ["Recycle Shop Dungeon #4",
                                                                       "Recycle Shop Dungeon #5"]:
             continue
         if world.options.goal.value == 0 and item.flag_definition == "Bag Upgrade 5":
             continue
-        if world.options.long_location.value == 0 and item.classification in ["OptionalSubX"]:
-            continue
+        # if world.options.long_location.value == 0 and item.classification in ["OptionalSubX"]:
+        #   continue
         if item.classification == "Rank":
             rank_toid_dict = {"Bronze Rank": 1, "Silver Rank": 2, "Gold Rank": 3, "Diamond Rank": 4, "Super Rank": 5,
                               "Ultra Rank": 6, "Hyper Rank": 7, "Master Rank": 8, "Master ★ Rank": 9,
