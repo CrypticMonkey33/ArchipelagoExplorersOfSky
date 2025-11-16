@@ -418,6 +418,25 @@ def mission_rules(world, player):
                             add_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
                                      lambda state: state.has("Main Game Unlock", player))
 
+                elif location.name == "The Nightmare":
+                    for j in range(world.options.late_mission_checks.value):
+                        set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
+                                 lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world)
+                                                                           and state.can_reach_location("Mt. Bristle", p)
+                                                                           and state.has(ln, p))
+                        if special_episode_sanity_no_exclusion(world, player):
+                            add_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
+                                     lambda state: state.has("Main Game Unlock", player))
+
+                    for j in range(world.options.late_outlaw_checks.value):
+                        set_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
+                                 lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world)
+                                                                           and state.can_reach_location("Mt. Bristle", p)
+                                                                           and state.has(ln, p))
+                        if special_episode_sanity_no_exclusion(world, player):
+                            add_rule(world.multiworld.get_location(f"{location.name} Outlaw {j + 1}", player),
+                                     lambda state: state.has("Main Game Unlock", player))
+
                 else:
                     for j in range(world.options.late_mission_checks.value):
                         set_rule(world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),

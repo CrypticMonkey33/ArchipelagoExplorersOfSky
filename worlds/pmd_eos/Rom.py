@@ -116,11 +116,15 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
 
     # Bake names of previewable items into ROM
     for i in range(len(hint_items)):
+        if hint_items[i].name.__contains__("★"):
+            hint_loc_name1 = hint_items[i].name.replace("★", "*")
+            hint_loc_name = hint_loc_name1.translate(trans_table)
+        else:
+            hint_loc_name = hint_items[i].name.translate(trans_table)
         hint_player = world.multiworld.player_name[hint_items[i].item.player].translate(trans_table)
         patch.write_token(APTokenTypes.WRITE, dimensional_scream_who_offset + 17 * i,
                           hint_player[0:15].encode("cp1252", "xmlcharrefreplace"))
 
-        hint_loc_name = hint_items[i].name.translate(trans_table)
         patch.write_token(APTokenTypes.WRITE, dimensional_scream_where_offset + 33 * i,
                           hint_loc_name[0:31].encode("cp1252", "xmlcharrefreplace"))
 
