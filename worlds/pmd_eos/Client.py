@@ -24,7 +24,7 @@ game_version = "v0.3.2rc1"
 class EoSClient(BizHawkClient):
     game = "Pokemon Mystery Dungeon Explorers of Sky"
     system = "NDS"
-    patch_suffix = ".apeos"  # Might need to change the patch suffix
+    patch_suffix = ".apeos"
     local_checked_locations: Set[int]
     goal_flag: int
     rom_slot_name: Optional[str]
@@ -37,6 +37,7 @@ class EoSClient(BizHawkClient):
     ram_mem_domain = "Main RAM"
     goal_complete = False
     bag_given = False
+    #Macguffins = relic fragment shards
     macguffins_collected = 0
     macguffin_unlock_amount = 0
     instruments_collected = 0
@@ -70,6 +71,7 @@ class EoSClient(BizHawkClient):
 
     async def update_received_items(self, ctx: "BizHawkClientContext", received_items_offset, received_index,
                                     i) -> None:
+        # write the received index to the rom to save where we are at with the queue
         await bizhawk.write(
             ctx.bizhawk_ctx,
             [
@@ -92,7 +94,7 @@ class EoSClient(BizHawkClient):
         except bizhawk.RequestFailedError:
             return False  # Should verify on the next pass
 
-
+        #
         ctx.game = self.game
         ctx.items_handling = 0b111
         ctx.want_slot_data = True
@@ -1166,6 +1168,7 @@ class EoSClient(BizHawkClient):
                     if i not in location_dict_by_start_id:
                         continue
                     else:
+                        # Make sure the dungeon we are checking has missions
                         if "Mission" in location_dict_by_start_id[i].group:
                             location_name = location_dict_by_start_id[i].name
                             location_id = location_dict_by_start_id[i].id
