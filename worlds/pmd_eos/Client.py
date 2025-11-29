@@ -148,7 +148,7 @@ class EoSClient(BizHawkClient):
                 # logger.info("slot data not initialized")
                 return
             # else:
-                # logger.info("slot data initialized correctly")
+            # logger.info("slot data initialized correctly")
             if not self.seed_verify:
                 # Need to figure out where we are putting the seed and then update this
                 seed = await bizhawk.read(ctx.bizhawk_ctx, [(0x3DE020, 8, self.ram_mem_domain)])
@@ -563,6 +563,14 @@ class EoSClient(BizHawkClient):
                             )
 
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
+                    await (ctx.send_msgs(
+                        [
+                            {"cmd": "Set",
+                             "key": self.player_name + "GenericStorage",
+                             "want_reply": True,
+                             "operations": [{"operation": "update", "value": {"skypeaks_open": self.skypeaks_open}}]
+                             }
+                        ]))
                     await asyncio.sleep(0.1)
 
                 elif item_data.name == "Main Game Unlock":
@@ -887,6 +895,16 @@ class EoSClient(BizHawkClient):
                             )
                             await asyncio.sleep(0.1)
 
+                        await (ctx.send_msgs(
+                            [
+                                {"cmd": "Set",
+                                 "key": self.player_name + "GenericStorage",
+                                 "want_reply": True,
+                                 "operations": [{"operation": "update", "value":
+                                     {"macguffins_collected": self.macguffins_collected}}]
+                                 }
+                            ]))
+
                         if self.macguffins_collected >= self.macguffin_unlock_amount:
                             item_memory_offset = 0x26  # the location in memory of Hidden Land
                             sig_digit = item_memory_offset // 8
@@ -983,12 +1001,36 @@ class EoSClient(BizHawkClient):
                                     "\nAnd the Instruments written to the ROM should now be: " + str(
                                         instruments_amount)
                                 )
-
+                    await (ctx.send_msgs(
+                        [
+                            {"cmd": "Set",
+                             "key": self.player_name + "GenericStorage",
+                             "want_reply": True,
+                             "operations": [{"operation": "update", "value":
+                                 {"instruments_collected": self.instruments_collected}}]
+                             },
+                            {"cmd": "Set",
+                             "key": self.player_name + "Item Boxes Collected",
+                             "want_reply": True,
+                             "operations": [{"operation": "replace", "value": {0: item_boxes_collected}}]
+                             },
+                        ]))
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Legendary" in item_data.group:
                     legendaries_recruited += [
                         {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}]
+
+                    await (ctx.send_msgs(
+                        [
+                            {"cmd": "Set",
+                             "key": self.player_name + "Legendaries Recruited",
+                             "want_reply": True,
+                             "operations": [{"operation": "replace", "value": {0: legendaries_recruited}}]
+                             }
+                        ]))
+
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
+
                 elif "Aegis" in item_data.group:
                     main_offset_for_seals = 0
                     if ctx.slot_data["CursedAegisCave"] == 0:
@@ -1009,6 +1051,16 @@ class EoSClient(BizHawkClient):
                                  self.ram_mem_domain),
                             ]
                         )
+
+                    await (ctx.send_msgs(
+                        [
+                            {"cmd": "Set",
+                             "key": self.player_name + "GenericStorage",
+                             "want_reply": True,
+                             "operations": [{"operation": "update", "value":
+                                 {"aegis_seals": self.aegis_seals}}]
+                             }
+                        ]))
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
 
                 elif "Trap" in item_data.group:
@@ -1148,6 +1200,14 @@ class EoSClient(BizHawkClient):
                                                     100 * location_id) + dungeons_complete + k)
                                             dungeon_missions_dict[location_name] += 1
                                             # location.id + mission_start_id + (100 * i) + j
+                await (ctx.send_msgs(
+                    [
+                        {"cmd": "Set",
+                         "key": self.player_name + "Dungeon Missions",
+                         "want_reply": True,
+                         "operations": [{"operation": "update", "value": dungeon_missions_dict}]
+                         }
+                    ]))
 
                 scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xDF
                 await bizhawk.write(
@@ -1164,7 +1224,9 @@ class EoSClient(BizHawkClient):
                     ctx.bizhawk_ctx,
                     [(mission_status_offset, 384, self.ram_mem_domain)])
                 mission_status = array.array('i', [item for item in mission_status_read[0]])
+                # checking every dungeon
                 for i in range(192):
+                    # check to make sure it's the dungeon start not a random place in the dungeon
                     if i not in location_dict_by_start_id:
                         continue
                     else:
@@ -1172,7 +1234,9 @@ class EoSClient(BizHawkClient):
                         if "Mission" in location_dict_by_start_id[i].group:
                             location_name = location_dict_by_start_id[i].name
                             location_id = location_dict_by_start_id[i].id
+                            # grab the current status of the dungeon outlaws
                             dungeons_complete = dungeon_outlaws_dict[location_name]
+                            # grab from rom how many missions are complete for the specified dungeon
                             current_missions_completed = mission_status[2 * i + 1]
                             if current_missions_completed > dungeons_complete:
                                 if "Early" in location_dict_by_start_id[i].group:
@@ -1190,7 +1254,14 @@ class EoSClient(BizHawkClient):
                                                     100 * location_id) + dungeons_complete + k)
                                             dungeon_outlaws_dict[location_name] += 1
                                             # location.id + mission_start_id + (100 * i) + j
-
+                await (ctx.send_msgs(
+                    [
+                        {"cmd": "Set",
+                         "key": self.player_name + "Dungeon Outlaws",
+                         "want_reply": True,
+                         "operations": [{"operation": "update", "value": dungeon_outlaws_dict}]
+                         }
+                    ]))
                 scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xEF
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
@@ -1223,6 +1294,15 @@ class EoSClient(BizHawkClient):
                          "create_as_hint": 2
                          }]))
                 self.hint_issue = False
+                await (ctx.send_msgs(
+                    [
+                        {"cmd": "Set",
+                         "key": self.player_name + "Hinted Hints",
+                         "want_reply": True,
+                         "operations": [{"operation": "update", "value": {0: self.hints_hinted}}]
+                         }
+                    ]))
+
             except IndexError:
                 if not self.hint_issue:
                     logger.info("Cannot send hint, list issue")
@@ -1254,11 +1334,11 @@ class EoSClient(BizHawkClient):
                 )
                 await asyncio.sleep(0.1)
             if self.outside_deathlink != 0:
-
-                write_message = str(self.deathlink_message).translate(trans_table).split(chr(0))[0].encode("cp1252")[0:128]
+                write_message = str(self.deathlink_message).translate(trans_table).split(chr(0))[0].encode("cp1252")[
+                                0:128]
                 write_message2 = f"[CS:N]{str(self.deathlink_sender).translate(trans_table).split(chr(0))[0][0:18]}[CR]".encode(
                     "cp1252")
-                await bizhawk.write(    
+                await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
                         (death_link_ally_death_message_offset, write_message, self.ram_mem_domain),
@@ -1553,6 +1633,17 @@ class EoSClient(BizHawkClient):
                         locs_to_send.add(spinda_drinks_start_id + spindaid)
                     self.spinda_drinks = spinda_drinks_ram[1]
                     scenario_talk_bitfield_240_list = scenario_talk_bitfield_240_list & 0x7F
+
+                await (ctx.send_msgs(
+                    [
+                        {"cmd": "Set",
+                         "key": self.player_name + "GenericStorage",
+                         "want_reply": True,
+                         "operations": [{"operation": "update", "value":
+                             {"spinda_events": self.spinda_events, "spinda_drinks": self.spinda_drinks}}]
+                         }
+                    ]))
+
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
@@ -1579,31 +1670,31 @@ class EoSClient(BizHawkClient):
             # Update data storage
             await (ctx.send_msgs(
                 [
-                    {"cmd": "Set",
-                     "key": self.player_name + "Dungeon Missions",
-                     "want_reply": True,
-                     "operations": [{"operation": "update", "value": dungeon_missions_dict}]
-                     },
-                    {"cmd": "Set",
-                     "key": self.player_name + "Dungeon Outlaws",
-                     "want_reply": True,
-                     "operations": [{"operation": "update", "value": dungeon_outlaws_dict}]
-                     },
-                    {"cmd": "Set",
-                     "key": self.player_name + "Item Boxes Collected",
-                     "want_reply": True,
-                     "operations": [{"operation": "replace", "value": {0: item_boxes_collected}}]
-                     },
-                    {"cmd": "Set",
-                     "key": self.player_name + "Legendaries Recruited",
-                     "want_reply": True,
-                     "operations": [{"operation": "replace", "value": {0: legendaries_recruited}}]
-                     },
-                    {"cmd": "Set",
-                     "key": self.player_name + "Hinted Hints",
-                     "want_reply": True,
-                     "operations": [{"operation": "update", "value": {0: self.hints_hinted}}]
-                     },
+                    #{"cmd": "Set",
+                    # "key": self.player_name + "Dungeon Missions",
+                    # "want_reply": True,
+                    # "operations": [{"operation": "update", "value": dungeon_missions_dict}]
+                    # },
+                    #{"cmd": "Set",
+                    # "key": self.player_name + "Dungeon Outlaws",
+                    # "want_reply": True,
+                    # "operations": [{"operation": "update", "value": dungeon_outlaws_dict}]
+                    # },
+                    #{"cmd": "Set",
+                    # "key": self.player_name + "Item Boxes Collected",
+                    # "want_reply": True,
+                    # "operations": [{"operation": "replace", "value": {0: item_boxes_collected}}]
+                    # },
+                    #{"cmd": "Set",
+                    # "key": self.player_name + "Legendaries Recruited",
+                    # "want_reply": True,
+                    # "operations": [{"operation": "replace", "value": {0: legendaries_recruited}}]
+                    # },
+                    #{"cmd": "Set",
+                    # "key": self.player_name + "Hinted Hints",
+                    # "want_reply": True,
+                    # "operations": [{"operation": "update", "value": {0: self.hints_hinted}}]
+                    # },
                     {"cmd": "Set",
                      "key": self.player_name + "GenericStorage",
                      "want_reply": True,
