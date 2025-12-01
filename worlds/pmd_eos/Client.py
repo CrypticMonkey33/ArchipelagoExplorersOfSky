@@ -41,8 +41,8 @@ class EoSClient(BizHawkClient):
     macguffin_unlock_amount = 0
     instruments_collected = 0
     required_instruments = 0
-    spinda_events = 0
-    spinda_drinks = 0
+    # spinda_events = 0
+    # spinda_drinks = 0
     skypeaks_open = 0
     aegis_seals = 0
     dialga_complete = False
@@ -196,18 +196,18 @@ class EoSClient(BizHawkClient):
             if (self.player_name + "GenericStorage") not in ctx.stored_data:
                 await (ctx.send_msgs(
                     [
-                        {"cmd": "Set",
-                         "key": self.player_name + "Dungeon Missions",
-                         "default": {location: 0 for location in location_table_by_groups["Mission"]},
-                         "want_reply": True,
-                         "operations": [{"operation": "update", "value": {}}]
-                         },
-                        {"cmd": "Set",
-                         "key": self.player_name + "Dungeon Outlaws",
-                         "default": {location: 0 for location in location_table_by_groups["Mission"]},
-                         "want_reply": True,
-                         "operations": [{"operation": "update", "value": {}}]
-                         },
+                        #{"cmd": "Set",
+                        # "key": self.player_name + "Dungeon Missions",
+                        # "default": {location: 0 for location in location_table_by_groups["Mission"]},
+                        # "want_reply": True,
+                        # "operations": [{"operation": "update", "value": {}}]
+                        # },
+                        #{"cmd": "Set",
+                        # "key": self.player_name + "Dungeon Outlaws",
+                        # "default": {location: 0 for location in location_table_by_groups["Mission"]},
+                        # "want_reply": True,
+                        # "operations": [{"operation": "update", "value": {}}]
+                        # },
                         {"cmd": "Set",
                          "key": self.player_name + "Item Boxes Collected",
                          "default": {0: []},
@@ -294,16 +294,16 @@ class EoSClient(BizHawkClient):
                 except TypeError:
                     logger.info("hint locations not initialized. Please tell Cryptic if you see this")
 
-            if (self.player_name + "Dungeon Missions") in ctx.stored_data:
-                dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
-            else:
-                dungeon_missions_dict = {}
-                return
-            if (self.player_name + "Dungeon Outlaws") in ctx.stored_data:
-                dungeon_outlaws_dict = ctx.stored_data[self.player_name + "Dungeon Outlaws"]
-            else:
-                dungeon_outlaws_dict = {}
-                return
+            # if (self.player_name + "Dungeon Missions") in ctx.stored_data:
+                # dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
+            # else:
+            #     dungeon_missions_dict = {}
+            #     return
+            # if (self.player_name + "Dungeon Outlaws") in ctx.stored_data:
+            #     dungeon_outlaws_dict = ctx.stored_data[self.player_name + "Dungeon Outlaws"]
+            # else:
+            #     dungeon_outlaws_dict = {}
+            #     return
             if (self.player_name + "Item Boxes Collected") in ctx.stored_data:
                 item_boxes_collected = ctx.stored_data[self.player_name + "Item Boxes Collected"]["0"]
             else:
@@ -330,8 +330,8 @@ class EoSClient(BizHawkClient):
                 self.dialga_complete = max(stored["dialga_complete"], self.dialga_complete)
                 self.skypeaks_open = max(stored["skypeaks_open"], self.skypeaks_open)
                 self.aegis_seals = max(stored["aegis_seals"], self.aegis_seals)
-                self.spinda_events = max(stored["spinda_events"], self.spinda_events)
-                self.spinda_drinks = max(stored["spinda_drinks"], self.spinda_drinks)
+                # self.spinda_events = max(stored["spinda_events"], self.spinda_events)
+                # self.spinda_drinks = max(stored["spinda_drinks"], self.spinda_drinks)
                 self.item_box_count = max(stored["box_number"], self.item_box_count)
 
             else:
@@ -1234,7 +1234,7 @@ class EoSClient(BizHawkClient):
                             location_name = location_dict_by_start_id[i].name
                             location_id = location_dict_by_start_id[i].id
                             # grab the current status of the dungeon outlaws
-                            dungeons_complete = dungeon_outlaws_dict[location_name]
+                            #dungeons_complete = dungeon_outlaws_dict[location_name]
                             # grab from rom how many missions are complete for the specified dungeon
                             current_missions_completed = mission_status[2 * i + 1]
 
@@ -1243,14 +1243,14 @@ class EoSClient(BizHawkClient):
                                     if k < ctx.slot_data["EarlyOutlawsAmount"]:
                                         locs_to_send.add(location_id + mission_start_id + 50 + (
                                                 100 * location_id) + k)
-                                        dungeon_outlaws_dict[location_name] += 1
+                                        #dungeon_outlaws_dict[location_name] += 1
                                         # location.id + mission_start_id + (100 * i) + j`
                             elif "Late" in location_dict_by_start_id[i].group:
                                 for k in range(current_missions_completed):
                                     if k < ctx.slot_data["LateOutlawsAmount"]:
                                         locs_to_send.add(location_id + mission_start_id + 50 + (
                                                 100 * location_id) + k)
-                                        dungeon_outlaws_dict[location_name] += 1
+                                        #dungeon_outlaws_dict[location_name] += 1
                                         # location.id + mission_start_id + (100 * i) + j
                 #await (ctx.send_msgs(
                 #    [
@@ -1620,27 +1620,27 @@ class EoSClient(BizHawkClient):
             # Check for Spinda flag and release the spinda checks based on the amount in ram
             if ((scenario_talk_bitfield_240_list >> 7) & 1) == 1:
 
-                if spinda_drinks_ram[0] > self.spinda_events:
-                    spinda_events_start_id = 900
-                    for spindaid in range(self.spinda_events, spinda_drinks_ram[0]):
-                        locs_to_send.add(spinda_events_start_id + spindaid)
-                    self.spinda_events = spinda_drinks_ram[0]
-                if spinda_drinks_ram[1] > self.spinda_drinks:
-                    spinda_drinks_start_id = 920
-                    for spindaid in range(self.spinda_events, spinda_drinks_ram[1]):
-                        locs_to_send.add(spinda_drinks_start_id + spindaid)
-                    self.spinda_drinks = spinda_drinks_ram[1]
-                    scenario_talk_bitfield_240_list = scenario_talk_bitfield_240_list & 0x7F
+                #if spinda_drinks_ram[0] > self.spinda_events:
+                spinda_events_start_id = 900
+                for spindaid in range(self.spinda_events, spinda_drinks_ram[0]):
+                    locs_to_send.add(spinda_events_start_id + spindaid)
+                self.spinda_events = spinda_drinks_ram[0]
+                # if spinda_drinks_ram[1] > self.spinda_drinks:
+                spinda_drinks_start_id = 920
+                for spindaid in range(self.spinda_events, spinda_drinks_ram[1]):
+                    locs_to_send.add(spinda_drinks_start_id + spindaid)
+                self.spinda_drinks = spinda_drinks_ram[1]
+                scenario_talk_bitfield_240_list = scenario_talk_bitfield_240_list & 0x7F
 
-                await (ctx.send_msgs(
-                    [
-                        {"cmd": "Set",
-                         "key": self.player_name + "GenericStorage",
-                         "want_reply": True,
-                         "operations": [{"operation": "update", "value":
-                             {"spinda_events": self.spinda_events, "spinda_drinks": self.spinda_drinks}}]
-                         }
-                    ]))
+                #await (ctx.send_msgs(
+                #    [
+                #        {"cmd": "Set",
+                #         "key": self.player_name + "GenericStorage",
+                #         "want_reply": True,
+                #         "operations": [{"operation": "update", "value":
+                #             {"spinda_events": self.spinda_events, "spinda_drinks": self.spinda_drinks}}]
+                #         }
+                #    ]))
 
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
