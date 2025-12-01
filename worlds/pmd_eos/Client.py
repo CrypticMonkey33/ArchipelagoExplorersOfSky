@@ -18,14 +18,13 @@ from worlds._bizhawk.client import BizHawkClient
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
 
-game_version = "v0.3.2rc1"
+game_version = "v0.3.2rc3"
 
 
 class EoSClient(BizHawkClient):
     game = "Pokemon Mystery Dungeon Explorers of Sky"
     system = "NDS"
     patch_suffix = ".apeos"
-    local_checked_locations: Set[int]
     goal_flag: int
     rom_slot_name: Optional[str]
     eUsed: List[int]
@@ -1182,32 +1181,32 @@ class EoSClient(BizHawkClient):
                         if "Mission" in location_dict_by_start_id[i].group:
                             location_name = location_dict_by_start_id[i].name
                             location_id = location_dict_by_start_id[i].id
-                            dungeons_complete = dungeon_missions_dict[location_name]
+                            #dungeons_complete = dungeon_missions_dict[location_name]
                             current_missions_completed = mission_status[2 * i]
-                            if current_missions_completed > dungeons_complete:
-                                if "Early" in location_dict_by_start_id[i].group:
-                                    for k in range(current_missions_completed - dungeons_complete):
-                                        if dungeons_complete < ctx.slot_data["EarlyMissionsAmount"]:
-                                            locs_to_send.add(location_id + mission_start_id + (
-                                                    100 * location_id) + dungeons_complete + k)
-                                            dungeon_missions_dict[location_name] += 1
-                                            # location.id + mission_start_id + (100 * i) + j`
 
-                                elif "Late" in location_dict_by_start_id[i].group:
-                                    for k in range(current_missions_completed - dungeons_complete):
-                                        if dungeons_complete < ctx.slot_data["LateMissionsAmount"]:
-                                            locs_to_send.add(location_id + mission_start_id + (
-                                                    100 * location_id) + dungeons_complete + k)
-                                            dungeon_missions_dict[location_name] += 1
-                                            # location.id + mission_start_id + (100 * i) + j
-                await (ctx.send_msgs(
-                    [
-                        {"cmd": "Set",
-                         "key": self.player_name + "Dungeon Missions",
-                         "want_reply": True,
-                         "operations": [{"operation": "update", "value": dungeon_missions_dict}]
-                         }
-                    ]))
+                            if "Early" in location_dict_by_start_id[i].group:
+                                for k in range(current_missions_completed):
+                                    if k < ctx.slot_data["EarlyMissionsAmount"]:
+                                        locs_to_send.add(location_id + mission_start_id + (
+                                                100 * location_id) + k)
+                                        #dungeon_missions_dict[location_name] += 1
+                                        # location.id + mission_start_id + (100 * i) + j`
+
+                            elif "Late" in location_dict_by_start_id[i].group:
+                                for k in range(current_missions_completed):
+                                    if k < ctx.slot_data["LateMissionsAmount"]:
+                                        locs_to_send.add(location_id + mission_start_id + (
+                                                100 * location_id) + k)
+                                        #dungeon_missions_dict[location_name] += 1
+                                        # location.id + mission_start_id + (100 * i) + j
+                #await (ctx.send_msgs(
+                #    [
+                #        {"cmd": "Set",
+                #         "key": self.player_name + "Dungeon Missions",
+                #         "want_reply": True,
+                #         "operations": [{"operation": "update", "value": dungeon_missions_dict}]
+                #         }
+                #    ]))
 
                 scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xDF
                 await bizhawk.write(
@@ -1238,30 +1237,29 @@ class EoSClient(BizHawkClient):
                             dungeons_complete = dungeon_outlaws_dict[location_name]
                             # grab from rom how many missions are complete for the specified dungeon
                             current_missions_completed = mission_status[2 * i + 1]
-                            if current_missions_completed > dungeons_complete:
-                                if "Early" in location_dict_by_start_id[i].group:
-                                    for k in range(current_missions_completed - dungeons_complete):
-                                        if dungeons_complete < ctx.slot_data["EarlyOutlawsAmount"]:
-                                            locs_to_send.add(location_id + mission_start_id + 50 + (
-                                                    100 * location_id) + dungeons_complete + k)
-                                            dungeon_outlaws_dict[location_name] += 1
-                                            # location.id + mission_start_id + (100 * i) + j`
 
-                                elif "Late" in location_dict_by_start_id[i].group:
-                                    for k in range(current_missions_completed - dungeons_complete):
-                                        if dungeons_complete < ctx.slot_data["LateOutlawsAmount"]:
-                                            locs_to_send.add(location_id + mission_start_id + 50 + (
-                                                    100 * location_id) + dungeons_complete + k)
-                                            dungeon_outlaws_dict[location_name] += 1
-                                            # location.id + mission_start_id + (100 * i) + j
-                await (ctx.send_msgs(
-                    [
-                        {"cmd": "Set",
-                         "key": self.player_name + "Dungeon Outlaws",
-                         "want_reply": True,
-                         "operations": [{"operation": "update", "value": dungeon_outlaws_dict}]
-                         }
-                    ]))
+                            if "Early" in location_dict_by_start_id[i].group:
+                                for k in range(current_missions_completed):
+                                    if k < ctx.slot_data["EarlyOutlawsAmount"]:
+                                        locs_to_send.add(location_id + mission_start_id + 50 + (
+                                                100 * location_id) + k)
+                                        dungeon_outlaws_dict[location_name] += 1
+                                        # location.id + mission_start_id + (100 * i) + j`
+                            elif "Late" in location_dict_by_start_id[i].group:
+                                for k in range(current_missions_completed):
+                                    if k < ctx.slot_data["LateOutlawsAmount"]:
+                                        locs_to_send.add(location_id + mission_start_id + 50 + (
+                                                100 * location_id) + k)
+                                        dungeon_outlaws_dict[location_name] += 1
+                                        # location.id + mission_start_id + (100 * i) + j
+                #await (ctx.send_msgs(
+                #    [
+                #        {"cmd": "Set",
+                #         "key": self.player_name + "Dungeon Outlaws",
+                #         "want_reply": True,
+                #         "operations": [{"operation": "update", "value": dungeon_outlaws_dict}]
+                #         }
+                #    ]))
                 scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xEF
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
@@ -1651,11 +1649,8 @@ class EoSClient(BizHawkClient):
                          self.ram_mem_domain),
                     ]
                 )
-            if locs_to_send != self.local_checked_locations:
-                self.local_checked_locations = locs_to_send
 
-                if locs_to_send is not None:
-                    await ctx.send_msgs([{"cmd": "LocationChecks", "locations": list(locs_to_send)}])
+            await ctx.check_locations(locs_to_send)
 
             #if (performance_progress_bitfield[4] >> 6) & 1 == 1:
 
