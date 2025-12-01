@@ -1650,6 +1650,7 @@ class EoSClient(BizHawkClient):
                     ]
                 )
 
+            # send the locations checked to the server
             await ctx.check_locations(locs_to_send)
 
             #if (performance_progress_bitfield[4] >> 6) & 1 == 1:
