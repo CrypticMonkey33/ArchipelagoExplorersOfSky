@@ -829,82 +829,90 @@ class EoSClient(BizHawkClient):
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Macguffin" in item_data.group:
                     if item_data.name == "Relic Fragment Shard":
-                        if self.macguffins_collected >= 20:
+                        items_received = ctx.items_received
+                        rfs_count = 0
+                        for item in items_received:
+                            if item.item == 200:
+                                rfs_count += 1
+
+                        if rfs_count >= 20:
                             logger.info("Max Relic Fragment Shards Reached")
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (relic_shards_offset, int.to_bytes(self.macguffins_collected),
-                                     self.ram_mem_domain)],
-                            )
-                        elif relic_shards_amount == self.macguffins_collected:
-                            self.macguffins_collected += 1
-                            relic_shards_amount += 1
-                            logger.info(
-                                "The Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
-                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(
-                                    relic_shards_amount)
-                            )
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (relic_shards_offset, int.to_bytes(relic_shards_amount),
-                                     self.ram_mem_domain)],
-                            )
-                            await asyncio.sleep(0.1)
-                        elif relic_shards_amount > self.macguffins_collected:
-                            # uhhhh I don't know how this could happen? Also what do I do????
-                            old_macguffins = self.macguffins_collected
-                            self.macguffins_collected = relic_shards_amount
-                            self.macguffins_collected += 1
-                            old_relic_shards_amount = relic_shards_amount
-                            relic_shards_amount += 1
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    #relic_shards_amount.to_bytes(),
-                                    (relic_shards_offset, int.to_bytes(relic_shards_amount),
-                                     self.ram_mem_domain)],
-                            )
-                            await asyncio.sleep(0.1)
-                            logger.info(
-                                "Something Weird Happened Please tell Cryptic if you see this " +
-                                "\nThe Relic Fragment Shard count from AP was " + str(old_macguffins) +
-                                "\nThe Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
-                                "\nThe Relic Fragment Shard count from ROM was" + str(old_relic_shards_amount) +
-                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(
-                                    relic_shards_amount)
-                                #"\n And just for Hecka, the bytes written are " + str(int.to_bytes(relic_shards_amount)) +
-                                #"\n And just for Hecka, doing it the other way would result in " +
-                                #str(relic_shards_amount.to_bytes())
-                            )
-                        else:
-                            relic_shards_amount += 1
-                            logger.info(
-                                "The Rom decided to be lower than the AP count probably due to save states " +
-                                "\nThe Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
-                                "\nAnd the Relic Fragments written to the ROM should now be: " + str(
-                                    relic_shards_amount)
-                            )
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (relic_shards_offset, int.to_bytes(relic_shards_amount),
-                                     self.ram_mem_domain)],
-                            )
-                            await asyncio.sleep(0.1)
-
-                        await (ctx.send_msgs(
+                            rfs_count = 20
+                        logger.info(
+                            "The Relic Fragment Shard count from AP is " + str(rfs_count)
+                        )
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
                             [
-                                {"cmd": "Set",
-                                 "key": self.player_name + "GenericStorage",
-                                 "want_reply": True,
-                                 "operations": [{"operation": "update", "value":
-                                     {"macguffins_collected": self.macguffins_collected}}]
-                                 }
-                            ]))
+                                (relic_shards_offset, int.to_bytes(rfs_count),
+                                 self.ram_mem_domain)],
+                        )
+                        await asyncio.sleep(0.1)
+                        # elif relic_shards_amount == self.macguffins_collected:
+                        #    self.macguffins_collected += 1
+                        #    relic_shards_amount += 1
+                        #    logger.info(
+                        #        "The Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
+                        #        "\nAnd the Relic Fragments written to the ROM should now be: " + str(
+                        #            relic_shards_amount)
+                        #    )
+                        #    await bizhawk.write(
+                        #        ctx.bizhawk_ctx,
+                        #        [
+                        #            (relic_shards_offset, int.to_bytes(relic_shards_amount),
+                        #             self.ram_mem_domain)],
+                        #    )
+                        #    await asyncio.sleep(0.1)
+                        #elif relic_shards_amount > self.macguffins_collected:
+                        #    # uhhhh I don't know how this could happen? Also what do I do????
+                        #    old_macguffins = self.macguffins_collected
+                        #    self.macguffins_collected = relic_shards_amount
+                        #    self.macguffins_collected += 1
+                        #    old_relic_shards_amount = relic_shards_amount
+                        #    relic_shards_amount += 1
+                        #    await bizhawk.write(
+                        #        ctx.bizhawk_ctx,
+                        #        [
+                        #            #relic_shards_amount.to_bytes(),
+                        #            (relic_shards_offset, int.to_bytes(relic_shards_amount),
+                        #             self.ram_mem_domain)],
+                        #    )
+                        #    await asyncio.sleep(0.1)
+                        #    logger.info(
+                        #        "Something Weird Happened Please tell Cryptic if you see this " +
+                        #        "\nThe Relic Fragment Shard count from AP was " + str(old_macguffins) +
+                        #        "\nThe Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
+                        #        "\nThe Relic Fragment Shard count from ROM was" + str(old_relic_shards_amount) +
+                        #        "\nAnd the Relic Fragments written to the ROM should now be: " + str(
+                        #            relic_shards_amount)
+                        #    )
+                        #else:
+                        #    relic_shards_amount += 1
+                        #    logger.info(
+                        #        "The Rom decided to be lower than the AP count probably due to save states " +
+                        #        "\nThe Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
+                        #        "\nAnd the Relic Fragments written to the ROM should now be: " + str(
+                        #            relic_shards_amount)
+                        #    )
+                        #    await bizhawk.write(
+                        #        ctx.bizhawk_ctx,
+                        #        [
+                        #            (relic_shards_offset, int.to_bytes(relic_shards_amount),
+                        #             self.ram_mem_domain)],
+                        #    )
+                        #    await asyncio.sleep(0.1)
 
-                        if self.macguffins_collected >= self.macguffin_unlock_amount:
+                        #await (ctx.send_msgs(
+                        #    [
+                        #        {"cmd": "Set",
+                        #         "key": self.player_name + "GenericStorage",
+                        #         "want_reply": True,
+                        #         "operations": [{"operation": "update", "value":
+                        #             {"macguffins_collected": self.macguffins_collected}}]
+                        #         }
+                        #    ]))
+
+                        if rfs_count >= self.macguffin_unlock_amount:
                             item_memory_offset = 0x26  # the location in memory of Hidden Land
                             sig_digit = item_memory_offset // 8
                             non_sig_digit = item_memory_offset % 8
@@ -921,9 +929,6 @@ class EoSClient(BizHawkClient):
 
                             await asyncio.sleep(0.1)
 
-                    #elif item_data.name == "Cresselia Feather":
-                    #    self.cresselia_feather_acquired = True
-
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Item" in item_data.group:
                     if received_index + i <= self.item_box_count:
@@ -934,80 +939,91 @@ class EoSClient(BizHawkClient):
                             {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}]
                         self.item_box_count = received_index + i
                         if "Instrument" in item_data.group:
-                            if self.instruments_collected >= 20:
+                            # JUST RECOUNT THE INSTRUMENTS GOSH DARN IT
+
+                            items_received = ctx.items_received
+                            instrument_count = 0
+                            for item in items_received:
+                                if 526 <= item.item <= 545:
+                                    instrument_count += 1
+
+                            if instrument_count >= 20:
                                 logger.info("Max Instrument count reached")
-                                await bizhawk.write(
-                                    ctx.bizhawk_ctx,
-                                    [
-                                        (instruments_offset, int.to_bytes(self.instruments_collected),
-                                         self.ram_mem_domain)],
-                                )
-                            if instruments_amount == self.instruments_collected:
-                                self.instruments_collected += 1
-                                instruments_amount += 1
+                                instrument_count = 20
 
-                                await bizhawk.write(
-                                    ctx.bizhawk_ctx,
-                                    [
-                                        (instruments_offset, int.to_bytes(instruments_amount),
-                                         self.ram_mem_domain)],
-                                )
-                                logger.info(
-                                    "The Instrument count from AP is " + str(self.instruments_collected) +
-                                    "\nAnd the instruments written to the ROM should now be: " + str(
-                                        instruments_amount)
-                                )
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (instruments_offset, int.to_bytes(instrument_count),
+                                     self.ram_mem_domain)],
+                            )
+                            logger.info(
+                                        "The Instrument count from AP is " + str(instrument_count)
+                                    )
 
-                                await asyncio.sleep(0.1)
-                            elif instruments_amount > self.instruments_collected:
+                            #if instruments_amount == self.instruments_collected:
+                            #    self.instruments_collected += 1
+                            #    instruments_amount += 1
+
+                            #    await bizhawk.write(
+                            #        ctx.bizhawk_ctx,
+                            #        [
+                            #            (instruments_offset, int.to_bytes(instruments_amount),
+                            #             self.ram_mem_domain)],
+                            #    )
+                            #    logger.info(
+                            #        "The Instrument count from AP is " + str(self.instruments_collected) +
+                            #        "\nAnd the instruments written to the ROM should now be: " + str(
+                            #            instruments_amount)
+                            #    )
+
+                            #    await asyncio.sleep(0.1)
+                            #elif instruments_amount > self.instruments_collected:
                                 # uhhhh I don't know how this could happen? Also what do I do????
-                                old_instruments_ap = self.instruments_collected
-                                old_instruments_rom = instruments_amount
-                                self.instruments_collected = instruments_amount
-                                self.instruments_collected += 1
-                                instruments_amount += 1
-                                await bizhawk.write(
-                                    ctx.bizhawk_ctx,
-                                    [
-                                        (instruments_offset, int.to_bytes(instruments_amount),
-                                         self.ram_mem_domain)],
-                                )
-                                await asyncio.sleep(0.1)
-                                logger.info(
-                                    "Something Weird Happened Please tell Cryptic if you see this " +
-                                    "\nThe Instrument count from AP was " + str(old_instruments_ap) +
-                                    "\nThe Instrument count from AP is " + str(self.instruments_collected) +
-                                    "\nAnd the Instrument written to the ROM was: " + str(
-                                        old_instruments_rom) +
-                                    "\nAnd the Instrument written to the ROM should now be: " + str(
-                                        instruments_amount)
-                                    # "\n And just for Hecka, the bytes written are " + str(int.to_bytes(relic_shards_amount)) +
-                                    # "\n And just for Hecka, doing it the other way would result in " +
-                                    # str(relic_shards_amount.to_bytes())
-                                )
-                            else:
-                                instruments_amount += 1
-                                await bizhawk.write(
-                                    ctx.bizhawk_ctx,
-                                    [
-                                        (instruments_offset, int.to_bytes(instruments_amount),
-                                         self.ram_mem_domain)],
-                                )
-                                await asyncio.sleep(0.1)
-                                logger.info(
-                                    "The Rom decided to be lower than the AP count probably due to save states " +
-                                    "\nThe Instrument count from AP is " + str(self.instruments_collected) +
-                                    "\nAnd the Instruments written to the ROM should now be: " + str(
-                                        instruments_amount)
-                                )
+                            #    old_instruments_ap = self.instruments_collected
+                            #    old_instruments_rom = instruments_amount
+                            #    self.instruments_collected = instruments_amount
+                            #    self.instruments_collected += 1
+                            #    instruments_amount += 1
+                            #    await bizhawk.write(
+                            #        ctx.bizhawk_ctx,
+                            #        [
+                            #            (instruments_offset, int.to_bytes(instruments_amount),
+                            #             self.ram_mem_domain)],
+                            #    )
+                            #    await asyncio.sleep(0.1)
+                            #    logger.info(
+                            #        "Something Weird Happened Please tell Cryptic if you see this " +
+                            #        "\nThe Instrument count from AP was " + str(old_instruments_ap) +
+                            #        "\nThe Instrument count from AP is " + str(self.instruments_collected) +
+                            #        "\nAnd the Instrument written to the ROM was: " + str(
+                            #            old_instruments_rom) +
+                            #        "\nAnd the Instrument written to the ROM should now be: " + str(
+                            #            instruments_amount)
+                            #    )
+                            # else:
+                            #    instruments_amount += 1
+                            #    await bizhawk.write(
+                            #        ctx.bizhawk_ctx,
+                            #        [
+                            #            (instruments_offset, int.to_bytes(instruments_amount),
+                            #             self.ram_mem_domain)],
+                            #    )
+                            #    await asyncio.sleep(0.1)
+                            #    logger.info(
+                            #        "The Rom decided to be lower than the AP count probably due to save states " +
+                            #        "\nThe Instrument count from AP is " + str(self.instruments_collected) +
+                            #        "\nAnd the Instruments written to the ROM should now be: " + str(
+                            #            instruments_amount)
+                            #    )
                     await (ctx.send_msgs(
                         [
-                            {"cmd": "Set",
-                             "key": self.player_name + "GenericStorage",
-                             "want_reply": True,
-                             "operations": [{"operation": "update", "value":
-                                 {"instruments_collected": self.instruments_collected}}]
-                             },
+                            #{"cmd": "Set",
+                            # "key": self.player_name + "GenericStorage",
+                            # "want_reply": True,
+                            # "operations": [{"operation": "update", "value":
+                            #     {"instruments_collected": self.instruments_collected}}]
+                            # },
                             {"cmd": "Set",
                              "key": self.player_name + "Item Boxes Collected",
                              "want_reply": True,
@@ -1403,6 +1419,15 @@ class EoSClient(BizHawkClient):
                         )
                         await asyncio.sleep(0.1)
                     elif item_data["name"] in item_table_by_groups["Instrument"]:
+                        items_received = ctx.items_received
+                        instrument_count = 0
+                        for item in items_received:
+                            if 526 <= item.item <= 545:
+                                instrument_count += 1
+                        # Make sure we don't overflow
+                        if instrument_count >= 20:
+                            instrument_count = 20
+
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
                         write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
@@ -1416,6 +1441,8 @@ class EoSClient(BizHawkClient):
                                  self.ram_mem_domain),
                                 (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                 (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
+                                 self.ram_mem_domain),
+                                (instruments_offset, int.to_bytes(instrument_count),
                                  self.ram_mem_domain)
 
                             ]
@@ -1509,6 +1536,15 @@ class EoSClient(BizHawkClient):
                         )
                         await asyncio.sleep(0.1)
                     elif item_data["name"] in item_table_by_groups["Instrument"]:
+                        items_received = ctx.items_received
+                        instrument_count = 0
+                        for item in items_received:
+                            if 526 <= item.item <= 545:
+                                instrument_count += 1
+                        # Make sure we don't overflow
+                        if instrument_count >= 20:
+                            instrument_count = 20
+
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
                         write_byte2 = [item_data["memory_offset"] % 256, item_data["memory_offset"] // 256]
@@ -1522,6 +1558,8 @@ class EoSClient(BizHawkClient):
                                  self.ram_mem_domain),
                                 (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                                 (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
+                                 self.ram_mem_domain),
+                                (instruments_offset, int.to_bytes(instrument_count),
                                  self.ram_mem_domain)
                             ]
                         )
@@ -1622,12 +1660,12 @@ class EoSClient(BizHawkClient):
 
                 #if spinda_drinks_ram[0] > self.spinda_events:
                 spinda_events_start_id = 900
-                for spindaid in range(self.spinda_events, spinda_drinks_ram[0]):
+                for spindaid in range(spinda_drinks_ram[0]):
                     locs_to_send.add(spinda_events_start_id + spindaid)
                 self.spinda_events = spinda_drinks_ram[0]
                 # if spinda_drinks_ram[1] > self.spinda_drinks:
                 spinda_drinks_start_id = 920
-                for spindaid in range(self.spinda_events, spinda_drinks_ram[1]):
+                for spindaid in range(spinda_drinks_ram[1]):
                     locs_to_send.add(spinda_drinks_start_id + spindaid)
                 self.spinda_drinks = spinda_drinks_ram[1]
                 scenario_talk_bitfield_240_list = scenario_talk_bitfield_240_list & 0x7F
@@ -1701,8 +1739,8 @@ class EoSClient(BizHawkClient):
                           "required_instruments": self.required_instruments,
                           "instruments_collected": self.instruments_collected,
                           "dialga_complete": self.dialga_complete, "skypeaks_open": self.skypeaks_open,
-                          "aegis_seals": self.aegis_seals, "spinda_events": self.spinda_events,
-                          "spinda_drinks": self.spinda_drinks, "box_number": self.item_box_count}}]
+                          "aegis_seals": self.aegis_seals,
+                          "box_number": self.item_box_count}}]
                      }
                 ]))
             await asyncio.sleep(0.1)
