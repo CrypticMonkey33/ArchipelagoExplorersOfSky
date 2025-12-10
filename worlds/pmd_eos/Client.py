@@ -848,69 +848,6 @@ class EoSClient(BizHawkClient):
                                  self.ram_mem_domain)],
                         )
                         await asyncio.sleep(0.1)
-                        # elif relic_shards_amount == self.macguffins_collected:
-                        #    self.macguffins_collected += 1
-                        #    relic_shards_amount += 1
-                        #    logger.info(
-                        #        "The Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
-                        #        "\nAnd the Relic Fragments written to the ROM should now be: " + str(
-                        #            relic_shards_amount)
-                        #    )
-                        #    await bizhawk.write(
-                        #        ctx.bizhawk_ctx,
-                        #        [
-                        #            (relic_shards_offset, int.to_bytes(relic_shards_amount),
-                        #             self.ram_mem_domain)],
-                        #    )
-                        #    await asyncio.sleep(0.1)
-                        #elif relic_shards_amount > self.macguffins_collected:
-                        #    # uhhhh I don't know how this could happen? Also what do I do????
-                        #    old_macguffins = self.macguffins_collected
-                        #    self.macguffins_collected = relic_shards_amount
-                        #    self.macguffins_collected += 1
-                        #    old_relic_shards_amount = relic_shards_amount
-                        #    relic_shards_amount += 1
-                        #    await bizhawk.write(
-                        #        ctx.bizhawk_ctx,
-                        #        [
-                        #            #relic_shards_amount.to_bytes(),
-                        #            (relic_shards_offset, int.to_bytes(relic_shards_amount),
-                        #             self.ram_mem_domain)],
-                        #    )
-                        #    await asyncio.sleep(0.1)
-                        #    logger.info(
-                        #        "Something Weird Happened Please tell Cryptic if you see this " +
-                        #        "\nThe Relic Fragment Shard count from AP was " + str(old_macguffins) +
-                        #        "\nThe Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
-                        #        "\nThe Relic Fragment Shard count from ROM was" + str(old_relic_shards_amount) +
-                        #        "\nAnd the Relic Fragments written to the ROM should now be: " + str(
-                        #            relic_shards_amount)
-                        #    )
-                        #else:
-                        #    relic_shards_amount += 1
-                        #    logger.info(
-                        #        "The Rom decided to be lower than the AP count probably due to save states " +
-                        #        "\nThe Relic Fragment Shard count from AP is " + str(self.macguffins_collected) +
-                        #        "\nAnd the Relic Fragments written to the ROM should now be: " + str(
-                        #            relic_shards_amount)
-                        #    )
-                        #    await bizhawk.write(
-                        #        ctx.bizhawk_ctx,
-                        #        [
-                        #            (relic_shards_offset, int.to_bytes(relic_shards_amount),
-                        #             self.ram_mem_domain)],
-                        #    )
-                        #    await asyncio.sleep(0.1)
-
-                        #await (ctx.send_msgs(
-                        #    [
-                        #        {"cmd": "Set",
-                        #         "key": self.player_name + "GenericStorage",
-                        #         "want_reply": True,
-                        #         "operations": [{"operation": "update", "value":
-                        #             {"macguffins_collected": self.macguffins_collected}}]
-                        #         }
-                        #    ]))
 
                         if rfs_count >= self.macguffin_unlock_amount:
                             item_memory_offset = 0x26  # the location in memory of Hidden Land
@@ -961,69 +898,8 @@ class EoSClient(BizHawkClient):
                                         "The Instrument count from AP is " + str(instrument_count)
                                     )
 
-                            #if instruments_amount == self.instruments_collected:
-                            #    self.instruments_collected += 1
-                            #    instruments_amount += 1
-
-                            #    await bizhawk.write(
-                            #        ctx.bizhawk_ctx,
-                            #        [
-                            #            (instruments_offset, int.to_bytes(instruments_amount),
-                            #             self.ram_mem_domain)],
-                            #    )
-                            #    logger.info(
-                            #        "The Instrument count from AP is " + str(self.instruments_collected) +
-                            #        "\nAnd the instruments written to the ROM should now be: " + str(
-                            #            instruments_amount)
-                            #    )
-
-                            #    await asyncio.sleep(0.1)
-                            #elif instruments_amount > self.instruments_collected:
-                                # uhhhh I don't know how this could happen? Also what do I do????
-                            #    old_instruments_ap = self.instruments_collected
-                            #    old_instruments_rom = instruments_amount
-                            #    self.instruments_collected = instruments_amount
-                            #    self.instruments_collected += 1
-                            #    instruments_amount += 1
-                            #    await bizhawk.write(
-                            #        ctx.bizhawk_ctx,
-                            #        [
-                            #            (instruments_offset, int.to_bytes(instruments_amount),
-                            #             self.ram_mem_domain)],
-                            #    )
-                            #    await asyncio.sleep(0.1)
-                            #    logger.info(
-                            #        "Something Weird Happened Please tell Cryptic if you see this " +
-                            #        "\nThe Instrument count from AP was " + str(old_instruments_ap) +
-                            #        "\nThe Instrument count from AP is " + str(self.instruments_collected) +
-                            #        "\nAnd the Instrument written to the ROM was: " + str(
-                            #            old_instruments_rom) +
-                            #        "\nAnd the Instrument written to the ROM should now be: " + str(
-                            #            instruments_amount)
-                            #    )
-                            # else:
-                            #    instruments_amount += 1
-                            #    await bizhawk.write(
-                            #        ctx.bizhawk_ctx,
-                            #        [
-                            #            (instruments_offset, int.to_bytes(instruments_amount),
-                            #             self.ram_mem_domain)],
-                            #    )
-                            #    await asyncio.sleep(0.1)
-                            #    logger.info(
-                            #        "The Rom decided to be lower than the AP count probably due to save states " +
-                            #        "\nThe Instrument count from AP is " + str(self.instruments_collected) +
-                            #        "\nAnd the Instruments written to the ROM should now be: " + str(
-                            #            instruments_amount)
-                            #    )
                     await (ctx.send_msgs(
                         [
-                            #{"cmd": "Set",
-                            # "key": self.player_name + "GenericStorage",
-                            # "want_reply": True,
-                            # "operations": [{"operation": "update", "value":
-                            #     {"instruments_collected": self.instruments_collected}}]
-                            # },
                             {"cmd": "Set",
                              "key": self.player_name + "Item Boxes Collected",
                              "want_reply": True,
@@ -1670,16 +1546,6 @@ class EoSClient(BizHawkClient):
                 self.spinda_drinks = spinda_drinks_ram[1]
                 scenario_talk_bitfield_240_list = scenario_talk_bitfield_240_list & 0x7F
 
-                #await (ctx.send_msgs(
-                #    [
-                #        {"cmd": "Set",
-                #         "key": self.player_name + "GenericStorage",
-                #         "want_reply": True,
-                #         "operations": [{"operation": "update", "value":
-                #             {"spinda_events": self.spinda_events, "spinda_drinks": self.spinda_drinks}}]
-                #         }
-                #    ]))
-
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
@@ -1691,44 +1557,9 @@ class EoSClient(BizHawkClient):
             # send the locations checked to the server
             await ctx.check_locations(locs_to_send)
 
-            #if (performance_progress_bitfield[4] >> 6) & 1 == 1:
-
-            #await ctx.update_data_package()
-            #await (ctx.send_msgs(
-            # [
-            #     {"cmd": "LocationScouts",
-            #      "locations": self.hint_loc,
-            #      "create_as_hint": 0
-            #      }]))
-
             # Update data storage
             await (ctx.send_msgs(
                 [
-                    #{"cmd": "Set",
-                    # "key": self.player_name + "Dungeon Missions",
-                    # "want_reply": True,
-                    # "operations": [{"operation": "update", "value": dungeon_missions_dict}]
-                    # },
-                    #{"cmd": "Set",
-                    # "key": self.player_name + "Dungeon Outlaws",
-                    # "want_reply": True,
-                    # "operations": [{"operation": "update", "value": dungeon_outlaws_dict}]
-                    # },
-                    #{"cmd": "Set",
-                    # "key": self.player_name + "Item Boxes Collected",
-                    # "want_reply": True,
-                    # "operations": [{"operation": "replace", "value": {0: item_boxes_collected}}]
-                    # },
-                    #{"cmd": "Set",
-                    # "key": self.player_name + "Legendaries Recruited",
-                    # "want_reply": True,
-                    # "operations": [{"operation": "replace", "value": {0: legendaries_recruited}}]
-                    # },
-                    #{"cmd": "Set",
-                    # "key": self.player_name + "Hinted Hints",
-                    # "want_reply": True,
-                    # "operations": [{"operation": "update", "value": {0: self.hints_hinted}}]
-                    # },
                     {"cmd": "Set",
                      "key": self.player_name + "GenericStorage",
                      "want_reply": True,
