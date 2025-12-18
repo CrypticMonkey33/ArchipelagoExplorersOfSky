@@ -18,8 +18,7 @@ from worlds._bizhawk.client import BizHawkClient
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
 
-game_version = "v0.3.2rc3"
-
+game_version = "v0.3.2rc4"
 
 class EoSClient(BizHawkClient):
     game = "Pokemon Mystery Dungeon Explorers of Sky"

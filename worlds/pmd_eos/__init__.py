@@ -78,6 +78,7 @@ class EOSWorld(World):
     dimensional_scream_list_ints: list[int] = []
     starting_se: int = 0
     slot_data_ready = threading.Event
+    excluded_tag_amount: int = 0
 
     def get_filler_item_name(self) -> str:
         """Called when the item pool needs to be filled with additional items to match location count."""
@@ -175,6 +176,7 @@ class EOSWorld(World):
                     early_dungeon = EOSLocation(self.player, location.name,
                                                                        location.id, early_dungeons_region)
                     early_dungeon.progress_type = LocationProgressType.EXCLUDED
+                    self.excluded_tag_amount += 1
                     early_dungeons_region.locations.append(early_dungeon)
 
                 # if dialga is the goal, we can't add master star rank+
@@ -185,6 +187,7 @@ class EOSWorld(World):
                     late_dungeon = EOSLocation(self.player, location.name,
                                                location.id, late_dungeons_region)
                     late_dungeon.progress_type = LocationProgressType.EXCLUDED
+                    self.excluded_tag_amount += 1
                     late_dungeons_region.locations.append(late_dungeon)
 
                 elif rank_toid_dict[location.name] <= 8:
@@ -329,6 +332,7 @@ class EOSWorld(World):
                 if self.options.long_location.value == 0:
                     location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
                     location.progress_type = LocationProgressType.EXCLUDED
+                    self.excluded_tag_amount += 1
                     rule_dungeons_region.locations.append(location)
                 else:
                     location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
@@ -461,12 +465,12 @@ class EOSWorld(World):
         if self.options.goal.value == 1 and (
                 self.options.legendaries.value > len(self.options.allowed_legendaries.value)):
             for item in self.options.allowed_legendaries.value:
-                required_items.append(self.create_item(item, ItemClassification.useful))
+                required_items.append(self.create_item(item, ItemClassification.filler))
         elif self.options.goal.value == 1:
             new_list = self.random.sample(sorted(self.options.allowed_legendaries.value),
                                           self.options.legendaries.value)
             for item in new_list:
-                required_items.append(self.create_item(item, ItemClassification.useful))
+                required_items.append(self.create_item(item, ItemClassification.filler))
 
         for item_name in item_table:
             #if (item_name == "Dark Crater") and (self.options.goal.value == 1):
@@ -612,6 +616,7 @@ class EOSWorld(World):
         else:
             self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
                                          in self.random.sample(filler_items_pool, remaining, counts=item_weights)]
+        
 
     def set_rules(self) -> None:
         set_rules(self, self.disabled_locations)
