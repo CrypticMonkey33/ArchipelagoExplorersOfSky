@@ -12,7 +12,7 @@ import worlds.oot
 from .Items import (EOSItem, item_table, item_frequencies, item_table_by_id, item_table_by_groups,
                     filler_item_table, filler_item_weights, trap_item_table, trap_item_weights,
                     exclusive_filler_item_table, exclusive_filler_item_weights, legendary_pool_dict, filler_items,
-                    exclusive_filler_items)
+                    exclusive_filler_items, conditional_filler_useful_items)
 from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table
 from .Options import EOSOptions
 from .Rules import set_rules, ready_for_late_game, has_relic_shards
@@ -422,6 +422,8 @@ class EOSWorld(World):
         unique_trap_weights = []
         instruments = []
         item_weights = []
+        conditional_count = 0
+        # conditional_item_table = []
         if self.options.goal.value == 1:
             instruments_to_add = 0
             if self.options.total_instruments.value < self.options.req_instruments.value:
@@ -459,6 +461,7 @@ class EOSWorld(World):
 
         if self.options.goal == 1:
             required_items.append(self.create_item("Manaphy", ItemClassification.progression))
+            required_items.append(self.create_item("Secret Rank", ItemClassification.progression))
         else:
             # self.excluded_locations += 1
             test = 0
@@ -499,6 +502,12 @@ class EOSWorld(World):
             elif "Legendary" in item_table[item_name].group:
                 continue
             elif "Instrument" in item_table[item_name].group:
+                continue
+            elif "Rank" in item_table[item_name].group:
+                continue
+            elif item_table[item_name].name in conditional_filler_useful_items:
+                conditional_count += 1
+                #conditional_item_table.append(item_name)
                 continue
             elif item_table[item_name].classification == ItemClassification.filler:
                 if item_name in ["Gold Ribbon"]:
@@ -586,7 +595,14 @@ class EOSWorld(World):
                 required_items.append(self.create_item(item_name, ItemClassification.useful))
 
         remaining = len(EOS_location_table) + self.extra_locations_added - len(
-            required_items) - 1 - self.excluded_locations  # subtracting 1 for the event check
+            required_items) - conditional_count - 1 - self.excluded_locations  # subtracting 1 for the event check
+        for i in range(len(conditional_filler_useful_items)):
+            if (i <= (self.excluded_tag_amount-remaining)) and (remaining < self.excluded_tag_amount):
+                required_items.append(
+                    self.create_item(conditional_filler_useful_items[i], ItemClassification.filler))
+            else:
+                required_items.append(
+                    self.create_item(conditional_filler_useful_items[i], ItemClassification.useful))
 
         self.multiworld.itempool += required_items
 
@@ -616,7 +632,12 @@ class EOSWorld(World):
         else:
             self.multiworld.itempool += [self.create_item(filler_item.name) for filler_item
                                          in self.random.sample(filler_items_pool, remaining, counts=item_weights)]
-        
+
+        idek_var=self.excluded_tag_amount
+        wtf_items_list=[item.name for item in self.multiworld.itempool]
+        excluded_location_list = [location.name for location in self.multiworld.get_locations(self.player) if
+                                  location.progress_type is LocationProgressType.EXCLUDED]
+        test = 0
 
     def set_rules(self) -> None:
         set_rules(self, self.disabled_locations)

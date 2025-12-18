@@ -580,8 +580,8 @@ trap_item_table: Dict[str, ItemData] = {item.name: item for item in trap_items}
 # for items that appear multiple times, defined here
 item_frequencies: Dict[str, int] = {
     "Bag Upgrade": 5,
-    "Hero Evolution": 1,
-    "Recruit Evolution": 1,
+    #"Hero Evolution": 1,
+    #"Recruit Evolution": 1,
     "Recruitment": 1,
     "Formation Control": 1,
     #"Bidoof\'s Wish": 1,
@@ -931,3 +931,19 @@ legendary_pool_dict = {
     "Kyogre": [524, 445],
     "Shaymin": [525, 463],
 }
+
+# Make some useful items count as filler if we exclude too many locations
+# Top of the list becomes filler first
+conditional_filler_useful_items = [
+    "Mystery Part",
+    "Secret Slab",
+    "Amber Tear",
+    "Friend Bow",
+    "Golden Mask",
+    "Miracle Chest",
+    "Wonder Chest",
+    "Hero Evolution",
+    "Recruit Evolution",
+    "Luminous Spring",
+    "Shaymin Village"
+]
