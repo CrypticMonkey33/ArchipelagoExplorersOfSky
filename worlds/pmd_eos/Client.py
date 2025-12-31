@@ -268,6 +268,7 @@ class EoSClient(BizHawkClient):
             relic_shards_offset = custom_save_area_offset + 0x184
             instruments_offset = custom_save_area_offset + 0x185
             death_link_offset = custom_save_area_offset + 0x186
+            legendaries_in_rom_offset = custom_save_area_offset + 0x2BF
             death_link_receiver_offset = death_link_offset  # reciever bool
             death_link_sender_offset = death_link_offset + 0x1  # sender bool
             death_link_sky_death_message_offset = death_link_offset + 0x2  # sky death message
@@ -393,6 +394,7 @@ class EoSClient(BizHawkClient):
                     (dungeon_traps_bitfield_offset, 1, self.ram_mem_domain),
                     (sky_peaks_offset, 1, self.ram_mem_domain),  # Sky Peaks check
                     # (dimensional_scream_info_offset, 0x51, self.ram_mem_domain),
+                    (legendaries_in_rom_offset, 1, self.ram_mem_domain),
                 ]
             )
             # make sure we are actually on the start screen before checking items and such
@@ -458,19 +460,7 @@ class EoSClient(BizHawkClient):
             pelipper_received_counter = int.from_bytes(read_state[28], "little")
             dungeon_traps_bitfield = int.from_bytes(read_state[29])
             sky_peaks_ram = int.from_bytes(read_state[30])  # , "little")
-            #dimensional_scream_info = int.from_bytes(read_state[29], "little")
-
-            #if (310 in ctx.locations_info) and hintable_items[0] == 0:
-            #    for i in range(10):
-            #        network_item = ctx.locations_info[310+i]
-            #if (main_game_unlocked & 1) == 0:
-            #    main_game_unlocked = main_game_unlocked | 0x1
-            #    await bizhawk.write(
-            #        ctx.bizhawk_ctx,
-            #        [
-            #            (main_game_unlocked_offset, int.to_bytes(main_game_unlocked),
-            #             self.ram_mem_domain)],
-            #    )
+            legendaries_recruited_amount = int.from_bytes(read_state[31])
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received) - received_index):
@@ -1502,7 +1492,8 @@ class EoSClient(BizHawkClient):
                     await asyncio.sleep(0.1)
 
             # if performance progress 37 is off, and we have a legendary to recruit, turn 37 on
-            if (((performance_progress_bitfield[4] >> 5) & 1) == 0) and event_local_num != 22 and legendaries_recruited:
+            if ((((performance_progress_bitfield[4] >> 5) & 1) == 0) and event_local_num != 22 and
+                    legendaries_recruited_amount < len(legendaries_recruited)):
                 write_byte = performance_progress_bitfield[4] | (0x1 << 5)
                 performance_progress_bitfield[4] = write_byte
 
@@ -1512,20 +1503,14 @@ class EoSClient(BizHawkClient):
                         (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                     ]
                 )
-                await (ctx.send_msgs(
-                        [
-                            {"cmd": "Set",
-                             "key": self.player_name + "Legendaries Recruited",
-                             "want_reply": False,
-                             "operations": [{"operation": "replace", "value": {0: legendaries_recruited}}]
-                             }
-                        ]))
                 await asyncio.sleep(0.1)
 
             # if Scenario Talk 249 is on, edit event local with the index of the next legendary and then turn off
             # performance progress 37
-            if (((scenario_talk_bitfield_248_list >> 1) & 1) == 1) and event_local_num == 22 and legendaries_recruited:
-                item_data = legendaries_recruited.pop(0)
+            if ((((scenario_talk_bitfield_248_list >> 1) & 1) == 1) and event_local_num == 22 and
+                    legendaries_recruited_amount < len(legendaries_recruited)):
+                item_data = legendaries_recruited[legendaries_recruited_amount]
+                legendaries_recruited_amount += 1
                 write_byte2 = item_data["memory_offset"]
                 scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFD
                 await bizhawk.write(
@@ -1535,6 +1520,7 @@ class EoSClient(BizHawkClient):
                         (event_local_offset, int.to_bytes(write_byte2), self.ram_mem_domain),
                         (scenario_talk_bitfield_offset + 0x1F, int.to_bytes(scenario_talk_bitfield_248_list),
                          self.ram_mem_domain),
+                        (legendaries_in_rom_offset, int.to_bytes(legendaries_recruited_amount), self.ram_mem_domain)
                     ]
                 )
                 await asyncio.sleep(0.1)
