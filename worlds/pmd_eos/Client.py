@@ -230,14 +230,13 @@ class EoSClient(BizHawkClient):
                          "key": self.player_name + "GenericStorage",
                          "default": {"goal_complete": False, "bag_given": False, "macguffins_collected": 0,
                                      "macguffin_unlock_amount": 0, "instruments_collected": 0,
-                                     "required_instruments": 0,
                                      "dialga_complete": False, "skypeaks_open": 0, "aegis_seals": 0,
                                      "spinda_events": 0, "spinda_drinks": 0, "box_number": 0},
                          "want_reply": True,
                          "operations": [{"operation": "default",
                                          "value": {"goal_complete": False, "bag_given": False,
                                                    "macguffins_collected": 0, "macguffin_unlock_amount": 0,
-                                                   "instruments_collected": 0, "required_instruments": 0,
+                                                   "instruments_collected": 0,
                                                    "dialga_complete": False, "skypeaks_open": 0,
                                                    "aegis_seals": 0, "spinda_events": 0, "spinda_drinks": 0,
                                                    "box_number": 0}}]
@@ -325,7 +324,7 @@ class EoSClient(BizHawkClient):
                 self.bag_given = max(stored["bag_given"], self.bag_given)
                 self.macguffins_collected = max(stored["macguffins_collected"], self.macguffins_collected)
                 self.macguffin_unlock_amount = max(stored["macguffin_unlock_amount"], self.macguffin_unlock_amount)
-                self.required_instruments = max(stored["required_instruments"], self.required_instruments)
+                # self.required_instruments = max(stored["required_instruments"], self.required_instruments)
                 self.instruments_collected = max(stored["instruments_collected"], self.instruments_collected)
                 self.dialga_complete = max(stored["dialga_complete"], self.dialga_complete)
                 self.skypeaks_open = max(stored["skypeaks_open"], self.skypeaks_open)
@@ -1506,12 +1505,21 @@ class EoSClient(BizHawkClient):
             if (((performance_progress_bitfield[4] >> 5) & 1) == 0) and event_local_num != 22 and legendaries_recruited:
                 write_byte = performance_progress_bitfield[4] | (0x1 << 5)
                 performance_progress_bitfield[4] = write_byte
+
                 await bizhawk.write(
                     ctx.bizhawk_ctx,
                     [
                         (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
                     ]
                 )
+                await (ctx.send_msgs(
+                        [
+                            {"cmd": "Set",
+                             "key": self.player_name + "Legendaries Recruited",
+                             "want_reply": False,
+                             "operations": [{"operation": "replace", "value": {0: legendaries_recruited}}]
+                             }
+                        ]))
                 await asyncio.sleep(0.1)
 
             # if Scenario Talk 249 is on, edit event local with the index of the next legendary and then turn off
@@ -1567,7 +1575,6 @@ class EoSClient(BizHawkClient):
                          {"goal_complete": self.goal_complete, "bag_given": self.bag_given,
                           "macguffins_collected": self.macguffins_collected,
                           "macguffin_unlock_amount": self.macguffin_unlock_amount,
-                          "required_instruments": self.required_instruments,
                           "instruments_collected": self.instruments_collected,
                           "dialga_complete": self.dialga_complete, "skypeaks_open": self.skypeaks_open,
                           "aegis_seals": self.aegis_seals,

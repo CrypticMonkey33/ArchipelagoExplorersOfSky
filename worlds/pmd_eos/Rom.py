@@ -140,8 +140,13 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
         hint_player = world.multiworld.player_name[dimensional_scream_hints[i].player].translate(trans_table)
         patch.write_token(APTokenTypes.WRITE, dimensional_scream_who_offset + 17 * (i + 10),
                           hint_player[0:15].encode("cp1252", "xmlcharrefreplace"))
+        if dimensional_scream_hints[i].name.__contains__("★"):
+            hint_loc_name1 = dimensional_scream_hints[i].name.translate(trans_table)
+            hint_loc_name = hint_loc_name1.replace("★", "[M:S3]")
 
-        hint_loc_name = dimensional_scream_hints[i].name.translate(trans_table)
+        else:
+            hint_loc_name = dimensional_scream_hints[i].name.translate(trans_table)
+        # hint_loc_name = dimensional_scream_hints[i].name.translate(trans_table)
         patch.write_token(APTokenTypes.WRITE, dimensional_scream_where_offset + 33 * (i + 10),
                           hint_loc_name[0:31].encode("cp1252", "xmlcharrefreplace"))
 
