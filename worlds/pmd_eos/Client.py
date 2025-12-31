@@ -11,6 +11,7 @@ from .Items import item_table_by_id, lootbox_table, item_table_by_groups
 from .DeathMessages import death_message_list, death_message_weights
 from random import Random
 import asyncio
+import logging
 
 import worlds._bizhawk as bizhawk
 from worlds._bizhawk.client import BizHawkClient
@@ -21,6 +22,7 @@ if TYPE_CHECKING:
 game_version = "v0.3.2rc4"
 
 class EoSClient(BizHawkClient):
+    logger = logging.getLogger("Client")
     game = "Pokemon Mystery Dungeon Explorers of Sky"
     system = "NDS"
     patch_suffix = ".apeos"
@@ -80,7 +82,6 @@ class EoSClient(BizHawkClient):
 
     async def validate_rom(self, ctx: "BizHawkClientContext") -> bool:
 
-        from CommonClient import logger
         try:
             # Check ROM name/patch version
             rom_name_bytes = await bizhawk.read(ctx.bizhawk_ctx, [(0x3FFA80, 16, self.ram_mem_domain)])
@@ -118,7 +119,8 @@ class EoSClient(BizHawkClient):
         ctx.auth = self.player_name
 
     def on_package(self, ctx, cmd, args) -> None:
-        from CommonClient import logger
+        logger = logging.getLogger("Client")
+
         if cmd == "RoomInfo":
             ctx.seed_name = args["seed_name"]
         if cmd != "Bounced":
@@ -137,7 +139,6 @@ class EoSClient(BizHawkClient):
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
 
-        from CommonClient import logger
         mission_start_id = 1000
         try:
             if ctx.server_seed_name is None:
@@ -153,7 +154,7 @@ class EoSClient(BizHawkClient):
                 seed = seed[0].decode("UTF-8")[0:7]
                 seed_name = ctx.server_seed_name[0:7]
                 if seed != seed_name:
-                    logger.info(
+                    self.logger.info(
                         "ERROR: The ROM you loaded is for a different game of AP. "
                         "Please make sure the host has sent you the correct patch file,"
                         "and that you have opened the correct ROM."
@@ -161,26 +162,26 @@ class EoSClient(BizHawkClient):
                     raise bizhawk.ConnectorError("Loaded ROM is for Incorrect lobby.")
                 try:
                     if ctx.slot_data["ServerVersion"] != self.client_version:
-                        logger.info(
+                        self.logger.info(
                             "The server version is different from the client version. You might still be able to play "
                             + "but there may be unsolvable issues that come up."
                         )
-                    logger.info(
+                    self.logger.info(
                         "The version the host generated from is Explorers of Sky " + ctx.slot_data["ServerVersion"]
                     )
                 except IndexError:
-                    logger.info(
+                    self.logger.info(
                         "You are playing on a server version older than 0.3.1 so a server version cannot be found" +
                         " OR something else went wrong")
                 except TypeError:
-                    logger.info(
+                    self.logger.info(
                         "You are playing on a server version older than 0.3.1 so a server version cannot be found" +
                         " OR something else went wrong")
                 except KeyError:
-                    logger.info(
+                    self.logger.info(
                         "You are playing on a server version older than 0.3.1 so a server version cannot be found" +
                         " OR something else went wrong")
-                logger.info(
+                self.logger.info(
                     "You are currently playing on the Archipelago Pokemon Mystery Dungeon: Explorer's of Sky version "
                     + self.client_version
                 )
@@ -287,11 +288,11 @@ class EoSClient(BizHawkClient):
             if not self.hint_loc:
                 try:
                     self.hint_loc = ctx.slot_data["HintLocationList"]
-                    logger.info("hint locations correctly initialized")
+                    self.logger.info("hint locations correctly initialized")
                 except IndexError:
-                    logger.info("hint locations not initialized. Please tell Cryptic if you see this")
+                    self.logger.info("hint locations not initialized. Please tell Cryptic if you see this")
                 except TypeError:
-                    logger.info("hint locations not initialized. Please tell Cryptic if you see this")
+                    self.logger.info("hint locations not initialized. Please tell Cryptic if you see this")
 
             # if (self.player_name + "Dungeon Missions") in ctx.stored_data:
                 # dungeon_missions_dict = ctx.stored_data[self.player_name + "Dungeon Missions"]
@@ -480,13 +481,13 @@ class EoSClient(BizHawkClient):
                     item_memory_offset = 0
                     if ctx.slot_data["SkyPeakType"] == 1:  # progressive
                         if self.skypeaks_open >= 11:
-                            logger.info(
+                            self.logger.info(
                                 "Max Sky Peaks reached, not sending any more to rom"
                             )
                         elif sky_peaks_ram == self.skypeaks_open:
                             self.skypeaks_open += 1
                             sky_peaks_ram += 1
-                            logger.info(
+                            self.logger.info(
                                 "The Sky Peak count from AP is " + str(self.skypeaks_open) +
                                 "\nAnd the Sky Peaks written to the ROM should now be: " + str(
                                     sky_peaks_ram)
@@ -498,7 +499,7 @@ class EoSClient(BizHawkClient):
                             self.skypeaks_open = sky_peaks_ram
                             self.skypeaks_open += 1
                             sky_peaks_ram += 1
-                            logger.info(
+                            self.logger.info(
                                 "Something Weird Happened Please tell Cryptic if you see this " +
                                 "\nThe Sky Peak count from AP was " + str(old_sky_peaks) +
                                 "\nAnd the Sky Peaks read from the rom was: " + str(
@@ -509,7 +510,7 @@ class EoSClient(BizHawkClient):
                             )
                         else:
                             sky_peaks_ram += 1
-                            logger.info(
+                            self.logger.info(
                                 "The Rom decided to be lower than the AP count probably due to save states " +
                                 "\nThe Sky Peak count from AP is " + str(self.skypeaks_open) +
                                 "\nAnd the Sky Peaks written to the ROM should now be: " + str(
@@ -663,7 +664,7 @@ class EoSClient(BizHawkClient):
                         else:
                             await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
                                                  player_gold_offset, bank_gold_offset)
-                            logger.info(
+                            self.logger.info(
                                 "But you already own one so instead you get 500 Poké")
 
                     elif item_data.name == "Chatot Repellent":
@@ -680,7 +681,7 @@ class EoSClient(BizHawkClient):
                         else:
                             await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
                                                  player_gold_offset, bank_gold_offset)
-                            logger.info(
+                            self.logger.info(
                                 "But you already own one so instead you get 500 Poké")
                     elif item_data.name == "Sky Jukebox":
                         if ((performance_progress_bitfield[3] >> 2) & 1) == 0:
@@ -696,7 +697,7 @@ class EoSClient(BizHawkClient):
                         else:
                             await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
                                                  player_gold_offset, bank_gold_offset)
-                            logger.info(
+                            self.logger.info(
                                 "But you already own one so instead you get 500 Poké")
 
                     elif item_data.name == "Recruitment Sensor":
@@ -713,7 +714,7 @@ class EoSClient(BizHawkClient):
                         else:
                             await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
                                                  player_gold_offset, bank_gold_offset)
-                            logger.info(
+                            self.logger.info(
                                 "But you already own one so instead you get 500 Poké")
 
                     elif item_data.name == "Mystery of the Quicksand":
@@ -730,7 +731,7 @@ class EoSClient(BizHawkClient):
                         else:
                             await self.add_money(ctx, 500, player_gold_amount, bank_gold_amount,
                                                  player_gold_offset, bank_gold_offset)
-                            logger.info(
+                            self.logger.info(
                                 "But you already own one so instead you get 500 Poké")
 
                     elif item_data.name == "Hero Evolution":
@@ -835,9 +836,9 @@ class EoSClient(BizHawkClient):
                                 rfs_count += 1
 
                         if rfs_count >= 20:
-                            logger.info("Max Relic Fragment Shards Reached")
+                            self.logger.info("Max Relic Fragment Shards Reached")
                             rfs_count = 20
-                        logger.info(
+                        self.logger.info(
                             "The Relic Fragment Shard count from AP is " + str(rfs_count)
                         )
                         await bizhawk.write(
@@ -884,16 +885,16 @@ class EoSClient(BizHawkClient):
                                     instrument_count += 1
 
                             if instrument_count >= 20:
-                                logger.info("Max Instrument count reached")
+                                self.logger.info("Max Instrument count reached")
                                 instrument_count = 20
-
+                            self.instruments_collected = instrument_count
                             await bizhawk.write(
                                 ctx.bizhawk_ctx,
                                 [
                                     (instruments_offset, int.to_bytes(instrument_count),
                                      self.ram_mem_domain)],
                             )
-                            logger.info(
+                            self.logger.info(
                                         "The Instrument count from AP is " + str(instrument_count)
                                     )
 
@@ -1194,11 +1195,11 @@ class EoSClient(BizHawkClient):
 
             except IndexError:
                 if not self.hint_issue:
-                    logger.info("Cannot send hint, list issue")
+                    self.logger.info("Cannot send hint, list issue")
                     self.hint_issue = True
             except TypeError:
                 if not self.hint_issue:
-                    logger.info("Cannot send hint, Type Error issue")
+                    self.logger.info("Cannot send hint, Type Error issue")
                     self.hint_issue = True
 
             # Send locations if there are any to send.

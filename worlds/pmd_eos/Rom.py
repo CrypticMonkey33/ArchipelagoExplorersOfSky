@@ -118,7 +118,7 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
     for i in range(len(hint_items)):
         if hint_items[i].name.__contains__("★"):
             hint_loc_name1 = hint_items[i].name.translate(trans_table)
-            hint_loc_name = hint_loc_name1.replace("★", "[MS:3]")
+            hint_loc_name = hint_loc_name1.replace("★", "[M:S3]")
 
         else:
             hint_loc_name = hint_items[i].name.translate(trans_table)
