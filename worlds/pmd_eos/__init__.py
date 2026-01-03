@@ -8,7 +8,6 @@ import settings
 import random
 from typing import List, Dict, Set, Any
 
-import worlds.oot
 from .Items import (EOSItem, item_table, item_frequencies, item_table_by_id, item_table_by_groups,
                     filler_item_table, filler_item_weights, trap_item_table, trap_item_weights,
                     exclusive_filler_item_table, exclusive_filler_item_weights, legendary_pool_dict, filler_items,
