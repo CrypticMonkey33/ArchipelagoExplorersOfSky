@@ -1,6 +1,5 @@
 import typing
 
-import typing_extensions
 from typing import Dict, List
 from BaseClasses import Location
 from .RomTypeDefinitions import subX_table
@@ -75,24 +74,24 @@ def get_mission_location_table() -> typing.List[LocationData]:
                 new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
 
         elif location.classification == "EarlyDungeonComplete" and "Mission" in location.group:
-            for j in range(50):
+            for j in range(31):
                 location_name = f"{location.name} Mission {j + 1}"
                 location_id = location.id + mission_start_id + (100 * location.id) + j
                 new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
 
-            for j in range(50):
+            for j in range(31):
                 location_name = f"{location.name} Outlaw {j + 1}"
                 location_id = location.id + mission_start_id + (100 * location.id) + j + 50
                 new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
 
         elif "Mission" in location.group and (location.classification == "LateDungeonComplete"
                                               or location.classification == "BossDungeonComplete"):
-            for j in range(50):
+            for j in range(31):
                 location_name = f"{location.name} Mission {j + 1}"
                 location_id = location.id + mission_start_id + (100 * location.id) + j
                 new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
 
-            for j in range(50):
+            for j in range(31):
                 location_name = f"{location.name} Outlaw {j + 1}"
                 location_id = location.id + mission_start_id + (100 * location.id) + j + 50
                 new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))

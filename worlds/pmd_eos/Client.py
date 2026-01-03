@@ -21,6 +21,7 @@ if TYPE_CHECKING:
 
 game_version = "v0.3.2rc4"
 
+
 class EoSClient(BizHawkClient):
     logger = logging.getLogger("Client")
     game = "Pokemon Mystery Dungeon Explorers of Sky"

@@ -1,14 +1,9 @@
-import io
 import json
-import random
 
-from . import data
-from typing import TYPE_CHECKING, Optional
+from typing import TYPE_CHECKING
 from BaseClasses import Item, Location
 from settings import get_settings
 from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes, APPatchExtension
-from .Items import item_table
-from .Locations import EOS_location_table
 
 if TYPE_CHECKING:
     from . import EOSWorld

@@ -2,13 +2,11 @@ import math
 import threading
 import typing
 import os
-import json
 import pkgutil
 import settings
 import random
 from typing import List, Dict, Set, Any
 
-import worlds.oot
 from .Items import (EOSItem, item_table, item_frequencies, item_table_by_id, item_table_by_groups,
                     filler_item_table, filler_item_weights, trap_item_table, trap_item_weights,
                     exclusive_filler_item_table, exclusive_filler_item_weights, legendary_pool_dict, filler_items,
@@ -18,7 +16,7 @@ from .Options import EOSOptions
 from .Rules import set_rules, ready_for_late_game, has_relic_shards
 from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType, Item
 from worlds.AutoWorld import World, WebWorld
-from worlds.generic.Rules import set_rule, forbid_item
+from worlds.generic.Rules import set_rule
 from .Client import EoSClient, game_version
 from .Rom import EOSProcedurePatch, write_tokens
 
