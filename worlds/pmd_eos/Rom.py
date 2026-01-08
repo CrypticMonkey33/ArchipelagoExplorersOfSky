@@ -36,8 +36,13 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
         return get_base_rom_as_bytes()
 
 
-def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[Location],
-                 dimensional_screams: list[Location], starting_se: int) -> None:
+def write_tokens(
+    world: "EOSWorld",
+    patch: EOSProcedurePatch,
+    hint_items: list[Location],
+    dimensional_screams: list[Location],
+    starting_se: int,
+) -> None:
     ov36_mem_loc = 2724352  # find_ov36_mem_location()
     seed_offset = 0x36FA0
     player_name_offset = 0x36F80
@@ -52,9 +57,9 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
     dimensional_scream_who_offset = hintable_items_offset + 0x4
     dimensional_scream_what_offset = hintable_items_offset + 0x202
     dimensional_scream_where_offset = hintable_items_offset + 0x5E0
-    #dimensional_scream_hints = get_dimensional_hints(world)
+    # dimensional_scream_hints = get_dimensional_hints(world)
     dimensional_scream_hints = dimensional_screams
-    #writable_screams = [k.address for k in dimensional_scream_hints]
+    # writable_screams = [k.address for k in dimensional_scream_hints]
     # recruitment_offset = 0x3702C
     # recruitment_evo_offset = 0x37030
     # team_formation_offset = 0x37034
@@ -104,10 +109,8 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
     player_name_changed_encoded = player_name_changed.encode("cp1252", "xmlcharrefreplace")
 
     # Bake player name into ROM
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+player_name_changed_offset,
-                      player_name_changed_encoded)
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + player_name_offset,
-                      player_name_encoded)
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + player_name_changed_offset, player_name_changed_encoded)
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + player_name_offset, player_name_encoded)
 
     # Bake names of previewable items into ROM
     for i in range(len(hint_items)):
@@ -118,23 +121,34 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
         else:
             hint_loc_name = hint_items[i].name.translate(trans_table)
         hint_player = world.multiworld.player_name[hint_items[i].item.player].translate(trans_table)
-        patch.write_token(APTokenTypes.WRITE, dimensional_scream_who_offset + 17 * i,
-                          hint_player[0:15].encode("cp1252", "xmlcharrefreplace"))
+        patch.write_token(
+            APTokenTypes.WRITE,
+            dimensional_scream_who_offset + 17 * i,
+            hint_player[0:15].encode("cp1252", "xmlcharrefreplace"),
+        )
 
-        patch.write_token(APTokenTypes.WRITE, dimensional_scream_where_offset + 33 * i,
-                          hint_loc_name[0:31].encode("cp1252", "xmlcharrefreplace"))
+        patch.write_token(
+            APTokenTypes.WRITE,
+            dimensional_scream_where_offset + 33 * i,
+            hint_loc_name[0:31].encode("cp1252", "xmlcharrefreplace"),
+        )
 
         hint_item = hint_items[i].item.name.translate(trans_table)
-        patch.write_token(APTokenTypes.WRITE, dimensional_scream_what_offset + 33 * i,
-                          hint_item[0:31].encode("cp1252", "xmlcharrefreplace"))
-
+        patch.write_token(
+            APTokenTypes.WRITE,
+            dimensional_scream_what_offset + 33 * i,
+            hint_item[0:31].encode("cp1252", "xmlcharrefreplace"),
+        )
 
     # Bake the dimensional Scream Hints into the ROM
 
     for i in range(len(dimensional_scream_hints)):
         hint_player = world.multiworld.player_name[dimensional_scream_hints[i].player].translate(trans_table)
-        patch.write_token(APTokenTypes.WRITE, dimensional_scream_who_offset + 17 * (i + 10),
-                          hint_player[0:15].encode("cp1252", "xmlcharrefreplace"))
+        patch.write_token(
+            APTokenTypes.WRITE,
+            dimensional_scream_who_offset + 17 * (i + 10),
+            hint_player[0:15].encode("cp1252", "xmlcharrefreplace"),
+        )
         if dimensional_scream_hints[i].name.__contains__("★"):
             hint_loc_name1 = dimensional_scream_hints[i].name.translate(trans_table)
             hint_loc_name = hint_loc_name1.replace("★", "[M:S3]")
@@ -142,15 +156,21 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
         else:
             hint_loc_name = dimensional_scream_hints[i].name.translate(trans_table)
         # hint_loc_name = dimensional_scream_hints[i].name.translate(trans_table)
-        patch.write_token(APTokenTypes.WRITE, dimensional_scream_where_offset + 33 * (i + 10),
-                          hint_loc_name[0:31].encode("cp1252", "xmlcharrefreplace"))
+        patch.write_token(
+            APTokenTypes.WRITE,
+            dimensional_scream_where_offset + 33 * (i + 10),
+            hint_loc_name[0:31].encode("cp1252", "xmlcharrefreplace"),
+        )
 
         hint_item = dimensional_scream_hints[i].item.name.translate(trans_table)
-        patch.write_token(APTokenTypes.WRITE, dimensional_scream_what_offset + 33 * (i + 10),
-                          hint_item[0:31].encode("cp1252", "xmlcharrefreplace"))
+        patch.write_token(
+            APTokenTypes.WRITE,
+            dimensional_scream_what_offset + 33 * (i + 10),
+            hint_item[0:31].encode("cp1252", "xmlcharrefreplace"),
+        )
 
     # Bake seed name into ROM
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc+seed_offset, seed)
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + seed_offset, seed)
 
     write_byte = 0
     late_missions_count = 0
@@ -218,13 +238,13 @@ def write_tokens(world: "EOSWorld", patch: EOSProcedurePatch, hint_items: list[L
     if world.options.special_episode_sanity.value == 1 and starting_se != 0:
         write_byte = write_byte | (starting_se << 32)
 
-
     # write the tokens that will be applied and write the token data into the bin for AP
-    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset,
-                      int.to_bytes(write_byte, length=9, byteorder="little"))
+    patch.write_token(
+        APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset, int.to_bytes(write_byte, length=9, byteorder="little")
+    )
 
     patch.write_file("token_data.bin", patch.get_token_binary())
-    #testnum = find_ov36_mem_location()
+    # testnum = find_ov36_mem_location()
 
 
 def find_ov36_mem_location() -> int:
@@ -234,11 +254,9 @@ def find_ov36_mem_location() -> int:
     test = range(0x296000, 0x300000)
     for byte_i in range(0x297000, 0x300000):
         # , byte in enumerate(rom)
-        intest= 0x297000 / 2
+        intest = 0x297000 / 2
         hex_search_value = 0xBAADF00D
-        hex_searched = int.from_bytes((rom[byte_i:(byte_i+4)]))
-        test2 = rom[byte_i:(byte_i+4)]
+        hex_searched = int.from_bytes((rom[byte_i : (byte_i + 4)]))
+        test2 = rom[byte_i : (byte_i + 4)]
         if hex_searched == hex_search_value:
             return byte_i
-
-
