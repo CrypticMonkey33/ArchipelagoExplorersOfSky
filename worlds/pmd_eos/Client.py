@@ -23,7 +23,7 @@ game_version = "v0.3.2"
 
 class EoSClient(BizHawkClient):
     logger = logging.getLogger("Client")
-    game = "Pokemon Mystery Dungeon Explorers of Sky"
+    game = "Pokémon Mystery Dungeon: Explorers of Sky"
     system = "NDS"
     patch_suffix = ".apeos"
     goal_flag: int
