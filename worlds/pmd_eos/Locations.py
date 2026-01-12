@@ -25,7 +25,7 @@ class LocationData:
 
 
 class EOSLocation(Location):
-    game: str = "Pokemon Mystery Dungeon Explorers of Sky"
+    game: str = "Pokémon Mystery Dungeon: Explorers of Sky"
 
 
 def get_location_table_by_groups() -> Dict[str, set[str]]:

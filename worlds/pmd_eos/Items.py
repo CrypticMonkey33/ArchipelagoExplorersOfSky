@@ -18,7 +18,7 @@ class ItemData(NamedTuple):
 # Game specific Item that extends the Archipelago Item. Only thing this changes is sets the game name so that AP knows
 # what game the item comes from
 class EOSItem(Item):
-    game: str = "Pokemon Mystery Dungeon Explorers of Sky"
+    game: str = "Pokémon Mystery Dungeon: Explorers of Sky"
 
 
 # Make a dictionary that separates the item table based on the different groups for being able to search for all items

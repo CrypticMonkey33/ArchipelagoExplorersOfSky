@@ -16,12 +16,12 @@ def get_base_rom_as_bytes() -> bytes:
 
 
 class EOSPathExtension(APPatchExtension):
-    game = "Pokemon Mystery Dungeon Explorers of Sky"
+    game = "Pokémon Mystery Dungeon: Explorers of Sky"
 
 
 class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
     # settings for what the end file is going to look like
-    game = "Pokemon Mystery Dungeon Explorers of Sky"
+    game = "Pokémon Mystery Dungeon: Explorers of Sky"
     hash = "6735749e060e002efd88e61560e45567"
     patch_file_ending = ".apeos"
     result_file_ending = ".nds"

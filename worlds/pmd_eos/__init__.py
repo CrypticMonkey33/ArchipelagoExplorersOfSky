@@ -36,7 +36,7 @@ from .Rom import EOSProcedurePatch, write_tokens
 
 class EOSWeb(WebWorld):
     theme = "ocean"
-    game = "Pokemon Mystery Dungeon Explorers of Sky"
+    game = "Pokémon Mystery Dungeon: Explorers of Sky"
 
     tutorials = [
         Tutorial(
@@ -64,11 +64,11 @@ class EOSSettings(settings.Group):
 
 class EOSWorld(World):
     """
-    This is for Pokemon Mystery Dungeon Explorers of Sky, a game where you inhabit a pokemon and explore
+    This is for Pokémon Mystery Dungeon: Explorers of Sky, a game where you inhabit a pokemon and explore
     through dungeons, solve quests, and help out other Pokemon in the colony
     """
 
-    game = "Pokemon Mystery Dungeon Explorers of Sky"
+    game = "Pokémon Mystery Dungeon: Explorers of Sky"
     options: EOSOptions
     options_dataclass = EOSOptions
     web = EOSWeb()
