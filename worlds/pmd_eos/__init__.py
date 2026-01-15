@@ -40,12 +40,12 @@ class EOSWeb(WebWorld):
 
     tutorials = [
         Tutorial(
-            "Multiworld Setup Guide",
-            "A Guide to setting up Explorers of Sky for MultiWorld.",
-            "English",
-            "setup_en.md",
-            "setup/en",
-            ["CrypticMonkey33", "Chesyon"],
+            tutorial_name="Multiworld Setup Guide",
+            description="A guide to setting up Explorers of Sky for Archipelago.",
+            language="English",
+            file_name="setup_en.md",
+            link="setup/en",
+            authors=["CrypticMonkey33", "Chesyon"],
         )
     ]
 
@@ -64,8 +64,9 @@ class EOSSettings(settings.Group):
 
 class EOSWorld(World):
     """
-    This is for Pokémon Mystery Dungeon: Explorers of Sky, a game where you inhabit a pokemon and explore
-    through dungeons, solve quests, and help out other Pokemon in the colony
+    In the second Pokémon Mystery Dungeon game, for the Nintendo DS, a human transformed into a Pokémon (you) finds
+    themselves on the coast of Treasure Town in the world of Pokémon. Stop the collapse of Temporal Tower in an
+    adventure spanning time and darkness!
     """
 
     game = "Pokémon Mystery Dungeon: Explorers of Sky"
