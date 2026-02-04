@@ -1,8 +1,8 @@
 from typing import Dict, TYPE_CHECKING
 
 from worlds.generic.Rules import set_rule, add_rule, forbid_item
-from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id
-from .RomTypeDefinitions import subX_table
+from .locations import EOS_location_table, EOSLocation, location_Dict_by_id
+from .rom_type_definitions import subX_table
 
 if TYPE_CHECKING:
     from . import EOSWorld

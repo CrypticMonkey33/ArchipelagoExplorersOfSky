@@ -5,9 +5,9 @@ import re
 
 from BaseClasses import ItemClassification
 from NetUtils import ClientStatus
-from .Locations import location_Dict_by_id, location_dict_by_start_id, location_table_by_groups
-from .Items import item_table_by_id, lootbox_table, item_table_by_groups
-from .DeathMessages import death_message_list, death_message_weights
+from .locations import location_Dict_by_id, location_dict_by_start_id, location_table_by_groups
+from .items import item_table_by_id, lootbox_table, item_table_by_groups
+from .death_messages import death_message_list, death_message_weights
 from random import Random
 import asyncio
 import logging

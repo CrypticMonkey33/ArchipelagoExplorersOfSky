@@ -2,7 +2,7 @@ import typing
 
 from typing import Dict, List
 from BaseClasses import Location
-from .RomTypeDefinitions import subX_table
+from .rom_type_definitions import subX_table
 
 
 class LocationData:
