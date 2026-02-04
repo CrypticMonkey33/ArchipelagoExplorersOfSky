@@ -7,7 +7,7 @@ import settings
 import random
 from typing import List, Dict, Set, Any
 
-from .Items import (
+from .items import (
     EOSItem,
     item_table,
     item_frequencies,
@@ -24,14 +24,14 @@ from .Items import (
     exclusive_filler_items,
     conditional_filler_useful_items,
 )
-from .Locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table
-from .Options import EOSOptions
-from .Rules import set_rules, ready_for_late_game, has_relic_shards
+from .locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table
+from .options import EOSOptions
+from .rules import set_rules, ready_for_late_game, has_relic_shards
 from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType, Item
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import set_rule
-from .Client import EoSClient, game_version
-from .Rom import EOSProcedurePatch, write_tokens
+from .client import EoSClient, game_version
+from .rom import EOSProcedurePatch, write_tokens
 
 
 class EOSWeb(WebWorld):
