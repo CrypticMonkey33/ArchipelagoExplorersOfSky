@@ -1,6 +1,6 @@
-from typing import NamedTuple, Dict, Set, List
+from typing import NamedTuple
 
-from BaseClasses import ItemClassification, Item
+from BaseClasses import Item, ItemClassification
 
 
 # Specific ItemData for this game, based off of the Archipelago ItemData class
@@ -23,12 +23,12 @@ class EOSItem(Item):
 
 # Make a dictionary that separates the item table based on the different groups for being able to search for all items
 # under a specific group
-def get_item_table_by_groups() -> Dict[str, set[str]]:
+def get_item_table_by_groups() -> dict[str, set[str]]:
     # groups: Set[str] = set()
-    new_dict: Dict[str, set[str]] = {}
-    for item_name in item_table:
-        if item_table[item_name].group:
-            for group in item_table[item_name].group:
+    new_dict: dict[str, set[str]] = {}
+    for item_name, item_data in item_table.items():
+        if item_data.group:
+            for group in item_data.group:
                 if group in new_dict:
                     new_dict[group].add(item_name)
                 else:
@@ -654,16 +654,16 @@ trap_items = [
 ]
 # create dictionaries and tables for later use
 filler_item_weights = [item.start_number for item in filler_items]
-filler_item_table: Dict[str, ItemData] = {item.name: item for item in filler_items}
+filler_item_table: dict[str, ItemData] = {item.name: item for item in filler_items}
 
 exclusive_filler_item_weights = [item.start_number for item in exclusive_filler_items]
-exclusive_filler_item_table: Dict[str, ItemData] = {item.name: item for item in exclusive_filler_items}
+exclusive_filler_item_table: dict[str, ItemData] = {item.name: item for item in exclusive_filler_items}
 
 trap_item_weights = [item.start_number for item in trap_items]
-trap_item_table: Dict[str, ItemData] = {item.name: item for item in trap_items}
+trap_item_table: dict[str, ItemData] = {item.name: item for item in trap_items}
 
 # for items that appear multiple times, defined here
-item_frequencies: Dict[str, int] = {
+item_frequencies: dict[str, int] = {
     "Bag Upgrade": 5,
     # "Hero Evolution": 1,
     # "Recruit Evolution": 1,
@@ -686,16 +686,16 @@ item_frequencies: Dict[str, int] = {
 }
 
 # Create a table of all the possible items in the game for AP
-item_table: Dict[str, ItemData] = {item.name: item for item in EOS_item_table}
+item_table: dict[str, ItemData] = {item.name: item for item in EOS_item_table}
 item_table.update(filler_item_table)
 item_table.update(exclusive_filler_item_table)
 item_table.update(trap_item_table)
-item_table_by_id: Dict[int, ItemData] = {item.id: item for item in item_table.values()}
+item_table_by_id: dict[int, ItemData] = {item.id: item for item in item_table.values()}
 
 item_table_by_groups = get_item_table_by_groups()
 
 # definition of what can be inside the different loot boxes. Some got taken away with the addition of more filler items
-lootbox_table: Dict[str, Dict[str, int]] = {
+lootbox_table: dict[str, dict[str, int]] = {
     "Gorgeous Box": {
         "Gold Ribbon": 0x20,
     },

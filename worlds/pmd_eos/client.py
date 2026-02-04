@@ -1,19 +1,19 @@
-from typing import TYPE_CHECKING, Optional, Set, List, Dict
 import array
-import time
-import re
-
-from BaseClasses import ItemClassification
-from NetUtils import ClientStatus
-from .locations import location_Dict_by_id, location_dict_by_start_id, location_table_by_groups
-from .items import item_table_by_id, lootbox_table, item_table_by_groups
-from .death_messages import death_message_list, death_message_weights
-from random import Random
 import asyncio
 import logging
+import re
+import time
+from random import Random
+from typing import TYPE_CHECKING, ClassVar
 
 import worlds._bizhawk as bizhawk
+from BaseClasses import ItemClassification
+from NetUtils import ClientStatus
 from worlds._bizhawk.client import BizHawkClient
+
+from .death_messages import death_message_list, death_message_weights
+from .items import item_table_by_groups, item_table_by_id, lootbox_table
+from .locations import location_Dict_by_id, location_dict_by_start_id
 
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
@@ -27,13 +27,13 @@ class EoSClient(BizHawkClient):
     system = "NDS"
     patch_suffix = ".apeos"
     goal_flag: int
-    rom_slot_name: Optional[str]
-    eUsed: List[int]
+    rom_slot_name: str | None
+    e_used: list[int]
     room: int
-    local_events: List[int]
-    player_name: Optional[str]
-    checked_dungeon_flags: Dict[int, list] = {}
-    checked_general_flags: Dict[int, list] = {}
+    local_events: list[int]
+    player_name: str | None
+    checked_dungeon_flags: ClassVar[dict[int, list]] = {}
+    checked_general_flags: ClassVar[dict[int, list]] = {}
     ram_mem_domain = "Main RAM"
     goal_complete = False
     bag_given = False
@@ -47,14 +47,14 @@ class EoSClient(BizHawkClient):
     skypeaks_open = 0
     aegis_seals = 0
     dialga_complete = False
-    # item_boxes_collected: List[ItemData] = []
+    # item_boxes_collected: list[ItemData] = []
     random: Random = Random()
     outside_deathlink = 0
     deathlink_sender = ""
     deathlink_message: str = ""
     item_box_count = 0
-    hint_loc = []
-    hints_hinted: List[int] = []
+    hint_loc : ClassVar[list] = []
+    hints_hinted: ClassVar[list[int]] = []
     client_version = game_version
     hint_issue = False
 
@@ -65,7 +65,7 @@ class EoSClient(BizHawkClient):
         self.local_found_key_items = {}
         self.rom_slot_name = None
         self.seed_verify = False
-        self.eUsed = []
+        self.e_used = []
         self.room = 0
         self.local_events = []
 
@@ -122,7 +122,7 @@ class EoSClient(BizHawkClient):
         ctx.auth = self.player_name
 
     def on_package(self, ctx, cmd, args) -> None:
-        logger = logging.getLogger("Client")
+        #logger = logging.getLogger("Client")
 
         if cmd == "RoomInfo":
             ctx.seed_name = args["seed_name"]
@@ -166,7 +166,7 @@ class EoSClient(BizHawkClient):
                     if ctx.slot_data["ServerVersion"] != self.client_version:
                         self.logger.info(
                             "The server version is different from the client version. You might still be able to play "
-                            + "but there may be unsolvable issues that come up."
+                             "but there may be unsolvable issues that come up."
                         )
                     self.logger.info(
                         "The version the host generated from is Explorers of Sky " + ctx.slot_data["ServerVersion"]
@@ -174,17 +174,17 @@ class EoSClient(BizHawkClient):
                 except IndexError:
                     self.logger.info(
                         "You are playing on a server version older than 0.3.1 so a server version cannot be found"
-                        + " OR something else went wrong"
+                         " OR something else went wrong"
                     )
                 except TypeError:
                     self.logger.info(
                         "You are playing on a server version older than 0.3.1 so a server version cannot be found"
-                        + " OR something else went wrong"
+                         " OR something else went wrong"
                     )
                 except KeyError:
                     self.logger.info(
                         "You are playing on a server version older than 0.3.1 so a server version cannot be found"
-                        + " OR something else went wrong"
+                         " OR something else went wrong"
                     )
                 self.logger.info(
                     "You are currently playing on the Archipelago Pokemon Mystery Dungeon: Explorer's of Sky version "
@@ -274,8 +274,8 @@ class EoSClient(BizHawkClient):
                 )
                 await asyncio.sleep(0.1)
 
-            item_boxes_collected: List[Dict] = []
-            legendaries_recruited: List[Dict] = []
+            item_boxes_collected: list[dict] = []
+            legendaries_recruited: list[dict] = []
             open_list_total_offset: int = await self.load_script_variable_raw(0x4F, ctx)
             conquest_list_total_offset: int = await self.load_script_variable_raw(0x52, ctx)
             scenario_balance_offset = await self.load_script_variable_raw(0x13, ctx)
@@ -441,8 +441,8 @@ class EoSClient(BizHawkClient):
             if int.from_bytes(scenario_main_list) == 0:
                 return
             # is_running = await self.is_game_running(ctx)
-            LOADED_OVERLAY_GROUP_1 = 0xAFAD4
-            overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
+            loaded_overlay_group_1 = 0xAFAD4
+            overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(loaded_overlay_group_1, 8, self.ram_mem_domain)])
             group1 = int.from_bytes(overlay_groups[0][0:4], "little")
             group2 = int.from_bytes(overlay_groups[0][4:8], "little")
             if group2 == 0x2:
@@ -456,31 +456,31 @@ class EoSClient(BizHawkClient):
                 self.macguffin_unlock_amount = ctx.slot_data["ShardFragmentAmount"]
 
             # read the state of the dungeon lists
-            open_list: array.array[int] = array.array("i", [item for item in read_state[1]])
-            conquest_list: array.array[int] = array.array("i", [item for item in read_state[0]])
-            scenario_balance_byte = array.array("i", [item for item in read_state[2]])
-            performance_progress_bitfield: array.array[int] = array.array("i", [item for item in read_state[3]])
-            scenario_subx_bitfield: array.array[int] = array.array("i", [item for item in read_state[4]])
+            open_list: array.array[int] = array.array("i", list(read_state[1]))
+            conquest_list: array.array[int] = array.array("i", list(read_state[0]))
+            #scenario_balance_byte = array.array("i", list(read_state[2])) # unused
+            performance_progress_bitfield: array.array[int] = array.array("i", list(read_state[3]))
+            scenario_subx_bitfield: array.array[int] = array.array("i", list(read_state[4]))
             received_index = int.from_bytes(read_state[5])
             special_episode_bitfield = int.from_bytes(read_state[7])
-            scenario_main_bitfield_list: array.array[int] = array.array("i", [item for item in read_state[8]])
-            item_backup_bytes: array.array[int] = array.array("i", [item for item in read_state[9]])
+            scenario_main_bitfield_list: array.array[int] = array.array("i", list(read_state[8]))
+            #item_backup_bytes: array.array[int] = array.array("i", list(read_state[9])) # unused
             scenario_talk_bitfield_248_list = int.from_bytes(read_state[10])
             event_local_num = int.from_bytes(read_state[12])
-            dungeon_enter_index = int.from_bytes(read_state[11], "little")
-            deathlink_receiver_bit = int.from_bytes(read_state[13])
+            # dungeon_enter_index = int.from_bytes(read_state[11], "little") # unused
+            # deathlink_receiver_bit = int.from_bytes(read_state[13]) # unused
             deathlink_sender_bit = int.from_bytes(read_state[14])
             deathlink_message_from_sky = ""
             # deathlink_ally_death_message = read_state[16].decode("cp1252")
             # deathlink_ally_name = read_state[17].decode("cp1252")
-            hintable_items = array.array("i", [item for item in read_state[18]])
+            hintable_items = array.array("i", list(read_state[18]))
             bank_gold_amount = int.from_bytes(read_state[19], "little")
             player_gold_amount = int.from_bytes(read_state[20], "little")
             locs_to_send = set()
-            relic_shards_amount = int.from_bytes(read_state[21])
-            instruments_amount = int.from_bytes(read_state[22])
+            # relic_shards_amount = int.from_bytes(read_state[21]) # unused
+            # instruments_amount = int.from_bytes(read_state[22]) # unused
 
-            spinda_drinks_ram = array.array("i", [item for item in read_state[24]])
+            spinda_drinks_ram = array.array("i", list(read_state[24]))
             scenario_talk_bitfield_240_list = int.from_bytes(read_state[25])
             bag_upgrade_value = int.from_bytes(read_state[26])
             recycle_amount = int.from_bytes(read_state[27], "little")
@@ -516,7 +516,7 @@ class EoSClient(BizHawkClient):
                             sky_peaks_ram += 1
                             self.logger.info(
                                 "Something Weird Happened Please tell Cryptic if you see this "
-                                + "\nThe Sky Peak count from AP was "
+                                 "\nThe Sky Peak count from AP was "
                                 + str(old_sky_peaks)
                                 + "\nAnd the Sky Peaks read from the rom was: "
                                 + str(rom_old_sky)
@@ -529,7 +529,7 @@ class EoSClient(BizHawkClient):
                             sky_peaks_ram += 1
                             self.logger.info(
                                 "The Rom decided to be lower than the AP count probably due to save states "
-                                + "\nThe Sky Peak count from AP is "
+                                 "\nThe Sky Peak count from AP is "
                                 + str(self.skypeaks_open)
                                 + "\nAnd the Sky Peaks written to the ROM should now be: "
                                 + str(sky_peaks_ram)
@@ -876,29 +876,28 @@ class EoSClient(BizHawkClient):
                     if received_index + i <= self.item_box_count:
                         await self.update_received_items(ctx, received_items_offset, received_index, i)
                         continue
-                    else:
-                        item_boxes_collected += [
-                            {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}
-                        ]
-                        self.item_box_count = received_index + i
-                        if "Instrument" in item_data.group:
-                            # JUST RECOUNT THE INSTRUMENTS GOSH DARN IT
+                    item_boxes_collected += [
+                        {"name": item_data.name, "id": item_data.id, "memory_offset": item_data.memory_offset}
+                    ]
+                    self.item_box_count = received_index + i
+                    if "Instrument" in item_data.group:
+                        # JUST RECOUNT THE INSTRUMENTS GOSH DARN IT
 
-                            items_received = ctx.items_received
-                            instrument_count = 0
-                            for item in items_received:
-                                if 526 <= item.item <= 545:
-                                    instrument_count += 1
+                        items_received = ctx.items_received
+                        instrument_count = 0
+                        for item in items_received:
+                            if 526 <= item.item <= 545:
+                                instrument_count += 1
 
-                            if instrument_count >= 20:
-                                self.logger.info("Max Instrument count reached")
-                                instrument_count = 20
-                            self.instruments_collected = instrument_count
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [(instruments_offset, int.to_bytes(instrument_count), self.ram_mem_domain)],
-                            )
-                            self.logger.info("The Instrument count from AP is " + str(instrument_count))
+                        if instrument_count >= 20:
+                            self.logger.info("Max Instrument count reached")
+                            instrument_count = 20
+                        self.instruments_collected = instrument_count
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [(instruments_offset, int.to_bytes(instrument_count), self.ram_mem_domain)],
+                        )
+                        self.logger.info("The Instrument count from AP is " + str(instrument_count))
 
                     await ctx.send_msgs(
                         [
@@ -1050,13 +1049,13 @@ class EoSClient(BizHawkClient):
 
             # Check for set location flags in general bitfield
             for byte_m, byte in enumerate(scenario_subx_bitfield):
-                subX_start_id = 300
+                subx_start_id = 300
                 for k in range(8):
                     if k in self.checked_general_flags[byte_m]:
                         continue
                     if ((byte >> k) & 1) == 1:
                         self.checked_general_flags[byte_m] += [k]
-                        bit_number_gen = (byte_m * 8) + k + subX_start_id
+                        bit_number_gen = (byte_m * 8) + k + subx_start_id
                         if bit_number_gen in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_gen].id)
 
@@ -1066,28 +1065,27 @@ class EoSClient(BizHawkClient):
                 mission_status_read = await bizhawk.read(
                     ctx.bizhawk_ctx, [(mission_status_offset, 384, self.ram_mem_domain)]
                 )
-                mission_status = array.array("i", [item for item in mission_status_read[0]])
+                mission_status = array.array("i", list(mission_status_read[0]))
                 for i in range(192):
                     if i not in location_dict_by_start_id:
                         continue
-                    else:
-                        if "Mission" in location_dict_by_start_id[i].group:
-                            location_name = location_dict_by_start_id[i].name
-                            location_id = location_dict_by_start_id[i].id
-                            # dungeons_complete = dungeon_missions_dict[location_name]
-                            current_missions_completed = mission_status[2 * i]
+                    if "Mission" in location_dict_by_start_id[i].group:
+                        #location_name = location_dict_by_start_id[i].name # unused
+                        location_id = location_dict_by_start_id[i].id
+                        # dungeons_complete = dungeon_missions_dict[location_name]
+                        current_missions_completed = mission_status[2 * i]
 
-                            if "Early" in location_dict_by_start_id[i].group:
-                                for k in range(current_missions_completed):
-                                    if k < ctx.slot_data["EarlyMissionsAmount"]:
-                                        locs_to_send.add(location_id + mission_start_id + (100 * location_id) + k)
-                                        # dungeon_missions_dict[location_name] += 1
-                                        # location.id + mission_start_id + (100 * i) + j`
+                        if "Early" in location_dict_by_start_id[i].group:
+                            for k in range(current_missions_completed):
+                                if k < ctx.slot_data["EarlyMissionsAmount"]:
+                                    locs_to_send.add(location_id + mission_start_id + (100 * location_id) + k)
+                                    # dungeon_missions_dict[location_name] += 1
+                                    # location.id + mission_start_id + (100 * i) + j`
 
-                            elif "Late" in location_dict_by_start_id[i].group:
-                                for k in range(current_missions_completed):
-                                    if k < ctx.slot_data["LateMissionsAmount"]:
-                                        locs_to_send.add(location_id + mission_start_id + (100 * location_id) + k)
+                        elif "Late" in location_dict_by_start_id[i].group:
+                            for k in range(current_missions_completed):
+                                if k < ctx.slot_data["LateMissionsAmount"]:
+                                    locs_to_send.add(location_id + mission_start_id + (100 * location_id) + k)
                                         # dungeon_missions_dict[location_name] += 1
                                         # location.id + mission_start_id + (100 * i) + j
                 # await (ctx.send_msgs(
@@ -1116,32 +1114,31 @@ class EoSClient(BizHawkClient):
                 mission_status_read = await bizhawk.read(
                     ctx.bizhawk_ctx, [(mission_status_offset, 384, self.ram_mem_domain)]
                 )
-                mission_status = array.array("i", [item for item in mission_status_read[0]])
+                mission_status = array.array("i", list(mission_status_read[0]))
                 # checking every dungeon
                 for i in range(192):
                     # check to make sure it's the dungeon start not a random place in the dungeon
                     if i not in location_dict_by_start_id:
                         continue
-                    else:
-                        # Make sure the dungeon we are checking has missions
-                        if "Mission" in location_dict_by_start_id[i].group:
-                            location_name = location_dict_by_start_id[i].name
-                            location_id = location_dict_by_start_id[i].id
-                            # grab the current status of the dungeon outlaws
-                            # dungeons_complete = dungeon_outlaws_dict[location_name]
-                            # grab from rom how many missions are complete for the specified dungeon
-                            current_missions_completed = mission_status[2 * i + 1]
+                    # Make sure the dungeon we are checking has missions
+                    if "Mission" in location_dict_by_start_id[i].group:
+                        # location_name = location_dict_by_start_id[i].name # unused
+                        location_id = location_dict_by_start_id[i].id
+                        # grab the current status of the dungeon outlaws
+                        # dungeons_complete = dungeon_outlaws_dict[location_name]
+                        # grab from rom how many missions are complete for the specified dungeon
+                        current_missions_completed = mission_status[2 * i + 1]
 
-                            if "Early" in location_dict_by_start_id[i].group:
-                                for k in range(current_missions_completed):
-                                    if k < ctx.slot_data["EarlyOutlawsAmount"]:
-                                        locs_to_send.add(location_id + mission_start_id + 50 + (100 * location_id) + k)
-                                        # dungeon_outlaws_dict[location_name] += 1
-                                        # location.id + mission_start_id + (100 * i) + j`
-                            elif "Late" in location_dict_by_start_id[i].group:
-                                for k in range(current_missions_completed):
-                                    if k < ctx.slot_data["LateOutlawsAmount"]:
-                                        locs_to_send.add(location_id + mission_start_id + 50 + (100 * location_id) + k)
+                        if "Early" in location_dict_by_start_id[i].group:
+                            for k in range(current_missions_completed):
+                                if k < ctx.slot_data["EarlyOutlawsAmount"]:
+                                    locs_to_send.add(location_id + mission_start_id + 50 + (100 * location_id) + k)
+                                    # dungeon_outlaws_dict[location_name] += 1
+                                    # location.id + mission_start_id + (100 * i) + j`
+                        elif "Late" in location_dict_by_start_id[i].group:
+                            for k in range(current_missions_completed):
+                                if k < ctx.slot_data["LateOutlawsAmount"]:
+                                    locs_to_send.add(location_id + mission_start_id + 50 + (100 * location_id) + k)
                                         # dungeon_outlaws_dict[location_name] += 1
                                         # location.id + mission_start_id + (100 * i) + j
                 # await (ctx.send_msgs(
@@ -1368,7 +1365,7 @@ class EoSClient(BizHawkClient):
 
                         loot_table = lootbox_table[item_data["name"]]
 
-                        items_in_box = [item for item in loot_table]
+                        items_in_box = list(loot_table)
                         loot_chosen = loot_table[self.random.choice(seq=items_in_box)]
                         write_byte3 = [loot_chosen % 256, loot_chosen // 256]
                         scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
@@ -1507,7 +1504,7 @@ class EoSClient(BizHawkClient):
 
                         loot_table = lootbox_table[item_data["name"]]
 
-                        items_in_box = [item for item in loot_table]
+                        items_in_box = list(loot_table)
                         loot_chosen = loot_table[self.random.choice(seq=items_in_box)]
                         write_byte3 = [loot_chosen % 256, loot_chosen // 256]
                         scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
@@ -1678,8 +1675,8 @@ class EoSClient(BizHawkClient):
         )
 
     async def is_game_running(self, ctx: "BizHawkClientContext") -> bool:
-        LOADED_OVERLAY_GROUP_1 = 0xAF234
-        overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(LOADED_OVERLAY_GROUP_1, 8, self.ram_mem_domain)])
+        loaded_overlay_group_1 = 0xAF234
+        overlay_groups = await bizhawk.read(ctx.bizhawk_ctx, [(loaded_overlay_group_1, 8, self.ram_mem_domain)])
         group1 = int.from_bytes(overlay_groups[0][0:4], "little")
         group2 = int.from_bytes(overlay_groups[0][4:8], "little")
         if group2 == 0x2:

@@ -1,9 +1,9 @@
 import json
+from typing import TYPE_CHECKING, ClassVar
 
-from typing import TYPE_CHECKING
-from BaseClasses import Item, Location
+from BaseClasses import Location
 from settings import get_settings
-from worlds.Files import APProcedurePatch, APTokenMixin, APTokenTypes, APPatchExtension
+from worlds.Files import APPatchExtension, APProcedurePatch, APTokenMixin, APTokenTypes
 
 if TYPE_CHECKING:
     from . import EOSWorld
@@ -11,8 +11,7 @@ if TYPE_CHECKING:
 
 def get_base_rom_as_bytes() -> bytes:
     with open(get_settings().pmd_eos_options.rom_file, "rb") as infile:
-        base_rom_bytes = bytes(infile.read())
-    return base_rom_bytes
+        return bytes(infile.read())
 
 
 class EOSPathExtension(APPatchExtension):
@@ -26,7 +25,7 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
     patch_file_ending = ".apeos"
     result_file_ending = ".nds"
     # different procedures to apply. Can always add more but have only needed these two so far
-    procedure = [
+    procedure : ClassVar = [
         ("apply_bsdiff4", ["base_patch.bsdiff4"]),
         ("apply_tokens", ["token_data.bin"]),
     ]
@@ -52,7 +51,7 @@ def write_tokens(
     # macguffin_max_offset = 0x36F9E
     # spinda_drinks_offset = 0x37146
     hintable_items_offset = 3303424  # number from Heckas makefile code
-    custom_save_area_offset = ov36_mem_loc + 0x8F80
+    #custom_save_area_offset = ov36_mem_loc + 0x8F80 # unused
     # main_game_unlocked_offset = ov36_mem_loc + 0x37148  # custom_save_area_offset + 0x2A7
     dimensional_scream_who_offset = hintable_items_offset + 0x4
     dimensional_scream_what_offset = hintable_items_offset + 0x202
@@ -251,12 +250,10 @@ def find_ov36_mem_location() -> int:
     # Not currently used. Was an attempt to search the entire rom for the identifier and return where it found it
     # Would simplify having to change the start value of ov 36 every time the base patch changes
     rom = get_base_rom_as_bytes()
-    test = range(0x296000, 0x300000)
     for byte_i in range(0x297000, 0x300000):
         # , byte in enumerate(rom)
-        intest = 0x297000 / 2
         hex_search_value = 0xBAADF00D
-        hex_searched = int.from_bytes((rom[byte_i : (byte_i + 4)]))
-        test2 = rom[byte_i : (byte_i + 4)]
+        hex_searched = int.from_bytes(rom[byte_i : (byte_i + 4)])
         if hex_searched == hex_search_value:
             return byte_i
+    return 0

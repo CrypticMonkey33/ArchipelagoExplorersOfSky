@@ -1,18 +1,18 @@
-from typing import List, NamedTuple
+from typing import NamedTuple
 
 
 class SubXBitfield(NamedTuple):
     bitfield_bit_number: int
-    subX_area: int
-    subX_byte: int
-    subX_bit_number: int
+    subx_area: int
+    subx_byte: int
+    subx_bit_number: int
     flag_definition: str  # name
-    prerequisites: List[str]  # What item / state is needed for this check to be accessible
+    prerequisites: list[str]  # What item / state is needed for this check to be accessible
     default_item: str  # what item is normally there?
     classification: str = ""  # internal group name for referencing in the rules or initialization phases
 
 
-subX_table = [
+subx_table = [
     SubXBitfield(0, 1, 0, 0, "Bag Upgrade 1", [], "Bag Upgrade", "ProgressiveBagUpgrade"),
     SubXBitfield(1, 1, 0, 1, "Bag Upgrade 2", ["Mt. Bristle"], "Bag Upgrade", "ProgressiveBagUpgrade"),
     SubXBitfield(2, 1, 0, 2, "Bag Upgrade 3", ["Apple Woods"], "Bag Upgrade", "ProgressiveBagUpgrade"),

@@ -1,15 +1,16 @@
-import typing
 from dataclasses import dataclass
+from typing import ClassVar
+
 from Options import (
-    DefaultOnToggle,
-    Toggle,
     Choice,
-    PerGameCommonOptions,
-    StartInventoryPool,
-    NamedRange,
-    Range,
     DeathLink,
+    DefaultOnToggle,
+    NamedRange,
     OptionSet,
+    PerGameCommonOptions,
+    Range,
+    StartInventoryPool,
+    Toggle,
 )
 
 
@@ -31,7 +32,7 @@ class FragmentShards(NamedRange):
 
     range_start = 4
     range_end = 15
-    special_range_names = {"easy": 4, "normal": 6, "hard": 8, "extreme": 10}
+    special_range_names : ClassVar[dict[str, int]] = {"easy": 4, "normal": 6, "hard": 8, "extreme": 10}
     default = 6
 
 
@@ -41,7 +42,7 @@ class ExtraShards(NamedRange):
 
     range_start = 0
     range_end = 20
-    special_range_names = {"easy": 16, "normal": 12, "hard": 8, "extreme": 0}
+    special_range_names : ClassVar[dict[str, int]] = {"easy": 16, "normal": 12, "hard": 8, "extreme": 0}
     default = 12
 
 
@@ -52,7 +53,7 @@ class RequiredInstruments(NamedRange):
 
     range_start = 4
     range_end = 15
-    special_range_names = {"easy": 4, "normal": 6, "hard": 8, "extreme": 10}
+    special_range_names : ClassVar[dict[str, int]] = {"easy": 4, "normal": 6, "hard": 8, "extreme": 10}
     default = 6
 
 
@@ -63,7 +64,7 @@ class ExtraInstruments(NamedRange):
 
     range_start = 0
     range_end = 20
-    special_range_names = {"easy": 16, "normal": 12, "hard": 8, "extreme": 0}
+    special_range_names : ClassVar[dict[str, int]] = {"easy": 16, "normal": 12, "hard": 8, "extreme": 0}
     default = 12
 
 
@@ -73,7 +74,7 @@ class EarlyMissionChecks(NamedRange):
 
     range_start = 0
     range_end = 31
-    special_range_names = {"off": 0, "some": 4, "lots": 10, "insanity": 31}
+    special_range_names : ClassVar[dict[str, int]] = {"off": 0, "some": 4, "lots": 10, "insanity": 31}
     default = 4
 
 
@@ -83,7 +84,7 @@ class LateMissionChecks(NamedRange):
 
     range_start = 0
     range_end = 31
-    special_range_names = {"off": 0, "some": 4, "lots": 10, "insanity": 31}
+    special_range_names : ClassVar[dict[str, int]] = {"off": 0, "some": 4, "lots": 10, "insanity": 31}
     default = 4
 
 
@@ -93,7 +94,7 @@ class EarlyOutlawChecks(NamedRange):
 
     range_start = 0
     range_end = 31
-    special_range_names = {"off": 0, "some": 2, "lots": 10, "insanity": 31}
+    special_range_names : ClassVar[dict[str, int]] = {"off": 0, "some": 2, "lots": 10, "insanity": 31}
     default = 2
 
 
@@ -103,7 +104,7 @@ class LateOutlawChecks(NamedRange):
 
     range_start = 0
     range_end = 31
-    special_range_names = {"off": 0, "some": 2, "lots": 10, "insanity": 31}
+    special_range_names : ClassVar[dict[str, int]] = {"off": 0, "some": 2, "lots": 10, "insanity": 31}
     default = 2
 
 
@@ -113,7 +114,7 @@ class SpindaDrinkEvents(NamedRange):
     default_name = "Spinda Drink Events"
     range_start = 0
     range_end = 20
-    special_range_names = {"few": 5, "some": 10, "lots": 15, "all": 20}
+    special_range_names : ClassVar[dict[str, int]] = {"few": 5, "some": 10, "lots": 15, "all": 20}
     default = 5
 
 
@@ -123,7 +124,7 @@ class SpindaBasicDrinks(NamedRange):
     display_name = "Spinda Drinks"
     range_start = 0
     range_end = 20
-    special_range_names = {"few": 5, "some": 10, "lots": 15, "all": 20}
+    special_range_names : ClassVar[dict[str, int]] = {"few": 5, "some": 10, "lots": 15, "all": 20}
     default = 5
 
 
@@ -271,7 +272,7 @@ class DojoDungeons(NamedRange):
     display_name = "Dojo Dungeons Randomized"
     range_start = 0
     range_end = 10
-    special_range_names = {
+    special_range_names : ClassVar[dict[str, int]] = {
         "all_open": 10,
         "all_random": 0,
         "start_with_three": 3,
@@ -294,11 +295,12 @@ class LegendariesInPool(Range):
 
 class AllowedLegendaries(OptionSet):
     """Set which Legendaries will be available for the item pool as recruits.
-    NOTE: legendaries normally found in dungeons are not yet randomized. This only includes legendary recruits at the ends of dungeons
+    NOTE: Legendaries normally found in dungeons are not yet randomized.
+    This only includes Legendary recruits at the ends of dungeons
     """
 
     display_name = "Allowed Legendary Recruits"
-    valid_keys = [
+    valid_keys : ClassVar[list[str]] = [
         "Regirock",
         "Regice",
         "Registeel",

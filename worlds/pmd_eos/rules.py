@@ -1,8 +1,9 @@
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
-from worlds.generic.Rules import set_rule, add_rule, forbid_item
-from .locations import EOS_location_table, EOSLocation, location_Dict_by_id
-from .rom_type_definitions import subX_table
+from worlds.generic.Rules import add_rule, forbid_item, set_rule
+
+from .locations import EOS_location_table, location_Dict_by_id
+from .rom_type_definitions import subx_table
 
 if TYPE_CHECKING:
     from . import EOSWorld
@@ -10,7 +11,6 @@ if TYPE_CHECKING:
 
 def set_rules(world: "EOSWorld", excluded):
     player = world.player
-    options = world.options
 
     special_episodes_rules(world, player)
     subx_rules(world, player)
@@ -271,7 +271,7 @@ def dungeon_locations_behind_items(world, player):
                     lambda state: state.has("Main Game Unlock", player),
                 )
             continue
-        elif "Early" in location.group:
+        if "Early" in location.group:
             set_rule(
                 world.multiworld.get_location(location.name, player),
                 lambda state, ln=location.name: state.has(ln, player),
@@ -461,7 +461,7 @@ def dungeon_locations_behind_items(world, player):
 
 
 def mission_rules(world, player):
-    for i, location in enumerate(EOS_location_table):
+    for _, location in enumerate(EOS_location_table):
         if "Mission" not in location.group:
             continue
 
@@ -479,7 +479,7 @@ def mission_rules(world, player):
                     )
             continue
 
-        elif location.classification == "EarlyDungeonComplete":
+        if location.classification == "EarlyDungeonComplete":
             for j in range(world.options.early_mission_checks.value):
                 set_rule(
                     world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
@@ -657,7 +657,7 @@ def mission_rules(world, player):
 
 
 def subx_rules(world, player):
-    for item in subX_table:
+    for item in subx_table:
         if item.flag_definition == "Unused" or item.default_item == "ignore":
             continue
         if world.options.goal.value == 0 and item.classification in [
@@ -825,5 +825,4 @@ def subx_rules(world, player):
 def special_episode_sanity_no_exclusion(world, player) -> bool:
     if world.options.special_episode_sanity.value == 1 and not world.options.exclude_special.value:
         return True
-    else:
-        return False
+    return False

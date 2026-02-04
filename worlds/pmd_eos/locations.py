@@ -1,7 +1,7 @@
-import typing
+from typing import ClassVar
 
-from typing import Dict, List
 from BaseClasses import Location
+
 from .rom_type_definitions import subX_table
 
 
@@ -11,7 +11,7 @@ class LocationData:
     dungeon_length: int = 1
     id: int = -1
     dungeon_start_id: int = -1
-    group: list[str] = [""]
+    group: ClassVar[list[str]] = [""]
 
     def __init__(self, classification, dungeon_length, name, id, dungeon_start_id, group=None):
         if group is None:
@@ -28,12 +28,12 @@ class EOSLocation(Location):
     game: str = "Pokémon Mystery Dungeon: Explorers of Sky"
 
 
-def get_location_table_by_groups() -> Dict[str, set[str]]:
+def get_location_table_by_groups() -> dict[str, set[str]]:
     # groups: Set[str] = set()
-    new_dict: Dict[str, set[str]] = {}
-    for location_name in location_table:
-        if location_table[location_name].group:
-            for group in location_table[location_name].group:
+    new_dict: dict[str, set[str]] = {}
+    for location_name, location_data in location_table.items():
+        if location_data.group:
+            for group in location_data.group:
                 # groups.add(group)
                 if group in new_dict:
                     new_dict[group].add(location_name)
@@ -45,9 +45,9 @@ def get_location_table_by_groups() -> Dict[str, set[str]]:
     return new_dict
 
 
-def get_subx_table() -> List[LocationData]:
-    new_list: List[LocationData] = []
-    subX_start_id = 300
+def get_subx_table() -> list[LocationData]:
+    new_list: list[LocationData] = []
+    subx_start_id = 300
     for item in subX_table:
         if item.flag_definition == "Unused" or item.default_item == "ignore":
             continue
@@ -55,7 +55,7 @@ def get_subx_table() -> List[LocationData]:
             classification=item.classification,
             dungeon_length=0,
             name=item.flag_definition,
-            id=subX_start_id + item.bitfield_bit_number,
+            id=subx_start_id + item.bitfield_bit_number,
             dungeon_start_id=0,
             group=["SubX"],
         )
@@ -64,11 +64,11 @@ def get_subx_table() -> List[LocationData]:
     return new_list
 
 
-def get_mission_location_table() -> typing.List[LocationData]:
+def get_mission_location_table() -> list[LocationData]:
     mission_start_id = 1000
-    new_list: typing.List[LocationData] = []
+    new_list: list[LocationData] = []
 
-    for location in EOS_location_table:
+    for location in eos_location_table:
         if location.name == "Beach Cave" and "Mission" in location.group:
             for j in range(50):
                 location_name: str = f"{location.name} Mission {j + 1}"
@@ -106,12 +106,12 @@ def get_mission_location_table() -> typing.List[LocationData]:
     return new_list
 
 
-def get_location_table_by_start_id() -> Dict[int, set[str]]:
+def get_location_table_by_start_id() -> dict[int, set[str]]:
     # groups: Set[str] = set()
-    new_dict: Dict[int, set[str]] = {}
-    for location_name in location_table:
-        if location_table[location_name].group:
-            for group in location_table[location_name].group:
+    new_dict: dict[int, set[str]] = {}
+    for location_name, location_data in location_table.items():
+        if location_data.group:
+            for group in location_data.group:
                 # groups.add(group)
                 if group in new_dict:
                     new_dict[group].add(location_name)
@@ -126,8 +126,7 @@ def get_location_table_by_start_id() -> Dict[int, set[str]]:
 subx_location_list = get_subx_table()
 subx_location_dict = {location.name: location for location in subx_location_list}
 
-EOS_location_table: typing.List[LocationData] = [
-    # "Test Dungeon", 0,  # Should be unused
+eos_location_table: list[LocationData] = [
     LocationData("EarlyDungeonComplete", 2, "Beach Cave", 2, 1, ["Mission", "Early"]),
     LocationData("EarlyDungeonComplete", 1, "Drenched Bluff", 3, 3, ["Mission", "Early"]),
     LocationData("EarlyDungeonComplete", 2, "Mt. Bristle", 5, 4, ["Mission", "Early"]),  # 2 subareas
@@ -159,7 +158,6 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("LateDungeonComplete", 3, "Crevice Cave", 49, 47, ["Mission", "Late"]),  # 3 subareas
     LocationData("LateDungeonComplete", 1, "Surrounded Sea", 50, 50, ["Mission", "Late"]),
     LocationData("LateDungeonComplete", 3, "Miracle Sea", 52, 51, ["Mission", "Late"]),  # 3 subareas
-    # LocationData("DungeonComplete", 8,  "Ice Aegis Cave", 60,  54),   # 8 subareas             we hate aegis cave. also it's kinda broken rn so we're gonna remove it for now
     LocationData("LateDungeonComplete", 1, "Ice Aegis Cave", 54, 54, ["Late", "Aegis", "Optional"]),
     LocationData("LateDungeonComplete", 1, "Regice Chamber", 55, 55, ["Late", "Aegis", "Optional"]),
     LocationData("LateDungeonComplete", 1, "Rock Aegis Cave", 56, 56, ["Late", "Aegis", "Optional"]),
@@ -341,23 +339,24 @@ EOS_location_table: typing.List[LocationData] = [
     # LocationData("Instrument", 0, "Get Rock Horn", 339, 0),
     # LocationData("Instrument", 0, "Get Sky Melodica", 341, 0),
     # LocationData("Instrument", 0, "Get Grass Cornet", 343, 0),
-] + subx_location_list
+    *subx_location_list
+]
 
 
-location_Dict_by_id: typing.Dict[int, LocationData] = {location.id: location for location in EOS_location_table}
-location_table: Dict[str, LocationData] = {location.name: location for location in EOS_location_table}
+location_dict_by_id: dict[int, LocationData] = {location.id: location for location in eos_location_table}
+location_table: dict[str, LocationData] = {location.name: location for location in eos_location_table}
 
 location_table.update(subx_location_dict)
 
 location_table_by_groups = get_location_table_by_groups()
 
-location_dict_by_start_id: typing.Dict[int, LocationData] = {
-    location.dungeon_start_id: location for location in EOS_location_table
+location_dict_by_start_id: dict[int, LocationData] = {
+    location.dungeon_start_id: location for location in eos_location_table
 }
 
 mission_location_table = get_mission_location_table()
 
-expanded_EOS_location_table: typing.List[LocationData] = []
-expanded_EOS_location_table.extend(EOS_location_table)
-# expanded_EOS_location_table.extend(subx_location_list)
-expanded_EOS_location_table.extend(mission_location_table)
+expanded_eos_location_table: list[LocationData] = []
+expanded_eos_location_table.extend(eos_location_table)
+# expanded_eos_location_table.extend(subx_location_list)
+expanded_eos_location_table.extend(mission_location_table)
