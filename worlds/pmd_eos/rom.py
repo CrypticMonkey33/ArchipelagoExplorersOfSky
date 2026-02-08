@@ -5,6 +5,8 @@ from BaseClasses import Location
 from settings import get_settings
 from worlds.Files import APPatchExtension, APProcedurePatch, APTokenMixin, APTokenTypes
 
+from .rom_type_definitions import RomSettings
+
 if TYPE_CHECKING:
     from . import EOSWorld
 
@@ -171,76 +173,36 @@ def write_tokens(
     # Bake seed name into ROM
     patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + seed_offset, seed)
 
-    write_byte = 0
-    late_missions_count = 0
-    late_outlaws_count = 0
+    # Take the options and bake them into the rom, so they can be applied on runtime
+    if world.options.special_episode_sanity.value != 1:
+        starting_se = 0
+    if world.options.deathlink.value:
+        deathlink = 1 + world.options.deathlink_type.value
+    else:
+        deathlink = 0
     if world.options.goal.value == 1:
         late_missions_count = world.options.late_mission_checks.value
         late_outlaws_count = world.options.late_outlaw_checks.value
-    elif world.options.goal.value == 0:
-        write_byte = write_byte | (0x1 << 17)
+    else:
+        late_missions_count = 0
+        late_outlaws_count = 0
 
-    instruments_required = world.options.req_instruments.value
-    macguffins_required = world.options.required_fragments.value
+    flags = 0
+    flags |= world.options.early_mission_floors.value
+    flags |= world.options.move_shortcuts.value << 1
+    flags |= world.options.type_sanity.value << 2
+    flags |= world.options.long_location.value << 3
+    flags |= world.options.guest_scaling << 4
 
-    # Take the options and bake them into the rom, so they can be applied on runtime
-
-    write_byte = write_byte | world.options.iq_scaling.value
-    write_byte = write_byte | (world.options.xp_scaling.value << 12)
-
-    write_byte = write_byte | (instruments_required << 52)
-
-    write_byte = write_byte | (macguffins_required << 48)
-    write_byte = write_byte | (world.options.early_mission_checks.value << 19)
-    write_byte = write_byte | (world.options.early_outlaw_checks.value << 27)
-    write_byte = write_byte | (late_missions_count << 35)
-    write_byte = write_byte | (late_outlaws_count << 43)
-    write_byte = write_byte | (world.options.drink_events.value << 56)
-    write_byte = write_byte | (world.options.spinda_drinks.value << 64)
-
-    if world.options.long_location.value == 1:
-        write_byte = write_byte | (0x1 << 18)
-
-    if world.options.early_mission_floors.value:
-        write_byte = write_byte | (0x1 << 4)
-
-    if world.options.move_shortcuts.value:
-        write_byte = write_byte | (0x1 << 5)
-
-    if world.options.level_scale.value == 1:
-        write_byte = write_byte | (0x1 << 24)
-    if world.options.level_scale.value == 2:
-        write_byte = write_byte | (0x1 << 25)
-
-    if world.options.guest_scaling.value:
-        write_byte = write_byte | (0x1 << 26)
-
-    if world.options.type_sanity.value:
-        write_byte = write_byte | (0x1 << 7)
-
-    if world.options.starter_option.value == 1:
-        write_byte = write_byte | (0x1 << 8)
-
-    elif world.options.starter_option.value == 2:
-        write_byte = write_byte | (0x1 << 9)
-
-    elif world.options.starter_option.value == 3:
-        write_byte = write_byte | ((0x1 << 8) + (0x1 << 9))
-
-    if world.options.deathlink.value and world.options.deathlink_type.value == 0:
-        write_byte = write_byte | (0x1 << 11)
-    elif world.options.deathlink.value and world.options.deathlink.value == 1:
-        write_byte = write_byte | (0x1 << 10)
-
-    # if world.options.special_episode_sanity.value == 0:
-    #    write_byte = write_byte | (0x1 << 16)
-    if world.options.special_episode_sanity.value == 1 and starting_se != 0:
-        write_byte = write_byte | (starting_se << 32)
+    settings = RomSettings(world.options.xp_scaling.value, world.options.iq_scaling.value,
+                                world.options.level_scale.value, world.options.goal.value,starting_se, deathlink,
+                                world.options.early_mission_checks.value, world.options.early_outlaw_checks.value,
+                                late_missions_count, late_outlaws_count, world.options.starter_option.value,
+                                world.options.required_fragments.value, world.options.req_instruments.value,
+                                world.options.spinda_drinks.value, world.options.drink_events.value, flags).serialize()
 
     # write the tokens that will be applied and write the token data into the bin for AP
-    patch.write_token(
-        APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset, int.to_bytes(write_byte, length=9, byteorder="little")
-    )
+    patch.write_token(APTokenTypes.WRITE, ov36_mem_loc + ap_settings_offset, settings)
 
     patch.write_file("token_data.bin", patch.get_token_binary())
     # testnum = find_ov36_mem_location()

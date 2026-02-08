@@ -1,4 +1,6 @@
-from typing import NamedTuple
+from typing import ClassVar, NamedTuple
+
+from ctype import LittleEndianStructure, _CData, c_uint8
 
 
 class SubXBitfield(NamedTuple):
@@ -261,3 +263,34 @@ subx_table = [
     SubXBitfield(126, 8, 1, 6, "Unused", ["-"], "-"),
     SubXBitfield(127, 8, 1, 7, "Team Name Location", ["Main Game"], "Team Name Trap", "Team Name"),
 ]
+
+class RomSettings(LittleEndianStructure):
+    _pack_: ClassVar[int] = 1
+    _fields_: ClassVar[list[tuple[str, type[_CData]]]] = [
+        ("exp_multiplier", c_uint8),
+        ("iq_multiplier", c_uint8),
+        ("level_scaling_mode", c_uint8),
+        ("goal", c_uint8),
+        ("starting_episode", c_uint8),
+        ("death_link_type", c_uint8),
+        ("total_jobs_early", c_uint8),
+        ("total_outlaws_early", c_uint8),
+        ("total_jobs_late", c_uint8),
+        ("total_outlaws_late", c_uint8),
+        ("starter_options", c_uint8),
+        ("required_relic_fragment_shards", c_uint8),
+        ("required_instruments", c_uint8),
+        ("cafe_drink_max", c_uint8),
+        ("cafe_event_max", c_uint8),
+        ("flags", c_uint8),
+    ]
+
+    # Flags bit layout:
+    # 0b00000001 - earlyMissionFloors
+    # 0b00000010 - moveShortcuts
+    # 0b00000100 - typesanity
+    # 0b00001000 - longLocationsOn
+    # 0b00010000 - levelScaleGuests
+
+    def serialize(self) -> bytes:
+        return bytes(self)
