@@ -164,12 +164,12 @@ Talk to your partner in the overworld (press R), and select "Add To Team". This 
 ___
 
 ### Can I use SkyTemple with this?
-Yes! Many ROMside changes were made with SkyTemple, so we've strived to keep the ROM as compatible as possible. A very common usage of SkyTemple is to add custom starters, including species not present in the vanilla game, and you can do that here without issue. That being said, we never make any guarantees for compatibility, so modifications are made at your own risk. ASM patches are the main place you may find incompatibilities; ExpandPokeList and ActorAndLevelLoader are some examples known to cause crashes. Do keep in mind that running your .apeos patch will undo any external modifications, so after modifying your patched ROM, you must manually connect (see "Connect client to emulator" ).
+Yes! Many ROMside changes were made with SkyTemple, so we've strived to keep the ROM as compatible as possible. A very common usage of [SkyTemple](https://skytemple.org/) is to add custom starters, including species not present in the vanilla game, and you can do that here without issue. That being said, we never make any guarantees for compatibility, so modifications are made at your own risk. ASM patches are the main place you may find incompatibilities; ExpandPokeList and ActorAndLevelLoader are some examples known to cause crashes. Do keep in mind that running your .apeos patch will undo any external modifications, so after modifying your patched ROM, you must manually connect (see "[Connect client to emulator](https://github.com/CrypticMonkey33/ArchipelagoExplorersOfSky/blob/main/worlds/pmd_eos/docs/setup_en.md#connect-client-to-emulator)" ).
 
 ___
 
 ### Can I use the SkyTemple Randomizer with this?
-Mostly! All the same warnings as above apply. As the SkyTemple Randomizer will always apply the ActorAndLevelLoader ASM patch, you're guaranteed to experience a crash in the intro of "Here Comes Team Charm!". We're looking into the source of the issue and hope to fix it for 0.4, but for now, if you wish to use the SkyTemple Randomizer, please make sure your YAML does not include Special Episodes.
+Mostly! All the same warnings as above apply. As the SkyTemple Randomizer will always apply the ActorAndLevelLoader ASM patch, you're guaranteed to experience a crash in the intro of "Here Comes Team Charm!". [We're looking into the source of the issue and hope to fix it for 0.4](https://github.com/Chesyon/eos-archipelago-patches/issues/19), but for now, if you wish to use the SkyTemple Randomizer, please make sure your YAML does not include Special Episodes.
 
 ___
 
