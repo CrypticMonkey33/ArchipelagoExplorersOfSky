@@ -163,11 +163,18 @@ Talk to your partner in the overworld (press R), and select "Add To Team". This 
 
 ___
 
-### Can I use Skytemple Randomizer with this? And is there any plans to implement an easier way to utilize it?
+### Can I use SkyTemple with this?
+Yes! Many ROMside changes were made with SkyTemple, so we've strived to keep the ROM as compatible as possible. A very common usage of SkyTemple is to add custom starters, including species not present in the vanilla game, and you can do that here without issue. That being said, we never make any guarantees for compatibility, so modifications are made at your own risk. ASM patches are the main place you may find incompatibilities; ExpandPokeList and ActorAndLevelLoader are some examples known to cause crashes. Do keep in mind that running your .apeos patch will undo any external modifications, so after modifying your patched ROM, you must manually connect (see "Connect client to emulator" ).
 
-You can use Skytemple Randomzier with this. We have tried to keep it as compatible as possible. Just take your patched AP game and then run it through the skytemple randomizer. The only option that we know DOES NOT work is Special Episodes. You need to turn them off otherwise SE4 will crash if you randomize your game with Skytemple Randomizer.
+___
 
-We have no plans to implement an easier way to connect to it, specifically due to licensing issues. Skytemple Randomizer uses GNU general public license, while AP uses MIT license. Unfortunately from what we have looked into (we aren't lawyers) these licenses are not compatible.
+### Can I use the SkyTemple Randomizer with this?
+Mostly! All the same warnings as above apply. As the SkyTemple Randomizer will always apply the ActorAndLevelLoader ASM patch, you're guaranteed to experience a crash in the intro of "Here Comes Team Charm!". We're looking into the source of the issue and hope to fix it for 0.4, but for now, if you wish to use the SkyTemple Randomizer, please make sure your YAML does not include Special Episodes.
+
+___
+
+### Are there any plans to include the SkyTemple Randomizer as a part of this APWorld?
+No. SkyTemple and all of its related projects are licensed under GPLv3, which is incompatible with Archipelago's MIT license, meaning we cannot use any code from the SkyTemple Randomizer. Additionally, there are no plans to implement features that the SkyTemple Randomizer already has (such as random starter species) into the APWorld, as to not reinvent the wheel.
 
 ___
 
