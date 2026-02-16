@@ -163,6 +163,14 @@ Talk to your partner in the overworld (press R), and select "Add To Team". This 
 
 ___
 
+### Can I use Skytemple Randomizer with this? And is there any plans to implement an easier way to utilize it?
+
+You can use Skytemple Randomzier with this. We have tried to keep it as compatible as possible. Just take your patched AP game and then run it through the skytemple randomizer. The only option that we know DOES NOT work is Special Episodes. You need to turn them off otherwise SE4 will crash if you randomize your game with Skytemple Randomizer.
+
+We have no plans to implement an easier way to connect to it, specifically due to licensing issues. Skytemple Randomizer uses GNU general public license, while AP uses MIT license. Unfortunately from what we have looked into (we aren't lawyers) these licenses are not compatible.
+
+___
+
 ### How to compile from latest
 
 ### CoT
