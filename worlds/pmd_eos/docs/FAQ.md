@@ -7,13 +7,13 @@ The Explorers of Sky Randomizer randomizes all dungeon unlocks and end game goal
 breakdown of what the checks and locations look like:  
 Checks: Dungeon Completion, Mission/Outlaw completions per dungeon, spinda drinks and drink events, legendary recruits, 
 a few shop items, ranks, and donating to the bank among other smaller things.  
-[Full List of Locations](https://github.com/CrypticMonkey33/ArchipelagoExplorersOfSky/blob/main/worlds/pmd_eos/Locations.py)  
-[SubX checks not included in location list](https://github.com/CrypticMonkey33/ArchipelagoExplorersOfSky/blob/main/worlds/pmd_eos/RomTypeDefinitions.py)
+[Full List of Locations](https://github.com/CrypticMonkey33/ArchipelagoExplorersOfSky/blob/main/worlds/pmd_eos/locations.py)  
+[SubX checks not included in location list](https://github.com/CrypticMonkey33/ArchipelagoExplorersOfSky/blob/main/worlds/pmd_eos/rom_type_definitions.py)
 
 Items: Dungeon Unlocks, Relic Fragment Shards (Macguffins), Special Episode unlocks, Dojo unlocks, Legendaries added to 
 Chimeco assembly, instruments (macguffins), with the addition of a lot of filler items that can be items normally retrieved
  from the main game.  
-[Full List of Items](https://github.com/CrypticMonkey33/ArchipelagoExplorersOfSky/blob/main/worlds/pmd_eos/Items.py)
+[Full List of Items](https://github.com/CrypticMonkey33/ArchipelagoExplorersOfSky/blob/main/worlds/pmd_eos/items.py)
 
 There are two main goals, either beating Dialga (default) or beating Darkrai. Based on which goal you choose, the checks 
 and item lists are configured down to be manageable.
