@@ -407,6 +407,65 @@ class MaxRequiredRank(Choice):
     option_master_3star = 11
     option_guildmaster = 12
 
+class RecruitSanity(Toggle):
+    """Adds checks for each recruitable pokemon
+    If enabled all legendaries will be in the pool and progressive for darkrai goal
+    Recruit Sensor becomes a progressive item
+    Recruitment becomes a progressive item
+    Friend boost items become progressive"""
+
+    display_name = "Recruit Sanity"
+
+class RecruitEvolution(Toggle):
+    """If on it is assumed that if a pokemon pre evolution is in logic
+    This ties into required story progress for levels
+    Recruit Evolution becomes a progressive item
+    Luminous Spring becomes a progressive item"""
+
+    display_name = "Evolution Logically Required"
+
+class RecruitLongLocations(Toggle):
+    """includes kecleon
+    Includes Secret Slab/Mystery Part pokemon
+    Includes challenge pokemon
+    includes longer location recruits if also enables
+    includes fast friend in logic if post game has been reached
+    includes level 99-100"""
+
+    display_name = "Long Recruit Location"
+
+class RecruitPercentageRequired(Choice):
+    """Sets the minimum recruit rate for something to be in logic
+    Easy requires the recruit rate to be 20%
+    Normal requires the recruit rate to be 10%
+    Hard requires the recruit rate to be 5%
+    Extreme requires the recruit rate to be 0.1%"""
+
+    display_name = "Minimum Recruit Rate Required"
+    Easy = 0
+    Normal = 1
+    Hard = 2
+    Extreme = 3
+    default = 1
+    
+
+class RecruitFriendItems(Choice):
+    """Sets if friend items should be progressive item or individual"""
+
+    display_name = "Progressive Friend Items"
+    option_progressive = 0
+    option_all_random = 1
+    default = 0
+
+class RecruitExtraItems(Range):
+    """Adds extra recruitment, Recruit Evolution and Luminous Spring to the pool as well as friend items"""
+
+    display_name = "Extra Recruit Sanity items"
+    range_start = 0
+    range_end = 9
+    default = 3
+
+
 
 @dataclass
 class EOSOptions(PerGameCommonOptions):
@@ -449,3 +508,9 @@ class EOSOptions(PerGameCommonOptions):
     spinda_drinks: SpindaBasicDrinks
     drink_events: SpindaDrinkEvents
     max_rank: MaxRequiredRank
+    recruit_sanity: RecruitSanity
+    recruit_sanity_evolution: RecruitEvolution
+    recruit_sanity_long_location: RecruitLongLocations
+    recruit_sanity_difficulty: RecruitPercentageRequired
+    recruit_sanity_friend_items: RecruitFriendItems
+    recruit_sanity_extra_items: RecruitExtraItems
