@@ -146,7 +146,7 @@ ___
 
 ### My hint looks a little funny
 
-Yeah, EOS has poor automatic line-breaking so if your hint is excessively long, it might make the the formatting look a little 
+Yeah, EoS has poor automatic line-breaking so if your hint is excessively long, it might make the formatting look a little 
 weird. You should be able to see it just fine in the Archipelago Client and Server though!
 
 ___
