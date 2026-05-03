@@ -442,11 +442,10 @@ class RecruitPercentageRequired(Choice):
     Extreme requires the recruit rate to be 0.1%"""
 
     display_name = "Minimum Recruit Rate Required"
-    Easy = 0
-    Normal = 1
-    Hard = 2
-    Extreme = 3
-    default = 1
+    option_easy = 0
+    option_normal = 1
+    option_hard = 2
+    option_extreme = 3
     
 
 class RecruitFriendItems(Choice):
@@ -455,7 +454,6 @@ class RecruitFriendItems(Choice):
     display_name = "Progressive Friend Items"
     option_progressive = 0
     option_all_random = 1
-    default = 0
 
 class RecruitExtraItems(Range):
     """Adds extra recruitment, Recruit Evolution and Luminous Spring to the pool as well as friend items"""

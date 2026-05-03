@@ -63,6 +63,9 @@ def set_rules(world: "EOSWorld", excluded):
     set_rule(
         world.multiworld.get_entrance("Late Game Door", player), lambda state: ready_for_late_game(state, player, world)
     )
+    set_rule(
+        world.multiworld.get_entrance("Recruitment", player), lambda state: state.has("Recruitment", player)
+    )
 
     set_rule(world.multiworld.get_location("Hidden Land", player), lambda state: has_relic_shards(state, player, world))
     if special_episode_sanity_no_exclusion(world, player):
@@ -293,6 +296,19 @@ def dungeon_locations_behind_items(world, player):
                     or state.has("Bidoof's Wish", player)
                     or state.has('Today\'s "Oh My Gosh"', player),
                 )
+        elif "Pokemon" == location.classification:
+            for i in range(len(location.group)):
+                if i == 0:
+                    set_rule(
+                        world.multiworld.get_location(location.name, player),
+                        lambda state, ln=location.group[i]: state.has(ln, player)
+                    )
+                else:
+                    add_rule(
+                        world.multiworld.get_location(location.name, player),
+                        lambda state, ln=location.group[i]: state.has(ln, player),
+                        combine ="or"
+                    )
         elif "Station" in location.group and world.options.goal.value == 1:
             if world.options.sky_peak_type.value == 1:  # progressive
                 if location.name == "Sky Peak Summit":

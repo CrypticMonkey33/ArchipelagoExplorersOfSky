@@ -3,6 +3,7 @@ import typing
 from typing import Dict, List
 from BaseClasses import Location
 from .rom_type_definitions import subX_table
+from .pokemon import pokemon_info
 
 
 class LocationData:
@@ -63,6 +64,21 @@ def get_subx_table() -> List[LocationData]:
 
     return new_list
 
+def get_pokemon_table() -> List[LocationData]:
+    new_list: List[LocationData] = []
+    start_id = 500 #random number to change later
+    for i in range(len(pokemon_info)):
+        new_location = LocationData(
+            classification="Pokemon",
+            dungeon_length=0,
+            name=pokemon_info[i][0],
+            id=start_id + i,
+            dungeon_start_id=0,
+            group=pokemon_info[i][2],
+        )
+        new_list.append(new_location)
+    return new_list
+    
 
 def get_mission_location_table() -> typing.List[LocationData]:
     mission_start_id = 1000
@@ -125,6 +141,9 @@ def get_location_table_by_start_id() -> Dict[int, set[str]]:
 
 subx_location_list = get_subx_table()
 subx_location_dict = {location.name: location for location in subx_location_list}
+
+pokemon_location_list = get_pokemon_table()
+pokemon_location_dict = {location.name: location for location in pokemon_location_list}
 
 EOS_location_table: typing.List[LocationData] = [
     # "Test Dungeon", 0,  # Should be unused
@@ -341,13 +360,14 @@ EOS_location_table: typing.List[LocationData] = [
     # LocationData("Instrument", 0, "Get Rock Horn", 339, 0),
     # LocationData("Instrument", 0, "Get Sky Melodica", 341, 0),
     # LocationData("Instrument", 0, "Get Grass Cornet", 343, 0),
-] + subx_location_list
+] + subx_location_list + pokemon_location_list
 
 
 location_Dict_by_id: typing.Dict[int, LocationData] = {location.id: location for location in EOS_location_table}
 location_table: Dict[str, LocationData] = {location.name: location for location in EOS_location_table}
 
 location_table.update(subx_location_dict)
+location_table.update(pokemon_location_dict)
 
 location_table_by_groups = get_location_table_by_groups()
 
