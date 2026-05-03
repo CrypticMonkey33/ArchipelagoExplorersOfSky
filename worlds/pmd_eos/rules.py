@@ -3,6 +3,7 @@ from typing import Dict, TYPE_CHECKING
 from worlds.generic.Rules import set_rule, add_rule, forbid_item
 from .locations import EOS_location_table, EOSLocation, location_Dict_by_id
 from .rom_type_definitions import subX_table
+from .pokemon import dungeon_location
 
 if TYPE_CHECKING:
     from . import EOSWorld
@@ -297,18 +298,39 @@ def dungeon_locations_behind_items(world, player):
                     or state.has('Today\'s "Oh My Gosh"', player),
                 )
         elif "Pokemon" == location.classification:
+            if len(location.group) == 0:
+                set_rule(
+                    world.multiworld.get_location(location.name, player),
+                    lambda state: state.has("Inaccessible", player)
+                )
+                continue
             for i in range(len(location.group)):
                 if i == 0:
-                    set_rule(
-                        world.multiworld.get_location(location.name, player),
-                        lambda state, ln=location.group[i]: state.has(ln, player)
-                    )
+                    if(dungeon_location[location.group[i]] == "Early"):
+                        set_rule(
+                            world.multiworld.get_location(location.name, player),
+                            lambda state, ln=location.group[i],: state.has(ln, player)
+                        )
+                    else:
+                        set_rule(
+                            world.multiworld.get_location(location.name, player),
+                            lambda state, ln=location.group[i],: state.has(ln, player)
+                            and ready_for_late_game(state, player, world)
+                        )
                 else:
-                    add_rule(
-                        world.multiworld.get_location(location.name, player),
-                        lambda state, ln=location.group[i]: state.has(ln, player),
-                        combine ="or"
-                    )
+                    if(dungeon_location[location.group[i]] == "Early"):
+                        add_rule(
+                            world.multiworld.get_location(location.name, player),
+                            lambda state, ln=location.group[i]: state.has(ln, player),
+                            combine ="or"
+                        )
+                    else:
+                        add_rule(
+                            world.multiworld.get_location(location.name, player),
+                            lambda state, ln=location.group[i]: state.has(ln, player)
+                            and ready_for_late_game(state, player, world),
+                            combine ="or"
+                        )
         elif "Station" in location.group and world.options.goal.value == 1:
             if world.options.sky_peak_type.value == 1:  # progressive
                 if location.name == "Sky Peak Summit":

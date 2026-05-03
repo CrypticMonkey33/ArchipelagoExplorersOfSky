@@ -157,6 +157,9 @@ class EOSWorld(World):
         rule_dungeons_region = Region("Rule Dungeons", self.player, self.multiworld)
         self.multiworld.regions.append(rule_dungeons_region)
 
+        pokemon_region = Region("Pokemon", self.player, self.multiworld)
+        self.multiworld.regions.append(pokemon_region)
+
         for location in EOS_location_table:
             if location.name == "Beach Cave":
                 menu_region.locations.append(EOSLocation(self.player, location.name, location.id, menu_region))
@@ -177,6 +180,8 @@ class EOSWorld(World):
                 menu_region.locations.append(EOSLocation(self.player, location.name, location.id, menu_region))
             elif location.name == "Team Name Location":
                 menu_region.locations.append(EOSLocation(self.player, location.name, location.id, menu_region))
+            elif location.classification == "Pokemon":
+                pokemon_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_region))
             elif location.classification == "Rank":
                 rank_toid_dict = {
                     "Bronze Rank": 1,
@@ -386,10 +391,14 @@ class EOSWorld(World):
 
         early_dungeons_region.connect(late_dungeons_region, "Late Game Door")
 
+        early_dungeons_region.connect(pokemon_region, "Recruitment")
+
         # early_dungeons_region.connect(early_dungeons_region2)
 
         late_dungeons_region.connect(end_game_region, "Boss Door")
         # lambda state: ready_for_final_boss(state, self.player))
+
+        late_dungeons_region.connect(pokemon_region, "Recruitment")
 
         boss_region = Region("Boss Room", self.player, self.multiworld)
 
