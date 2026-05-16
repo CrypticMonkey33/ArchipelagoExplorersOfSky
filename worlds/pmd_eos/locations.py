@@ -270,7 +270,7 @@ EOS_location_table: typing.List[LocationData] = [
     LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 18", 917, 0, ["Spinda"]),
     LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 19", 918, 0, ["Spinda"]),
     LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 20", 919, 0, ["Spinda"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 1", 920, 0, ["Spinda"]),
+    LocationData("SpindaDrink", 0, "Spinda Drink 1", 920, 0, ["SpindaDrink"]),
     LocationData("SpindaDrink", 0, "Spinda Drink 2", 921, 0, ["SpindaDrink"]),
     LocationData("SpindaDrink", 0, "Spinda Drink 3", 922, 0, ["SpindaDrink"]),
     LocationData("SpindaDrink", 0, "Spinda Drink 4", 923, 0, ["SpindaDrink"]),
