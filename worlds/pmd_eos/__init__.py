@@ -26,12 +26,13 @@ from .items import (
 )
 from .locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table
 from .options import EOSOptions
-from .rules import set_rules, ready_for_late_game, has_relic_shards
+from .rules import set_rules, ready_for_late_game, has_relic_shards, has_early_recruit, has_mid_recruit, has_late_recruit, has_end_recruit
 from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType, Item
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import set_rule
 from .client import EoSClient, game_version
 from .rom import EOSProcedurePatch, write_tokens
+from .pokemon import pokemon_info
 
 
 class EOSWeb(WebWorld):
@@ -157,8 +158,23 @@ class EOSWorld(World):
         rule_dungeons_region = Region("Rule Dungeons", self.player, self.multiworld)
         self.multiworld.regions.append(rule_dungeons_region)
 
-        pokemon_region = Region("Pokemon", self.player, self.multiworld)
-        self.multiworld.regions.append(pokemon_region)
+        pokemon_start_region = Region("Start Pokemon", self.player, self.multiworld)
+        self.multiworld.regions.append(pokemon_start_region)
+
+        pokemon_early_region = Region("Early Pokemon", self.player, self.multiworld)
+        self.multiworld.regions.append(pokemon_early_region)
+
+        pokemon_mid_region = Region("Mid Pokemon", self.player, self.multiworld)
+        self.multiworld.regions.append(pokemon_mid_region)
+
+        pokemon_late_region = Region("Late Pokemon", self.player, self.multiworld)
+        self.multiworld.regions.append(pokemon_late_region)
+
+        pokemon_end_region = Region("End Pokemon", self.player, self.multiworld)
+        self.multiworld.regions.append(pokemon_end_region)
+
+        pokemon_inaccessible_region = Region("Pokemon Inaccessible", self.player, self.multiworld)
+        self.multiworld.regions.append(pokemon_inaccessible_region)
 
         for location in EOS_location_table:
             if location.name == "Beach Cave":
@@ -181,7 +197,19 @@ class EOSWorld(World):
             elif location.name == "Team Name Location":
                 menu_region.locations.append(EOSLocation(self.player, location.name, location.id, menu_region))
             elif location.classification == "Pokemon":
-                pokemon_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_region))
+                self.difficulty = 0.001 + 0.495
+                if (pokemon_info[location.id - 1500][1] >= self.difficulty):
+                    pokemon_early_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_early_region))
+                elif ((pokemon_info[location.id - 1500][1] + 0.100) >= self.difficulty):
+                    pokemon_early_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_early_region))
+                elif ((pokemon_info[location.id - 1500][1] + 0.225) >= self.difficulty):
+                    pokemon_early_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_early_region))
+                elif ((pokemon_info[location.id - 1500][1] + 0.326) >= self.difficulty):  
+                    pokemon_early_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_early_region))
+                elif ((pokemon_info[location.id - 1500][1] + 0.496) >= self.difficulty):       
+                    pokemon_early_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_early_region))
+                else:       
+                    pokemon_early_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_early_region))
             elif location.classification == "Rank":
                 rank_toid_dict = {
                     "Bronze Rank": 1,
@@ -391,14 +419,25 @@ class EOSWorld(World):
 
         early_dungeons_region.connect(late_dungeons_region, "Late Game Door")
 
-        early_dungeons_region.connect(pokemon_region, "Recruitment")
 
         # early_dungeons_region.connect(early_dungeons_region2)
 
         late_dungeons_region.connect(end_game_region, "Boss Door")
-        # lambda state: ready_for_final_boss(state, self.player))
 
-        late_dungeons_region.connect(pokemon_region, "Recruitment")
+        early_dungeons_region.connect(pokemon_start_region, "Recruitment")
+
+        late_dungeons_region.connect(pokemon_start_region, "Recruitment")
+
+        pokemon_start_region.connect(pokemon_early_region, "Early Recruit")
+
+        pokemon_early_region.connect(pokemon_mid_region, "Mid Recruit")
+
+        pokemon_mid_region.connect(pokemon_late_region, "Late Recruit")
+
+        pokemon_late_region.connect(pokemon_end_region, "End Recruit")
+
+        
+        # lambda state: ready_for_final_boss(state, self.player))
 
         boss_region = Region("Boss Room", self.player, self.multiworld)
 

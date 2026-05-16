@@ -68,6 +68,22 @@ def set_rules(world: "EOSWorld", excluded):
         world.multiworld.get_entrance("Recruitment", player), lambda state: state.has("Recruitment", player)
     )
 
+    set_rule(
+        world.multiworld.get_entrance("Early Recruit", player), lambda state: has_early_recruit(state, player)
+    )
+
+    set_rule(
+        world.multiworld.get_entrance("Mid Recruit", player), lambda state: has_mid_recruit(state, player, world)
+    )
+
+    set_rule(
+        world.multiworld.get_entrance("Late Recruit", player), lambda state: has_late_recruit(state, player)
+    )
+
+    set_rule(
+       world.multiworld.get_entrance("End Recruit", player), lambda state: has_end_recruit(state, player)
+    )
+
     set_rule(world.multiworld.get_location("Hidden Land", player), lambda state: has_relic_shards(state, player, world))
     if special_episode_sanity_no_exclusion(world, player):
         add_rule(
@@ -93,6 +109,33 @@ def ready_for_late_game(state, player, world):
         state.has_group("EarlyDungeons", player, 10)
         and state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
         and state.has("Temporal Tower", player)
+    )
+
+def has_early_recruit(state, player):
+    return (
+        state.has_group("EarlyDungeons", player, 10)
+        and state.has("Friend Bow", player)
+    )
+
+def has_mid_recruit(state, player, world):
+    return (
+        state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
+        and state.has("Temporal Tower", player)
+        and state.has("Amber Tear", player, 1)
+    )
+
+def has_late_recruit(state, player):
+    return (
+        state.has_group("LateDungeons", player, 10)
+        and state.has("Golden Mask", player)
+    )
+
+def has_end_recruit(state, player):
+    return (
+        state.has("Mystery Part", player) 
+        and state.has("Secret Rank", player)
+        or state.has("Secret Slab", player)
+        and state.has("Secret Rank", player)
     )
 
 

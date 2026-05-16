@@ -450,7 +450,37 @@ EOS_item_table = [
     ItemData("Main Game Unlock", 700, ItemClassification.progression, 0, [], 0),
     # Adding one team name trap so players can actually get their team name at leasst once in the game
     ItemData("Inspiration Strikes!!", 466, ItemClassification.useful, 0, ["Trap"], 0x0),
-] + recruit_items
+    ItemData("Luminous Spring", 177, ItemClassification.progression, 177, ["Unique", "ExtraDungeons"], 0xB1),
+    ItemData("Amber Tear", 502, ItemClassification.progression, 0, ["Item", "Single"], 0x3A),
+    ItemData("Friend Bow", 503, ItemClassification.progression, 0, ["Item", "Single"], 0x35),
+    ItemData("Golden Mask", 546, ItemClassification.progression, 0, ["Item", "Single"], 0x39),
+    ItemData("Mystery Part", 500, ItemClassification.progression, 0, ["Item", "Single"], 0xAD),
+    ItemData("Secret Slab", 501, ItemClassification.progression, 0, ["Item", "Single"], 0xAE),
+    ItemData("Regirock", 504, ItemClassification.progression, 0, ["Legendary"], 0x0),
+    ItemData("Regice", 505, ItemClassification.progression, 0, ["Legendary"], 0x1),
+    ItemData("Registeel", 506, ItemClassification.progression, 0, ["Legendary"], 0x2),
+    ItemData("Groudon", 507, ItemClassification.progression, 0, ["Legendary"], 0x3),
+    ItemData("Uxie", 508, ItemClassification.progression, 0, ["Legendary"], 0x4),
+    ItemData("Mesprit", 509, ItemClassification.progression, 0, ["Legendary"], 0x5),
+    ItemData("Azelf", 510, ItemClassification.progression, 0, ["Legendary"], 0x6),
+    ItemData("Dialga", 511, ItemClassification.progression, 0, ["Legendary"], 0x7),
+    ItemData("Palkia", 512, ItemClassification.progression, 0, ["Legendary"], 0x8),
+    ItemData("Regigigas", 513, ItemClassification.progression, 0, ["Legendary"], 0x9),
+    ItemData("Giratina", 514, ItemClassification.progression, 0, ["Legendary"], 0xA),
+    ItemData("Celebi", 515, ItemClassification.progression, 0, ["Legendary"], 0xB),
+    ItemData("Articuno", 516, ItemClassification.progression, 0, ["Legendary"], 0xC),
+    ItemData("Heatran", 517, ItemClassification.progression, 0, ["Legendary"], 0xD),
+    ItemData("Primal Dialga", 518, ItemClassification.progression, 0, ["Legendary"], 0xE),
+    ItemData("Mew", 519, ItemClassification.progression, 0, ["Legendary"], 0xF),
+    ItemData("Manaphy", 520, ItemClassification.progression, 0, ["Legendary"], 0x10),
+    ItemData("Phione", 521, ItemClassification.progression, 0, ["Legendary"], 0x11),
+    ItemData("Cresselia", 522, ItemClassification.progression, 0, ["Legendary"], 0x12),
+    ItemData("Rayquaza", 523, ItemClassification.progression, 0, ["Legendary"], 0x13),
+    ItemData("Kyogre", 524, ItemClassification.progression, 0, ["Legendary"], 0x14),
+    ItemData("Shaymin", 525, ItemClassification.progression, 0, ["Legendary"], 0x15),
+    ItemData("Recruit Evolution", 551, ItemClassification.progression, 0, ["Generic"], 0),
+    ItemData("Recruitment", 552, ItemClassification.progression, 0, ["Generic"], 0),
+]
 
 filler_items = [
     # Item boxes as "loot boxes" as defined in a later section what they contain

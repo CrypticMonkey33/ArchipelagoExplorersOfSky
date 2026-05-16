@@ -13,6 +13,7 @@ class LocationData:
     id: int = -1
     dungeon_start_id: int = -1
     group: list[str] = [""]
+    recruit_rate: int = 0.0
 
     def __init__(self, classification, dungeon_length, name, id, dungeon_start_id, group=None):
         if group is None:
@@ -66,7 +67,7 @@ def get_subx_table() -> List[LocationData]:
 
 def get_pokemon_table() -> List[LocationData]:
     new_list: List[LocationData] = []
-    start_id = 500 #random number to change later
+    start_id = 1500 #random number to change later
     for i in range(len(pokemon_info)):
         new_location = LocationData(
             classification="Pokemon",
