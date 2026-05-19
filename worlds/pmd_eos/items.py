@@ -38,77 +38,6 @@ def get_item_table_by_groups() -> Dict[str, set[str]]:
 
     return new_dict
 
-def get_recruit_items() -> List[ItemData]:
-    if 1 == 1:
-        new_list = [
-            ItemData("Luminous Spring", 177, ItemClassification.progression, 177, ["Unique", "ExtraDungeons"], 0xB1),
-            ItemData("Amber Tear", 502, ItemClassification.progression, 0, ["Item", "Single"], 0x3A),
-            ItemData("Friend Bow", 503, ItemClassification.progression, 0, ["Item", "Single"], 0x35),
-            ItemData("Golden Mask", 546, ItemClassification.progression, 0, ["Item", "Single"], 0x39),
-            ItemData("Mystery Part", 500, ItemClassification.progression, 0, ["Item", "Single"], 0xAD),
-            ItemData("Secret Slab", 501, ItemClassification.progression, 0, ["Item", "Single"], 0xAE),
-            ItemData("Regirock", 504, ItemClassification.progression, 0, ["Legendary"], 0x0),
-            ItemData("Regice", 505, ItemClassification.progression, 0, ["Legendary"], 0x1),
-            ItemData("Registeel", 506, ItemClassification.progression, 0, ["Legendary"], 0x2),
-            ItemData("Groudon", 507, ItemClassification.progression, 0, ["Legendary"], 0x3),
-            ItemData("Uxie", 508, ItemClassification.progression, 0, ["Legendary"], 0x4),
-            ItemData("Mesprit", 509, ItemClassification.progression, 0, ["Legendary"], 0x5),
-            ItemData("Azelf", 510, ItemClassification.progression, 0, ["Legendary"], 0x6),
-            ItemData("Dialga", 511, ItemClassification.progression, 0, ["Legendary"], 0x7),
-            ItemData("Palkia", 512, ItemClassification.progression, 0, ["Legendary"], 0x8),
-            ItemData("Regigigas", 513, ItemClassification.progression, 0, ["Legendary"], 0x9),
-            ItemData("Giratina", 514, ItemClassification.progression, 0, ["Legendary"], 0xA),
-            ItemData("Celebi", 515, ItemClassification.progression, 0, ["Legendary"], 0xB),
-            ItemData("Articuno", 516, ItemClassification.progression, 0, ["Legendary"], 0xC),
-            ItemData("Heatran", 517, ItemClassification.progression, 0, ["Legendary"], 0xD),
-            ItemData("Primal Dialga", 518, ItemClassification.progression, 0, ["Legendary"], 0xE),
-            ItemData("Mew", 519, ItemClassification.progression, 0, ["Legendary"], 0xF),
-            ItemData("Manaphy", 520, ItemClassification.progression, 0, ["Legendary"], 0x10),
-            ItemData("Phione", 521, ItemClassification.progression, 0, ["Legendary"], 0x11),
-            ItemData("Cresselia", 522, ItemClassification.progression, 0, ["Legendary"], 0x12),
-            ItemData("Rayquaza", 523, ItemClassification.progression, 0, ["Legendary"], 0x13),
-            ItemData("Kyogre", 524, ItemClassification.progression, 0, ["Legendary"], 0x14),
-            ItemData("Shaymin", 525, ItemClassification.progression, 0, ["Legendary"], 0x15),
-            ItemData("Recruit Evolution", 551, ItemClassification.progression, 0, ["Generic"], 0),
-            ItemData("Recruitment", 552, ItemClassification.progression, 0, ["Generic"], 0),
-        ]
-    else:
-        new_list = [
-            ItemData("Luminous Spring", 177, ItemClassification.useful, 177, ["Unique", "ExtraDungeons"], 0xB1),
-            ItemData("Amber Tear", 502, ItemClassification.useful, 0, ["Item", "Single"], 0x3A),
-            ItemData("Friend Bow", 503, ItemClassification.useful, 0, ["Item", "Single"], 0x35),
-            ItemData("Golden Mask", 546, ItemClassification.useful, 0, ["Item", "Single"], 0x39),
-            ItemData("Mystery Part", 500, ItemClassification.useful, 0, ["Item", "Single"], 0xAD),
-            ItemData("Secret Slab", 501, ItemClassification.useful, 0, ["Item", "Single"], 0xAE),
-            ItemData("Regirock", 504, ItemClassification.useful, 0, ["Legendary"], 0x0),
-            ItemData("Regice", 505, ItemClassification.useful, 0, ["Legendary"], 0x1),
-            ItemData("Registeel", 506, ItemClassification.useful, 0, ["Legendary"], 0x2),
-            ItemData("Groudon", 507, ItemClassification.useful, 0, ["Legendary"], 0x3),
-            ItemData("Uxie", 508, ItemClassification.useful, 0, ["Legendary"], 0x4),
-            ItemData("Mesprit", 509, ItemClassification.useful, 0, ["Legendary"], 0x5),
-            ItemData("Azelf", 510, ItemClassification.useful, 0, ["Legendary"], 0x6),
-            ItemData("Dialga", 511, ItemClassification.useful, 0, ["Legendary"], 0x7),
-            ItemData("Palkia", 512, ItemClassification.useful, 0, ["Legendary"], 0x8),
-            ItemData("Regigigas", 513, ItemClassification.useful, 0, ["Legendary"], 0x9),
-            ItemData("Giratina", 514, ItemClassification.useful, 0, ["Legendary"], 0xA),
-            ItemData("Celebi", 515, ItemClassification.useful, 0, ["Legendary"], 0xB),
-            ItemData("Articuno", 516, ItemClassification.useful, 0, ["Legendary"], 0xC),
-            ItemData("Heatran", 517, ItemClassification.useful, 0, ["Legendary"], 0xD),
-            ItemData("Primal Dialga", 518, ItemClassification.useful, 0, ["Legendary"], 0xE),
-            ItemData("Mew", 519, ItemClassification.useful, 0, ["Legendary"], 0xF),
-            ItemData("Manaphy", 520, ItemClassification.progression, 0, ["Legendary"], 0x10),
-            ItemData("Phione", 521, ItemClassification.useful, 0, ["Legendary"], 0x11),
-            ItemData("Cresselia", 522, ItemClassification.useful, 0, ["Legendary"], 0x12),
-            ItemData("Rayquaza", 523, ItemClassification.useful, 0, ["Legendary"], 0x13),
-            ItemData("Kyogre", 524, ItemClassification.useful, 0, ["Legendary"], 0x14),
-            ItemData("Shaymin", 525, ItemClassification.useful, 0, ["Legendary"], 0x15),
-            ItemData("Recruit Evolution", 551, ItemClassification.useful, 0, ["Generic"], 0),
-            ItemData("Recruitment", 552, ItemClassification.useful, 0, ["Generic"], 0),
-        ]
-    return new_list
-
-recruit_items = get_recruit_items()
-
 # Item table for all the EOS items that can be in the game. Does not include filler or trap items.
 EOS_item_table = [
     # "Test Dungeon"0, ItemClassification.progression, ["Unique", "Dungeons"],0x0), Test Dungeon does not actually exist
@@ -1086,15 +1015,8 @@ legendary_pool_dict = {
 # Make some useful items count as filler if we exclude too many locations
 # Top of the list becomes filler first
 conditional_filler_useful_items = [
-    "Mystery Part",
-    "Secret Slab",
-    "Amber Tear",
-    "Friend Bow",
-    "Golden Mask",
     "Miracle Chest",
     "Wonder Chest",
     "Hero Evolution",
-    "Recruit Evolution",
-    "Luminous Spring",
     "Shaymin Village",
 ]

@@ -3,7 +3,7 @@ from typing import Dict, TYPE_CHECKING
 from worlds.generic.Rules import set_rule, add_rule, forbid_item
 from .locations import EOS_location_table, EOSLocation, location_Dict_by_id
 from .rom_type_definitions import subX_table
-from .pokemon import dungeon_location
+from .pokemon import pokemon_info
 
 if TYPE_CHECKING:
     from . import EOSWorld
@@ -341,33 +341,49 @@ def dungeon_locations_behind_items(world, player):
                     or state.has('Today\'s "Oh My Gosh"', player),
                 )
         elif "Pokemon" == location.classification:
-            if len(location.group) == 0:
-                set_rule(
-                    world.multiworld.get_location(location.name, player),
-                    lambda state: state.has("Inaccessible", player)
-                )
-                continue
             for i in range(len(location.group)):
                 if i == 0:
-                    if(dungeon_location[location.group[i]] == "Early"):
+                    if(pokemon_info[location.id - 1500][5][i] == "Early"):
                         set_rule(
                             world.multiworld.get_location(location.name, player),
                             lambda state, ln=location.group[i],: state.has(ln, player)
                         )
-                    else:
+                    elif(pokemon_info[location.id - 1500][5][i] == "Late"):
+                        if(world.options.goal == 0):
+                            continue
                         set_rule(
                             world.multiworld.get_location(location.name, player),
                             lambda state, ln=location.group[i],: state.has(ln, player)
                             and ready_for_late_game(state, player, world)
                         )
+                    elif(pokemon_info[location.id - 1500][5][i] == "Long"):
+                        if(world.options.long_location == 0):
+                            continue
+                        add_rule(
+                            world.multiworld.get_location(location.name, player),
+                            lambda state, ln=location.group[i]: state.has(ln, player)
+                            and ready_for_late_game(state, player, world),
+                            combine ="or"
+                        )
                 else:
-                    if(dungeon_location[location.group[i]] == "Early"):
+                    if(pokemon_info[location.id - 1500][5][i] == "Early"):
                         add_rule(
                             world.multiworld.get_location(location.name, player),
                             lambda state, ln=location.group[i]: state.has(ln, player),
                             combine ="or"
                         )
-                    else:
+                    elif(pokemon_info[location.id - 1500][5][i] == "Late"):
+                        if(world.options.goal == 0):
+                            continue
+                        add_rule(
+                            world.multiworld.get_location(location.name, player),
+                            lambda state, ln=location.group[i]: state.has(ln, player)
+                            and ready_for_late_game(state, player, world),
+                            combine ="or"
+                        )
+                    elif(pokemon_info[location.id - 1500][5][i] == "Long"):
+                        if(world.options.long_location == 0):
+                            continue
                         add_rule(
                             world.multiworld.get_location(location.name, player),
                             lambda state, ln=location.group[i]: state.has(ln, player)

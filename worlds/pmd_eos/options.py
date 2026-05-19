@@ -446,6 +446,7 @@ class RecruitPercentageRequired(Choice):
     option_normal = 1
     option_hard = 2
     option_extreme = 3
+    default = 1
     
 
 class RecruitFriendItems(Choice):
