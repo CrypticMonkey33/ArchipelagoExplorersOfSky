@@ -65,7 +65,7 @@ def set_rules(world: "EOSWorld", excluded):
         world.multiworld.get_entrance("Late Game Door", player), lambda state: ready_for_late_game(state, player, world)
     )
     set_rule(
-        world.multiworld.get_entrance("Recruitment", player), lambda state: state.has("Recruitment", player)
+        world.multiworld.get_entrance("Start Recruit", player), lambda state: has_start_recruit(state, player)
     )
 
     set_rule(
@@ -109,6 +109,11 @@ def ready_for_late_game(state, player, world):
         state.has_group("EarlyDungeons", player, 10)
         and state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
         and state.has("Temporal Tower", player)
+    )
+
+def has_start_recruit(state, player):
+    return (
+        state.has("Recruitment", player)
     )
 
 def has_early_recruit(state, player):

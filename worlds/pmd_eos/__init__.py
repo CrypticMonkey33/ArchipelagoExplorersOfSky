@@ -26,7 +26,7 @@ from .items import (
 )
 from .locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table
 from .options import EOSOptions
-from .rules import set_rules, ready_for_late_game, has_relic_shards, has_early_recruit, has_mid_recruit, has_late_recruit, has_end_recruit
+from .rules import set_rules, ready_for_late_game, has_relic_shards, has_start_recruit, has_early_recruit, has_mid_recruit, has_late_recruit, has_end_recruit
 from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType, Item
 from worlds.AutoWorld import World, WebWorld
 from worlds.generic.Rules import set_rule
@@ -450,9 +450,7 @@ class EOSWorld(World):
 
         late_dungeons_region.connect(end_game_region, "Boss Door")
 
-        early_dungeons_region.connect(pokemon_start_region, "Recruitment")
-
-        late_dungeons_region.connect(pokemon_start_region, "Recruitment")
+        early_dungeons_region.connect(pokemon_start_region, "Start Recruit")
 
         pokemon_start_region.connect(pokemon_early_region, "Early Recruit")
 
@@ -587,6 +585,13 @@ class EOSWorld(World):
         else:
             # self.excluded_locations += 1
             test = 0
+        
+        if (self.options.recruit_sanity.value == 1):
+            required_items.append(self.create_item("Recruitment", ItemClassification.progression))
+            required_items.append(self.create_item("Friend Bow", ItemClassification.progression))
+            required_items.append(self.create_item("Amber Tear", ItemClassification.progression))
+            required_items.append(self.create_item("Golden Mask", ItemClassification.progression))
+
         if self.options.goal.value == 1 and (
             self.options.legendaries.value > len(self.options.allowed_legendaries.value)
         ):
@@ -641,6 +646,8 @@ class EOSWorld(World):
             elif "Instrument" in item_table[item_name].group:
                 continue
             elif "Rank" in item_table[item_name].group:
+                continue
+            elif "Recruit" in item_table[item_name].group:
                 continue
             elif item_table[item_name].name in conditional_filler_useful_items:
                 conditional_count += 1
