@@ -219,6 +219,16 @@ class EOSWorld(World):
                         pass
                     elif "Late" in pokemon_info[location.id - 1500][5]:
                         pass
+                    elif "Boss" in pokemon_info[location.id - 1500][5]:
+                        pass
+                    elif "Ice" in pokemon_info[location.id - 1500][5]:
+                        pass
+                    elif "Rock" in pokemon_info[location.id - 1500][5]:
+                        pass
+                    elif "Steel" in pokemon_info[location.id - 1500][5]:
+                        pass
+                    elif "Pit" in pokemon_info[location.id - 1500][5]:
+                        pass
                     elif (self.options.recruit_sanity_evolution == 1 and len(pokemon_info[location.id - 1500][3]) > 0):
                         pass
                     else:

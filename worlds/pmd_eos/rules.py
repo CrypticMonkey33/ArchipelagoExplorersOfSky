@@ -123,6 +123,10 @@ def has_early_recruit(state, player):
         state.has_group("EarlyDungeons", player, 10)
         and state.has("Friend Bow", player)
         or state.has_group("EarlyDungeons", player, 10)
+        and state.has("Amber Tear", player)
+        or state.has_group("EarlyDungeons", player, 10)
+        and state.has("Golden Mask", player)
+        or state.has_group("EarlyDungeons", player, 10)
         and state.has("Progressive Recruitment", player, 2)
     )
 
@@ -131,6 +135,9 @@ def has_mid_recruit(state, player, world):
         state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
         and state.has("Temporal Tower", player)
         and state.has("Amber Tear", player)
+        or state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
+        and state.has("Temporal Tower", player)
+        and state.has("Golden Mask", player)
         or state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
         and state.has("Temporal Tower", player)
         and state.has("Progressive Recruitment", player, 3)
@@ -390,14 +397,80 @@ def dungeon_locations_behind_items(world, player):
                             lambda state, ln=location.group[i],: state.has(ln, player)
                             and ready_for_late_game(state, player, world)
                         )
+                    elif(pokemon_info[location.id - 1500][5][i] == "Ice"):
+                        if(world.options.goal == 0):
+                            continue
+                        set_rule(
+                            world.multiworld.get_location(location.name, player),
+                            lambda state, ln=location.group[i],: state.has(ln, player)
+                            and ready_for_late_game(state, player, world)
+                        )   
+                    elif(pokemon_info[location.id - 1500][5][i] == "Rock"):
+                        if(world.options.goal == 0):
+                            continue
+                        if (world.options.cursed_aegis_cave.value == 0):
+                            set_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 1)
+                            )   
+                        else:
+                            set_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 1)
+                            )  
+                    elif(pokemon_info[location.id - 1500][5][i] == "Steel"):
+                        if(world.options.goal == 0):
+                            continue
+                        if (world.options.cursed_aegis_cave.value == 0):
+                            set_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 2)
+                            )   
+                        else:
+                            set_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 2)
+                            )  
+                    elif(pokemon_info[location.id - 1500][5][i] == "Pit"):
+                        if(world.options.goal == 0):
+                            continue
+                        if (world.options.cursed_aegis_cave.value == 0):
+                            set_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 3)
+                            )   
+                        else:
+                            set_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 3)
+                            )  
+                    elif(pokemon_info[location.id - 1500][5][i] == "Boss"):
+                        if(world.options.goal == 0):
+                            continue
+                        set_rule(
+                            world.multiworld.get_location(location.name, player),
+                            lambda state, ln=location.group[i],: state.has(ln, player)
+                            and ready_for_darkrai(state, player, world)
+                        )
                     elif(pokemon_info[location.id - 1500][5][i] == "Long"):
                         if(world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0):
                             continue
-                        add_rule(
+                        set_rule(
                             world.multiworld.get_location(location.name, player),
                             lambda state, ln=location.group[i]: state.has(ln, player)
-                            and ready_for_late_game(state, player, world),
-                            combine ="or"
+                            and ready_for_late_game(state, player, world)
                         )
                 else:
                     if(pokemon_info[location.id - 1500][5][i] == "Early"):
@@ -414,6 +487,81 @@ def dungeon_locations_behind_items(world, player):
                             lambda state, ln=location.group[i]: state.has(ln, player)
                             and ready_for_late_game(state, player, world),
                             combine ="or"
+                        )
+                    elif(pokemon_info[location.id - 1500][5][i] == "Ice"):
+                        if(world.options.goal == 0):
+                            continue
+                        add_rule(
+                            world.multiworld.get_location(location.name, player),
+                            lambda state, ln=location.group[i],: state.has(ln, player)
+                            and ready_for_late_game(state, player, world),
+                            combine ="or"
+                        )   
+                    elif(pokemon_info[location.id - 1500][5][i] == "Rock"):
+                        if(world.options.goal == 0):
+                            continue
+                        if (world.options.cursed_aegis_cave.value == 0):
+                            add_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 1),
+                                combine ="or"
+                            )   
+                        else:
+                            add_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 1),
+                                combine ="or"
+                            )  
+                    elif(pokemon_info[location.id - 1500][5][i] == "Steel"):
+                        if(world.options.goal == 0):
+                            continue
+                        if (world.options.cursed_aegis_cave.value == 0):
+                            add_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 2),
+                                combine ="or"
+                            )   
+                        else:
+                            add_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 2),
+                                combine ="or"
+                            )  
+                    elif(pokemon_info[location.id - 1500][5][i] == "Pit"):
+                        if(world.options.goal == 0):
+                            continue
+                        if (world.options.cursed_aegis_cave.value == 0):
+                            add_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 3),
+                                combine ="or"
+                            )   
+                        else:
+                            add_rule(
+                                world.multiworld.get_location(location.name, player),
+                                lambda state, ln=location.group[i],: state.has(ln, player)
+                                and ready_for_late_game(state, player, world)
+                                and state.has("Progressive Seal", player, 3),
+                                combine ="or"
+                            )  
+                    elif(pokemon_info[location.id - 1500][5][i] == "Boss"):
+                        if(world.options.goal == 0):
+                            continue
+                        add_rule(
+                            world.multiworld.get_location(location.name, player),
+                            lambda state, ln=location.group[i],: state.has(ln, player)
+                            and ready_for_darkrai(state, player, world),
+                            combine = "or"
                         )
                     elif(pokemon_info[location.id - 1500][5][i] == "Long"):
                         if(world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0):
