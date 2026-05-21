@@ -409,6 +409,7 @@ EOS_item_table = [
     ItemData("Shaymin", 525, ItemClassification.progression, 0, ["Legendary"], 0x15),
     ItemData("Recruit Evolution", 551, ItemClassification.progression, 0, ["Recruit"], 0),
     ItemData("Recruitment", 552, ItemClassification.progression, 0, ["Recruit"], 0),
+    ItemData("Progressive Recruitment", 552, ItemClassification.progression, 0, ["Recruit"], 0),
 ]
 
 filler_items = [

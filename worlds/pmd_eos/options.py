@@ -449,20 +449,12 @@ class RecruitPercentageRequired(Choice):
     default = 1
     
 
-class RecruitFriendItems(Choice):
+class RecruitProgressiveFriendItems(Choice):
     """Sets if friend items should be progressive item or individual"""
 
     display_name = "Progressive Friend Items"
-    option_progressive = 0
-    option_all_random = 1
-
-class RecruitExtraItems(Range):
-    """Adds extra recruitment, Recruit Evolution and Luminous Spring to the pool as well as friend items"""
-
-    display_name = "Extra Recruit Sanity items"
-    range_start = 0
-    range_end = 9
-    default = 3
+    option_all_random = 0
+    option_progressive = 1
 
 
 
@@ -511,5 +503,4 @@ class EOSOptions(PerGameCommonOptions):
     recruit_sanity_evolution: RecruitEvolution
     recruit_sanity_long_location: RecruitLongLocations
     recruit_sanity_difficulty: RecruitPercentageRequired
-    recruit_sanity_friend_items: RecruitFriendItems
-    recruit_sanity_extra_items: RecruitExtraItems
+    recruit_sanity_progressive_friend_items: RecruitProgressiveFriendItems
