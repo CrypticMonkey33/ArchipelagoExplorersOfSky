@@ -428,6 +428,8 @@ def dungeon_locations_behind_items(world, player):
                 if ((len(pokemon_info[location.id - 1500][3]) > 0) and (len(pokemon_info[location.id - 1500][2]) == 0)):
                     if (pokemon_info[location.id - 1500][3][1] > 20 and world.options.goal == 0):
                         pass
+                    elif ((pokemon_info[location.id - 1500][3][1] > 45 and world.options.goal == 1 ) and (world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0)):
+                        pass
                     elif (pokemon_info[location.id - 1500][3][2]):
                         if(world.options.goal == 0):
                             pass
@@ -451,6 +453,8 @@ def dungeon_locations_behind_items(world, player):
                             ) 
                 elif (len(pokemon_info[location.id - 1500][3]) > 0):
                     if (pokemon_info[location.id - 1500][3][1] > 20 and world.options.goal == 0):
+                        pass
+                    elif ((pokemon_info[location.id - 1500][3][1] > 45 and world.options.goal == 1 ) and (world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0)):
                         pass
                     elif (pokemon_info[location.id - 1500][3][2]):
                         if(world.options.goal == 0):

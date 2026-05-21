@@ -219,7 +219,7 @@ class EOSWorld(World):
                         pass
                     elif "Late" in pokemon_info[location.id - 1500][5]:
                         pass
-                    elif (self.options.recruit_sanity_evolution == 1 and len(pokemon_info[location.id - 1500][3] > 0)):
+                    elif (self.options.recruit_sanity_evolution == 1 and len(pokemon_info[location.id - 1500][3]) > 0):
                         pass
                     else:
                         self.excluded_locations += 1
