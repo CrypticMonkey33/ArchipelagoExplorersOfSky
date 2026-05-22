@@ -144,6 +144,16 @@ class EoSClient(BizHawkClient):
             else:
                 self.deathlink_message = "Died from unknown causes"
 
+    async def is_pokemon_recruited(self, dex_num: int, ctx: "BizHawkClientContext") -> bool:
+        adventure_log_ptr = 0xB0894
+        adventure_log = await bizhawk.read(
+            ctx.bizhawk_ctx, [(adventure_log_ptr, 4, self.ram_mem_domain)]
+        )
+        joined_flag_byte = await bizhawk.read(
+            ctx.bizhawk_ctx, [((adventure_log & 0xFFFFFF) + 0x44 + (dex_num >> 3), 1, self.ram_mem_domain)]
+        )
+        return joined_flag_byte & (1 << (dex_num & 8)) != 0
+
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         mission_start_id = 1000
         try:
@@ -1066,15 +1076,11 @@ class EoSClient(BizHawkClient):
                         if bit_number_dung in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
 
-            for byte_i, byte in enumerate(pokedex):
-                for j in range(8):
-                    if j in self.checked_pokemon_flags[byte_i]:
-                        continue  # if the number already exists in the dictionary, it's already been checked. Move on
-                    if ((byte >> j) & 1) == 1:  # check if the bit j in each byte is on, meaning dungeon cleared
-                        self.checked_pokemon_flags[byte_i] += [j]
-                        bit_number_dung = (byte_i * 8) + j + 1500
-                        if bit_number_dung in location_Dict_by_id:
-                            locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
+            for p in range(492):
+                is_recruited = self.is_pokemon_recruited(p, ctx)
+                if (is_recruited):
+                    locs_to_send.add(location_Dict_by_id[p + 400].id)
+
 
 
             # Check for set location flags in general bitfield

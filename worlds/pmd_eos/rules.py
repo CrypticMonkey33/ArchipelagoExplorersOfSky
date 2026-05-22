@@ -378,18 +378,18 @@ def dungeon_locations_behind_items(world, player):
                         difficulty = 0.001 + 0.495
                     case _:
                         difficulty = 0.5
-            if ((pokemon_info[location.id - 1500][1] + 0.496) < difficulty and world.options.goal == 1):
+            if ((pokemon_info[location.id - 400][1] + 0.496) < difficulty and world.options.goal == 1):
                 continue
-            elif ((pokemon_info[location.id - 1500][1] + 0.100) < difficulty and world.options.goal == 0):
+            elif ((pokemon_info[location.id - 400][1] + 0.100) < difficulty and world.options.goal == 0):
                 continue
             for i in range(len(location.group)):
                 if i == 0:
-                    if(pokemon_info[location.id - 1500][5][i] == "Early"):
+                    if(pokemon_info[location.id - 400][5][i] == "Early"):
                         set_rule(
                             world.multiworld.get_location(location.name, player),
                             lambda state, ln=location.group[i],: state.has(ln, player)
                         )
-                    elif(pokemon_info[location.id - 1500][5][i] == "Late"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Late"):
                         if(world.options.goal == 0):
                             continue
                         set_rule(
@@ -397,7 +397,7 @@ def dungeon_locations_behind_items(world, player):
                             lambda state, ln=location.group[i],: state.has(ln, player)
                             and ready_for_late_game(state, player, world)
                         )
-                    elif(pokemon_info[location.id - 1500][5][i] == "Ice"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Ice"):
                         if(world.options.goal == 0):
                             continue
                         set_rule(
@@ -405,7 +405,7 @@ def dungeon_locations_behind_items(world, player):
                             lambda state, ln=location.group[i],: state.has(ln, player)
                             and ready_for_late_game(state, player, world)
                         )   
-                    elif(pokemon_info[location.id - 1500][5][i] == "Rock"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Rock"):
                         if(world.options.goal == 0):
                             continue
                         if (world.options.cursed_aegis_cave.value == 0):
@@ -422,7 +422,7 @@ def dungeon_locations_behind_items(world, player):
                                 and ready_for_late_game(state, player, world)
                                 and state.has("Progressive Seal", player, 1)
                             )  
-                    elif(pokemon_info[location.id - 1500][5][i] == "Steel"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Steel"):
                         if(world.options.goal == 0):
                             continue
                         if (world.options.cursed_aegis_cave.value == 0):
@@ -439,7 +439,7 @@ def dungeon_locations_behind_items(world, player):
                                 and ready_for_late_game(state, player, world)
                                 and state.has("Progressive Seal", player, 2)
                             )  
-                    elif(pokemon_info[location.id - 1500][5][i] == "Pit"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Pit"):
                         if(world.options.goal == 0):
                             continue
                         if (world.options.cursed_aegis_cave.value == 0):
@@ -456,7 +456,7 @@ def dungeon_locations_behind_items(world, player):
                                 and ready_for_late_game(state, player, world)
                                 and state.has("Progressive Seal", player, 3)
                             )  
-                    elif(pokemon_info[location.id - 1500][5][i] == "Boss"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Boss"):
                         if(world.options.goal == 0):
                             continue
                         set_rule(
@@ -464,7 +464,7 @@ def dungeon_locations_behind_items(world, player):
                             lambda state, ln=location.group[i],: state.has(ln, player)
                             and ready_for_darkrai(state, player, world)
                         )
-                    elif(pokemon_info[location.id - 1500][5][i] == "Long"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Long"):
                         if(world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0):
                             continue
                         set_rule(
@@ -473,13 +473,13 @@ def dungeon_locations_behind_items(world, player):
                             and ready_for_late_game(state, player, world)
                         )
                 else:
-                    if(pokemon_info[location.id - 1500][5][i] == "Early"):
+                    if(pokemon_info[location.id - 400][5][i] == "Early"):
                         add_rule(
                             world.multiworld.get_location(location.name, player),
                             lambda state, ln=location.group[i]: state.has(ln, player),
                             combine ="or"
                         )
-                    elif(pokemon_info[location.id - 1500][5][i] == "Late"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Late"):
                         if(world.options.goal == 0):
                             continue
                         add_rule(
@@ -488,7 +488,7 @@ def dungeon_locations_behind_items(world, player):
                             and ready_for_late_game(state, player, world),
                             combine ="or"
                         )
-                    elif(pokemon_info[location.id - 1500][5][i] == "Ice"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Ice"):
                         if(world.options.goal == 0):
                             continue
                         add_rule(
@@ -497,7 +497,7 @@ def dungeon_locations_behind_items(world, player):
                             and ready_for_late_game(state, player, world),
                             combine ="or"
                         )   
-                    elif(pokemon_info[location.id - 1500][5][i] == "Rock"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Rock"):
                         if(world.options.goal == 0):
                             continue
                         if (world.options.cursed_aegis_cave.value == 0):
@@ -516,7 +516,7 @@ def dungeon_locations_behind_items(world, player):
                                 and state.has("Progressive Seal", player, 1),
                                 combine ="or"
                             )  
-                    elif(pokemon_info[location.id - 1500][5][i] == "Steel"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Steel"):
                         if(world.options.goal == 0):
                             continue
                         if (world.options.cursed_aegis_cave.value == 0):
@@ -535,7 +535,7 @@ def dungeon_locations_behind_items(world, player):
                                 and state.has("Progressive Seal", player, 2),
                                 combine ="or"
                             )  
-                    elif(pokemon_info[location.id - 1500][5][i] == "Pit"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Pit"):
                         if(world.options.goal == 0):
                             continue
                         if (world.options.cursed_aegis_cave.value == 0):
@@ -554,7 +554,7 @@ def dungeon_locations_behind_items(world, player):
                                 and state.has("Progressive Seal", player, 3),
                                 combine ="or"
                             )  
-                    elif(pokemon_info[location.id - 1500][5][i] == "Boss"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Boss"):
                         if(world.options.goal == 0):
                             continue
                         add_rule(
@@ -563,7 +563,7 @@ def dungeon_locations_behind_items(world, player):
                             and ready_for_darkrai(state, player, world),
                             combine = "or"
                         )
-                    elif(pokemon_info[location.id - 1500][5][i] == "Long"):
+                    elif(pokemon_info[location.id - 400][5][i] == "Long"):
                         if(world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0):
                             continue
                         add_rule(
@@ -573,56 +573,56 @@ def dungeon_locations_behind_items(world, player):
                             combine ="or"
                         )
             if world.options.recruit_sanity_evolution.value == 1:
-                if ((len(pokemon_info[location.id - 1500][3]) > 0) and (len(pokemon_info[location.id - 1500][2]) == 0)):
-                    if (pokemon_info[location.id - 1500][3][1] > 20 and world.options.goal == 0):
+                if ((len(pokemon_info[location.id - 400][3]) > 0) and (len(pokemon_info[location.id - 400][2]) == 0)):
+                    if (pokemon_info[location.id - 400][3][1] > 20 and world.options.goal == 0):
                         pass
-                    elif ((pokemon_info[location.id - 1500][3][1] > 45 and world.options.goal == 1 ) and (world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0)):
+                    elif ((pokemon_info[location.id - 400][3][1] > 45 and world.options.goal == 1 ) and (world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0)):
                         pass
-                    elif (pokemon_info[location.id - 1500][3][2]):
+                    elif (pokemon_info[location.id - 400][3][2]):
                         if(world.options.goal == 0):
                             pass
                         else:
                             set_rule(
                                 world.multiworld.get_location(location.name, player),
-                                lambda state, ln=pokemon_info[location.id - 1500][3][0]: state.can_reach_location(ln, player)
+                                lambda state, ln=pokemon_info[location.id - 400][3][0]: state.can_reach_location(ln, player)
                                 and state.has("Luminous Spring", player)
                                 and state.has("Recruit Evolution", player)
                                 and ready_for_late_game(state, player, world)
                             ) 
                     else:
-                        if(world.options.goal == 0 and "Early" not in pokemon_info[pokemon_info[location.id - 1500][3][3]][5]):
+                        if(world.options.goal == 0 and "Early" not in pokemon_info[pokemon_info[location.id - 400][3][3]][5]):
                             pass
                         else:
                             set_rule(
                                 world.multiworld.get_location(location.name, player),
-                                lambda state, ln=pokemon_info[location.id - 1500][3][0]: state.can_reach_location(ln, player)
+                                lambda state, ln=pokemon_info[location.id - 400][3][0]: state.can_reach_location(ln, player)
                                 and state.has("Luminous Spring", player)
                                 and state.has("Recruit Evolution", player)
                             ) 
-                elif (len(pokemon_info[location.id - 1500][3]) > 0):
-                    if (pokemon_info[location.id - 1500][3][1] > 20 and world.options.goal == 0):
+                elif (len(pokemon_info[location.id - 400][3]) > 0):
+                    if (pokemon_info[location.id - 400][3][1] > 20 and world.options.goal == 0):
                         pass
-                    elif ((pokemon_info[location.id - 1500][3][1] > 45 and world.options.goal == 1 ) and (world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0)):
+                    elif ((pokemon_info[location.id - 400][3][1] > 45 and world.options.goal == 1 ) and (world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0)):
                         pass
-                    elif (pokemon_info[location.id - 1500][3][2]):
+                    elif (pokemon_info[location.id - 400][3][2]):
                         if(world.options.goal == 0):
                             pass
                         else:
                             add_rule(
                                 world.multiworld.get_location(location.name, player),
-                                lambda state, ln=pokemon_info[location.id - 1500][3][0]: state.can_reach_location(ln, player)
+                                lambda state, ln=pokemon_info[location.id - 400][3][0]: state.can_reach_location(ln, player)
                                 and state.has("Luminous Spring", player)
                                 and state.has("Recruit Evolution", player)
                                 and ready_for_late_game(state, player, world),
                                 combine = "or"
                             )
                     else:
-                        if(world.options.goal == 0 and "Early" not in pokemon_info[pokemon_info[location.id - 1500][3][3]][5]):
+                        if(world.options.goal == 0 and "Early" not in pokemon_info[pokemon_info[location.id - 400][3][3]][5]):
                             pass
                         else:
                             add_rule(
                                 world.multiworld.get_location(location.name, player),
-                                lambda state, ln=pokemon_info[location.id - 1500][3][0]: state.can_reach_location(ln, player)
+                                lambda state, ln=pokemon_info[location.id - 400][3][0]: state.can_reach_location(ln, player)
                                 and state.has("Luminous Spring", player)
                                 and state.has("Recruit Evolution", player),
                                 combine = "or"

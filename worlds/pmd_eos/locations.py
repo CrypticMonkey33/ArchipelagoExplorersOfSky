@@ -67,7 +67,7 @@ def get_subx_table() -> List[LocationData]:
 
 def get_pokemon_table() -> List[LocationData]:
     new_list: List[LocationData] = []
-    start_id = 1500 #random number to change later
+    start_id = 400 #random number to change later
     for i in range(len(pokemon_info)):
         new_location = LocationData(
             classification="Pokemon",
