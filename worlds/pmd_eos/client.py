@@ -34,6 +34,7 @@ class EoSClient(BizHawkClient):
     player_name: Optional[str]
     checked_dungeon_flags: Dict[int, list] = {}
     checked_general_flags: Dict[int, list] = {}
+    checked_pokemon_flags: Dict[int, list] = {}
     ram_mem_domain = "Main RAM"
     goal_complete = False
     bag_given = False
@@ -115,6 +116,9 @@ class EoSClient(BizHawkClient):
 
         for i in range(16):
             self.checked_general_flags[i] = []
+
+        for i in range(62):
+            self.checked_pokemon_flags[i] = []
 
         return True
 
@@ -294,6 +298,8 @@ class EoSClient(BizHawkClient):
             bank_gold_offset = 0x2A5504  # await (self.load_script_variable_raw(0x3D, ctx))
             player_gold_offset = 0x2A54F8
             custom_save_area_offset = 0x3B0000
+            adventure_log_offset = 0x20B0894
+            pokemon_log_offset = adventure_log_offset + 0x44
             mission_status_offset = custom_save_area_offset + 0x4
             relic_shards_offset = custom_save_area_offset + 0x184
             instruments_offset = custom_save_area_offset + 0x185
@@ -424,6 +430,7 @@ class EoSClient(BizHawkClient):
                     (sky_peaks_offset, 1, self.ram_mem_domain),  # Sky Peaks check
                     # (dimensional_scream_info_offset, 0x51, self.ram_mem_domain),
                     (legendaries_in_rom_offset, 1, self.ram_mem_domain),
+                    (pokemon_log_offset, 62, self.ram_mem_domain),
                 ],
             )
             # make sure we are actually on the start screen before checking items and such
@@ -488,6 +495,7 @@ class EoSClient(BizHawkClient):
             dungeon_traps_bitfield = int.from_bytes(read_state[29])
             sky_peaks_ram = int.from_bytes(read_state[30])  # , "little")
             legendaries_recruited_amount = int.from_bytes(read_state[31])
+            pokedex: array.array[int] = array.array("i", [item for item in read_state[32]])
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received) - received_index):
@@ -758,7 +766,21 @@ class EoSClient(BizHawkClient):
                                 (performance_progress_offset + 0x1, int.to_bytes(write_byte), self.ram_mem_domain),
                             ],
                         )
-                    elif item_data.name == "Recruit Evolution":
+                    elif item_data.name == "Formation Control":
+                        write_byte = performance_progress_bitfield[0] | (0x1 << 7)
+                        performance_progress_bitfield[0] = write_byte
+                        write_byte2 = performance_progress_bitfield[2] | (0x1 << 4)
+                        performance_progress_bitfield[2] = write_byte
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (performance_progress_offset, int.to_bytes(write_byte), self.ram_mem_domain),
+                                (performance_progress_offset + 0x2, int.to_bytes(write_byte2), self.ram_mem_domain),
+                            ],
+                        )
+                    await self.update_received_items(ctx, received_items_offset, received_index, i)
+                elif "Recruit" in item_data.group:
+                    if item_data.name == "Recruit Evolution":
                         write_byte = performance_progress_bitfield[0] | (0x1 << 6)
                         performance_progress_bitfield[0] = write_byte
                         await bizhawk.write(
@@ -776,17 +798,13 @@ class EoSClient(BizHawkClient):
                                 (performance_progress_offset, int.to_bytes(write_byte), self.ram_mem_domain),
                             ],
                         )
-
-                    elif item_data.name == "Formation Control":
-                        write_byte = performance_progress_bitfield[0] | (0x1 << 7)
+                    elif item_data.name == "Progressive Recruitment":
+                        write_byte = performance_progress_bitfield[0] | (0x1 << 5)
                         performance_progress_bitfield[0] = write_byte
-                        write_byte2 = performance_progress_bitfield[2] | (0x1 << 4)
-                        performance_progress_bitfield[2] = write_byte
                         await bizhawk.write(
                             ctx.bizhawk_ctx,
                             [
                                 (performance_progress_offset, int.to_bytes(write_byte), self.ram_mem_domain),
-                                (performance_progress_offset + 0x2, int.to_bytes(write_byte2), self.ram_mem_domain),
                             ],
                         )
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
@@ -1047,6 +1065,17 @@ class EoSClient(BizHawkClient):
                             self.dialga_complete = True
                         if bit_number_dung in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
+
+            for byte_i, byte in enumerate(pokedex):
+                for j in range(8):
+                    if j in self.checked_pokemon_flags[byte_i]:
+                        continue  # if the number already exists in the dictionary, it's already been checked. Move on
+                    if ((byte >> j) & 1) == 1:  # check if the bit j in each byte is on, meaning dungeon cleared
+                        self.checked_pokemon_flags[byte_i] += [j]
+                        bit_number_dung = (byte_i * 8) + j + 1500
+                        if bit_number_dung in location_Dict_by_id:
+                            locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
+
 
             # Check for set location flags in general bitfield
             for byte_m, byte in enumerate(scenario_subx_bitfield):

@@ -656,11 +656,22 @@ class EOSWorld(World):
                 else:
                     for i in range(4 - self.options.recruit.value):
                         required_items.append(self.create_item("Progressive Recruitment", ItemClassification.progression))
+        else:
+            if(self.options.recruit.value == 0):
+                required_items.append(self.create_item("Recruitment", ItemClassification.useful))
+            required_items.append(self.create_item("Friend Bow", ItemClassification.useful))
+            if (self.options.goal == 1):
+                required_items.append(self.create_item("Amber Tear", ItemClassification.useful))
+                required_items.append(self.create_item("Golden Mask", ItemClassification.useful))
 
         if (self.options.recruit_sanity.value == 1 and self.options.recruit_sanity_evolution.value == 1):
             required_items.append(self.create_item("Luminous Spring", ItemClassification.progression))
             if (self.options.recruit_evo.value == 0):
                 required_items.append(self.create_item("Recruit Evolution", ItemClassification.progression))
+        else:
+            required_items.append(self.create_item("Luminous Spring", ItemClassification.useful))
+            if (self.options.recruit_evo.value == 0):
+                required_items.append(self.create_item("Recruit Evolution", ItemClassification.useful))
         
         if (self.options.recruit_sanity.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.long_location.value == 1):
             if (self.options.recruit_sanity_progressive_friend_items.value == 0):
@@ -669,6 +680,9 @@ class EOSWorld(World):
             else:
                 for i in range(2):
                         required_items.append(self.create_item("Progressive Recruitment", ItemClassification.progression))
+        else:
+            required_items.append(self.create_item("Mystery Part", ItemClassification.useful))
+            required_items.append(self.create_item("Secret Slab", ItemClassification.useful))
 
         if self.options.goal.value == 1 and (
             self.options.legendaries.value > len(self.options.allowed_legendaries.value)
