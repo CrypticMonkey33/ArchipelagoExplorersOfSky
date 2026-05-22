@@ -298,7 +298,7 @@ class EoSClient(BizHawkClient):
             bank_gold_offset = 0x2A5504  # await (self.load_script_variable_raw(0x3D, ctx))
             player_gold_offset = 0x2A54F8
             custom_save_area_offset = 0x3B0000
-            adventure_log_offset = 0x20B0894
+            adventure_log_offset = 0x0B0894
             pokemon_log_offset = adventure_log_offset + 0x44
             mission_status_offset = custom_save_area_offset + 0x4
             relic_shards_offset = custom_save_area_offset + 0x184
