@@ -932,8 +932,12 @@ class EoSClient(BizHawkClient):
                 elif "Aegis" in item_data.group:
                     main_offset_for_seals = 0
                     if ctx.slot_data["CursedAegisCave"] == 0:
-                        self.aegis_seals += 1
-                        main_offset_for_seals = 2 + self.aegis_seals
+                        items_received = ctx.items_received
+                        aegis_count = 0
+                        for item in items_received:
+                            if item.item == 206:
+                                aegis_count += 1
+                        main_offset_for_seals = 2 + aegis_count
                         if main_offset_for_seals >= 8:
                             main_offset_for_seals = 7
                     elif ctx.slot_data["CursedAegisCave"] == 1:
@@ -948,17 +952,6 @@ class EoSClient(BizHawkClient):
                                 (scenario_main_bitfield_offset + 0x5, int.to_bytes(write_byte), self.ram_mem_domain),
                             ],
                         )
-
-                    await ctx.send_msgs(
-                        [
-                            {
-                                "cmd": "Set",
-                                "key": self.player_name + "GenericStorage",
-                                "want_reply": True,
-                                "operations": [{"operation": "update", "value": {"aegis_seals": self.aegis_seals}}],
-                            }
-                        ]
-                    )
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
 
                 elif "Trap" in item_data.group:
