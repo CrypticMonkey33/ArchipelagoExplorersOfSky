@@ -1220,7 +1220,7 @@ class EoSClient(BizHawkClient):
             is_recruited = await self.is_pokemon_recruited(ctx)
             for p in range(492):
                 if (is_recruited[p]):
-                    locs_to_send.add(location_Dict_by_id[p + 399].id)
+                    locs_to_send.add(location_Dict_by_id[p + 14999].id)
 
 
 

@@ -203,10 +203,10 @@ class EOSWorld(World):
                     self.excluded_locations += 1
                     continue
                 if(self.options.goal == 0):
-                    if "Early" in pokemon_info[location.id - 400][5]:
+                    if "Early" in pokemon_info[location.id - 15000][5]:
                         pass
-                    elif (self.options.recruit_sanity_evolution == 1 and (len(pokemon_info[location.id - 400][3]) > 0)):
-                        if ("Early" in pokemon_info[pokemon_info[location.id - 400][3][3]][5] and not pokemon_info[location.id - 400][3][2]):
+                    elif (self.options.recruit_sanity_evolution == 1 and (len(pokemon_info[location.id - 15000][3]) > 0)):
+                        if ("Early" in pokemon_info[pokemon_info[location.id - 15000][3][3]][5] and not pokemon_info[location.id - 15000][3][2]):
                             pass
                         else:
                             self.excluded_locations += 1
@@ -215,21 +215,21 @@ class EOSWorld(World):
                         self.excluded_locations += 1
                         continue
                 if(self.options.long_location.value == 0):
-                    if "Early" in pokemon_info[location.id - 400][5]:
+                    if "Early" in pokemon_info[location.id - 15000][5]:
                         pass
-                    elif "Late" in pokemon_info[location.id - 400][5]:
+                    elif "Late" in pokemon_info[location.id - 15000][5]:
                         pass
-                    elif "Boss" in pokemon_info[location.id - 400][5]:
+                    elif "Boss" in pokemon_info[location.id - 15000][5]:
                         pass
-                    elif "Ice" in pokemon_info[location.id - 400][5]:
+                    elif "Ice" in pokemon_info[location.id - 15000][5]:
                         pass
-                    elif "Rock" in pokemon_info[location.id - 400][5]:
+                    elif "Rock" in pokemon_info[location.id - 15000][5]:
                         pass
-                    elif "Steel" in pokemon_info[location.id - 400][5]:
+                    elif "Steel" in pokemon_info[location.id - 15000][5]:
                         pass
-                    elif "Pit" in pokemon_info[location.id - 400][5]:
+                    elif "Pit" in pokemon_info[location.id - 15000][5]:
                         pass
-                    elif (self.options.recruit_sanity_evolution == 1 and len(pokemon_info[location.id - 400][3]) > 0):
+                    elif (self.options.recruit_sanity_evolution == 1 and len(pokemon_info[location.id - 15000][3]) > 0):
                         pass
                     else:
                         self.excluded_locations += 1
@@ -245,24 +245,24 @@ class EOSWorld(World):
                         self.difficulty = 0.001 + 0.495
                     case _:
                         self.difficulty = 0.5
-                if (len(pokemon_info[location.id - 400][2]) > 0):
-                    if (pokemon_info[location.id - 400][1] >= self.difficulty and not pokemon_info[location.id - 400][4]):
+                if (len(pokemon_info[location.id - 15000][2]) > 0):
+                    if (pokemon_info[location.id - 15000][1] >= self.difficulty and not pokemon_info[location.id - 15000][4]):
                         pokemon_start_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_start_region))
                         added = 1
-                    elif ((pokemon_info[location.id - 400][1] + 0.100) >= self.difficulty and not pokemon_info[location.id - 400][4]):
+                    elif ((pokemon_info[location.id - 15000][1] + 0.100) >= self.difficulty and not pokemon_info[location.id - 15000][4]):
                         pokemon_early_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_early_region))
                         added = 1
-                    elif ((pokemon_info[location.id - 400][1] + 0.225) >= self.difficulty and not pokemon_info[location.id - 400][4] and self.options.goal == 1):
+                    elif ((pokemon_info[location.id - 15000][1] + 0.225) >= self.difficulty and not pokemon_info[location.id - 15000][4] and self.options.goal == 1):
                         pokemon_mid_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_mid_region))
                         added = 1
-                    elif ((pokemon_info[location.id - 400][1] + 0.326) >= self.difficulty and not pokemon_info[location.id - 400][4] and self.options.goal == 1):  
+                    elif ((pokemon_info[location.id - 15000][1] + 0.326) >= self.difficulty and not pokemon_info[location.id - 15000][4] and self.options.goal == 1):  
                         pokemon_late_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_late_region))
                         added = 1
-                    elif ((pokemon_info[location.id - 400][1] + 0.496) >= self.difficulty and self.options.long_location.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
+                    elif ((pokemon_info[location.id - 15000][1] + 0.496) >= self.difficulty and self.options.long_location.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
                         pokemon_end_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_end_region))
                         added = 1
-                    elif ((self.options.recruit_sanity_evolution.value == 1) and (len(pokemon_info[location.id - 400][3]) > 0)):
-                        if ("Early" in pokemon_info[pokemon_info[location.id - 400][3][3]][5] and pokemon_info[location.id - 400][3][1] <= 20):
+                    elif ((self.options.recruit_sanity_evolution.value == 1) and (len(pokemon_info[location.id - 15000][3]) > 0)):
+                        if ("Early" in pokemon_info[pokemon_info[location.id - 15000][3][3]][5] and pokemon_info[location.id - 15000][3][1] <= 20):
                             pass
                         else:
                             self.excluded_locations += 1
@@ -270,23 +270,23 @@ class EOSWorld(World):
                     else:       
                         self.excluded_locations += 1
                         continue
-                if ((self.options.recruit_sanity_evolution.value == 1) and (len(pokemon_info[location.id - 400][3]) > 0)):
-                    if ((pokemon_info[pokemon_info[location.id - 400][3][3]][1] >= self.difficulty) and (pokemon_info[location.id - 400][3][1] <= 10)):
+                if ((self.options.recruit_sanity_evolution.value == 1) and (len(pokemon_info[location.id - 15000][3]) > 0)):
+                    if ((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 10)):
                         pokemon_start_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_start_region))
                         added = 1
-                    elif (((pokemon_info[pokemon_info[location.id - 400][3][3]][1] + 0.100) >= self.difficulty) and (pokemon_info[location.id - 400][3][1] <= 20)):
+                    elif (((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.100) >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 20)):
                         pokemon_early_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_early_region))
                         added = 1
-                    elif (((pokemon_info[pokemon_info[location.id - 400][3][3]][1] + 0.225) >= self.difficulty) and (pokemon_info[location.id - 400][3][1] <= 30 and self.options.goal == 1)):
+                    elif (((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.225) >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 30 and self.options.goal == 1)):
                         pokemon_mid_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_mid_region))
                         added = 1
-                    elif (((pokemon_info[pokemon_info[location.id - 400][3][3]][1] + 0.326) >= self.difficulty) and (pokemon_info[location.id - 400][3][1] <= 45 and self.options.goal == 1)):  
+                    elif (((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.326) >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 45 and self.options.goal == 1)):  
                         pokemon_late_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_late_region))
                         added = 1
-                    elif ((pokemon_info[pokemon_info[location.id - 400][3][3]][1] + 0.496) >= self.difficulty and self.options.long_location.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
+                    elif ((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.496) >= self.difficulty and self.options.long_location.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
                         pokemon_end_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_end_region))
                         added = 1
-                    elif(len(pokemon_info[location.id - 400][2]) == 0 and (pokemon_info[pokemon_info[location.id - 400][3][3]][1] + 0.496) < self.difficulty):
+                    elif(len(pokemon_info[location.id - 15000][2]) == 0 and (pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.496) < self.difficulty):
                         self.excluded_locations += 1
                         continue
                 if (added == 0):
