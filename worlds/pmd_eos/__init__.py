@@ -271,10 +271,10 @@ class EOSWorld(World):
                         self.excluded_locations += 1
                         continue
                 if ((self.options.recruit_sanity_evolution.value == 1) and (len(pokemon_info[location.id - 15000][3]) > 0)):
-                    if ((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 10)):
+                    if ((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 10) and not pokemon_info[location.id - 15000][3][2]):
                         pokemon_start_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_start_region))
                         added = 1
-                    elif (((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.100) >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 20)):
+                    elif (((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.100) >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 20 and not pokemon_info[location.id - 15000][3][2])):
                         pokemon_early_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_early_region))
                         added = 1
                     elif (((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.225) >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 30 and self.options.goal == 1)):
