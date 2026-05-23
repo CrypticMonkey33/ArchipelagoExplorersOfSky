@@ -58,6 +58,7 @@ class EoSClient(BizHawkClient):
     hints_hinted: List[int] = []
     client_version = game_version
     hint_issue = False
+    prog_recruit = 0
 
     def __init__(self) -> None:
         super().__init__()
@@ -144,15 +145,20 @@ class EoSClient(BizHawkClient):
             else:
                 self.deathlink_message = "Died from unknown causes"
 
-    async def is_pokemon_recruited(self, dex_num: int, ctx: "BizHawkClientContext") -> bool:
+    async def is_pokemon_recruited(self, ctx: "BizHawkClientContext") -> list[bool]:
+        pokedex_size = 492
+        pokedex_list = []
         adventure_log_ptr = 0x0B0894
         adventure_log = await bizhawk.read(
             ctx.bizhawk_ctx, [(adventure_log_ptr, 4, self.ram_mem_domain)]
         )
         joined_flag_byte = await bizhawk.read(
-            ctx.bizhawk_ctx, [((int.from_bytes(adventure_log[0], "little") & 0xFFFFFF) + 0x44 + (dex_num >> 3), 1, self.ram_mem_domain)]
+            ctx.bizhawk_ctx, [((int.from_bytes(adventure_log[0], "little") & 0xFFFFFF) + 0x44, 62, self.ram_mem_domain)]
         )
-        return (int.from_bytes(joined_flag_byte[0], "little") & (1 << (dex_num & 7))) != 0
+        for dex_num in range(pokedex_size):
+
+            pokedex_list.append((int.from_bytes(joined_flag_byte[0], "little") & (1 << (dex_num))) != 0)
+        return pokedex_list
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         mission_start_id = 1000
@@ -263,6 +269,7 @@ class EoSClient(BizHawkClient):
                                 "spinda_events": 0,
                                 "spinda_drinks": 0,
                                 "box_number": 0,
+                                "prog_recruit": 0,
                             },
                             "want_reply": True,
                             "operations": [
@@ -280,6 +287,7 @@ class EoSClient(BizHawkClient):
                                         "spinda_events": 0,
                                         "spinda_drinks": 0,
                                         "box_number": 0,
+                                        "prog_recruit": 0,
                                     },
                                 }
                             ],
@@ -377,6 +385,7 @@ class EoSClient(BizHawkClient):
                 # self.spinda_events = max(stored["spinda_events"], self.spinda_events)
                 # self.spinda_drinks = max(stored["spinda_drinks"], self.spinda_drinks)
                 self.item_box_count = max(stored["box_number"], self.item_box_count)
+                self.prog_recruit = max(stored["prog_recruit"], self.prog_recruit)
 
             else:
                 return
@@ -805,14 +814,150 @@ class EoSClient(BizHawkClient):
                             ],
                         )
                     elif item_data.name == "Progressive Recruitment":
-                        write_byte = performance_progress_bitfield[0] | (0x1 << 5)
-                        performance_progress_bitfield[0] = write_byte
-                        await bizhawk.write(
-                            ctx.bizhawk_ctx,
-                            [
-                                (performance_progress_offset, int.to_bytes(write_byte), self.ram_mem_domain),
-                            ],
-                        )
+                        item_data = item_table_by_id[ctx.items_received[received_index + i].item]
+                        item_memory_offset = 0
+                        if self.prog_recruit >= 6:
+                            self.logger.info("Max Recruit reached, not sending any more to rom")
+                        elif self.prog_recruit == 0:
+                            self.prog_recruit += 1
+                            write_byte = performance_progress_bitfield[0] | (0x1 << 5)
+                            performance_progress_bitfield[0] = write_byte
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (performance_progress_offset, int.to_bytes(write_byte), self.ram_mem_domain),
+                                ],
+                            )
+                        elif self.prog_recruit == 1:
+                            self.prog_recruit += 1
+                            write_byte = performance_progress_bitfield[4] | (0x1 << 3)
+                            performance_progress_bitfield[4] = write_byte
+                            write_byte2 = [0x35 % 256, 0x35 // 256]
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                    (
+                                        item_backup_offset + 0x2,
+                                        int.to_bytes(0, byteorder="little", length=2),
+                                        self.ram_mem_domain,
+                                    ),
+                                    (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                    (
+                                        scenario_talk_bitfield_offset + 0x1F,
+                                        int.to_bytes(scenario_talk_bitfield_248_list),
+                                        self.ram_mem_domain,
+                                    ),
+                                ],
+                            )
+                            await asyncio.sleep(0.1)
+                        elif self.prog_recruit == 2:
+                            self.prog_recruit += 1
+                            write_byte = performance_progress_bitfield[4] | (0x1 << 3)
+                            performance_progress_bitfield[4] = write_byte
+                            write_byte2 = [0x3A % 256, 0x3A // 256]
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                    (
+                                        item_backup_offset + 0x2,
+                                        int.to_bytes(0, byteorder="little", length=2),
+                                        self.ram_mem_domain,
+                                    ),
+                                    (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                    (
+                                        scenario_talk_bitfield_offset + 0x1F,
+                                        int.to_bytes(scenario_talk_bitfield_248_list),
+                                        self.ram_mem_domain,
+                                    ),
+                                ],
+                            )
+                            await asyncio.sleep(0.1)
+                        elif self.prog_recruit == 3:
+                            self.prog_recruit += 1
+                            write_byte = performance_progress_bitfield[4] | (0x1 << 3)
+                            performance_progress_bitfield[4] = write_byte
+                            write_byte2 = [0x39 % 256, 0x39 // 256]
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                    (
+                                        item_backup_offset + 0x2,
+                                        int.to_bytes(0, byteorder="little", length=2),
+                                        self.ram_mem_domain,
+                                    ),
+                                    (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                    (
+                                        scenario_talk_bitfield_offset + 0x1F,
+                                        int.to_bytes(scenario_talk_bitfield_248_list),
+                                        self.ram_mem_domain,
+                                    ),
+                                ],
+                            )
+                            await asyncio.sleep(0.1)
+                        elif self.prog_recruit == 4:
+                            self.prog_recruit += 1
+                            write_byte = performance_progress_bitfield[4] | (0x1 << 3)
+                            performance_progress_bitfield[4] = write_byte
+                            write_byte2 = [0xAD % 256, 0xAD // 256]
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                    (
+                                        item_backup_offset + 0x2,
+                                        int.to_bytes(0, byteorder="little", length=2),
+                                        self.ram_mem_domain,
+                                    ),
+                                    (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                    (
+                                        scenario_talk_bitfield_offset + 0x1F,
+                                        int.to_bytes(scenario_talk_bitfield_248_list),
+                                        self.ram_mem_domain,
+                                    ),
+                                ],
+                            )
+                            await asyncio.sleep(0.1)
+                        elif self.prog_recruit == 5:
+                            self.prog_recruit += 1
+                            write_byte = performance_progress_bitfield[4] | (0x1 << 3)
+                            performance_progress_bitfield[4] = write_byte
+                            write_byte2 = [0xAE % 256, 0xAE // 256]
+                            scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                    (
+                                        item_backup_offset + 0x2,
+                                        int.to_bytes(0, byteorder="little", length=2),
+                                        self.ram_mem_domain,
+                                    ),
+                                    (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                    (
+                                        scenario_talk_bitfield_offset + 0x1F,
+                                        int.to_bytes(scenario_talk_bitfield_248_list),
+                                        self.ram_mem_domain,
+                                    ),
+                                ],
+                            )
+                            await asyncio.sleep(0.1)
+
+                        #await self.update_received_items(ctx, received_items_offset, received_index, i)
+                        [
+                            {
+                                "cmd": "Set",
+                                "key": self.player_name + "GenericStorage",
+                                "want_reply": True,
+                                "operations": [{"operation": "update", "value": {"prog_recruit": self.prog_recruit}}],
+                            }
+                        ]
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Money" in item_data.group:
                     if item_data.classification == ItemClassification.trap:
@@ -1072,9 +1217,9 @@ class EoSClient(BizHawkClient):
                         if bit_number_dung in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
 
+            is_recruited = await self.is_pokemon_recruited(ctx)
             for p in range(492):
-                is_recruited = await self.is_pokemon_recruited(p, ctx)
-                if (is_recruited):
+                if (is_recruited[p]):
                     locs_to_send.add(location_Dict_by_id[p + 399].id)
 
 
@@ -1667,6 +1812,7 @@ class EoSClient(BizHawkClient):
                                     "skypeaks_open": self.skypeaks_open,
                                     "aegis_seals": self.aegis_seals,
                                     "box_number": self.item_box_count,
+                                    "prog_recruit": self.prog_recruit,
                                 },
                             }
                         ],
