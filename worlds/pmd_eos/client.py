@@ -145,14 +145,14 @@ class EoSClient(BizHawkClient):
                 self.deathlink_message = "Died from unknown causes"
 
     async def is_pokemon_recruited(self, dex_num: int, ctx: "BizHawkClientContext") -> bool:
-        adventure_log_ptr = 0xB0894
+        adventure_log_ptr = 0x0B0894
         adventure_log = await bizhawk.read(
             ctx.bizhawk_ctx, [(adventure_log_ptr, 4, self.ram_mem_domain)]
         )
         joined_flag_byte = await bizhawk.read(
-            ctx.bizhawk_ctx, [((adventure_log & 0xFFFFFF) + 0x44 + (dex_num >> 3), 1, self.ram_mem_domain)]
+            ctx.bizhawk_ctx, [((int.from_bytes(adventure_log[0], "little") & 0xFFFFFF) + 0x44 + (dex_num >> 3), 1, self.ram_mem_domain)]
         )
-        return joined_flag_byte & (1 << (dex_num & 8)) != 0
+        return (int.from_bytes(joined_flag_byte[0], "little") & (1 << (dex_num & 7))) != 0
 
     async def game_watcher(self, ctx: "BizHawkClientContext") -> None:
         mission_start_id = 1000
@@ -308,8 +308,6 @@ class EoSClient(BizHawkClient):
             bank_gold_offset = 0x2A5504  # await (self.load_script_variable_raw(0x3D, ctx))
             player_gold_offset = 0x2A54F8
             custom_save_area_offset = 0x3B0000
-            adventure_log_offset = 0x0B0894
-            pokemon_log_offset = adventure_log_offset + 0x44
             mission_status_offset = custom_save_area_offset + 0x4
             relic_shards_offset = custom_save_area_offset + 0x184
             instruments_offset = custom_save_area_offset + 0x185
@@ -440,7 +438,6 @@ class EoSClient(BizHawkClient):
                     (sky_peaks_offset, 1, self.ram_mem_domain),  # Sky Peaks check
                     # (dimensional_scream_info_offset, 0x51, self.ram_mem_domain),
                     (legendaries_in_rom_offset, 1, self.ram_mem_domain),
-                    (pokemon_log_offset, 62, self.ram_mem_domain),
                 ],
             )
             # make sure we are actually on the start screen before checking items and such
@@ -505,7 +502,6 @@ class EoSClient(BizHawkClient):
             dungeon_traps_bitfield = int.from_bytes(read_state[29])
             sky_peaks_ram = int.from_bytes(read_state[30])  # , "little")
             legendaries_recruited_amount = int.from_bytes(read_state[31])
-            pokedex: array.array[int] = array.array("i", [item for item in read_state[32]])
 
             # Loop for receiving items.
             for i in range(len(ctx.items_received) - received_index):
@@ -1077,9 +1073,9 @@ class EoSClient(BizHawkClient):
                             locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
 
             for p in range(492):
-                is_recruited = self.is_pokemon_recruited(p, ctx)
+                is_recruited = await self.is_pokemon_recruited(p, ctx)
                 if (is_recruited):
-                    locs_to_send.add(location_Dict_by_id[p + 400].id)
+                    locs_to_send.add(location_Dict_by_id[p + 399].id)
 
 
 
