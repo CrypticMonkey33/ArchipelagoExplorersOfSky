@@ -50,6 +50,7 @@ class EOSWeb(WebWorld):
         )
     ]
 
+pokmeon_has_location = [0] * 492
 
 class EOSSettings(settings.Group):
     class RomFile(settings.UserFilePath):
@@ -198,23 +199,22 @@ class EOSWorld(World):
             elif location.name == "Team Name Location":
                 menu_region.locations.append(EOSLocation(self.player, location.name, location.id, menu_region))
             elif location.classification == "Pokemon":
-                added = 0
                 if(self.options.recruit_sanity.value == 0):
                     self.excluded_locations += 1
                     continue
                 if(self.options.goal == 0):
                     if "Early" in pokemon_info[location.id - 15000][5]:
                         pass
-                    elif (self.options.recruit_sanity_evolution == 1 and (len(pokemon_info[location.id - 15000][3]) > 0)):
-                        if ("Early" in pokemon_info[pokemon_info[location.id - 15000][3][3]][5] and not pokemon_info[location.id - 15000][3][2]):
-                            pass
+                    elif (self.options.recruit_sanity_evolution == 1):
+                        if (pokmeon_has_location[location.id - 15000] == 1):
+                            continue
                         else:
                             self.excluded_locations += 1
                             continue
                     else:
                         self.excluded_locations += 1
                         continue
-                if(self.options.long_location.value == 0):
+                if(self.options.long_location.value == 0 or self.options.recruit_sanity_long_location.value == 0):
                     if "Early" in pokemon_info[location.id - 15000][5]:
                         pass
                     elif "Late" in pokemon_info[location.id - 15000][5]:
@@ -229,67 +229,100 @@ class EOSWorld(World):
                         pass
                     elif "Pit" in pokemon_info[location.id - 15000][5]:
                         pass
-                    elif (self.options.recruit_sanity_evolution == 1 and len(pokemon_info[location.id - 15000][3]) > 0):
-                        pass
+                    elif (self.options.recruit_sanity_evolution == 1):
+                        if (pokmeon_has_location[location.id - 15000] == 1):
+                            continue
+                        else:
+                            self.excluded_locations += 1
+                            continue
                     else:
                         self.excluded_locations += 1
                         continue
                 match self.options.recruit_sanity_difficulty.value:
                     case 0:
-                        self.difficulty = 0.20 + 0.495
+                        self.difficulty = 0.175 + 0.495
                     case 1:
-                        self.difficulty = 0.10 + 0.495
+                        self.difficulty = 0.125 + 0.495
                     case 2:
                         self.difficulty = 0.05 + 0.495
                     case 3:
                         self.difficulty = 0.001 + 0.495
                     case _:
                         self.difficulty = 0.5
+
                 if (len(pokemon_info[location.id - 15000][2]) > 0):
                     if (pokemon_info[location.id - 15000][1] >= self.difficulty and not pokemon_info[location.id - 15000][4]):
                         pokemon_start_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_start_region))
-                        added = 1
+                        pokmeon_has_location[location.id - 15000] = 1
                     elif ((pokemon_info[location.id - 15000][1] + 0.100) >= self.difficulty and not pokemon_info[location.id - 15000][4]):
                         pokemon_early_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_early_region))
-                        added = 1
+                        pokmeon_has_location[location.id - 15000] = 1
                     elif ((pokemon_info[location.id - 15000][1] + 0.225) >= self.difficulty and not pokemon_info[location.id - 15000][4] and self.options.goal == 1):
                         pokemon_mid_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_mid_region))
-                        added = 1
+                        pokmeon_has_location[location.id - 15000] = 1
                     elif ((pokemon_info[location.id - 15000][1] + 0.326) >= self.difficulty and not pokemon_info[location.id - 15000][4] and self.options.goal == 1):  
                         pokemon_late_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_late_region))
-                        added = 1
+                        pokmeon_has_location[location.id - 15000] = 1
                     elif ((pokemon_info[location.id - 15000][1] + 0.496) >= self.difficulty and self.options.long_location.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
                         pokemon_end_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_end_region))
-                        added = 1
-                    elif ((self.options.recruit_sanity_evolution.value == 1) and (len(pokemon_info[location.id - 15000][3]) > 0)):
-                        if ("Early" in pokemon_info[pokemon_info[location.id - 15000][3][3]][5] and pokemon_info[location.id - 15000][3][1] <= 20):
-                            pass
-                        else:
-                            self.excluded_locations += 1
-                            continue
-                    else:       
-                        self.excluded_locations += 1
-                        continue
+                        pokmeon_has_location[location.id - 15000] = 1
+                
                 if ((self.options.recruit_sanity_evolution.value == 1) and (len(pokemon_info[location.id - 15000][3]) > 0)):
-                    if ((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 10) and not pokemon_info[location.id - 15000][3][2]):
-                        pokemon_start_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_start_region))
-                        added = 1
-                    elif (((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.100) >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 20 and not pokemon_info[location.id - 15000][3][2])):
-                        pokemon_early_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_early_region))
-                        added = 1
-                    elif (((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.225) >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 30 and self.options.goal == 1)):
-                        pokemon_mid_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_mid_region))
-                        added = 1
-                    elif (((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.326) >= self.difficulty) and (pokemon_info[location.id - 15000][3][1] <= 45 and self.options.goal == 1)):  
-                        pokemon_late_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_late_region))
-                        added = 1
-                    elif ((pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.496) >= self.difficulty and self.options.long_location.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
-                        pokemon_end_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_end_region))
-                        added = 1
-                    elif(len(pokemon_info[location.id - 15000][2]) == 0 and (pokemon_info[pokemon_info[location.id - 15000][3][3]][1] + 0.496) < self.difficulty):
-                        self.excluded_locations += 1
-                        continue
-                if (added == 0):
+                    for j in range(len(pokemon_info[location.id - 15000][3])):
+                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
+                            if ((pokemon_info[location.id - 15000][1] >= self.difficulty) and (pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= 10) and not pokemon_info[location.id - 15000][3][j][2]):
+                                pokemon_start_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] + 15000, pokemon_start_region))
+                                if ((location.id - 15000) > pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] and pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 0):
+                                    self.excluded_locations -= 1
+                                pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
+                            elif (((pokemon_info[location.id - 15000][1] + 0.100) >= self.difficulty) and (pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= 20) and not pokemon_info[location.id - 15000][3][j][2]):
+                                pokemon_early_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] + 15000, pokemon_early_region))
+                                if ((location.id - 15000) > pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] and pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 0):
+                                    self.excluded_locations -= 1
+                                pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
+                            elif (((pokemon_info[location.id - 15000][1] + 0.225) >= self.difficulty) and (pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= 30 and self.options.goal == 1)):
+                                pokemon_mid_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] + 15000, pokemon_mid_region))
+                                if ((location.id - 15000) > pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] and pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 0):
+                                    self.excluded_locations -= 1
+                                pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
+                            elif (((pokemon_info[location.id - 15000][1] + 0.326) >= self.difficulty) and (pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= 45 and self.options.goal == 1)):  
+                                pokemon_late_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] + 15000, pokemon_late_region))
+                                if ((location.id - 15000) > pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] and pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 0):
+                                    self.excluded_locations -= 1
+                                pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
+                            elif ((pokemon_info[location.id - 15000][1] + 0.496) >= self.difficulty and self.options.long_location.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
+                                pokemon_end_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] + 15000, pokemon_end_region))
+                                if ((location.id - 15000) > pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] and pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 0):
+                                    self.excluded_locations -= 1
+                                pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
+                        
+                        if ((pokemon_info[location.id - 15000][1] >= self.difficulty) and (pokemon_info[location.id - 15000][3][j][1] <= 10) and not pokemon_info[location.id - 15000][3][j][2]):
+                            pokemon_start_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], pokemon_info[location.id - 15000][3][j][3] + 15000, pokemon_start_region))
+                            if ((location.id - 15000) > pokemon_info[location.id - 15000][3][j][3] and pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] == 0):
+                                self.excluded_locations -= 1
+                            pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] = 1
+                        elif (((pokemon_info[location.id - 15000][1] + 0.100) >= self.difficulty) and (pokemon_info[location.id - 15000][3][j][1] <= 20) and not pokemon_info[location.id - 15000][3][j][2]):
+                            pokemon_early_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], pokemon_info[location.id - 15000][3][j][3] + 15000, pokemon_early_region))
+                            if ((location.id - 15000) > pokemon_info[location.id - 15000][3][j][3] and pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] == 0):
+                                self.excluded_locations -= 1
+                            pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] = 1
+                        elif (((pokemon_info[location.id - 15000][1] + 0.225) >= self.difficulty) and (pokemon_info[location.id - 15000][3][j][1] <= 30 and self.options.goal == 1)):
+                            pokemon_mid_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], pokemon_info[location.id - 15000][3][j][3] + 15000, pokemon_mid_region))
+                            if ((location.id - 15000) > pokemon_info[location.id - 15000][3][j][3] and pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] == 0):
+                                self.excluded_locations -= 1
+                            pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] = 1
+                        elif (((pokemon_info[location.id - 15000][1] + 0.326) >= self.difficulty) and (pokemon_info[location.id - 15000][3][j][1] <= 45 and self.options.goal == 1)):  
+                            pokemon_late_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], pokemon_info[location.id - 15000][3][j][3] + 15000, pokemon_late_region))
+                            if ((location.id - 15000) > pokemon_info[location.id - 15000][3][j][3] and pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] == 0):
+                                self.excluded_locations -= 1
+                            pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] = 1
+                        elif ((pokemon_info[location.id - 15000][1] + 0.496) >= self.difficulty and self.options.long_location.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
+                            pokemon_end_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], pokemon_info[location.id - 15000][3][j][3] + 15000, pokemon_end_region))
+                            if ((location.id - 15000) > pokemon_info[location.id - 15000][3][j][3] and pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] == 0):
+                                self.excluded_locations -= 1
+                            pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] = 1
+
+                if (pokmeon_has_location[location.id - 15000] == 0):
                     self.excluded_locations += 1
                     continue
 

@@ -436,8 +436,8 @@ class RecruitLongLocations(Toggle):
 
 class RecruitPercentageRequired(Choice):
     """Sets the minimum recruit rate for something to be in logic
-    Easy requires the recruit rate to be 20%
-    Normal requires the recruit rate to be 10%
+    Easy requires the recruit rate to be 17.5%
+    Normal requires the recruit rate to be 12.5%
     Hard requires the recruit rate to be 5%
     Extreme requires the recruit rate to be 0.1%"""
 
