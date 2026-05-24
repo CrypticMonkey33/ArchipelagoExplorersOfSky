@@ -948,7 +948,7 @@ class EoSClient(BizHawkClient):
                                 ],
                             )
                             await asyncio.sleep(0.1)
-
+                    
                         #await self.update_received_items(ctx, received_items_offset, received_index, i)
                         [
                             {
@@ -958,6 +958,29 @@ class EoSClient(BizHawkClient):
                                 "operations": [{"operation": "update", "value": {"prog_recruit": self.prog_recruit}}],
                             }
                         ]
+                    else:
+                        write_byte = performance_progress_bitfield[4] | (0x1 << 3)
+                        performance_progress_bitfield[4] = write_byte
+                        write_byte2 = [item_data.memory_offset % 256, item_data.memory_offset // 256]
+                        scenario_talk_bitfield_248_list = scenario_talk_bitfield_248_list & 0xFB
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (item_backup_offset, write_byte2, self.ram_mem_domain),
+                                (
+                                    item_backup_offset + 0x2,
+                                    int.to_bytes(0, byteorder="little", length=2),
+                                    self.ram_mem_domain,
+                                ),
+                                (performance_progress_offset + 0x4, int.to_bytes(write_byte), self.ram_mem_domain),
+                                (
+                                    scenario_talk_bitfield_offset + 0x1F,
+                                    int.to_bytes(scenario_talk_bitfield_248_list),
+                                    self.ram_mem_domain,
+                                ),
+                            ],
+                        )
+                        await asyncio.sleep(0.1)
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Money" in item_data.group:
                     if item_data.classification == ItemClassification.trap:
