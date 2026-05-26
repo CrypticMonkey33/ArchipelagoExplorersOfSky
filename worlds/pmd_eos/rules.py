@@ -8,7 +8,6 @@ from .pokemon import pokemon_info
 if TYPE_CHECKING:
     from . import EOSWorld
 
-pokmeon_has_rule = [0] * 492
 
 
 def set_rules(world: "EOSWorld", excluded):
@@ -68,23 +67,7 @@ def set_rules(world: "EOSWorld", excluded):
     )
     
     set_rule(
-        world.multiworld.get_entrance("Start Recruit", player), lambda state: has_start_recruit(state, player)
-    )
-
-    set_rule(
-        world.multiworld.get_entrance("Early Recruit", player), lambda state: has_early_recruit(state, player)
-    )
-
-    set_rule(
-        world.multiworld.get_entrance("Mid Recruit", player), lambda state: has_mid_recruit(state, player, world)
-    )
-
-    set_rule(
-        world.multiworld.get_entrance("Late Recruit", player), lambda state: has_late_recruit(state, player)
-    )
-
-    set_rule(
-       world.multiworld.get_entrance("End Recruit", player), lambda state: has_end_recruit(state, player)
+        world.multiworld.get_entrance("Pokemon Recruit", player), lambda state: has_start_recruit(state, player)
     )
 
     set_rule(world.multiworld.get_location("Hidden Land", player), lambda state: has_relic_shards(state, player, world))
@@ -118,49 +101,6 @@ def has_start_recruit(state, player):
     return (
         state.has("Recruitment", player)
         or state.has("Progressive Recruitment", player, 1)
-    )
-
-def has_early_recruit(state, player):
-    return (
-        state.has_group("EarlyDungeons", player, 10)
-        and state.has("Friend Bow", player)
-        or state.has_group("EarlyDungeons", player, 10)
-        and state.has("Amber Tear", player)
-        or state.has_group("EarlyDungeons", player, 10)
-        and state.has("Golden Mask", player)
-        or state.has_group("EarlyDungeons", player, 10)
-        and state.has("Progressive Recruitment", player, 2)
-    )
-
-def has_mid_recruit(state, player, world):
-    return (
-        state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
-        and state.has("Temporal Tower", player)
-        and state.has("Amber Tear", player)
-        or state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
-        and state.has("Temporal Tower", player)
-        and state.has("Golden Mask", player)
-        or state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
-        and state.has("Temporal Tower", player)
-        and state.has("Progressive Recruitment", player, 3)
-    )
-
-def has_late_recruit(state, player):
-    return (
-        state.has_group("LateDungeons", player, 10)
-        and state.has("Golden Mask", player)
-        or state.has_group("LateDungeons", player, 10)
-        and state.has("Progressive Recruitment", player, 4)
-    )
-
-def has_end_recruit(state, player):
-    return (
-        state.has("Mystery Part", player) 
-        and state.has("Secret Rank", player)
-        or state.has("Secret Slab", player)
-        and state.has("Secret Rank", player)
-        or state.has("Progressive Recruitment", player, 5)
-        and state.has("Secret Rank", player)
     )
 
 
@@ -224,7 +164,6 @@ def forbid_items_behind_locations(world, player):
                     "Progressive Sky Peak",
                     player,
                 )
-
 
 def special_episodes_rules(world, player):
     if not world.options.exclude_special.value:
@@ -333,9 +272,164 @@ def ready_for_darkrai(state, player, world):
         and state.has_group("LateDungeons", player, 10)
     )
 
+def pokemon_rule(rule, world, player, location_name, location_id, has_rule_list):
+    if has_rule_list[location_id - 15000]:
+        add_rule(
+            world.multiworld.get_location(location_name, player),
+            rule,
+            combine = "or"
+        )
+    else:
+        has_rule_list[location_id - 15000] = 1
+        set_rule(
+            world.multiworld.get_location(location_name, player),
+            rule
+        )
 
+def early_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world):
+    for j in range(len(pokemon_info[location_id - 15000][3])):                               
+        if(pokemon_info[location_id - 15000][3][j][1] <= level):
+            if (pokemon_info[location_id - 15000][3][j][2] and world.options.goal == 0):
+                pass
+            else:
+                rule = early_evolution_pokemon(location_found, pokemon_info[location_id - 15000][3][j], player, world)
+                pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+
+                for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
+                    if(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level):
+                        if (pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][2] and world.options.goal == 0 or pokemon_info[location_id - 15000][3][j][2] and world.options.goal == 0):
+                            pass
+                        else:
+                            rule = early_evolution_pokemon(location_found, pokemon_info[location_id - 15000][3][j], player, world)
+                            pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+
+def late_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world):
+    for j in range(len(pokemon_info[location_id - 15000][3])):                               
+        if(pokemon_info[location_id - 15000][3][j][1] <= level):
+            rule = late_evolution_pokemon(location_found, player, world)
+            pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+
+            for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
+                if(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level):
+                    rule = late_evolution_pokemon(location_found, player, world)
+                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+
+def aegis_pokemon_evolution_rule(location_id, location_found, location_name, level, amount, pokemeon_has_rule, player, world):
+    for j in range(len(pokemon_info[location_id - 15000][3])):                               
+        if(pokemon_info[location_id - 15000][3][j][1] <= level):
+            rule = aegis_evolution_pokemon(location_found, amount, player, world)
+            pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+
+            for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
+                if(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level):
+                    rule = aegis_evolution_pokemon(location_found, amount, player, world)
+                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+
+def boss_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world):
+    for j in range(len(pokemon_info[location_id - 15000][3])):                               
+        if(pokemon_info[location_id - 15000][3][j][1] <= level):
+            rule = boss_evolution_pokemon(player, world)
+            pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+
+            for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
+                if(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level):
+                    rule = boss_evolution_pokemon(player, world)
+                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+
+def early_evolution_pokemon(location_name, location_data, player, world):
+    if location_data[2]:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Luminous Spring", player)
+            and ready_for_late_game(state, player, world)
+        )
+    elif location_data[1] > 20:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Luminous Spring", player)
+            and ready_for_late_game(state, player, world)
+        )
+    else:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Luminous Spring", player)
+        )
+
+def late_evolution_pokemon(location_name, player, world):
+    return (
+        lambda state, ln=location_name: state.has(ln, player)
+        and state.has("Luminous Spring", player)
+        and ready_for_late_game(state, player, world)
+    )
+
+def aegis_evolution_pokemon(location_name, amount, player, world):
+    if amount == 1:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Luminous Spring", player)
+            and state.has("Progressive Seal", player, 1)
+        )
+    elif amount == 2:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Luminous Spring", player)
+            and state.has("Progressive Seal", player, 2)
+        )
+    elif amount == 3:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Luminous Spring", player)
+            and state.has("Progressive Seal", player, 3)
+        )
+
+def boss_evolution_pokemon(player, world):
+    return (
+        lambda state: state.has("Luminous Spring", player)
+        and ready_for_darkrai(state, player, world)
+    )
+
+def early_pokemon(location_name, player, world):
+    return (
+        lambda state, ln=location_name: state.has(ln, player)
+        )
+
+def late_pokemon(location_name, player, world):
+    return (
+        lambda state, ln=location_name: state.has(ln, player)
+        and ready_for_late_game(state, player, world)
+        )
+
+def aegis_pokemon(location_name, amount, player, world):
+    if amount == 1:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Progressive Seal", player, 1)
+            )
+    elif amount == 2:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Progressive Seal", player, 2)
+            )
+    elif amount == 3:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Progressive Seal", player, 3)
+            )
+    return
+
+def boss_pokemon(player, world):
+    return (
+        lambda state: ready_for_darkrai(state, player, world)
+        )
 
 def dungeon_locations_behind_items(world, player):
+    pokemeon_has_rule = [0] * 492
     for location in EOS_location_table:
         if location.name == "Beach Cave":
             if special_episode_sanity_no_exclusion(world, player):
@@ -391,1210 +485,86 @@ def dungeon_locations_behind_items(world, player):
                 continue
             elif ((pokemon_info[location.id - 15000][1] + 0.100) < difficulty and world.options.goal == 0):
                 continue
+
             for i in range(len(location.group)):
-                if (pokmeon_has_rule[location.id - 15000] == 1):
-                    if(pokemon_info[location.id - 15000][5][i] == "Early"):
-                        add_rule(
-                            world.multiworld.get_location(location.name, player),
-                            lambda state, ln=location.group[i]: state.has(ln, player),
-                            combine = "or"
-                        )
-                        if world.options.recruit_sanity_evolution.value == 1:
-                            for j in range(len(pokemon_info[location.id - 15000][3])):
-                                if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                    if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                        if (pokemon_info[location.id - 15000][3][j][2] and world.options.goal == 0):
-                                            pass
-                                        elif(pokemon_info[location.id - 15000][3][j][2] and world.options.goal == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player),
-                                                combine = "or"
-                                            )
-                                    else:
-                                        if (pokemon_info[location.id - 15000][3][j][2] and world.options.goal == 0):
-                                            pass
-                                        elif(pokemon_info[location.id - 15000][3][j][2] and world.options.goal == 1):
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                            )
-                                    for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                        if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                            if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                if (pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][2] and world.options.goal == 0):
-                                                    pass
-                                                elif(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][2] and world.options.goal == 1):
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player),
-                                                        combine = "or"
-                                                    )
-                                            else:
-                                                if (pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][2] and world.options.goal == 0):
-                                                    pass
-                                                elif(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][2] and world.options.goal == 1):
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                    )
-                                                else:
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                    )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Late"):
-                        if(world.options.goal == 0):
-                            continue
-                        add_rule(
-                            world.multiworld.get_location(location.name, player),
-                            lambda state, ln=location.group[i],: state.has(ln, player)
-                            and ready_for_late_game(state, player, world),
-                            combine = "or"
-                        )
-                        if world.options.recruit_sanity_evolution.value == 1:
-                            for j in range(len(pokemon_info[location.id - 15000][3])):
-                                if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                    if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                        add_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world),
-                                            combine = "or"
-                                        )
-                                    else:
-                                        pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                        set_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world)
-                                        )
-                                    for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                        if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                            if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                add_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_late_game(state, player, world),
-                                                    combine = "or"
-                                                )
-                                            else:
-                                                pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                set_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_late_game(state, player, world)
-                                                )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Ice"):
-                        if(world.options.goal == 0):
-                            continue
-                        add_rule(
-                            world.multiworld.get_location(location.name, player),
-                            lambda state, ln=location.group[i],: state.has(ln, player)
-                            and ready_for_late_game(state, player, world),
-                            combine = "or"
-                        )   
-                        if world.options.recruit_sanity_evolution.value == 1:
-                           for j in range(len(pokemon_info[location.id - 15000][3])):
-                                if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                    if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                        add_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world),
-                                            combine = "or"
-                                        )
-                                    else:
-                                        pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                        set_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world)
-                                        )
-                                    for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                        if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                            if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                add_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_late_game(state, player, world),
-                                                    combine = "or"
-                                                )
-                                            else:
-                                                pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                set_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_late_game(state, player, world)
-                                                )
+                if(pokemon_info[location.id - 15000][5][i] == "Early"):
+                    rule = early_pokemon(location.group[i], player, world)
+                    pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                    if world.options.recruit_sanity_evolution.value == 1:
+                        early_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world)
+                        
+                elif(pokemon_info[location.id - 15000][5][i] == "Late"):
+                    if(world.options.goal == 0):
+                        continue
+                    rule = late_pokemon(location.group[i], player, world)
+                    pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                    if world.options.recruit_sanity_evolution.value == 1:
+                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world)
 
-                    elif(pokemon_info[location.id - 15000][5][i] == "Rock"):
-                        if(world.options.goal == 0):
-                            continue
-                        if (world.options.cursed_aegis_cave.value == 0):
-                            add_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world),
-                                combine = "or"
-                            )   
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                    )
-                        else:
-                            add_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world)
-                                and state.has("Progressive Seal", player, 1),
-                                combine = "or"
-                            )  
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 1),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 1)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 1),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 1)
-                                                    )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Steel"):
-                        if(world.options.goal == 0):
-                            continue
-                        if (world.options.cursed_aegis_cave.value == 0):
-                            add_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world),
-                                combine = "or"
-                            )
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                    )
-                        else:
-                            add_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world)
-                                and state.has("Progressive Seal", player, 2),
-                                combine = "or"
-                            )
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 2),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 2)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 2),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 2)
-                                                    )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Pit"):
-                        if(world.options.goal == 0):
-                            continue
-                        if (world.options.cursed_aegis_cave.value == 0):
-                            add_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world),
-                                combine = "or"
-                            )  
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                    )
-                        else:
-                            add_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world)
-                                and state.has("Progressive Seal", player, 3),
-                                combine = "or"
-                            )
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 3),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 3)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 3),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 3)
-                                                    )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Boss"):
-                        if(world.options.goal == 0):
-                            continue
-                        add_rule(
-                            world.multiworld.get_location(location.name, player),
-                            lambda state, ln=location.group[i],: state.has(ln, player)
-                            and ready_for_darkrai(state, player, world),
-                            combine = "or"
-                        )
-                        if world.options.recruit_sanity_evolution.value == 1:
-                            for j in range(len(pokemon_info[location.id - 15000][3])):
-                                if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                    if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                        add_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_darkrai(state, player, world),
-                                            combine = "or"
-                                        )
-                                    else:
-                                        pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                        set_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_darkrai(state, player, world)
-                                        )
-                                    for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                        if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                            if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                add_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_darkrai(state, player, world),
-                                                    combine = "or"
-                                                )
-                                            else:
-                                                pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                set_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_darkrai(state, player, world)
-                                                )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Long"):
-                        if(world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0):
-                            continue
-                        add_rule(
-                            world.multiworld.get_location(location.name, player),
-                            lambda state, ln=location.group[i]: state.has(ln, player)
-                            and ready_for_late_game(state, player, world),
-                            combine = "or"
-                        )
-                        if world.options.recruit_sanity_evolution.value == 1:
-                            for j in range(len(pokemon_info[location.id - 15000][3])):
-                                if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                    add_rule(
-                                        world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                        and state.has("Luminous Spring", player)
-                                        and state.has("Recruit Evolution", player)
-                                        and ready_for_late_game(state, player, world),
-                                        combine = "or"
-                                    )
-                                else:
-                                    pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                    set_rule(
-                                        world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                        and state.has("Luminous Spring", player)
-                                        and state.has("Recruit Evolution", player)
-                                        and ready_for_late_game(state, player, world)
-                                    )
-                                for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                    if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                        add_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world),
-                                            combine = "or"
-                                        )
-                                    else:
-                                        pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                        set_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world)
-                                        )
-                else:
-                    if(pokemon_info[location.id - 15000][5][i] == "Early"):
-                        pokmeon_has_rule[location.id - 15000] = 1
-                        set_rule(
-                            world.multiworld.get_location(location.name, player),
-                            lambda state, ln=location.group[i]: state.has(ln, player)
-                        )
-                        if world.options.recruit_sanity_evolution.value == 1:
-                            for j in range(len(pokemon_info[location.id - 15000][3])):
-                                if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                    if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                        if (pokemon_info[location.id - 15000][3][j][2] and world.options.goal == 0):
-                                            pass
-                                        elif(pokemon_info[location.id - 15000][3][j][2] and world.options.goal == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player),
-                                                combine = "or"
-                                            )
-                                    else:
-                                        if (pokemon_info[location.id - 15000][3][j][2] and world.options.goal == 0):
-                                            pass
-                                        elif(pokemon_info[location.id - 15000][3][j][2] and world.options.goal == 1):
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                            )
-                                    for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                        if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                            if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][2] and world.options.goal == 0):
-                                                    pass
-                                                if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][2] and world.options.goal == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player),
-                                                        combine = "or"
-                                                    )
-                                            else:
-                                                if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][2] and world.options.goal == 0):
-                                                    pass
-                                                elif(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][2] and world.options.goal == 1):
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                    )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Late"):
-                        if(world.options.goal == 0):
-                            continue
-                        pokmeon_has_rule[location.id - 15000] = 1
-                        set_rule(
-                            world.multiworld.get_location(location.name, player),
-                            lambda state, ln=location.group[i],: state.has(ln, player)
-                            and ready_for_late_game(state, player, world)
-                        )
-                        if world.options.recruit_sanity_evolution.value == 1:
-                            for j in range(len(pokemon_info[location.id - 15000][3])):
-                                if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                    if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                        add_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world),
-                                            combine = "or"
-                                        )
-                                    else:
-                                        pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                        set_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world)
-                                        )
-                                    for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                        if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                            if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                add_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_late_game(state, player, world),
-                                                    combine = "or"
-                                                )
-                                            else:
-                                                pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                set_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_late_game(state, player, world)
-                                                )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Ice"):
-                        if(world.options.goal == 0):
-                            continue
-                        pokmeon_has_rule[location.id - 15000] = 1
-                        set_rule(
-                            world.multiworld.get_location(location.name, player),
-                            lambda state, ln=location.group[i],: state.has(ln, player)
-                            and ready_for_late_game(state, player, world)
-                        )   
-                        if world.options.recruit_sanity_evolution.value == 1:
-                            for j in range(len(pokemon_info[location.id - 15000][3])):
-                                if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                    if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                        add_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world),
-                                            combine = "or"
-                                        )
-                                    else:
-                                        pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                        set_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world)
-                                        )
-                                    for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                        if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                            if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                add_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_late_game(state, player, world),
-                                                    combine = "or"
-                                                )
-                                            else:
-                                                pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                set_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_late_game(state, player, world)
-                                                )
+                elif(pokemon_info[location.id - 15000][5][i] == "Ice"):
+                    if(world.options.goal == 0):
+                        continue
+                    rule = late_pokemon(location.group[i], player, world)
+                    pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                    if world.options.recruit_sanity_evolution.value == 1:
+                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world)
 
-                    elif(pokemon_info[location.id - 15000][5][i] == "Rock"):
-                        if(world.options.goal == 0):
-                            continue
-                        pokmeon_has_rule[location.id - 15000] = 1
-                        if (world.options.cursed_aegis_cave.value == 0):
-                            set_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world)
-                            )   
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                    )
-                        else:
-                            set_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world)
-                                and state.has("Progressive Seal", player, 1)
-                            )  
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 1),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 1)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 1),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 1)
-                                                    )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Steel"):
-                        if(world.options.goal == 0):
-                            continue
-                        pokmeon_has_rule[location.id - 15000] = 1
-                        if (world.options.cursed_aegis_cave.value == 0):
-                            set_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world)
-                            )
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                    )
-                        else:
-                            set_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world)
-                                and state.has("Progressive Seal", player, 2)
-                            )
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 2),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 2)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 2),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 2)
-                                                    )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Pit"):
-                        if(world.options.goal == 0):
-                            continue
-                        pokmeon_has_rule[location.id - 15000] = 1
-                        if (world.options.cursed_aegis_cave.value == 0):
-                            set_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world)
-                            )  
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                    )
-                        else:
-                            set_rule(
-                                world.multiworld.get_location(location.name, player),
-                                lambda state, ln=location.group[i],: state.has(ln, player)
-                                and ready_for_late_game(state, player, world)
-                                and state.has("Progressive Seal", player, 3)
-                            )
-                            if world.options.recruit_sanity_evolution.value == 1:
-                                for j in range(len(pokemon_info[location.id - 15000][3])):
-                                    if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                        if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                            add_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 3),
-                                                combine = "or"
-                                            )
-                                        else:
-                                            pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                            set_rule(
-                                                world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                                lambda state, ln=location.group[i]: state.has(ln, player)
-                                                and state.has("Luminous Spring", player)
-                                                and state.has("Recruit Evolution", player)
-                                                and ready_for_late_game(state, player, world)
-                                                and state.has("Progressive Seal", player, 3)
-                                            )
-                                        for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                            if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                                if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                    add_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 3),
-                                                        combine = "or"
-                                                    )
-                                                else:
-                                                    pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                    set_rule(
-                                                        world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                                        and state.has("Luminous Spring", player)
-                                                        and state.has("Recruit Evolution", player)
-                                                        and ready_for_late_game(state, player, world)
-                                                        and state.has("Progressive Seal", player, 3)
-                                                    )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Boss"):
-                        if(world.options.goal == 0):
-                            continue
-                        pokmeon_has_rule[location.id - 15000] = 1
-                        set_rule(
-                            world.multiworld.get_location(location.name, player),
-                            lambda state, ln=location.group[i],: state.has(ln, player)
-                            and ready_for_darkrai(state, player, world)
-                        )
+                elif(pokemon_info[location.id - 15000][5][i] == "Rock"):
+                    if(world.options.goal == 0):
+                        continue
+                    if (world.options.cursed_aegis_cave.value == 1):
+                        rule = late_pokemon(location.group[i], player, world)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                         if world.options.recruit_sanity_evolution.value == 1:
-                            for j in range(len(pokemon_info[location.id - 15000][3])):
-                                if(pokemon_info[location.id - 15000][3][j][1] <= level):
-                                    if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                        add_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_darkrai(state, player, world),
-                                            combine = "or"
-                                        )
-                                    else:
-                                        pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                        set_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_darkrai(state, player, world)
-                                        )
-                                    for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                        if(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][1] <= level):
-                                            if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                                add_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_darkrai(state, player, world),
-                                                    combine = "or"
-                                                )
-                                            else:
-                                                pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                                set_rule(
-                                                    world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                                    lambda state, ln=location.group[i]: state.has(ln, player)
-                                                    and state.has("Luminous Spring", player)
-                                                    and state.has("Recruit Evolution", player)
-                                                    and ready_for_darkrai(state, player, world)
-                                                )
-                    elif(pokemon_info[location.id - 15000][5][i] == "Long"):
-                        if(world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0):
-                            continue
-                        pokmeon_has_rule[location.id - 15000] = 1
-                        set_rule(
-                            world.multiworld.get_location(location.name, player),
-                            lambda state, ln=location.group[i]: state.has(ln, player)
-                            and ready_for_late_game(state, player, world)
-                        )
+                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world)
+                    else:
+                        rule = aegis_pokemon(location.group[i], 1, player, world)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                         if world.options.recruit_sanity_evolution.value == 1:
-                            for j in range(len(pokemon_info[location.id - 15000][3])):
-                                if(pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] == 1):
-                                    add_rule(
-                                        world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                        and state.has("Luminous Spring", player)
-                                        and state.has("Recruit Evolution", player)
-                                        and ready_for_late_game(state, player, world),
-                                        combine = "or"
-                                    )
-                                else:
-                                    pokmeon_has_rule[pokemon_info[location.id - 15000][3][j][3]] = 1
-                                    set_rule(
-                                        world.multiworld.get_location(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], player),
-                                        lambda state, ln=location.group[i]: state.has(ln, player)
-                                        and state.has("Luminous Spring", player)
-                                        and state.has("Recruit Evolution", player)
-                                        and ready_for_late_game(state, player, world)
-                                    )
-                                for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
-                                    if(pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 1):
-                                        add_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world),
-                                            combine = "or"
-                                        )
-                                    else:
-                                        pokmeon_has_rule[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                                        set_rule(
-                                            world.multiworld.get_location(pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], player),
-                                            lambda state, ln=location.group[i]: state.has(ln, player)
-                                            and state.has("Luminous Spring", player)
-                                            and state.has("Recruit Evolution", player)
-                                            and ready_for_late_game(state, player, world)
-                                        )
+                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 1, pokemeon_has_rule, player, world)
+                elif(pokemon_info[location.id - 15000][5][i] == "Steel"):
+                    if(world.options.goal == 0):
+                        continue
+                    if (world.options.cursed_aegis_cave.value == 1):
+                        rule = late_pokemon(location.group[i], player, world)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                        if world.options.recruit_sanity_evolution.value == 1:
+                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world)
+                    else:
+                        rule = aegis_pokemon(location.group[i], 2, player, world)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                        if world.options.recruit_sanity_evolution.value == 1:
+                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 2, pokemeon_has_rule, player, world)
+
+                elif(pokemon_info[location.id - 15000][5][i] == "Pit"):
+                    if(world.options.goal == 0):
+                        continue
+                    if (world.options.cursed_aegis_cave.value == 1):
+                        rule = late_pokemon(location.group[i], player, world)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                        if world.options.recruit_sanity_evolution.value == 1:
+                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world)
+                    else:
+                        rule = aegis_pokemon(location.group[i], 3, player, world)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                        if world.options.recruit_sanity_evolution.value == 1:
+                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 3, pokemeon_has_rule, player, world)
+                
+                elif(pokemon_info[location.id - 15000][5][i] == "Boss"):
+                    if(world.options.goal == 0):
+                        continue
+                    rule = boss_pokemon(player, world)
+                    pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                    if world.options.recruit_sanity_evolution.value == 1:
+                        boss_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world)
+
+                elif(pokemon_info[location.id - 15000][5][i] == "Long"):
+                    if(world.options.long_location.value == 0 or world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0):
+                        continue
+                    rule = late_pokemon(location.group[i], player, world)
+                    pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                    if world.options.recruit_sanity_evolution.value == 1:
+                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world)
         
         elif "Station" in location.group and world.options.goal.value == 1:
             if world.options.sky_peak_type.value == 1:  # progressive
