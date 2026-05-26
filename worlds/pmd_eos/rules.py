@@ -300,7 +300,7 @@ def early_pokemon_evolution_rule(location_id, location_found, location_name, lev
                         if (pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][2] and world.options.goal == 0 or pokemon_info[location_id - 15000][3][j][2] and world.options.goal == 0):
                             pass
                         else:
-                            rule = early_evolution_pokemon(location_found, pokemon_info[location_id - 15000][3][j], player, world, recruit_chance, difficulty)
+                            rule = early_evolution_pokemon(location_found, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h], player, world, recruit_chance, difficulty)
                             pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
 
 def late_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world, recruit_chance, difficulty):
@@ -337,7 +337,7 @@ def boss_pokemon_evolution_rule(location_id, location_found, location_name, leve
                     pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
 
 def early_evolution_pokemon(location_name, location_data, player, world, recruit_chance, difficulty):
-    if location_data[2] or location_data[1] > 20:
+    if (location_data[2] or location_data[1] > 20):
         if recruit_chance >= difficulty: 
             return (
                 lambda state, ln=location_name: state.has(ln, player)
