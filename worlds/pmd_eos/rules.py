@@ -67,7 +67,7 @@ def set_rules(world: "EOSWorld", excluded):
     )
     
     set_rule(
-        world.multiworld.get_entrance("Pokemon Recruit", player), lambda state: has_start_recruit(state, player)
+        world.multiworld.get_entrance("Pokemon Recruit", player), lambda state: has_start_recruit(state, player, world)
     )
 
     set_rule(world.multiworld.get_location("Hidden Land", player), lambda state: has_relic_shards(state, player, world))
@@ -97,11 +97,19 @@ def ready_for_late_game(state, player, world):
         and state.has("Temporal Tower", player)
     )
 
-def has_start_recruit(state, player):
-    return (
-        state.has("Recruitment", player)
-        or state.has("Progressive Recruitment", player, 1)
-    )
+def has_start_recruit(state, player, world):
+    if special_episode_sanity_no_exclusion(world, player): 
+        return (
+            state.has("Recruitment", player) 
+            and state.has("Main Game Unlock", player)
+            or state.has("Progressive Recruitment", player, 1) 
+            and state.has("Main Game Unlock", player)
+        )
+    else:
+        return (
+            state.has("Recruitment", player)
+            or state.has("Progressive Recruitment", player, 1)
+        )
 
 
 def spinda_drink_events(world, player):

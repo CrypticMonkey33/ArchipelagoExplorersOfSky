@@ -18,7 +18,7 @@ from worlds._bizhawk.client import BizHawkClient
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
 
-game_version = "v0.3.3.2"
+game_version = "v0.3.3.4"
 
 
 class EoSClient(BizHawkClient):
@@ -146,7 +146,7 @@ class EoSClient(BizHawkClient):
                 self.deathlink_message = "Died from unknown causes"
 
     async def is_pokemon_recruited(self, ctx: "BizHawkClientContext") -> list[bool]:
-        pokedex_size = 492
+        pokedex_size = 493
         pokedex_list = []
         adventure_log_ptr = 0x0B0894
         adventure_log = await bizhawk.read(
@@ -1241,7 +1241,7 @@ class EoSClient(BizHawkClient):
                             locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
 
             is_recruited = await self.is_pokemon_recruited(ctx)
-            for p in range(492):
+            for p in range(493):
                 if (is_recruited[p]):
                     locs_to_send.add(location_Dict_by_id[p + 14999].id)
 
