@@ -18,7 +18,7 @@ from worlds._bizhawk.client import BizHawkClient
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
 
-game_version = "v0.3.3.4"
+game_version = "v0.3.3.5"
 
 
 class EoSClient(BizHawkClient):
@@ -740,22 +740,6 @@ class EoSClient(BizHawkClient):
                             )
                             self.logger.info("But you already own one so instead you get 500 Poké")
 
-                    elif item_data.name == "Recruitment Sensor":
-                        if ((performance_progress_bitfield[3] >> 5) & 1) == 0:
-                            write_byte = performance_progress_bitfield[3] | (0x1 << 5)
-                            performance_progress_bitfield[3] = write_byte
-                            await bizhawk.write(
-                                ctx.bizhawk_ctx,
-                                [
-                                    (performance_progress_offset + 0x3, int.to_bytes(write_byte), self.ram_mem_domain),
-                                ],
-                            )
-                        else:
-                            await self.add_money(
-                                ctx, 500, player_gold_amount, bank_gold_amount, player_gold_offset, bank_gold_offset
-                            )
-                            self.logger.info("But you already own one so instead you get 500 Poké")
-
                     elif item_data.name == "Mystery of the Quicksand":
                         if ((performance_progress_bitfield[3] >> 4) & 1) == 0:
                             write_byte = performance_progress_bitfield[3] | (0x1 << 4)
@@ -811,6 +795,15 @@ class EoSClient(BizHawkClient):
                             ctx.bizhawk_ctx,
                             [
                                 (performance_progress_offset, int.to_bytes(write_byte), self.ram_mem_domain),
+                            ],
+                        )
+                    elif item_data.name == "Recruitment Sensor":
+                        write_byte = performance_progress_bitfield[3] | (0x1 << 5)
+                        performance_progress_bitfield[3] = write_byte
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (performance_progress_offset + 0x3, int.to_bytes(write_byte), self.ram_mem_domain),
                             ],
                         )
                     elif item_data.name == "Progressive Recruitment":
@@ -1240,6 +1233,7 @@ class EoSClient(BizHawkClient):
                         if bit_number_dung in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
 
+            #retrieves the list of all pokemon recruited and checks if a pokemon needs to sent as a check
             is_recruited = await self.is_pokemon_recruited(ctx)
             for p in range(493):
                 if (is_recruited[p]):

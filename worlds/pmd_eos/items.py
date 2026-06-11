@@ -410,6 +410,7 @@ EOS_item_table = [
     ItemData("Recruit Evolution", 551, ItemClassification.progression, 0, ["Recruit"], 0),
     ItemData("Recruitment", 552, ItemClassification.progression, 0, ["Recruit"], 0),
     ItemData("Progressive Recruitment", 554, ItemClassification.progression, 0, ["Recruit"], 0),
+    ItemData("Recruitment Sensor", 408, ItemClassification.progression, 0, ["Recruit"], 0x0),
 ]
 
 filler_items = [
@@ -444,7 +445,6 @@ filler_items = [
     ItemData("Mystery of the Quicksand", 299, ItemClassification.filler, 2, ["Generic"], 0x0),
     ItemData("Chatot Repellent", 406, ItemClassification.filler, 2, ["Generic"], 0x0),
     ItemData("Sky Jukebox", 407, ItemClassification.filler, 2, ["Generic"], 0x0),
-    ItemData("Recruitment Sensor", 408, ItemClassification.filler, 2, ["Generic"], 0x0),
     # Backpack Items
     ItemData("Rare Fossil", 410, ItemClassification.filler, 10, ["Item", "Multi"], 0xA),
     ItemData("Reviver Seed", 411, ItemClassification.filler, 5, ["Item", "Single"], 0x49),

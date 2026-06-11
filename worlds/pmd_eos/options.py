@@ -164,6 +164,12 @@ class FullTeamFormationControl(DefaultOnToggle):
 
     display_name = "Formation Control Enable"
 
+class RecruitmentSensor(DefaultOnToggle):
+    """Start with recruitment sensor enabled?
+    If false, recruitment sensor will be an item in your game"""
+
+    display_name = "Recruitment Sensor Enable"
+
 
 class LevelScaling(Choice):
     """Allow for dungeons to scale to the highest level of your party members?
@@ -469,6 +475,7 @@ class EOSOptions(PerGameCommonOptions):
     recruit: Recruitment
     recruit_evo: RecruitmentEvolution
     team_form: FullTeamFormationControl
+    recruit_sensor: RecruitmentSensor
     hero_evolution: HeroEvolution
     bag_on_start: StartWithBag
     dojo_dungeons: DojoDungeons

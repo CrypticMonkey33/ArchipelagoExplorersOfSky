@@ -124,6 +124,9 @@ class EOSWorld(World):
         if self.options.team_form.value:
             item_name = "Formation Control"
             self.multiworld.push_precollected(self.create_item(item_name))
+        if self.options.recruit_sensor.value:
+            item_name = "Recruitment Sensor"
+            self.multiworld.push_precollected(self.create_item(item_name))
         if self.options.special_episode_sanity.value and not self.options.exclude_special.value:
             possible_se = [
                 "Bidoof's Wish",
@@ -188,9 +191,11 @@ class EOSWorld(World):
             elif location.name == "Team Name Location":
                 menu_region.locations.append(EOSLocation(self.player, location.name, location.id, menu_region))
             elif location.classification == "Pokemon":
+                #skips if recruit sanity is not on
                 if(self.options.recruit_sanity.value == 0):
                     self.excluded_locations += 1
                     continue
+                #if goal is dialga exclludes all late game location pokemon except pokemon that already have a location assigned by evolution  
                 if(self.options.goal == 0):
                     if "Early" in pokemon_info[location.id - 15000][5]:
                         pass
@@ -203,7 +208,8 @@ class EOSWorld(World):
                     else:
                         self.excluded_locations += 1
                         continue
-                if(self.options.long_location.value == 0 or self.options.recruit_sanity_long_location.value == 0):
+                #if long recruit checks are not enabled exclude all long recruit locations
+                if(self.options.recruit_sanity_long_location.value == 0):
                     if "Early" in pokemon_info[location.id - 15000][5]:
                         pass
                     elif "Late" in pokemon_info[location.id - 15000][5]:
@@ -224,7 +230,29 @@ class EOSWorld(World):
                         else:
                             self.excluded_locations += 1
                             continue
-
+                # if long recruit locations is enabled and long locations is not exclude all long location recruits
+                if(self.options.recruit_sanity_long_location.value == 1):
+                    if "Early" in pokemon_info[location.id - 15000][5]:
+                        pass
+                    elif "Late" in pokemon_info[location.id - 15000][5]:
+                        pass
+                    elif "Boss" in pokemon_info[location.id - 15000][5]:
+                        pass
+                    elif "Ice" in pokemon_info[location.id - 15000][5]:
+                        pass
+                    elif "Rock" in pokemon_info[location.id - 15000][5]:
+                        pass
+                    elif "Steel" in pokemon_info[location.id - 15000][5]:
+                        pass
+                    elif "Pit" in pokemon_info[location.id - 15000][5]:
+                        pass
+                    elif(self.options.long_location.value == 0 and "Long Location" in pokemon_info[location.id - 15000][5] or self.options.long_location.value == 0 and "Long Location Challenge" in pokemon_info[location.id - 15000][5]):
+                        if (pokmeon_has_location[location.id - 15000] == 1):
+                            continue
+                        else:
+                            self.excluded_locations += 1
+                            continue
+                #sets the recruit difficulty. How likely a pokemon has to able to be recruited for it be in logic 
                 match self.options.recruit_sanity_difficulty.value:
                     case 0:
                         self.difficulty = 0.175 + 0.495
@@ -237,6 +265,7 @@ class EOSWorld(World):
                     case _:
                         self.difficulty = 0.5
 
+                #checks if a pokemon is ever reachable with current difficulty setting and goal
                 if (len(pokemon_info[location.id - 15000][2]) > 0):
                     if ((pokemon_info[location.id - 15000][1] + 0.100) >= self.difficulty and not pokemon_info[location.id - 15000][4] and self.options.goal == 0):
                         pokemon_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_region))
@@ -244,10 +273,11 @@ class EOSWorld(World):
                     elif ((pokemon_info[location.id - 15000][1] + 0.326) >= self.difficulty and not pokemon_info[location.id - 15000][4] and self.options.goal == 1):  
                         pokemon_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_region))
                         pokmeon_has_location[location.id - 15000] = 1
-                    elif ((pokemon_info[location.id - 15000][1] + 0.496) >= self.difficulty and self.options.long_location.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
+                    elif ((pokemon_info[location.id - 15000][1] + 0.496) >= self.difficulty and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
                         pokemon_region.locations.append(EOSLocation(self.player, location.name, location.id, pokemon_region))
                         pokmeon_has_location[location.id - 15000] = 1
                 
+                #checks if evolving the pokemon will ever be reachable with current difficulty setting and goal
                 if ((self.options.recruit_sanity_evolution.value == 1) and (len(pokemon_info[location.id - 15000][3]) > 0)):
                     for j in range(len(pokemon_info[location.id - 15000][3])):
                         for h in range(len(pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3])):
@@ -261,7 +291,7 @@ class EOSWorld(World):
                                 if ((location.id - 15000) > pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] and pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 0):
                                     self.excluded_locations -= 1
                                 pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] = 1
-                            elif (((pokemon_info[location.id - 15000][1] + 0.496) >= self.difficulty) and self.options.long_location.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
+                            elif (((pokemon_info[location.id - 15000][1] + 0.496) >= self.difficulty) and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
                                 pokemon_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]][0], pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] + 15000, pokemon_region))
                                 if ((location.id - 15000) > pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3] and pokmeon_has_location[pokemon_info[pokemon_info[location.id - 15000][3][j][3]][3][h][3]] == 0):
                                     self.excluded_locations -= 1
@@ -277,12 +307,13 @@ class EOSWorld(World):
                             if ((location.id - 15000) > pokemon_info[location.id - 15000][3][j][3] and pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] == 0):
                                 self.excluded_locations -= 1
                             pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] = 1
-                        elif ((pokemon_info[location.id - 15000][1] + 0.496) >= self.difficulty and self.options.long_location.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
+                        elif ((pokemon_info[location.id - 15000][1] + 0.496) >= self.difficulty and self.options.recruit_sanity_long_location.value == 1 and self.options.goal == 1):       
                             pokemon_region.locations.append(EOSLocation(self.player, pokemon_info[pokemon_info[location.id - 15000][3][j][3]][0], pokemon_info[location.id - 15000][3][j][3] + 15000, pokemon_region))
                             if ((location.id - 15000) > pokemon_info[location.id - 15000][3][j][3] and pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] == 0):
                                 self.excluded_locations -= 1
                             pokmeon_has_location[pokemon_info[location.id - 15000][3][j][3]] = 1
-
+                            
+                #if a pokemon did not get a location assigned it is excluded
                 if (pokmeon_has_location[location.id - 15000] == 0):
                     self.excluded_locations += 1
                     continue
@@ -529,6 +560,7 @@ class EOSWorld(World):
             "BagOnStart": self.options.bag_on_start.value,
             "Recruitment": self.options.recruit.value,
             "TeamFormation": self.options.team_form.value,
+            "RecruitmentSensor": self.options.recruit_sensor.value,
             "LevelScaling": self.options.level_scale.value,
             "RecruitmentEvolution": self.options.recruit_evo.value,
             "DojoDungeonsRandomization": self.options.dojo_dungeons.value,
@@ -626,6 +658,7 @@ class EOSWorld(World):
         else:
             # self.excluded_locations += 1
             test = 0
+        #Makes friend and recruit items progressive if recruitsanity is on
         if (self.options.recruit_sanity.value == 1):
             if (self.options.recruit_sanity_progressive_friend_items.value == 0):
                 if(self.options.recruit.value == 0):
@@ -654,16 +687,20 @@ class EOSWorld(World):
         else:
             required_items.append(self.create_item("Luminous Spring", ItemClassification.useful))
         
-        if (self.options.recruit_sanity.value == 1 and self.options.recruit_sanity_long_location.value == 1 and self.options.long_location.value == 1):
+        if (self.options.recruit_sanity.value == 1 and self.options.recruit_sanity_long_location.value == 1):
             if (self.options.recruit_sanity_progressive_friend_items.value == 0):
                 required_items.append(self.create_item("Mystery Part", ItemClassification.progression))
                 required_items.append(self.create_item("Secret Slab", ItemClassification.progression))
+                if(self.options.recruit_sensor.value == 0):
+                    required_items.append(self.create_item("Recruitment Sensor", ItemClassification.progression))
             else:
                 for i in range(2):
                         required_items.append(self.create_item("Progressive Recruitment", ItemClassification.progression))
         else:
             required_items.append(self.create_item("Mystery Part", ItemClassification.useful))
             required_items.append(self.create_item("Secret Slab", ItemClassification.useful))
+            if(self.options.recruit_sensor.value == 0):
+                required_items.append(self.create_item("Recruitment Sensor", ItemClassification.useful))
 
         if self.options.goal.value == 1 and (
             self.options.legendaries.value > len(self.options.allowed_legendaries.value)
