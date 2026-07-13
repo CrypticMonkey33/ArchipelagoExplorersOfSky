@@ -18,7 +18,7 @@ from worlds._bizhawk.client import BizHawkClient
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
 
-game_version = "v0.3.3.5"
+game_version = "v0.3.3.6"
 
 
 class EoSClient(BizHawkClient):
@@ -59,6 +59,7 @@ class EoSClient(BizHawkClient):
     client_version = game_version
     hint_issue = False
     prog_recruit = 0
+    prog_evolution = 0
 
     def __init__(self) -> None:
         super().__init__()
@@ -270,6 +271,7 @@ class EoSClient(BizHawkClient):
                                 "spinda_drinks": 0,
                                 "box_number": 0,
                                 "prog_recruit": 0,
+                                "prog_evolution": 0,
                             },
                             "want_reply": True,
                             "operations": [
@@ -288,6 +290,7 @@ class EoSClient(BizHawkClient):
                                         "spinda_drinks": 0,
                                         "box_number": 0,
                                         "prog_recruit": 0,
+                                        "prog_evolution": 0,
                                     },
                                 }
                             ],
@@ -386,6 +389,7 @@ class EoSClient(BizHawkClient):
                 # self.spinda_drinks = max(stored["spinda_drinks"], self.spinda_drinks)
                 self.item_box_count = max(stored["box_number"], self.item_box_count)
                 self.prog_recruit = max(stored["prog_recruit"], self.prog_recruit)
+                self.prog_evolution = max(stored["prog_evolution"], self.prog_evolution)
 
             else:
                 return
@@ -756,15 +760,6 @@ class EoSClient(BizHawkClient):
                             )
                             self.logger.info("But you already own one so instead you get 500 Poké")
 
-                    elif item_data.name == "Hero Evolution":
-                        write_byte = performance_progress_bitfield[1] | (0x1 << 2)
-                        performance_progress_bitfield[1] = write_byte
-                        await bizhawk.write(
-                            ctx.bizhawk_ctx,
-                            [
-                                (performance_progress_offset + 0x1, int.to_bytes(write_byte), self.ram_mem_domain),
-                            ],
-                        )
                     elif item_data.name == "Formation Control":
                         write_byte = performance_progress_bitfield[0] | (0x1 << 7)
                         performance_progress_bitfield[0] = write_byte
@@ -806,6 +801,35 @@ class EoSClient(BizHawkClient):
                                 (performance_progress_offset + 0x3, int.to_bytes(write_byte), self.ram_mem_domain),
                             ],
                         )
+                    elif item_data.name == "Hero Evolution":
+                        write_byte = performance_progress_bitfield[1] | (0x1 << 2)
+                        performance_progress_bitfield[1] = write_byte
+                        await bizhawk.write(
+                            ctx.bizhawk_ctx,
+                            [
+                                (performance_progress_offset + 0x1, int.to_bytes(write_byte), self.ram_mem_domain),
+                            ],
+                        )
+                    elif item_data.name == "Progressive Evolution":
+                        if self.prog_evolution == 0:
+                            self.prog_evolution += 1
+                            write_byte = performance_progress_bitfield[0] | (0x1 << 6)
+                            performance_progress_bitfield[0] = write_byte
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (performance_progress_offset, int.to_bytes(write_byte), self.ram_mem_domain),
+                                ],
+                            )
+                        else:
+                            write_byte = performance_progress_bitfield[1] | (0x1 << 2)
+                            performance_progress_bitfield[1] = write_byte
+                            await bizhawk.write(
+                                ctx.bizhawk_ctx,
+                                [
+                                    (performance_progress_offset + 0x1, int.to_bytes(write_byte), self.ram_mem_domain),
+                                ],
+                            )
                     elif item_data.name == "Progressive Recruitment":
                         item_data = item_table_by_id[ctx.items_received[received_index + i].item]
                         item_memory_offset = 0

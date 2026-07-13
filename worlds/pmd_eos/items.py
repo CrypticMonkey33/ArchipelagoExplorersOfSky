@@ -373,7 +373,7 @@ EOS_item_table = [
     ItemData("Dragu-teki", 544, ItemClassification.progression_skip_balancing, 0, ["Item", "Instrument"], 0x576),
     ItemData("Steel Guitar", 545, ItemClassification.progression_skip_balancing, 0, ["Item", "Instrument"], 0x577),
     # Items that give the player an overall buff or ability to do something new in game
-    ItemData("Hero Evolution", 550, ItemClassification.useful, 0, ["Generic"], 0),
+    ItemData("Hero Evolution", 550, ItemClassification.useful, 0, ["Recruit"], 0),
     ItemData("Formation Control", 553, ItemClassification.progression, 0, ["Generic"], 0),
     # Unlocking the main game for Special Episode Sanity
     ItemData("Main Game Unlock", 700, ItemClassification.progression, 0, [], 0),
@@ -410,6 +410,7 @@ EOS_item_table = [
     ItemData("Recruit Evolution", 551, ItemClassification.progression, 0, ["Recruit"], 0),
     ItemData("Recruitment", 552, ItemClassification.progression, 0, ["Recruit"], 0),
     ItemData("Progressive Recruitment", 554, ItemClassification.progression, 0, ["Recruit"], 0),
+    ItemData("Progressive Evolution", 555, ItemClassification.progression, 0, ["Recruit"], 0),
     ItemData("Recruitment Sensor", 408, ItemClassification.progression, 0, ["Recruit"], 0x0),
 ]
 
@@ -1017,6 +1018,5 @@ legendary_pool_dict = {
 conditional_filler_useful_items = [
     "Miracle Chest",
     "Wonder Chest",
-    "Hero Evolution",
     "Shaymin Village",
 ]

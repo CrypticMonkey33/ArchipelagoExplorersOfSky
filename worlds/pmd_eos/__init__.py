@@ -106,8 +106,12 @@ class EOSWorld(World):
             item_name = "Hero Evolution"
             self.multiworld.push_precollected(self.create_item(item_name))
         if self.options.recruit_evo.value:
-            item_name = "Luminous Spring"
-            self.multiworld.push_precollected(self.create_item(item_name))
+            if self.options.recruit_sanity_progressive_evolution:
+                item_name = "Progressive Evolution"
+                self.multiworld.push_precollected(self.create_item(item_name))
+            else:
+                item_name = "Luminous Spring"
+                self.multiworld.push_precollected(self.create_item(item_name))
         if self.options.dojo_dungeons.value > 0:
             dojo_amount = self.options.dojo_dungeons.value
             dojo_table = item_table_by_groups["Dojo Dungeons"]
@@ -602,6 +606,7 @@ class EOSWorld(World):
             "RecruitLongLocations": self.options.recruit_sanity_long_location.value,
             "RecruitPercentageRequired": self.options.recruit_sanity_difficulty.value,
             "RecruitFriendItems": self.options.recruit_sanity_progressive_friend_items.value,
+            "RecruitEvolution": self.options.recruit_sanity_progressive_evolution.value,
         }
 
     def create_items(self) -> None:
@@ -683,9 +688,25 @@ class EOSWorld(World):
                 required_items.append(self.create_item("Golden Mask", ItemClassification.useful))
 
         if (self.options.recruit_sanity.value == 1 and self.options.recruit_sanity_evolution.value == 1 and self.options.recruit_evo.value == 0):
-            required_items.append(self.create_item("Luminous Spring", ItemClassification.progression))
+            if (self.options.recruit_sanity_progressive_evolution.value):
+                required_items.append(self.create_item("Progressive Evolution", ItemClassification.progression))
+                if (self.options.hero_evolution.value == 0):
+                    required_items.append(self.create_item("Progressive Evolution", ItemClassification.progression))
+            else:
+                required_items.append(self.create_item("Luminous Spring", ItemClassification.progression))
+                if (self.options.hero_evolution.value == 0):
+                    required_items.append(self.create_item("Hero Evolution", ItemClassification.useful))
         else:
-            required_items.append(self.create_item("Luminous Spring", ItemClassification.useful))
+            if (self.options.recruit_sanity_progressive_evolution.value):
+                if (self.options.recruit_evo.value == 0):
+                    required_items.append(self.create_item("Progressive Evolution", ItemClassification.useful))
+                if (self.options.hero_evolution.value == 0):
+                    required_items.append(self.create_item("Progressive Evolution", ItemClassification.useful))
+            else:
+                if (self.options.recruit_evo.value == 0):
+                    required_items.append(self.create_item("Luminous Spring", ItemClassification.useful))
+                if (self.options.hero_evolution.value == 0):
+                    required_items.append(self.create_item("Hero Evolution", ItemClassification.useful))
         
         if (self.options.recruit_sanity.value == 1 and self.options.recruit_sanity_long_location.value == 1):
             if (self.options.recruit_sanity_progressive_friend_items.value == 0):

@@ -456,7 +456,14 @@ class RecruitPercentageRequired(Choice):
     
 
 class RecruitProgressiveFriendItems(Choice):
-    """Sets if friend items should be progressive item or individual"""
+    """Sets if friend items should be progressive item or individual items in the pool"""
+
+    display_name = "Progressive Friend Items"
+    option_all_random = 0
+    option_progressive = 1
+
+class RecruitProgressiveEvolution(Choice):
+    """Sets if evolution should be progressive or random items in the pool"""
 
     display_name = "Progressive Friend Items"
     option_all_random = 0
@@ -511,3 +518,4 @@ class EOSOptions(PerGameCommonOptions):
     recruit_sanity_long_location: RecruitLongLocations
     recruit_sanity_difficulty: RecruitPercentageRequired
     recruit_sanity_progressive_friend_items: RecruitProgressiveFriendItems
+    recruit_sanity_progressive_evolution: RecruitProgressiveEvolution
