@@ -114,7 +114,7 @@ class EOSWorld(World):
                 if opt is not None:
                     # You can also set .value directly but that won't work if you have OptionSets
                     setattr(self.options, key, opt.from_any(value))
-        
+
         if self.options.bag_on_start.value:
             item_name = "Bag Upgrade"
             self.multiworld.push_precollected(self.create_item(item_name))
@@ -428,52 +428,52 @@ class EOSWorld(World):
     def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:
         # Trigger a regen in UT
         return slot_data
-        
+
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
             "options": self.options.as_dict(
-                "Goal",
-                "BagOnStart",
-                "Recruitment",
-                "TeamFormation",
-                "LevelScaling",
-                "RecruitmentEvolution",
-                "DojoDungeonsRandomization",
-                "ShardFragmentAmount",
-                "ExtraShardsAmount",
-                "EarlyMissionsAmount",
-                "EarlyOutlawsAmount",
-                "LateMissionsAmount",
-                "LateOutlawsAmount",
-                "TypeSanity",
-                "StarterOption",
-                "IQScaling",
-                "XPScaling",
-                "RequiredInstruments",
-                "ExtraInstruments",
-                "HeroEvolution",
-                "Deathlink",
-                "DeathlinkType",
-                "LegendaryAmount",
-                "AllowedLegendaries",
-                "SkyPeakType",
-                "SpecialEpisodeSanity",
-                "HintLocationList",
-                "TrapsAllowed",
-                "InvisibleTraps",
-                "TrapPercentage",
-                "LongLocations",
-                "CursedAegisCave",
-                "DrinkEvents",
-                "SpindaDrinks",
-                "ExcludeSpecial",
-                "AllowMissionsEarly",
-                "MaxRank",
-                "GuestScaling",
-                "MoveShortcuts",
-                "StartInventoryFromPool",
-            )
+                "goal",
+                "bag_on_start",
+                "recruit",
+                "team_form",
+                "level_scale",
+                "recruit_evo",
+                "dojo_dungeons",
+                "required_fragments",
+                "total_shards",
+                "early_mission_checks",
+                "early_outlaw_checks",
+                "late_mission_checks",
+                "late_outlaw_checks",
+                "type_sanity",
+                "starter_option",
+                "iq_scaling",
+                "xp_scaling",
+                "req_instruments",
+                "total_instruments",
+                "hero_evolution",
+                "deathlink",
+                "deathlink_type",
+                "legendaries",
+                "allowed_legendaries",
+                "sky_peak_type",
+                "special_episode_sanity",
+                "allow_traps",
+                "invisible_traps",
+                "trap_percent",
+                "long_location",
+                "cursed_aegis_cave",
+                "drink_events",
+                "spinda_drinks",
+                "exclude_special",
+                "early_mission_floors",
+                "max_rank",
+                "guest_scaling",
+                "move_shortcuts",
+                "start_inventory_from_pool",
+            ),
             "ServerVersion": game_version,
+            "HintLocationList": self.dimensional_scream_list_ints,
         }
 
     def create_items(self) -> None:
