@@ -75,6 +75,8 @@ class EOSWorld(World):
     web = EOSWeb()
     settings: typing.ClassVar[EOSSettings]
 
+    ut_can_gen_without_yaml = True
+
     item_name_to_id = {item.name: item.id for item in item_table.values()}
     location_name_to_id = {location.name: location.id for location in expanded_EOS_location_table}
 
@@ -99,6 +101,20 @@ class EOSWorld(World):
 
     def generate_early(self) -> None:
         self.slot_data_ready = threading.Event()
+
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            # Get the passed through slot data from the real generation
+            slot_data: dict[str, Any] = re_gen_passthrough[self.game]
+
+            slot_options: dict[str, Any] = slot_data.get("options", {})
+            # Set all your options here instead of getting them from the yaml
+            for key, value in slot_options.items():
+                opt: Optional[Option] = getattr(self.options, key, None)
+                if opt is not None:
+                    # You can also set .value directly but that won't work if you have OptionSets
+                    setattr(self.options, key, opt.from_any(value))
+        
         if self.options.bag_on_start.value:
             item_name = "Bag Upgrade"
             self.multiworld.push_precollected(self.create_item(item_name))
@@ -408,49 +424,56 @@ class EOSWorld(World):
         else:
             return EOSItem(item_data.name, item_data.classification, item_data.id, self.player)
 
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:
+        # Trigger a regen in UT
+        return slot_data
+        
     def fill_slot_data(self) -> Dict[str, Any]:
         return {
-            "Goal": self.options.goal.value,
+            "options": self.options.as_dict(
+                "Goal",
+                "BagOnStart",
+                "Recruitment",
+                "TeamFormation",
+                "LevelScaling",
+                "RecruitmentEvolution",
+                "DojoDungeonsRandomization",
+                "ShardFragmentAmount",
+                "ExtraShardsAmount",
+                "EarlyMissionsAmount",
+                "EarlyOutlawsAmount",
+                "LateMissionsAmount",
+                "LateOutlawsAmount",
+                "TypeSanity",
+                "StarterOption",
+                "IQScaling",
+                "XPScaling",
+                "RequiredInstruments",
+                "ExtraInstruments",
+                "HeroEvolution",
+                "Deathlink",
+                "DeathlinkType",
+                "LegendaryAmount",
+                "AllowedLegendaries",
+                "SkyPeakType",
+                "SpecialEpisodeSanity",
+                "HintLocationList",
+                "TrapsAllowed",
+                "InvisibleTraps",
+                "TrapPercentage",
+                "LongLocations",
+                "CursedAegisCave",
+                "DrinkEvents",
+                "SpindaDrinks",
+                "ExcludeSpecial",
+                "AllowMissionsEarly",
+                "MaxRank",
+                "GuestScaling",
+                "MoveShortcuts",
+                "StartInventoryFromPool",
+            )
             "ServerVersion": game_version,
-            "BagOnStart": self.options.bag_on_start.value,
-            "Recruitment": self.options.recruit.value,
-            "TeamFormation": self.options.team_form.value,
-            "LevelScaling": self.options.level_scale.value,
-            "RecruitmentEvolution": self.options.recruit_evo.value,
-            "DojoDungeonsRandomization": self.options.dojo_dungeons.value,
-            "ShardFragmentAmount": self.options.required_fragments.value,
-            "ExtraShardsAmount": self.options.total_shards.value,
-            "EarlyMissionsAmount": self.options.early_mission_checks.value,
-            "EarlyOutlawsAmount": self.options.early_outlaw_checks.value,
-            "LateMissionsAmount": self.options.late_mission_checks.value,
-            "LateOutlawsAmount": self.options.late_outlaw_checks.value,
-            "TypeSanity": self.options.type_sanity.value,
-            "StarterOption": self.options.starter_option.value,
-            "IQScaling": self.options.iq_scaling.value,
-            "XPScaling": self.options.xp_scaling.value,
-            "RequiredInstruments": self.options.req_instruments.value,
-            "ExtraInstruments": self.options.total_instruments.value,
-            "HeroEvolution": self.options.hero_evolution.value,
-            "Deathlink": self.options.deathlink.value,
-            "DeathlinkType": self.options.deathlink_type.value,
-            "LegendaryAmount": self.options.legendaries.value,
-            "AllowedLegendaries": self.options.allowed_legendaries.value,
-            "SkyPeakType": self.options.sky_peak_type.value,
-            "SpecialEpisodeSanity": self.options.special_episode_sanity.value,
-            "HintLocationList": self.dimensional_scream_list_ints,
-            "TrapsAllowed": self.options.allow_traps.value,
-            "InvisibleTraps": self.options.invisible_traps.value,
-            "TrapPercentage": self.options.trap_percent.value,
-            "LongLocations": self.options.long_location.value,
-            "CursedAegisCave": self.options.cursed_aegis_cave.value,
-            "DrinkEvents": self.options.drink_events.value,
-            "SpindaDrinks": self.options.spinda_drinks.value,
-            "ExcludeSpecial": self.options.exclude_special.value,
-            "AllowMissionsEarly": self.options.early_mission_floors.value,
-            "MaxRank": self.options.max_rank.value,
-            "GuestScaling": self.options.guest_scaling.value,
-            "MoveShortcuts": self.options.move_shortcuts.value,
-            "StartInventoryFromPool": self.options.start_inventory_from_pool.value,
         }
 
     def create_items(self) -> None:
