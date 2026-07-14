@@ -174,17 +174,17 @@ class EOSWorld(World):
         self.multiworld.regions.append(rule_dungeons_region)
 
         for location in EOS_location_table:
-            if location.name == "Beach Cave":
+            if location.name == "Beach Cave Cleared":
                 menu_region.locations.append(EOSLocation(self.player, location.name, location.id, menu_region))
                 if "Mission" in location.group:
                     for j in range(self.options.early_mission_checks.value):
-                        location_name: str = f"{location.name} Mission {j + 1}"
+                        location_name: str = f"{location.name[:-8]} Mission {j + 1}"
                         location_id = location.id + self.mission_start_id + (100 * location.id) + j
                         menu_region.locations.append(EOSLocation(self.player, location_name, location_id, menu_region))
 
                         self.extra_locations_added += 1
                     for j in range(self.options.early_outlaw_checks.value):
-                        location_name = f"{location.name} Outlaw {j + 1}"
+                        location_name = f"{location.name[:-8]} Outlaw {j + 1}"
                         location_id = location.id + self.mission_start_id + (100 * location.id) + j + 50
                         menu_region.locations.append(EOSLocation(self.player, location_name, location_id, menu_region))
 
@@ -240,7 +240,7 @@ class EOSWorld(World):
                 )
                 if "Mission" in location.group:
                     for j in range(self.options.early_mission_checks.value):
-                        location_name = f"{location.name} Mission {j + 1}"
+                        location_name = f"{location.name[:-8]} Mission {j + 1}"
                         location_id = location.id + self.mission_start_id + (100 * location.id) + j
                         early_dungeons_region.locations.append(
                             EOSLocation(self.player, location_name, location_id, early_dungeons_region)
@@ -248,12 +248,12 @@ class EOSWorld(World):
 
                         set_rule(
                             self.multiworld.get_location(location_name, self.player),
-                            lambda state, ln=location.name, p=self.player: state.has(ln, p),
+                            lambda state, ln=location.name[:-8], p=self.player: state.has(ln, p),
                         )
                         self.extra_locations_added += 1
 
                     for j in range(self.options.early_outlaw_checks.value):
-                        location_name = f"{location.name} Outlaw {j + 1}"
+                        location_name = f"{location.name[:-8]} Outlaw {j + 1}"
                         location_id = location.id + self.mission_start_id + (100 * location.id) + j + 50
                         early_dungeons_region.locations.append(
                             EOSLocation(self.player, location_name, location_id, early_dungeons_region)
@@ -261,7 +261,7 @@ class EOSWorld(World):
 
                         set_rule(
                             self.multiworld.get_location(location_name, self.player),
-                            lambda state, ln=location.name, p=self.player: state.has(ln, p),
+                            lambda state, ln=location.name[:-8], p=self.player: state.has(ln, p),
                         )
                         self.extra_locations_added += 1
 
@@ -283,28 +283,28 @@ class EOSWorld(World):
                 late_dungeons_region.locations.append(late_dungeon)
                 if self.options.goal.value == 1 and ("Mission" in location.group):
                     for j in range(self.options.late_mission_checks.value):
-                        location_name = f"{location.name} Mission {j + 1}"
+                        location_name = f"{location.name[:-8]} Mission {j + 1}"
                         location_id = location.id + self.mission_start_id + (100 * location.id) + j
                         late_dungeons_region.locations.append(
                             EOSLocation(self.player, location_name, location_id, late_dungeons_region)
                         )
 
                         set_rule(
-                            self.multiworld.get_location(f"{location.name} Mission {j + 1}", self.player),
-                            lambda state, ln=location.name, p=self.player: state.has(ln, p),
+                            self.multiworld.get_location(f"{location.name[:-8]} Mission {j + 1}", self.player),
+                            lambda state, ln=location.name[:-8], p=self.player: state.has(ln, p),
                         )
                         self.extra_locations_added += 1
 
                     for j in range(self.options.late_outlaw_checks.value):
-                        location_name = f"{location.name} Outlaw {j + 1}"
+                        location_name = f"{location.name[:-8]} Outlaw {j + 1}"
                         location_id = location.id + self.mission_start_id + (100 * location.id) + j + 50
                         late_dungeons_region.locations.append(
                             EOSLocation(self.player, location_name, location_id, late_dungeons_region)
                         )
 
                         set_rule(
-                            self.multiworld.get_location(f"{location.name} Outlaw {j + 1}", self.player),
-                            lambda state, ln=location.name, p=self.player: state.has(ln, p),
+                            self.multiworld.get_location(f"{location.name[:-8]} Outlaw {j + 1}", self.player),
+                            lambda state, ln=location.name[:-8], p=self.player: state.has(ln, p),
                         )
 
                         self.extra_locations_added += 1
@@ -341,28 +341,28 @@ class EOSWorld(World):
                 end_game_region.locations.append(location_data)
                 if (self.options.goal.value == 1) and ("Mission" in location.group):
                     for j in range(self.options.late_mission_checks.value):
-                        location_name = f"{location.name} Mission {j + 1}"
+                        location_name = f"{location.name[:-8]} Mission {j + 1}"
                         location_id = location.id + self.mission_start_id + (100 * location.id) + j
                         late_dungeons_region.locations.append(
                             EOSLocation(self.player, location_name, location_id, late_dungeons_region)
                         )
 
                         set_rule(
-                            self.multiworld.get_location(f"{location.name} Mission {j + 1}", self.player),
-                            lambda state, ln=location.name, p=self.player: state.has(ln, p),
+                            self.multiworld.get_location(f"{location.name[:-8]} Mission {j + 1}", self.player),
+                            lambda state, ln=location.name[:-8], p=self.player: state.has(ln, p),
                         )
                         self.extra_locations_added += 1
 
                     for j in range(self.options.late_outlaw_checks.value):
-                        location_name = f"{location.name} Outlaw {j + 1}"
+                        location_name = f"{location.name[:-8]} Outlaw {j + 1}"
                         location_id = location.id + self.mission_start_id + (100 * location.id) + j + 50
                         late_dungeons_region.locations.append(
                             EOSLocation(self.player, location_name, location_id, late_dungeons_region)
                         )
 
                         set_rule(
-                            self.multiworld.get_location(f"{location.name} Outlaw {j + 1}", self.player),
-                            lambda state, ln=location.name, p=self.player: state.has(ln, p),
+                            self.multiworld.get_location(f"{location.name[:-8]} Outlaw {j + 1}", self.player),
+                            lambda state, ln=location.name[:-8], p=self.player: state.has(ln, p),
                         )
 
                         self.extra_locations_added += 1
