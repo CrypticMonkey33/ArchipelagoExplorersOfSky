@@ -274,7 +274,7 @@ def dungeon_locations_behind_items(world, player):
         elif "Early" in location.group:
             set_rule(
                 world.multiworld.get_location(location.name, player),
-                lambda state, ln=location.name: state.has(ln, player),
+                lambda state, ln=location.name[:-8]: state.has(ln, player),
             )
             if special_episode_sanity_no_exclusion(world, player):
                 add_rule(
@@ -284,7 +284,7 @@ def dungeon_locations_behind_items(world, player):
         elif "Dojo" in location.group:
             set_rule(
                 world.multiworld.get_location(location.name, player),
-                lambda state, ln=location.name: state.has(ln, player),
+                lambda state, ln=location.name[:-8]: state.has(ln, player),
             )
             if special_episode_sanity_no_exclusion(world, player):
                 add_rule(
@@ -355,7 +355,7 @@ def dungeon_locations_behind_items(world, player):
                 else:
                     set_rule(
                         world.multiworld.get_location(location.name, player),
-                        lambda state, ln=location.name: state.has(ln, player)
+                        lambda state, ln=location.name[:-8]: state.has(ln, player)
                         and ready_for_late_game(state, player, world),
                     )
                     if special_episode_sanity_no_exclusion(world, player):
@@ -437,7 +437,7 @@ def dungeon_locations_behind_items(world, player):
         elif "Late" in location.group and world.options.goal.value == 1:
             set_rule(
                 world.multiworld.get_location(location.name, player),
-                lambda state, ln=location.name: state.has(ln, player) and ready_for_late_game(state, player, world),
+                lambda state, ln=location.name[:-8]: state.has(ln, player) and ready_for_late_game(state, player, world),
             )
             if special_episode_sanity_no_exclusion(world, player):
                 add_rule(
@@ -449,7 +449,7 @@ def dungeon_locations_behind_items(world, player):
                 continue
             set_rule(
                 world.multiworld.get_location(location.name, player),
-                lambda state, ln=location.name: state.has(ln, player) and ready_for_late_game(state, player, world),
+                lambda state, ln=location.name[:-8]: state.has(ln, player) and ready_for_late_game(state, player, world),
             )
             if special_episode_sanity_no_exclusion(world, player):
                 add_rule(
@@ -483,7 +483,7 @@ def mission_rules(world, player):
             for j in range(world.options.early_mission_checks.value):
                 set_rule(
                     world.multiworld.get_location(f"{location.name[:-8]} Mission {j + 1}", player),
-                    lambda state, ln=location.name, p=player: state.has(ln, p),
+                    lambda state, ln=location.name[:-8], p=player: state.has(ln, p),
                 )
                 if special_episode_sanity_no_exclusion(world, player):
                     add_rule(
@@ -493,7 +493,7 @@ def mission_rules(world, player):
             for j in range(world.options.early_outlaw_checks.value):
                 set_rule(
                     world.multiworld.get_location(f"{location.name[:-8]} Outlaw {j + 1}", player),
-                    lambda state, ln=location.name, p=player: state.has(ln, p),
+                    lambda state, ln=location.name[:-8], p=player: state.has(ln, p),
                 )
                 if special_episode_sanity_no_exclusion(world, player):
                     add_rule(
@@ -584,7 +584,7 @@ def mission_rules(world, player):
                     for j in range(world.options.late_mission_checks.value):
                         set_rule(
                             world.multiworld.get_location(f"{location.name[:-8]} Mission {j + 1}", player),
-                            lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world),
+                            lambda state, ln=location.name[:-8], p=player: ready_for_late_game(state, p, world),
                         )
                         if special_episode_sanity_no_exclusion(world, player):
                             add_rule(
@@ -595,7 +595,7 @@ def mission_rules(world, player):
                     for j in range(world.options.late_outlaw_checks.value):
                         set_rule(
                             world.multiworld.get_location(f"{location.name[:-8]} Outlaw {j + 1}", player),
-                            lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world),
+                            lambda state, ln=location.name[:-8], p=player: ready_for_late_game(state, p, world),
                         )
                         if special_episode_sanity_no_exclusion(world, player):
                             add_rule(
@@ -607,7 +607,7 @@ def mission_rules(world, player):
                     for j in range(world.options.late_mission_checks.value):
                         set_rule(
                             world.multiworld.get_location(f"{location.name[:-8]} Mission {j + 1}", player),
-                            lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world)
+                            lambda state, ln=location.name[:-8], p=player: ready_for_late_game(state, p, world)
                             and state.can_reach_location("Mt. Bristle Cleared", p)
                             and state.has(ln, p),
                         )
@@ -620,7 +620,7 @@ def mission_rules(world, player):
                     for j in range(world.options.late_outlaw_checks.value):
                         set_rule(
                             world.multiworld.get_location(f"{location.name[:-8]} Outlaw {j + 1}", player),
-                            lambda state, ln=location.name, p=player: ready_for_late_game(state, p, world)
+                            lambda state, ln=location.name[:-8], p=player: ready_for_late_game(state, p, world)
                             and state.can_reach_location("Mt. Bristle Cleared", p)
                             and state.has(ln, p),
                         )
@@ -634,7 +634,7 @@ def mission_rules(world, player):
                     for j in range(world.options.late_mission_checks.value):
                         set_rule(
                             world.multiworld.get_location(f"{location.name[:-8]} Mission {j + 1}", player),
-                            lambda state, ln=location.name, p=player: state.has(ln, p)
+                            lambda state, ln=location.name[:-8], p=player: state.has(ln, p)
                             and ready_for_late_game(state, player, world),
                         )
                         if special_episode_sanity_no_exclusion(world, player):
@@ -646,7 +646,7 @@ def mission_rules(world, player):
                     for j in range(world.options.late_outlaw_checks.value):
                         set_rule(
                             world.multiworld.get_location(f"{location.name[:-8]} Outlaw {j + 1}", player),
-                            lambda state, ln=location.name, p=player: state.has(ln, p)
+                            lambda state, ln=location.name[:-8], p=player: state.has(ln, p)
                             and ready_for_late_game(state, player, world),
                         )
                         if special_episode_sanity_no_exclusion(world, player):
