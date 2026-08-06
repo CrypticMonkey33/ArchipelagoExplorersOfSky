@@ -465,7 +465,7 @@ class RecruitProgressiveFriendItems(Choice):
 class RecruitProgressiveEvolution(Choice):
     """Sets if evolution should be progressive or random items in the pool"""
 
-    display_name = "Progressive Friend Items"
+    display_name = "Progressive Evolution Items"
     option_all_random = 0
     option_progressive = 1
 
