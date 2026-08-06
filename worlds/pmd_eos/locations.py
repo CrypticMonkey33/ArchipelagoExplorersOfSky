@@ -2,7 +2,7 @@ from typing import ClassVar
 
 from BaseClasses import Location
 
-from .rom_type_definitions import subX_table
+from .rom_type_definitions import subx_table
 
 
 class LocationData:
@@ -48,7 +48,7 @@ def get_location_table_by_groups() -> dict[str, set[str]]:
 def get_subx_table() -> list[LocationData]:
     new_list: list[LocationData] = []
     subx_start_id = 300
-    for item in subX_table:
+    for item in subx_table:
         if item.flag_definition == "Unused" or item.default_item == "ignore":
             continue
         new_location = LocationData(

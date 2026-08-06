@@ -31,7 +31,7 @@ class EOSWeb(WebWorld):
     theme = "ocean"
     game = "Pokémon Mystery Dungeon: Explorers of Sky"
 
-    tutorials : ClassVar[list[Tutorial]] = [
+    tutorials = [
         Tutorial(
             tutorial_name="Multiworld Setup Guide",
             description="A guide to setting up Explorers of Sky for Archipelago.",
@@ -49,7 +49,7 @@ class EOSSettings(settings.Group):
 
         copy_to = "POKEDUN_SORA_C2SP01_00.nds"
         description = "Explorers of Sky (EU) ROM File"
-        md5s : ClassVar[list[str]] = ["6735749e060e002efd88e61560e45567"]
+        md5s : ClassVar[list[str | bytes]] = ["6735749e060e002efd88e61560e45567"]
 
     rom_file: RomFile = RomFile(RomFile.copy_to)
     rom_start: bool = True
@@ -466,7 +466,7 @@ class EOSWorld(World):
             instrument_table = item_table_by_groups["Instrument"]
             instruments = self.random.sample(sorted(instrument_table), instruments_to_add)
             for item in instruments:
-                required_items.extend(self.create_item(item, ItemClassification.progression_skip_balancing))
+                required_items.append(self.create_item(item, ItemClassification.progression_skip_balancing))
 
         precollected = [item.name for item in self.multiworld.precollected_items[self.player]]
 
@@ -489,7 +489,7 @@ class EOSWorld(World):
             relics_to_add = self.options.total_shards.value
 
         for _ in range(relics_to_add):
-            required_items.extend(
+            required_items.append(
                 self.create_item("Relic Fragment Shard", ItemClassification.progression_skip_balancing)
             )
 
@@ -503,13 +503,13 @@ class EOSWorld(World):
             self.options.legendaries.value > len(self.options.allowed_legendaries.value)
         ):
             for item in self.options.allowed_legendaries.value:
-                required_items.extend(self.create_item(item, ItemClassification.filler))
+                required_items.append(self.create_item(item, ItemClassification.filler))
         elif self.options.goal.value == 1:
             new_list = self.random.sample(
                 sorted(self.options.allowed_legendaries.value), self.options.legendaries.value
             )
             for item in new_list:
-                required_items.extend(self.create_item(item, ItemClassification.filler))
+                required_items.append(self.create_item(item, ItemClassification.filler))
 
         for item_name in item_table:
             # if (item_name == "Dark Crater") and (self.options.goal.value == 1):

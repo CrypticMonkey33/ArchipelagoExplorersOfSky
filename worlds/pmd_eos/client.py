@@ -13,7 +13,7 @@ from worlds._bizhawk.client import BizHawkClient
 
 from .death_messages import death_message_list, death_message_weights
 from .items import item_table_by_groups, item_table_by_id, lootbox_table
-from .locations import location_Dict_by_id, location_dict_by_start_id
+from .locations import location_dict_by_start_id, location_dict_by_id
 
 if TYPE_CHECKING:
     from worlds._bizhawk.context import BizHawkClientContext
@@ -1044,8 +1044,8 @@ class EoSClient(BizHawkClient):
                             locs_to_send.add(999)
                         elif (ctx.slot_data["Goal"] == 1) and (bit_number_dung == 43):
                             self.dialga_complete = True
-                        if bit_number_dung in location_Dict_by_id:
-                            locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
+                        if bit_number_dung in location_dict_by_id:
+                            locs_to_send.add(location_dict_by_id[bit_number_dung].id)
 
             # Check for set location flags in general bitfield
             for byte_m, byte in enumerate(scenario_subx_bitfield):
@@ -1056,8 +1056,8 @@ class EoSClient(BizHawkClient):
                     if ((byte >> k) & 1) == 1:
                         self.checked_general_flags[byte_m] += [k]
                         bit_number_gen = (byte_m * 8) + k + subx_start_id
-                        if bit_number_gen in location_Dict_by_id:
-                            locs_to_send.add(location_Dict_by_id[bit_number_gen].id)
+                        if bit_number_gen in location_dict_by_id:
+                            locs_to_send.add(location_dict_by_id[bit_number_gen].id)
 
             # 3 = 251 send check for mission, 4 = 252 outlaw, 5 = 253 normal missions
             if ((scenario_talk_bitfield_248_list >> 5) & 1) == 1:  # if normal mission

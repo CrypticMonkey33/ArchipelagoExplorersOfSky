@@ -40,7 +40,7 @@ def get_item_table_by_groups() -> dict[str, set[str]]:
 
 
 # Item table for all the EOS items that can be in the game. Does not include filler or trap items.
-EOS_item_table = [
+eos_item_table = [
     # "Test Dungeon"0, ItemClassification.progression, ["Unique", "Dungeons"],0x0), Test Dungeon does not actually exist
     # ItemData("Beach Cave", 1, ItemClassification.progression, 1, ["Unique", "EarlyDungeons"], 0x1), Beach cave is open
     # by default
@@ -686,7 +686,7 @@ item_frequencies: dict[str, int] = {
 }
 
 # Create a table of all the possible items in the game for AP
-item_table: dict[str, ItemData] = {item.name: item for item in EOS_item_table}
+item_table: dict[str, ItemData] = {item.name: item for item in eos_item_table}
 item_table.update(filler_item_table)
 item_table.update(exclusive_filler_item_table)
 item_table.update(trap_item_table)

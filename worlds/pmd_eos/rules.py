@@ -2,7 +2,7 @@ from typing import TYPE_CHECKING
 
 from worlds.generic.Rules import add_rule, forbid_item, set_rule
 
-from .locations import EOS_location_table, location_Dict_by_id
+from .locations import eos_location_table, location_dict_by_id
 from .rom_type_definitions import subx_table
 
 if TYPE_CHECKING:
@@ -139,7 +139,7 @@ def forbid_items_behind_locations(world, player):
         forbid_item(world.multiworld.get_location("Sky Peak Summit", player), "Progressive Sky Peak", player)
         # if world.options.goal.value == 1:
         for i in range(111, 120):
-            location = location_Dict_by_id[i]
+            location = location_dict_by_id[i]
             for j in range(world.options.late_mission_checks.value):
                 forbid_item(
                     world.multiworld.get_location(f"{location.name} Mission {j + 1}", player),
@@ -263,7 +263,7 @@ def ready_for_darkrai(state, player, world):
 
 
 def dungeon_locations_behind_items(world, player):
-    for location in EOS_location_table:
+    for location in eos_location_table:
         if location.name == "Beach Cave":
             if special_episode_sanity_no_exclusion(world, player):
                 add_rule(
@@ -461,7 +461,7 @@ def dungeon_locations_behind_items(world, player):
 
 
 def mission_rules(world, player):
-    for _, location in enumerate(EOS_location_table):
+    for _, location in enumerate(eos_location_table):
         if "Mission" not in location.group:
             continue
 
