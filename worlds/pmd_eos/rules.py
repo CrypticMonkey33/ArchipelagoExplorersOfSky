@@ -3,9 +3,11 @@ from typing import Dict, TYPE_CHECKING
 from worlds.generic.Rules import set_rule, add_rule, forbid_item
 from .locations import EOS_location_table, EOSLocation, location_Dict_by_id
 from .rom_type_definitions import subX_table
+from .pokemon import pokemon_info
 
 if TYPE_CHECKING:
     from . import EOSWorld
+
 
 
 def set_rules(world: "EOSWorld", excluded):
@@ -63,6 +65,10 @@ def set_rules(world: "EOSWorld", excluded):
     set_rule(
         world.multiworld.get_entrance("Late Game Door", player), lambda state: ready_for_late_game(state, player, world)
     )
+    
+    set_rule(
+        world.multiworld.get_entrance("Pokemon Recruit", player), lambda state: has_start_recruit(state, player, world)
+    )
 
     set_rule(world.multiworld.get_location("Hidden Land Cleared", player), lambda state: has_relic_shards(state, player, world))
     if special_episode_sanity_no_exclusion(world, player):
@@ -90,6 +96,20 @@ def ready_for_late_game(state, player, world):
         and state.has("Relic Fragment Shard", player, world.options.required_fragments.value)
         and state.has("Temporal Tower", player)
     )
+
+def has_start_recruit(state, player, world):
+    if special_episode_sanity_no_exclusion(world, player): 
+        return (
+            state.has("Recruitment", player) 
+            and state.has("Main Game Unlock", player)
+            or state.has("Progressive Recruitment", player, 1) 
+            and state.has("Main Game Unlock", player)
+        )
+    else:
+        return (
+            state.has("Recruitment", player)
+            or state.has("Progressive Recruitment", player, 1)
+        )
 
 
 def spinda_drink_events(world, player):
@@ -152,7 +172,6 @@ def forbid_items_behind_locations(world, player):
                     "Progressive Sky Peak",
                     player,
                 )
-
 
 def special_episodes_rules(world, player):
     if not world.options.exclude_special.value:
@@ -261,8 +280,1532 @@ def ready_for_darkrai(state, player, world):
         and state.has_group("LateDungeons", player, 10)
     )
 
+#sets the rule for all pokemon given by the individual rules
+def pokemon_rule(rule, world, player, location_name, location_id, has_rule_list):
+    if has_rule_list[location_id - 15000]:
+        add_rule(
+            world.multiworld.get_location(location_name, player),
+            rule,
+            combine = "or"
+        )
+    else:
+        has_rule_list[location_id - 15000] = 1
+        set_rule(
+            world.multiworld.get_location(location_name, player),
+            rule
+        )
+
+#checks if a pokemon evolution is possible and gets sets the rule for pre dialga pokemon
+def early_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world, recruit_chance, difficulty):
+    for j in range(len(pokemon_info[location_id - 15000][3])):                               
+        if(pokemon_info[location_id - 15000][3][j][1] <= level):
+            if (pokemon_info[location_id - 15000][3][j][2] and world.options.goal == 0):
+                pass
+            else:
+                rule = early_evolution_pokemon(location_found, pokemon_info[location_id - 15000][3][j], player, world, recruit_chance, difficulty)
+                pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+
+                for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
+                    if(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level):
+                        if (pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][2] and world.options.goal == 0 or pokemon_info[location_id - 15000][3][j][2] and world.options.goal == 0):
+                            pass
+                        else:
+                            rule = early_evolution_pokemon(location_found, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h], player, world, recruit_chance, difficulty)
+                            pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+
+#checks if a pokemon evolution is possible and gets sets the rule for post dialga pokemon
+def late_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world, recruit_chance, difficulty):
+    for j in range(len(pokemon_info[location_id - 15000][3])):                               
+        if(pokemon_info[location_id - 15000][3][j][1] <= level):
+            rule = late_evolution_pokemon(location_found, player, world, recruit_chance, difficulty)
+            pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+
+            for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
+                if(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level):
+                    rule = late_evolution_pokemon(location_found, player, world, recruit_chance, difficulty)
+                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+
+#checks if a pokemon evolution is possible and gets sets the rule for aegis cave pokemon
+def aegis_pokemon_evolution_rule(location_id, location_found, location_name, level, amount, pokemeon_has_rule, player, world, recruit_chance, difficulty):
+    for j in range(len(pokemon_info[location_id - 15000][3])):                               
+        if(pokemon_info[location_id - 15000][3][j][1] <= level):
+            rule = aegis_evolution_pokemon(location_found, amount, player, world, recruit_chance, difficulty)
+            pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+
+            for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
+                if(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level):
+                    rule = aegis_evolution_pokemon(location_found, amount, player, world, recruit_chance, difficulty)
+                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+
+#checks if a pokemon evolution is possible and gets sets the rule for dark crater pokemon
+def boss_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world, recruit_chance, difficulty):
+    for j in range(len(pokemon_info[location_id - 15000][3])):                               
+        if(pokemon_info[location_id - 15000][3][j][1] <= level):
+            rule = boss_evolution_pokemon(player, world, recruit_chance, difficulty)
+            pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+
+            for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
+                if(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level):
+                    rule = boss_evolution_pokemon(player, world, recruit_chance, difficulty)
+                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+
+#retrieves the rule for pokemon evolutions that are found pre dialga
+def early_evolution_pokemon(location_name, location_data, player, world, recruit_chance, difficulty):
+    if (location_data[2] or location_data[1] > 20):
+        if recruit_chance >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                )
+        elif recruit_chance + 0.100 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                )
+        elif recruit_chance + 0.225 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                )
+        elif recruit_chance + 0.326 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                )
+        else:
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                )
+    else:
+        if recruit_chance >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Progressive Evolution", player)
+                )
+        elif recruit_chance + 0.100 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and state.has_group("EarlyDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and state.has_group("EarlyDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has_group("EarlyDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and state.has_group("EarlyDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and state.has_group("EarlyDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and state.has_group("EarlyDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has_group("EarlyDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and state.has_group("EarlyDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                )
+        elif recruit_chance + 0.225 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                )
+        elif recruit_chance + 0.326 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                )
+        else:
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                )
+
+#retrieves the rule for pokemon evolutions that are found past dialga
+def late_evolution_pokemon(location_name, player, world, recruit_chance, difficulty):
+    if recruit_chance >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Progressive Evolution", player)
+            )
+    elif recruit_chance + 0.100 >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Friend Bow", player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Amber Tear", player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 2)
+            and ready_for_late_game(state, player, world)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Friend Bow", player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Progressive Evolution", player)
+            or state.has(ln, player)
+            and state.has("Amber Tear", player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Progressive Evolution", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Progressive Evolution", player)
+            or state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 2)
+            and ready_for_late_game(state, player, world)
+            and state.has("Progressive Evolution", player)
+            )
+    elif recruit_chance + 0.225 >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 3)
+            and ready_for_late_game(state, player, world)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Amber Tear", player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 3)
+            and ready_for_late_game(state, player, world)
+            and state.has("Progressive Evolution", player)
+            or state.has(ln, player)
+            and state.has("Amber Tear", player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Progressive Evolution", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and ready_for_late_game(state, player, world)
+            and state.has("Progressive Evolution", player)
+            )
+    elif recruit_chance + 0.326 >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 4)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 4)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Progressive Evolution", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Progressive Evolution", player)
+            )
+    else:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 5)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and state.has("Secret Slab", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and state.has("Mystery Part", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            and state.has("Luminous Spring", player)
+            or state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 5)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            and state.has("Progressive Evolution", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and state.has("Secret Slab", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            and state.has("Progressive Evolution", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and state.has("Mystery Part", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            and state.has("Progressive Evolution", player)
+            )
+
+#retrieves the rule for pokemon evolutions that are found in aegis cave
+def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance, difficulty):
+    if amount == 1:
+        if recruit_chance >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Evolution", player)
+                )
+        elif recruit_chance + 0.100 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                )
+        elif recruit_chance + 0.225 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                )
+        elif recruit_chance + 0.326 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                )
+        else:
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 1)
+                )
+    elif amount == 2:
+        if recruit_chance >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                )
+        elif recruit_chance + 0.100 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                )
+        elif recruit_chance + 0.225 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                )
+        elif recruit_chance + 0.326 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                )
+        else:
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 2)
+                )
+    elif amount == 3:
+        if recruit_chance >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                )
+        elif recruit_chance + 0.100 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                )
+        elif recruit_chance + 0.225 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                )
+        elif recruit_chance + 0.326 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                )
+        else:
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Luminous Spring", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                and state.has("Progressive Evolution", player)
+                and state.has("Progressive Seal", player, 3)
+                )
+
+#retrieves the rule for pokemon evolutions that are found in dark crater
+def boss_evolution_pokemon(player, world, recruit_chance, difficulty):
+    if recruit_chance >= difficulty: 
+        return (
+            lambda state: ready_for_darkrai(state, player, world)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Progressive Evolution", player)
+            )
+    elif recruit_chance + 0.100 >= difficulty: 
+        return (
+            lambda state: ready_for_darkrai(state, player, world)
+            and state.has("Friend Bow", player)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Amber Tear", player)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 2)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Friend Bow", player)
+            and state.has("Progressive Evolution", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Amber Tear", player)
+            and state.has("Progressive Evolution", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Progressive Evolution", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 2)
+            and state.has("Progressive Evolution", player)
+            )
+    elif recruit_chance + 0.225 >= difficulty: 
+        return (
+            lambda state: ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 3)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Amber Tear", player)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 3)
+            and state.has("Progressive Evolution", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Amber Tear", player)
+            and state.has("Progressive Evolution", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Progressive Evolution", player)
+            )
+    elif recruit_chance + 0.326 >= difficulty: 
+        return (
+            lambda state: ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 4)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 4)
+            and state.has("Progressive Evolution", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Progressive Evolution", player)
+            )
+    else:
+        return (
+            lambda state: ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 5)
+            and state.has("Secret Rank", player)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Secret Slab", player)
+            and state.has("Secret Rank", player)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Mystery Part", player)
+            and state.has("Secret Rank", player)
+            and state.has("Luminous Spring", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 5)
+            and state.has("Secret Rank", player)
+            and state.has("Progressive Evolution", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Secret Slab", player)
+            and state.has("Secret Rank", player)
+            and state.has("Progressive Evolution", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Mystery Part", player)
+            and state.has("Secret Rank", player)
+            and state.has("Progressive Evolution", player)
+            )
+
+#retrieves the rule for pokemon that are found pre dialga
+def early_pokemon(location_name, player, world, recruit_chance, difficulty):
+    if recruit_chance >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            )
+    elif recruit_chance + 0.100 >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Friend Bow", player)
+            and state.has_group("EarlyDungeons", player, 10)
+            or state.has(ln, player)
+            and state.has("Amber Tear", player)
+            and state.has_group("EarlyDungeons", player, 10)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and state.has_group("EarlyDungeons", player, 10)
+            or state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 2)
+            and state.has_group("EarlyDungeons", player, 10)
+            )
+    elif recruit_chance + 0.225 >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 3)
+            and ready_for_late_game(state, player, world)
+            or state.has(ln, player)
+            and state.has("Amber Tear", player)
+            and ready_for_late_game(state, player, world)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and ready_for_late_game(state, player, world)
+            )
+    elif recruit_chance + 0.326 >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 4)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            )
+    else:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 5)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and state.has("Secret Slab", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and state.has("Mystery Part", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            )
+
+#retrieves the rule for pokemon that are found past dialga
+def late_pokemon(location_name, player, world, recruit_chance, difficulty):
+    if recruit_chance >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and ready_for_late_game(state, player, world)
+            )
+    elif recruit_chance + 0.100 >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Friend Bow", player)
+            and ready_for_late_game(state, player, world)
+            or state.has(ln, player)
+            and state.has("Amber Tear", player)
+            and ready_for_late_game(state, player, world)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and ready_for_late_game(state, player, world)
+            or state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 2)
+            and ready_for_late_game(state, player, world)
+            )
+    elif recruit_chance + 0.225 >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 3)
+            and ready_for_late_game(state, player, world)
+            or state.has(ln, player)
+            and state.has("Amber Tear", player)
+            and ready_for_late_game(state, player, world)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and ready_for_late_game(state, player, world)
+            )
+    elif recruit_chance + 0.326 >= difficulty: 
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 4)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            )
+    else:
+        return (
+            lambda state, ln=location_name: state.has(ln, player)
+            and state.has("Progressive Recruitment", player, 5)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and state.has("Secret Slab", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            or state.has(ln, player)
+            and state.has("Golden Mask", player)
+            and state.has("Mystery Part", player)
+            and ready_for_late_game(state, player, world)
+            and state.has_group("LateDungeons", player, 10)
+            and state.has("Secret Rank", player)
+            )
+
+#retrieves the rule for pokemon that are found in aegis cave
+def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficulty):
+    if amount == 1:
+        if recruit_chance >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                )
+        elif recruit_chance + 0.100 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                )
+        elif recruit_chance + 0.225 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                )
+        elif recruit_chance + 0.326 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                and state.has_group("LateDungeons", player, 10)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                and state.has_group("LateDungeons", player, 10)
+                )
+        else:
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                )
+    elif amount == 2:
+        if recruit_chance >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 1)
+                )
+        elif recruit_chance + 0.100 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                )
+        elif recruit_chance + 0.225 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                )
+        elif recruit_chance + 0.326 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                and state.has_group("LateDungeons", player, 10)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                and state.has_group("LateDungeons", player, 10)
+                )
+        else:
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 2)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                )
+    elif amount == 3:
+        if recruit_chance >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                )
+        elif recruit_chance + 0.100 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Friend Bow", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 2)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                )
+        elif recruit_chance + 0.225 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 3)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Amber Tear", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                )
+        elif recruit_chance + 0.326 >= difficulty: 
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 4)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                and state.has_group("LateDungeons", player, 10)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                and state.has_group("LateDungeons", player, 10)
+                )
+        else:
+            return (
+                lambda state, ln=location_name: state.has(ln, player)
+                and state.has("Progressive Recruitment", player, 5)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Secret Slab", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                or state.has(ln, player)
+                and state.has("Golden Mask", player)
+                and state.has("Mystery Part", player)
+                and ready_for_late_game(state, player, world)
+                and state.has("Progressive Seal", player, 3)
+                and state.has_group("LateDungeons", player, 10)
+                and state.has("Secret Rank", player)
+                )
+    return
+
+#retrieves the rule for pokemon that are found in dark crater
+def boss_pokemon(player, world, recruit_chance, difficulty):
+    if recruit_chance >= difficulty: 
+        return (
+            lambda state: ready_for_darkrai(state, player, world)
+            )
+    elif recruit_chance + 0.100 >= difficulty: 
+        return (
+            lambda state: ready_for_darkrai(state, player, world)
+            and state.has("Friend Bow", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Amber Tear", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 2)
+            )
+    elif recruit_chance + 0.225 >= difficulty: 
+        return (
+            lambda state: ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 3)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Amber Tear", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            )
+    elif recruit_chance + 0.326 >= difficulty: 
+        return (
+            lambda state: ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 4)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            )
+    else:
+        return (
+            lambda state: ready_for_darkrai(state, player, world)
+            and state.has("Progressive Recruitment", player, 5)
+            and state.has("Secret Rank", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Secret Slab", player)
+            and state.has("Secret Rank", player)
+            or ready_for_darkrai(state, player, world)
+            and state.has("Golden Mask", player)
+            and state.has("Mystery Part", player)
+            and state.has("Secret Rank", player)
+            )
+
+#retrieves the rule for pokemon that are recruited through the challenge letter
+def challenge_pokemon(location_name, player, world, recruit_chance, difficulty):
+    return (
+        lambda state, ln=location_name: state.has(ln, player)
+        and state.has("Progressive Recruitment", player, 5)
+        and ready_for_late_game(state, player, world)
+        and state.has_group("LateDungeons", player, 10)
+        and state.has("Secret Rank", player)
+        and state.has("Recruitment Sensor", player)
+        or state.has(ln, player)
+        and state.has("Golden Mask", player)
+        and state.has("Secret Slab", player)
+        and ready_for_late_game(state, player, world)
+        and state.has_group("LateDungeons", player, 10)
+        and state.has("Secret Rank", player)
+        and state.has("Recruitment Sensor", player)
+        or state.has(ln, player)
+        and state.has("Golden Mask", player)
+        and state.has("Mystery Part", player)
+        and ready_for_late_game(state, player, world)
+        and state.has_group("LateDungeons", player, 10)
+        and state.has("Secret Rank", player)
+        and state.has("Recruitment Sensor", player)
+        )
 
 def dungeon_locations_behind_items(world, player):
+    pokemeon_has_rule = [0] * 492
     for location in EOS_location_table:
         if location.name == "Beach Cave Cleared":
             if special_episode_sanity_no_exclusion(world, player):
@@ -293,6 +1836,127 @@ def dungeon_locations_behind_items(world, player):
                     or state.has("Bidoof's Wish", player)
                     or state.has('Today\'s "Oh My Gosh"', player),
                 )
+        elif "Pokemon" == location.classification:
+            #checks if recruit sanity is on
+            if world.options.recruit_sanity.value == 0:
+                continue
+            #gets the difficulty value from the settings
+            match world.options.recruit_sanity_difficulty.value:
+                    case 0:
+                        difficulty = 0.175 + 0.495
+                    case 1:
+                        difficulty = 0.125 + 0.495
+                    case 2:
+                        difficulty = 0.05 + 0.495
+                    case 3:
+                        difficulty = 0.001 + 0.495
+                    case _:
+                        difficulty = 0.5
+            #gets the max evolution level for the goal enabled
+            if (world.options.goal == 0):
+                level = 20
+            else:
+                if (world.options.recruit_sanity_long_location.value == 1):
+                    level = 100
+                else:
+                    level = 45
+            #checks if a pokemon is rechable ever
+            if ((pokemon_info[location.id - 15000][1] + 0.496) < difficulty and world.options.goal == 1):
+                continue
+            elif ((pokemon_info[location.id - 15000][1] + 0.100) < difficulty and world.options.goal == 0):
+                continue
+            
+            #goes through each location a pokemon can be found in and applies appropriate rules depending on the dungeons logical location and some minor outliers as long locations
+            for i in range(len(location.group)):
+                if(pokemon_info[location.id - 15000][5][i] == "Early"):
+                    rule = early_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                    if world.options.recruit_sanity_evolution.value == 1:
+                        early_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        
+                elif(pokemon_info[location.id - 15000][5][i] == "Late"):
+                    if(world.options.goal == 0):
+                        continue
+                    rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                    if world.options.recruit_sanity_evolution.value == 1:
+                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+
+                elif(pokemon_info[location.id - 15000][5][i] == "Ice"):
+                    if(world.options.goal == 0):
+                        continue
+                    rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                    if world.options.recruit_sanity_evolution.value == 1:
+                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+
+                elif(pokemon_info[location.id - 15000][5][i] == "Rock"):
+                    if(world.options.goal == 0):
+                        continue
+                    if (world.options.cursed_aegis_cave.value == 1):
+                        rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                        if world.options.recruit_sanity_evolution.value == 1:
+                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    else:
+                        rule = aegis_pokemon(location.group[i], 1, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                        if world.options.recruit_sanity_evolution.value == 1:
+                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 1, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                elif(pokemon_info[location.id - 15000][5][i] == "Steel"):
+                    if(world.options.goal == 0):
+                        continue
+                    if (world.options.cursed_aegis_cave.value == 1):
+                        rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                        if world.options.recruit_sanity_evolution.value == 1:
+                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    else:
+                        rule = aegis_pokemon(location.group[i], 2, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                        if world.options.recruit_sanity_evolution.value == 1:
+                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 2, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+
+                elif(pokemon_info[location.id - 15000][5][i] == "Pit"):
+                    if(world.options.goal == 0):
+                        continue
+                    if (world.options.cursed_aegis_cave.value == 1):
+                        rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                        if world.options.recruit_sanity_evolution.value == 1:
+                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    else:
+                        rule = aegis_pokemon(location.group[i], 3, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                        if world.options.recruit_sanity_evolution.value == 1:
+                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 3, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                
+                elif(pokemon_info[location.id - 15000][5][i] == "Boss"):
+                    if(world.options.goal == 0):
+                        continue
+                    rule = boss_pokemon(player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                    if world.options.recruit_sanity_evolution.value == 1:
+                        boss_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+
+                elif(pokemon_info[location.id - 15000][5][i] == "Long Recruit" or pokemon_info[location.id - 15000][5][i] == "Long Location"):
+                    if(world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0):
+                        continue
+                    if(world.options.long_location.value == 0 and pokemon_info[location.id - 15000][5][i] == "Long Location"):
+                        continue
+                    rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+                    if world.options.recruit_sanity_evolution.value == 1:
+                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                
+                elif(pokemon_info[location.id - 15000][5][i] == "Long Recruit Challenge" or pokemon_info[location.id - 15000][5][i] == "Long Location Challenge"):
+                    if(world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0):
+                        continue
+                    if(world.options.long_location.value == 0 and pokemon_info[location.id - 15000][5][i] == "Long Location Challenge"):
+                        continue
+                    rule = challenge_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
+        
         elif "Station" in location.group and world.options.goal.value == 1:
             if world.options.sky_peak_type.value == 1:  # progressive
                 if location.name == "Sky Peak Summit Cleared":
