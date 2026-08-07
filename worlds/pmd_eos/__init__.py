@@ -25,7 +25,7 @@ from .items import (
     conditional_filler_useful_items,
 )
 from .locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table
-from .options import EOSOptions
+from .options import EOSOptions, option_name_to_value_dict
 from .rules import set_rules, ready_for_late_game, has_relic_shards
 from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType, Item
 from worlds.AutoWorld import World, WebWorld
@@ -74,6 +74,7 @@ class EOSWorld(World):
     options_dataclass = EOSOptions
     web = EOSWeb()
     settings: typing.ClassVar[EOSSettings]
+    ut_can_gen_without_yaml = True
 
     item_name_to_id = {item.name: item.id for item in item_table.values()}
     location_name_to_id = {location.name: location.id for location in expanded_EOS_location_table}
@@ -98,6 +99,15 @@ class EOSWorld(World):
         return self.multiworld.random.choice(tuple(filler_item_table.keys()))
 
     def generate_early(self) -> None:
+        re_gen_passthrough = getattr(self.multiworld, "re_gen_passthrough", {})
+        if re_gen_passthrough and self.game in re_gen_passthrough:
+            # Get the passed through slot data from the real generation
+            slot_data: dict[str, Any] = re_gen_passthrough[self.game]
+            for key, value in slot_data.items():
+                if key not in ["ServerVersion", "HintLocationList"]:
+                    new_key = option_name_to_value_dict[key]
+                    if hasattr(self.options, new_key):
+                        getattr(self.options, new_key).value = value
         self.slot_data_ready = threading.Event()
         if self.options.bag_on_start.value:
             item_name = "Bag Upgrade"
