@@ -1,15 +1,19 @@
 from typing import Dict, TYPE_CHECKING
 
 from worlds.generic.Rules import set_rule, add_rule, forbid_item
-from .locations import EOS_location_table, EOSLocation, location_Dict_by_id
+from .locations import EOS_location_table, EOSLocation, location_Dict_by_id, rea_start_id
 from .rom_type_definitions import subX_table
 from .pokemon import pokemon_info
+
 
 if TYPE_CHECKING:
     from . import EOSWorld
 
 
+
+
 def set_rules(world: "EOSWorld", excluded):
+
     player = world.player
     options = world.options
 
@@ -284,14 +288,14 @@ def ready_for_darkrai(state, player, world):
 
 # sets the rule for all pokemon given by the individual rules
 def pokemon_rule(rule, world, player, location_name, location_id, has_rule_list):
-    if has_rule_list[location_id - 15000]:
+    if has_rule_list[location_id - rea_start_id]:
         add_rule(
             world.multiworld.get_location(location_name, player),
             rule,
             combine = "or"
         )
     else:
-        has_rule_list[location_id - 15000] = 1
+        has_rule_list[location_id - rea_start_id] = 1
         set_rule(
             world.multiworld.get_location(location_name, player),
             rule
@@ -300,60 +304,60 @@ def pokemon_rule(rule, world, player, location_name, location_id, has_rule_list)
 
 # checks if a pokemon evolution is possible and gets sets the rule for pre dialga pokemon
 def early_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world, recruit_chance, difficulty):
-    for j in range(len(pokemon_info[location_id - 15000][3])):                               
-        if pokemon_info[location_id - 15000][3][j][1] <= level:
-            if pokemon_info[location_id - 15000][3][j][2] and world.options.goal == 0:
+    for j in range(len(pokemon_info[location_id - rea_start_id][3])):
+        if pokemon_info[location_id - rea_start_id][3][j][1] <= level:
+            if pokemon_info[location_id - rea_start_id][3][j][2] and world.options.goal == 0:
                 pass
             else:
-                rule = early_evolution_pokemon(location_found, pokemon_info[location_id - 15000][3][j], player, world, recruit_chance, difficulty)
-                pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+                rule = early_evolution_pokemon(location_found, pokemon_info[location_id - rea_start_id][3][j], player, world, recruit_chance, difficulty)
+                pokemon_rule(rule, world, player, pokemon_info[location_id - rea_start_id][3][j][0], pokemon_info[location_id - rea_start_id][3][j][3] + rea_start_id, pokemeon_has_rule)
 
-                for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
-                    if pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level:
-                        if pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][2] and world.options.goal == 0 or pokemon_info[location_id - 15000][3][j][2] and world.options.goal == 0:
+                for h in range(len(pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3])):
+                    if pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][1] <= level:
+                        if pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][2] and world.options.goal == 0 or pokemon_info[location_id - rea_start_id][3][j][2] and world.options.goal == 0:
                             pass
                         else:
-                            rule = early_evolution_pokemon(location_found, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h], player, world, recruit_chance, difficulty)
-                            pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+                            rule = early_evolution_pokemon(location_found, pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h], player, world, recruit_chance, difficulty)
+                            pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][3] + rea_start_id, pokemeon_has_rule)
 
 
 # checks if a pokemon evolution is possible and gets sets the rule for post dialga pokemon
 def late_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world, recruit_chance, difficulty):
-    for j in range(len(pokemon_info[location_id - 15000][3])):                               
-        if pokemon_info[location_id - 15000][3][j][1] <= level:
+    for j in range(len(pokemon_info[location_id - rea_start_id][3])):
+        if pokemon_info[location_id - rea_start_id][3][j][1] <= level:
             rule = late_evolution_pokemon(location_found, player, world, recruit_chance, difficulty)
-            pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+            pokemon_rule(rule, world, player, pokemon_info[location_id - rea_start_id][3][j][0], pokemon_info[location_id - rea_start_id][3][j][3] + rea_start_id, pokemeon_has_rule)
 
-            for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
-                if pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level:
+            for h in range(len(pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3])):
+                if pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][1] <= level:
                     rule = late_evolution_pokemon(location_found, player, world, recruit_chance, difficulty)
-                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][3] + rea_start_id, pokemeon_has_rule)
 
 
 # checks if a pokemon evolution is possible and gets sets the rule for aegis cave pokemon
 def aegis_pokemon_evolution_rule(location_id, location_found, location_name, level, amount, pokemeon_has_rule, player, world, recruit_chance, difficulty):
-    for j in range(len(pokemon_info[location_id - 15000][3])):                               
-        if pokemon_info[location_id - 15000][3][j][1] <= level:
+    for j in range(len(pokemon_info[location_id - rea_start_id][3])):
+        if pokemon_info[location_id - rea_start_id][3][j][1] <= level:
             rule = aegis_evolution_pokemon(location_found, amount, player, world, recruit_chance, difficulty)
-            pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+            pokemon_rule(rule, world, player, pokemon_info[location_id - rea_start_id][3][j][0], pokemon_info[location_id - rea_start_id][3][j][3] + rea_start_id, pokemeon_has_rule)
 
-            for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
-                if pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level:
+            for h in range(len(pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3])):
+                if pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][1] <= level:
                     rule = aegis_evolution_pokemon(location_found, amount, player, world, recruit_chance, difficulty)
-                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][3] + rea_start_id, pokemeon_has_rule)
 
 
 # checks if a pokemon evolution is possible and gets sets the rule for dark crater pokemon
 def boss_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world, recruit_chance, difficulty):
-    for j in range(len(pokemon_info[location_id - 15000][3])):                               
-        if pokemon_info[location_id - 15000][3][j][1] <= level:
+    for j in range(len(pokemon_info[location_id - rea_start_id][3])):
+        if pokemon_info[location_id - rea_start_id][3][j][1] <= level:
             rule = boss_evolution_pokemon(player, world, recruit_chance, difficulty)
-            pokemon_rule(rule, world, player, pokemon_info[location_id - 15000][3][j][0], pokemon_info[location_id - 15000][3][j][3] + 15000, pokemeon_has_rule)
+            pokemon_rule(rule, world, player, pokemon_info[location_id - rea_start_id][3][j][0], pokemon_info[location_id - rea_start_id][3][j][3] + rea_start_id, pokemeon_has_rule)
 
-            for h in range(len(pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3])):
-                if pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][1] <= level:
+            for h in range(len(pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3])):
+                if pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][1] <= level:
                     rule = boss_evolution_pokemon(player, world, recruit_chance, difficulty)
-                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
+                    pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - rea_start_id][3][j][3]][3][h][3] + rea_start_id, pokemeon_has_rule)
 
 
 # retrieves the rule for pokemon evolutions that are found pre dialga
@@ -1877,100 +1881,100 @@ def dungeon_locations_behind_items(world, player):
                 else:
                     level = 45
             #checks if a pokemon is rechable ever
-            if (pokemon_info[location.id - 15000][1] + 0.496) < difficulty and world.options.goal == 1:
+            if (pokemon_info[location.id - rea_start_id][1] + 0.496) < difficulty and world.options.goal == 1:
                 continue
-            elif (pokemon_info[location.id - 15000][1] + 0.100) < difficulty and world.options.goal == 0:
+            elif (pokemon_info[location.id - rea_start_id][1] + 0.100) < difficulty and world.options.goal == 0:
                 continue
             
             #goes through each location a pokemon can be found in and applies appropriate rules depending on the dungeons logical location and some minor outliers as long locations
             for i in range(len(location.group)):
-                if pokemon_info[location.id - 15000][5][i] == "Early":
-                    rule = early_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                if pokemon_info[location.id - rea_start_id][5][i] == "Early":
+                    rule = early_pokemon(location.group[i], player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                     pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                     if world.options.recruit_sanity_evolution.value == 1:
-                        early_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        early_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                         
-                elif pokemon_info[location.id - 15000][5][i] == "Late":
+                elif pokemon_info[location.id - rea_start_id][5][i] == "Late":
                     if world.options.goal == 0:
                         continue
-                    rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                     pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                     if world.options.recruit_sanity_evolution.value == 1:
-                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
 
-                elif pokemon_info[location.id - 15000][5][i] == "Ice":
+                elif pokemon_info[location.id - rea_start_id][5][i] == "Ice":
                     if world.options.goal == 0:
                         continue
-                    rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                     pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                     if world.options.recruit_sanity_evolution.value == 1:
-                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
 
-                elif pokemon_info[location.id - 15000][5][i] == "Rock":
+                elif pokemon_info[location.id - rea_start_id][5][i] == "Rock":
                     if world.options.goal == 0:
                         continue
                     if world.options.cursed_aegis_cave.value == 1:
-                        rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                         pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                         if world.options.recruit_sanity_evolution.value == 1:
-                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                     else:
-                        rule = aegis_pokemon(location.group[i], 1, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        rule = aegis_pokemon(location.group[i], 1, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                         pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                         if world.options.recruit_sanity_evolution.value == 1:
-                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 1, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
-                elif pokemon_info[location.id - 15000][5][i] == "Steel":
+                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 1, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
+                elif pokemon_info[location.id - rea_start_id][5][i] == "Steel":
                     if world.options.goal == 0:
                         continue
                     if world.options.cursed_aegis_cave.value == 1:
-                        rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                         pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                         if world.options.recruit_sanity_evolution.value == 1:
-                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                     else:
-                        rule = aegis_pokemon(location.group[i], 2, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        rule = aegis_pokemon(location.group[i], 2, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                         pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                         if world.options.recruit_sanity_evolution.value == 1:
-                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 2, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 2, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
 
-                elif pokemon_info[location.id - 15000][5][i] == "Pit":
+                elif pokemon_info[location.id - rea_start_id][5][i] == "Pit":
                     if world.options.goal == 0:
                         continue
                     if world.options.cursed_aegis_cave.value == 1:
-                        rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                         pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                         if world.options.recruit_sanity_evolution.value == 1:
-                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                            late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                     else:
-                        rule = aegis_pokemon(location.group[i], 3, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        rule = aegis_pokemon(location.group[i], 3, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                         pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                         if world.options.recruit_sanity_evolution.value == 1:
-                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 3, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                            aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 3, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                 
-                elif pokemon_info[location.id - 15000][5][i] == "Boss":
+                elif pokemon_info[location.id - rea_start_id][5][i] == "Boss":
                     if world.options.goal == 0:
                         continue
-                    rule = boss_pokemon(player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    rule = boss_pokemon(player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                     pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                     if world.options.recruit_sanity_evolution.value == 1:
-                        boss_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        boss_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
 
-                elif pokemon_info[location.id - 15000][5][i] == "Long Recruit" or pokemon_info[location.id - 15000][5][i] == "Long Location":
+                elif pokemon_info[location.id - rea_start_id][5][i] == "Long Recruit" or pokemon_info[location.id - rea_start_id][5][i] == "Long Location":
                     if world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0:
                         continue
-                    if world.options.long_location.value == 0 and pokemon_info[location.id - 15000][5][i] == "Long Location":
+                    if world.options.long_location.value == 0 and pokemon_info[location.id - rea_start_id][5][i] == "Long Location":
                         continue
-                    rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    rule = late_pokemon(location.group[i], player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                     pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                     if world.options.recruit_sanity_evolution.value == 1:
-                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - 15000][1], difficulty)
+                        late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                 
-                elif pokemon_info[location.id - 15000][5][i] == "Long Recruit Challenge" or pokemon_info[location.id - 15000][5][i] == "Long Location Challenge":
+                elif pokemon_info[location.id - rea_start_id][5][i] == "Long Recruit Challenge" or pokemon_info[location.id - rea_start_id][5][i] == "Long Location Challenge":
                     if world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0:
                         continue
-                    if world.options.long_location.value == 0 and pokemon_info[location.id - 15000][5][i] == "Long Location Challenge":
+                    if world.options.long_location.value == 0 and pokemon_info[location.id - rea_start_id][5][i] == "Long Location Challenge":
                         continue
-                    rule = challenge_pokemon(location.group[i], player, world, pokemon_info[location.id - 15000][1], difficulty)
+                    rule = challenge_pokemon(location.group[i], player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                     pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
         
         elif "Station" in location.group and world.options.goal.value == 1:

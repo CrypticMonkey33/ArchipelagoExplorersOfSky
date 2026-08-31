@@ -5,6 +5,7 @@ from BaseClasses import Location
 from .rom_type_definitions import subX_table
 from .pokemon import pokemon_info
 
+rea_start_id = 15000
 
 class LocationData:
     name: str = ""
@@ -49,7 +50,7 @@ def get_location_table_by_groups() -> Dict[str, set[str]]:
 
 def get_subx_table() -> List[LocationData]:
     new_list: List[LocationData] = []
-    subX_start_id = 300
+    subx_start_id = 300
     for item in subX_table:
         if item.flag_definition == "Unused" or item.default_item == "ignore":
             continue
@@ -57,7 +58,7 @@ def get_subx_table() -> List[LocationData]:
             classification=item.classification,
             dungeon_length=0,
             name=item.flag_definition,
-            id=subX_start_id + item.bitfield_bit_number,
+            id=subx_start_id + item.bitfield_bit_number,
             dungeon_start_id=0,
             group=["SubX"],
         )
@@ -65,9 +66,10 @@ def get_subx_table() -> List[LocationData]:
 
     return new_list
 
+
 def get_pokemon_table() -> List[LocationData]:
     new_list: List[LocationData] = []
-    start_id = 15000 #random number to change later
+    start_id = rea_start_id # random number to change later
     for i in range(len(pokemon_info)):
         new_location = LocationData(
             classification="Pokemon",

@@ -5,10 +5,11 @@ import re
 
 from BaseClasses import ItemClassification
 from NetUtils import ClientStatus
-from .locations import location_Dict_by_id, location_dict_by_start_id, location_table_by_groups
+from .locations import location_Dict_by_id, location_dict_by_start_id, location_table_by_groups, rea_start_id
 from .items import item_table_by_id, lootbox_table, item_table_by_groups
 from .death_messages import death_message_list, death_message_weights
 from random import Random
+
 import asyncio
 import logging
 
@@ -1244,8 +1245,8 @@ class EoSClient(BizHawkClient):
             # retrieves the list of all pokemon recruited and checks if a pokemon needs to sent as a check
             is_recruited = await self.is_pokemon_recruited(ctx)
             for p in range(493):
-                if (is_recruited[p]):
-                    locs_to_send.add(location_Dict_by_id[p + 14999].id)
+                if is_recruited[p]:
+                    locs_to_send.add(location_Dict_by_id[p + rea_start_id - 1].id)
 
             # Check for set location flags in general bitfield
             for byte_m, byte in enumerate(scenario_subx_bitfield):
