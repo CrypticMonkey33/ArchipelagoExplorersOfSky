@@ -190,7 +190,8 @@ class EoSClient(BizHawkClient):
                             + "but there may be unsolvable issues that come up."
                         )
                     self.logger.info(
-                        "The version the host generated from is Explorers of Sky " + ctx.slot_data["ServerVersion"]
+                        "The version the HOST generated from is Pokémon Mystery Dungeon: Explorers of Sky version "
+                        + ctx.slot_data["ServerVersion"]
                     )
                 except IndexError:
                     self.logger.info(
@@ -208,7 +209,7 @@ class EoSClient(BizHawkClient):
                         + " OR something else went wrong"
                     )
                 self.logger.info(
-                    "You are currently playing on the Archipelago Pokemon Mystery Dungeon: Explorer's of Sky version "
+                    "You are playing on the Archipelago Pokémon Mystery Dungeon: Explorers of Sky CLIENT version "
                     + self.client_version
                 )
                 self.seed_verify = True
@@ -222,18 +223,6 @@ class EoSClient(BizHawkClient):
             if (self.player_name + "GenericStorage") not in ctx.stored_data:
                 await ctx.send_msgs(
                     [
-                        # {"cmd": "Set",
-                        # "key": self.player_name + "Dungeon Missions",
-                        # "default": {location: 0 for location in location_table_by_groups["Mission"]},
-                        # "want_reply": True,
-                        # "operations": [{"operation": "update", "value": {}}]
-                        # },
-                        # {"cmd": "Set",
-                        # "key": self.player_name + "Dungeon Outlaws",
-                        # "default": {location: 0 for location in location_table_by_groups["Mission"]},
-                        # "want_reply": True,
-                        # "operations": [{"operation": "update", "value": {}}]
-                        # },
                         {
                             "cmd": "Set",
                             "key": self.player_name + "Item Boxes Collected",
@@ -1141,8 +1130,12 @@ class EoSClient(BizHawkClient):
                 elif "Aegis" in item_data.group:
                     main_offset_for_seals = 0
                     if ctx.slot_data["CursedAegisCave"] == 0:
-                        self.aegis_seals += 1
-                        main_offset_for_seals = 2 + self.aegis_seals
+                        items_received = ctx.items_received
+                        aegis_count = 0
+                        for item in items_received:
+                            if item.item == 206:
+                                aegis_count += 1
+                        main_offset_for_seals = 2 + aegis_count
                         if main_offset_for_seals >= 8:
                             main_offset_for_seals = 7
                     elif ctx.slot_data["CursedAegisCave"] == 1:
@@ -1157,17 +1150,6 @@ class EoSClient(BizHawkClient):
                                 (scenario_main_bitfield_offset + 0x5, int.to_bytes(write_byte), self.ram_mem_domain),
                             ],
                         )
-
-                    await ctx.send_msgs(
-                        [
-                            {
-                                "cmd": "Set",
-                                "key": self.player_name + "GenericStorage",
-                                "want_reply": True,
-                                "operations": [{"operation": "update", "value": {"aegis_seals": self.aegis_seals}}],
-                            }
-                        ]
-                    )
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
 
                 elif "Trap" in item_data.group:
