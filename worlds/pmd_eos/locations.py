@@ -13,14 +13,12 @@ class LocationData:
     dungeon_start_id: int = -1
     group: ClassVar[list[str]] = [""]
 
-    def __init__(self, classification, dungeon_length, name, id, dungeon_start_id, group=None):
+    def __init__(self, classification, name, id, group=None):
         if group is None:
             group = [""]
         self.name = name
         self.classification = classification
-        self.dungeon_length = dungeon_length
         self.id = id
-        self.dungeon_start_id = dungeon_start_id
         self.group = group
 
 
@@ -53,10 +51,8 @@ def get_subx_table() -> list[LocationData]:
             continue
         new_location = LocationData(
             classification=item.classification,
-            dungeon_length=0,
             name=item.flag_definition,
             id=subx_start_id + item.bitfield_bit_number,
-            dungeon_start_id=0,
             group=["SubX"],
         )
         new_list.append(new_location)
@@ -73,22 +69,22 @@ def get_mission_location_table() -> list[LocationData]:
             for j in range(50):
                 location_name: str = f"{location.name} Mission {j + 1}"
                 location_id = location.id + mission_start_id + (100 * location.id) + j
-                new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
+                new_list.append(LocationData("Mission", location_name, location_id, []))
             for j in range(50):
                 location_name = f"{location.name} Outlaw {j + 1}"
                 location_id = location.id + mission_start_id + (100 * location.id) + j + 50
-                new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
+                new_list.append(LocationData("Outlaw", location_name, location_id, []))
 
         elif location.classification == "EarlyDungeonComplete" and "Mission" in location.group:
             for j in range(31):
                 location_name = f"{location.name} Mission {j + 1}"
                 location_id = location.id + mission_start_id + (100 * location.id) + j
-                new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
+                new_list.append(LocationData("Mission", location_name, location_id, []))
 
             for j in range(31):
                 location_name = f"{location.name} Outlaw {j + 1}"
                 location_id = location.id + mission_start_id + (100 * location.id) + j + 50
-                new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
+                new_list.append(LocationData("Outlaw", location_name, location_id, []))
 
         elif "Mission" in location.group and (
             location.classification == "LateDungeonComplete" or location.classification == "BossDungeonComplete"
@@ -96,12 +92,12 @@ def get_mission_location_table() -> list[LocationData]:
             for j in range(31):
                 location_name = f"{location.name} Mission {j + 1}"
                 location_id = location.id + mission_start_id + (100 * location.id) + j
-                new_list.append(LocationData("Mission", 0, location_name, location_id, 0, []))
+                new_list.append(LocationData("Mission", location_name, location_id, []))
 
             for j in range(31):
                 location_name = f"{location.name} Outlaw {j + 1}"
                 location_id = location.id + mission_start_id + (100 * location.id) + j + 50
-                new_list.append(LocationData("Outlaw", 0, location_name, location_id, 0, []))
+                new_list.append(LocationData("Outlaw", location_name, location_id, []))
 
     return new_list
 
@@ -127,168 +123,168 @@ subx_location_list = get_subx_table()
 subx_location_dict = {location.name: location for location in subx_location_list}
 
 eos_location_table: list[LocationData] = [
-    LocationData("EarlyDungeonComplete", 2, "Beach Cave", 2, 1, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Drenched Bluff", 3, 3, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 2, "Mt. Bristle", 5, 4, ["Mission", "Early"]),  # 2 subareas
-    LocationData("EarlyDungeonComplete", 1, "Waterfall Cave", 6, 6, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Apple Woods", 7, 7, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Craggy Coast", 8, 8, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Side Path", 9, 9, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Mt. Horn", 10, 10, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Rock Path", 11, 11, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Foggy Forest", 12, 12, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Forest Path", 13, 13, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 3, "Steam Cave", 16, 14, ["Mission", "Early"]),  # 3 subareas
-    LocationData("EarlyDungeonComplete", 3, "Amp Plains", 19, 17, ["Mission", "Early"]),  # 3 subareas
-    LocationData("EarlyDungeonComplete", 1, "Northern Desert", 20, 20, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 3, "Quicksand Cave", 23, 21, ["Mission", "Early"]),  # 3 subareas
-    LocationData("EarlyDungeonComplete", 1, "Crystal Cave", 24, 24, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 2, "Crystal Crossing", 26, 25, ["Mission", "Early"]),  # 2 subareas
-    LocationData("EarlyDungeonComplete", 1, "Chasm Cave", 27, 27, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Dark Hill", 28, 28, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 3, "Sealed Ruin", 31, 29, ["Mission", "Early"]),  # 3 subareas
-    LocationData("EarlyDungeonComplete", 1, "Dusk Forest", 32, 32, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Deep Dusk Forest", 33, 33, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Treeshroud Forest", 34, 34, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 3, "Brine Cave", 37, 35, ["Mission", "Early"]),  # 3 subareas
-    LocationData("BossDungeonComplete", 3, "Hidden Land", 40, 38, ["Mission", "Boss", "Late"]),  # 3 subareas
-    LocationData("BossDungeonComplete", 3, "Temporal Tower", 43, 41, ["Mission", "Boss", "Late"]),  # 3 subareas
-    LocationData("LateDungeonComplete", 2, "Mystifying Forest", 45, 44, ["Mission", "Late"]),  # start of extra levels
-    LocationData("LateDungeonComplete", 1, "Blizzard Island", 46, 46, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 3, "Crevice Cave", 49, 47, ["Mission", "Late"]),  # 3 subareas
-    LocationData("LateDungeonComplete", 1, "Surrounded Sea", 50, 50, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 3, "Miracle Sea", 52, 51, ["Mission", "Late"]),  # 3 subareas
-    LocationData("LateDungeonComplete", 1, "Ice Aegis Cave", 54, 54, ["Late", "Aegis", "Optional"]),
-    LocationData("LateDungeonComplete", 1, "Regice Chamber", 55, 55, ["Late", "Aegis", "Optional"]),
-    LocationData("LateDungeonComplete", 1, "Rock Aegis Cave", 56, 56, ["Late", "Aegis", "Optional"]),
-    LocationData("LateDungeonComplete", 1, "Regirock Chamber", 57, 57, ["Late", "Aegis", "Optional"]),
-    LocationData("LateDungeonComplete", 1, "Steel Aegis Cave", 58, 58, ["Late", "Aegis", "Optional"]),
-    LocationData("LateDungeonComplete", 1, "Registeel Chamber", 59, 59, ["Late", "Aegis", "Optional"]),
-    LocationData("LateDungeonComplete", 1, "Aegis Cave Pit", 60, 60, ["Late", "Aegis", "Optional"]),
-    LocationData("LateDungeonComplete", 1, "Regigigas Chamber", 61, 61, ["Late", "Aegis", "Optional"]),
-    LocationData("LateDungeonComplete", 1, "Mt. Travail", 62, 62, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 1, "The Nightmare", 63, 63, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 3, "Spacial Rift", 66, 64, ["Mission", "Late"]),  # 3 subareas
-    LocationData("BossDungeonComplete", 3, "Dark Crater", 69, 67, ["Boss"]),  # 3 subareas
-    LocationData("LateDungeonComplete", 1, "Concealed Ruins", 70, 70, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 1, "Marine Resort", 72, 72, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 2, "Bottomless Sea", 73, 73, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "Shimmer Desert", 75, 75, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "Mt. Avalanche", 77, 77, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "Giant Volcano", 79, 79, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "World Abyss", 81, 81, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "Sky Stairway", 83, 83, ["Mission", "Late"]),  # 2 subareas
-    LocationData("LateDungeonComplete", 2, "Mystery Jungle", 85, 85, ["Mission", "Late"]),  # 2 subareas
-    LocationData("EarlyDungeonComplete", 1, "Serenity River", 87, 87, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Landslide Cave", 88, 88, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Lush Prairie", 89, 89, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Tiny Meadow", 90, 90, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Labyrinth Cave", 91, 91, ["Mission", "Early"]),
-    LocationData("EarlyDungeonComplete", 1, "Oran Forest", 92, 92, ["Mission", "Early"]),
-    LocationData("LateDungeonComplete", 1, "Lake Afar", 93, 93, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 1, "Happy Outlook", 94, 94, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 1, "Mt. Mistral", 95, 95, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 1, "Shimmer Hill", 96, 96, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 1, "Lost Wilderness", 97, 97, ["Mission", "Late"]),
-    LocationData("LateDungeonComplete", 1, "Midnight Forest", 98, 98, ["Mission", "Late"]),
-    LocationData("RuleDungeonComplete", 1, "Zero Isle North", 99, 99, ["Rule"]),
-    LocationData("RuleDungeonComplete", 1, "Zero Isle East", 100, 100, ["Rule"]),
-    LocationData("RuleDungeonComplete", 1, "Zero Isle West", 101, 101, ["Rule"]),
-    LocationData("RuleDungeonComplete", 1, "Zero Isle South", 102, 102, ["Rule"]),
-    LocationData("RuleDungeonComplete", 1, "Zero Isle Center", 103, 103, ["Rule"]),
-    LocationData("RuleDungeonComplete", 1, "Destiny Tower", 104, 104, ["Rule"]),
-    LocationData("RuleDungeonComplete", 1, "Oblivion Forest", 107, 107, ["Rule"]),
-    LocationData("RuleDungeonComplete", 1, "Treacherous Waters", 108, 108, ["Rule"]),
-    LocationData("RuleDungeonComplete", 1, "Southeastern Islands", 109, 109, ["Rule"]),
-    LocationData("RuleDungeonComplete", 1, "Inferno Cave", 110, 110, ["Rule"]),
-    LocationData("LateDungeonComplete", 1, "1st Station Pass", 111, 111, ["Mission", "Late", "Station"]),  # 12 subareas
-    LocationData("LateDungeonComplete", 1, "2nd Station Pass", 112, 112, ["Mission", "Late", "Station"]),
-    LocationData("LateDungeonComplete", 1, "3rd Station Pass", 113, 113, ["Mission", "Late", "Station"]),
-    LocationData("LateDungeonComplete", 1, "4th Station Pass", 114, 114, ["Mission", "Late", "Station"]),
-    LocationData("LateDungeonComplete", 1, "5th Station Pass", 115, 115, ["Mission", "Late", "Station"]),
-    LocationData("LateDungeonComplete", 1, "6th Station Pass", 116, 116, ["Mission", "Late", "Station"]),
-    LocationData("LateDungeonComplete", 1, "7th Station Pass", 117, 117, ["Mission", "Late", "Station"]),
-    LocationData("LateDungeonComplete", 1, "8th Station Pass", 118, 118, ["Mission", "Late", "Station"]),
-    LocationData("LateDungeonComplete", 1, "9th Station Pass", 119, 119, ["Mission", "Late", "Station"]),
-    LocationData("LateDungeonComplete", 1, "Sky Peak Summit Pass", 120, 120, ["Mission", "Late", "Station"]),
-    LocationData("LateDungeonComplete", 1, "5th Station Clearing", 121, 121, ["Late", "Station"]),
-    LocationData("LateDungeonComplete", 1, "Sky Peak Summit", 122, 122, ["Late", "Station"]),
+    LocationData("EarlyDungeonComplete", "Beach Cave Cleared", 2, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Drenched Bluff Cleared", 3, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Mt. Bristle Cleared", 5, ["Mission", "Early"]),  # 2 subareas
+    LocationData("EarlyDungeonComplete", "Waterfall Cave Cleared", 6, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Apple Woods Cleared", 7, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Craggy Coast Cleared", 8, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Side Path Cleared", 9, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Mt. Horn Cleared", 10, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Rock Path Cleared", 11, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Foggy Forest Cleared", 12, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Forest Path Cleared", 13, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Steam Cave Cleared", 16, ["Mission", "Early"]),  # 3 subareas
+    LocationData("EarlyDungeonComplete", "Amp Plains Cleared", 19, ["Mission", "Early"]),  # 3 subareas
+    LocationData("EarlyDungeonComplete", "Northern Desert Cleared", 20, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Quicksand Cave Cleared", 23, ["Mission", "Early"]),  # 3 subareas
+    LocationData("EarlyDungeonComplete", "Crystal Cave Cleared", 24, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Crystal Crossing Cleared", 26, ["Mission", "Early"]),  # 2 subareas
+    LocationData("EarlyDungeonComplete", "Chasm Cave Cleared", 27, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Dark Hill Cleared", 28, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Sealed Ruin Cleared", 31, ["Mission", "Early"]),  # 3 subareas
+    LocationData("EarlyDungeonComplete", "Dusk Forest Cleared", 32, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Deep Dusk Forest Cleared", 33, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Treeshroud Forest Cleared", 34, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Brine Cave Cleared", 37, ["Mission", "Early"]),  # 3 subareas
+    LocationData("BossDungeonComplete", "Hidden Land Cleared", 40, ["Mission", "Boss", "Late"]),  # 3 subareas
+    LocationData("BossDungeonComplete", "Temporal Tower Cleared", 43, ["Mission", "Boss", "Late"]),  # 3 subareas
+    LocationData("LateDungeonComplete", "Mystifying Forest Cleared", 45, ["Mission", "Late"]),  # start of extra levels
+    LocationData("LateDungeonComplete", "Blizzard Island Cleared", 46, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", "Crevice Cave Cleared", 49, ["Mission", "Late"]),  # 3 subareas
+    LocationData("LateDungeonComplete", "Surrounded Sea Cleared", 50, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", "Miracle Sea Cleared", 52, ["Mission", "Late"]),  # 3 subareas
+    LocationData("LateDungeonComplete", "Ice Aegis Cave Cleared", 54, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", "Regice Chamber Cleared", 55, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", "Rock Aegis Cave Cleared", 56, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", "Regirock Chamber Cleared", 57, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", "Steel Aegis Cave Cleared", 58, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", "Registeel Chamber Cleared", 59, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", "Aegis Cave Pit Cleared", 60, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", "Regigigas Chamber Cleared", 61, ["Late", "Aegis", "Optional"]),
+    LocationData("LateDungeonComplete", "Mt. Travail Cleared", 62, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", "The Nightmare Cleared", 63,["Mission", "Late"]),
+    LocationData("LateDungeonComplete", "Spacial Rift Cleared", 66,["Mission", "Late"]),  # 3 subareas
+    LocationData("BossDungeonComplete", "Dark Crater Cleared", 69,["Boss"]),  # 3 subareas
+    LocationData("LateDungeonComplete", "Concealed Ruins Cleared", 70, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", "Marine Resort Cleared", 72, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", "Bottomless Sea Cleared", 73, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", "Shimmer Desert Cleared", 75, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", "Mt. Avalanche Cleared", 77, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", "Giant Volcano Cleared", 79, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", "World Abyss Cleared", 81, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", "Sky Stairway Cleared", 83, ["Mission", "Late"]),  # 2 subareas
+    LocationData("LateDungeonComplete", "Mystery Jungle Cleared", 85, ["Mission", "Late"]),  # 2 subareas
+    LocationData("EarlyDungeonComplete", "Serenity River Cleared", 87, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Landslide Cave Cleared", 88, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Lush Prairie Cleared", 89, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Tiny Meadow Cleared", 90, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Labyrinth Cave Cleared", 91, ["Mission", "Early"]),
+    LocationData("EarlyDungeonComplete", "Oran Forest Cleared", 92, ["Mission", "Early"]),
+    LocationData("LateDungeonComplete", "Lake Afar Cleared", 93, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", "Happy Outlook Cleared", 94, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", "Mt. Mistral Cleared", 95, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", "Shimmer Hill Cleared", 96, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", "Lost Wilderness Cleared", 97, ["Mission", "Late"]),
+    LocationData("LateDungeonComplete", "Midnight Forest Cleared", 98, ["Mission", "Late"]),
+    LocationData("RuleDungeonComplete", "Zero Isle North Cleared", 99, ["Rule"]),
+    LocationData("RuleDungeonComplete", "Zero Isle East Cleared", 100, ["Rule"]),
+    LocationData("RuleDungeonComplete", "Zero Isle West Cleared", 101, ["Rule"]),
+    LocationData("RuleDungeonComplete", "Zero Isle South Cleared", 102, ["Rule"]),
+    LocationData("RuleDungeonComplete", "Zero Isle Center Cleared", 103, ["Rule"]),
+    LocationData("RuleDungeonComplete", "Destiny Tower Cleared", 104, ["Rule"]),
+    LocationData("RuleDungeonComplete", "Oblivion Forest Cleared", 107, ["Rule"]),
+    LocationData("RuleDungeonComplete", "Treacherous Waters Cleared", 108, ["Rule"]),
+    LocationData("RuleDungeonComplete", "Southeastern Islands Cleared", 109, ["Rule"]),
+    LocationData("RuleDungeonComplete", "Inferno Cave Cleared", 110, ["Rule"]),
+    LocationData("LateDungeonComplete", "1st Station Pass Cleared", 111, ["Mission", "Late", "Station"]),  # 12 subareas
+    LocationData("LateDungeonComplete", "2nd Station Pass Cleared", 112, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", "3rd Station Pass Cleared", 113, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", "4th Station Pass Cleared", 114, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", "5th Station Pass Cleared", 115, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", "6th Station Pass Cleared", 116, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", "7th Station Pass Cleared", 117, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", "8th Station Pass Cleared", 118, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", "9th Station Pass Cleared", 119, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", "Sky Peak Summit Pass Cleared", 120, ["Mission", "Late", "Station"]),
+    LocationData("LateDungeonComplete", "5th Station Clearing Cleared", 121, ["Late", "Station"]),
+    LocationData("LateDungeonComplete", "Sky Peak Summit Cleared", 122, ["Late", "Station"]),
     # Special Episode Dungeons
-    LocationData("SpecialDungeonComplete", 3, "SE Deep Star Cave", 125, 123, ["Special"]),
-    LocationData("SpecialDungeonComplete", 2, "SE Star Cave Pit", 127, 126, ["Special"]),
-    LocationData("SpecialDungeonComplete", 1, "SE Murky Forest", 128, 128, ["Special"]),
-    LocationData("SpecialDungeonComplete", 1, "SE Eastern Cave", 129, 129, ["Special"]),
-    LocationData("SpecialDungeonComplete", 3, "SE Fortune Ravine", 132, 130, ["Special"]),  # 3 subareas
-    LocationData("SpecialDungeonComplete", 3, "SE Barren Valley", 135, 133, ["Special"]),  # 3 subareas
-    LocationData("SpecialDungeonComplete", 1, "SE Dark Wasteland", 136, 136, ["Special"]),
-    LocationData("SpecialDungeonComplete", 2, "SE Temporal Tower", 138, 137, ["Special"]),  # 2 subareas
-    LocationData("SpecialDungeonComplete", 2, "SE Dusk Forest", 140, 139, ["Special"]),  # 2 subareas
-    LocationData("SpecialDungeonComplete", 1, "SE Spacial Cliffs", 141, 141, ["Special"]),
-    LocationData("SpecialDungeonComplete", 3, "SE Dark Ice Mountain", 144, 142, ["Special"]),  # 3 subareas
-    LocationData("SpecialDungeonComplete", 1, "SE Icicle Forest", 145, 145, ["Special"]),
-    LocationData("SpecialDungeonComplete", 3, "SE Vast Ice Mountain", 148, 146, ["Special"]),  # 3 subareas
-    LocationData("SpecialDungeonComplete", 1, "SE Southern Jungle", 149, 149, ["Special"]),
-    LocationData("SpecialDungeonComplete", 3, "SE Boulder Quarry", 152, 150, ["Special"]),  # 3 subareas
-    LocationData("SpecialDungeonComplete", 1, "SE Right Cave Path", 153, 153, ["Special"]),
-    LocationData("SpecialDungeonComplete", 1, "SE Left Cave Path", 154, 154, ["Special"]),
-    LocationData("SpecialDungeonComplete", 3, "SE Limestone Cavern", 157, 155, ["Special"]),  # 3 subareas
-    LocationData("SpecialDungeonComplete", 2, "SE Upper Spring Cave", 159, 158, ["Special"]),  # 7 subareas
-    LocationData("SpecialDungeonComplete", 2, "SE Middle Spring Cave", 161, 160, ["Special"]),  # 7 subareas
-    LocationData("SpecialDungeonComplete", 3, "SE Spring Cave Pit", 164, 162, ["Special"]),  # 7 subareas
-    LocationData("EarlyDungeonComplete", 1, "Star Cave", 174, 174, ["Mission", "Early"]),
+    LocationData("SpecialDungeonComplete", "SE Deep Star Cave Cleared", 125, ["Special"]),
+    LocationData("SpecialDungeonComplete", "SE Star Cave Pit Cleared", 127, ["Special"]),
+    LocationData("SpecialDungeonComplete", "SE Murky Forest Cleared", 128, ["Special"]),
+    LocationData("SpecialDungeonComplete", "SE Eastern Cave Cleared", 129, ["Special"]),
+    LocationData("SpecialDungeonComplete", "SE Fortune Ravine Cleared", 132, ["Special"]),  # 3 subareas
+    LocationData("SpecialDungeonComplete", "SE Barren Valley Cleared", 135, ["Special"]),  # 3 subareas
+    LocationData("SpecialDungeonComplete", "SE Dark Wasteland Cleared", 136, ["Special"]),
+    LocationData("SpecialDungeonComplete", "SE Temporal Tower Cleared", 138, ["Special"]),  # 2 subareas
+    LocationData("SpecialDungeonComplete", "SE Dusk Forest Cleared", 140, ["Special"]),  # 2 subareas
+    LocationData("SpecialDungeonComplete", "SE Spacial Cliffs Cleared", 141, ["Special"]),
+    LocationData("SpecialDungeonComplete", "SE Dark Ice Mountain Cleared", 144, ["Special"]),  # 3 subareas
+    LocationData("SpecialDungeonComplete", "SE Icicle Forest Cleared", 145, ["Special"]),
+    LocationData("SpecialDungeonComplete", "SE Vast Ice Mountain Cleared", 148, ["Special"]),  # 3 subareas
+    LocationData("SpecialDungeonComplete", "SE Southern Jungle Cleared", 149, ["Special"]),
+    LocationData("SpecialDungeonComplete", "SE Boulder Quarry Cleared", 152, ["Special"]),  # 3 subareas
+    LocationData("SpecialDungeonComplete", "SE Right Cave Path Cleared", 153, ["Special"]),
+    LocationData("SpecialDungeonComplete", "SE Left Cave Path Cleared", 154, ["Special"]),
+    LocationData("SpecialDungeonComplete", "SE Limestone Cavern Cleared", 157, ["Special"]),  # 3 subareas
+    LocationData("SpecialDungeonComplete", "SE Upper Spring Cave Cleared", 159, ["Special"]),  # 7 subareas
+    LocationData("SpecialDungeonComplete", "SE Middle Spring Cave Cleared", 161, ["Special"]),  # 7 subareas
+    LocationData("SpecialDungeonComplete", "SE Spring Cave Pit Cleared", 164, ["Special"]),  # 7 subareas
+    LocationData("EarlyDungeonComplete", "Star Cave Cleared", 174, ["Mission", "Early"]),
     # Dojo Dungeons
-    LocationData("DojoDungeonComplete", 1, "Dojo Normal/Fly Maze", 180, 180, ["Dojo"]),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Dark/Fire Maze", 181, 181, ["Dojo"]),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Rock/Water Maze", 182, 182, ["Dojo"]),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Grass Maze", 183, 183, ["Dojo"]),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Elec/Steel Maze", 184, 184, ["Dojo"]),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Ice/Ground Maze", 185, 185, ["Dojo"]),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Fight/Psych Maze", 186, 186, ["Dojo"]),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Poison/Bug Maze", 187, 187, ["Dojo"]),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Dragon Maze", 188, 188, ["Dojo"]),  # 7 subareas
-    LocationData("DojoDungeonComplete", 1, "Dojo Ghost Maze", 189, 189, ["Dojo"]),  # 7 subareas
-    LocationData("RuleDungeonComplete", 1, "Dojo Final Maze", 191, 191, ["Rule"]),  # 7 subareas
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 1", 900, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 2", 901, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 3", 902, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 4", 903, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 5", 904, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 6", 905, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 7", 906, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 8", 907, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 9", 908, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 10", 909, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 11", 910, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 12", 911, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 13", 912, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 14", 913, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 15", 914, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 16", 915, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 17", 916, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 18", 917, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 19", 918, 0, ["Spinda"]),
-    LocationData("SpindaDrinkEvent", 0, "Spinda Drink Event 20", 919, 0, ["Spinda"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 1", 920, 0, ["Spinda"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 2", 921, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 3", 922, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 4", 923, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 5", 924, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 6", 925, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 7", 926, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 8", 927, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 9", 928, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 10", 929, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 11", 930, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 12", 931, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 13", 932, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 14", 933, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 15", 934, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 16", 935, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 17", 936, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 18", 937, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 19", 938, 0, ["SpindaDrink"]),
-    LocationData("SpindaDrink", 0, "Spinda Drink 20", 939, 0, ["SpindaDrink"]),
-    LocationData("Event", 0, "Final Boss", 999, 0),
+    LocationData("DojoDungeonComplete", "Dojo Normal/Fly Maze Cleared", 180, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", "Dojo Dark/Fire Maze Cleared", 181, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", "Dojo Rock/Water Maze Cleared", 182, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", "Dojo Grass Maze Cleared", 183, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", "Dojo Elec/Steel Maze Cleared", 184, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", "Dojo Ice/Ground Maze Cleared", 185, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", "Dojo Fight/Psych Maze Cleared", 186, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", "Dojo Poison/Bug Maze Cleared", 187, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", "Dojo Dragon Maze Cleared", 188, ["Dojo"]),  # 7 subareas
+    LocationData("DojoDungeonComplete", "Dojo Ghost Maze Cleared", 189, ["Dojo"]),  # 7 subareas
+    LocationData("RuleDungeonComplete", "Dojo Final Maze Cleared", 191, ["Rule"]),  # 7 subareas
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 1", 900, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 2", 901, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 3", 902, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 4", 903, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 5", 904, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 6", 905, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 7", 906, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 8", 907, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 9", 908, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 10", 909, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 11", 910, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 12", 911, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 13", 912, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 14", 913, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 15", 914, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 16", 915, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 17", 916, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 18", 917, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 19", 918, ["Spinda"]),
+    LocationData("SpindaDrinkEvent", "Spinda Drink Event 20", 919, ["Spinda"]),
+    LocationData("SpindaDrink", "Spinda Drink 1", 920, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 2", 921, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 3", 922, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 4", 923, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 5", 924, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 6", 925, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 7", 926, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 8", 927, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 9", 928, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 10", 929, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 11", 930, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 12", 931, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 13", 932, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 14", 933, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 15", 934, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 16", 935, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 17", 936, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 18", 937, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 19", 938, ["SpindaDrink"]),
+    LocationData("SpindaDrink", "Spinda Drink 20", 939, ["SpindaDrink"]),
+    LocationData("Event", "Final Boss", 999,),
     # generic checks, right now just bag upgrades
     # LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 1", 300, 0),
     # LocationData("ProgressiveBagUpgrade", 0, "Progressive Bag loc 2", 301, 0),
