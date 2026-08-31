@@ -564,5 +564,12 @@ option_name_to_value_dict = {
             "GuestScaling": "guest_scaling",
             "MoveShortcuts": "move_shortcuts",
             "StartInventoryFromPool": "start_inventory_from_pool",
+            "RecruitSanity": "recruit_sanity",
+            "RecruitEvolution": "recruit_sanity_evolution",
+            "RecruitLongLocations": "recruit_sanity_long_location",
+            "RecruitPercentageRequired": "recruit_sanity_difficulty",
+            "RecruitProgressiveFriendItems": "recruit_sanity_progressive_friend_items",
+            "RecruitProgressiveEvolution": "recruit_sanity_progressive_evolution",
+            "RecruitmentSensor": "recruit_sensor",
     }
 

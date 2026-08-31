@@ -9,7 +9,6 @@ if TYPE_CHECKING:
     from . import EOSWorld
 
 
-
 def set_rules(world: "EOSWorld", excluded):
     player = world.player
     options = world.options
@@ -97,6 +96,7 @@ def ready_for_late_game(state, player, world):
         and state.has("Temporal Tower", player)
     )
 
+
 def has_start_recruit(state, player, world):
     if special_episode_sanity_no_exclusion(world, player): 
         return (
@@ -172,6 +172,7 @@ def forbid_items_behind_locations(world, player):
                     "Progressive Sky Peak",
                     player,
                 )
+
 
 def special_episodes_rules(world, player):
     if not world.options.exclude_special.value:
@@ -280,7 +281,8 @@ def ready_for_darkrai(state, player, world):
         and state.has_group("LateDungeons", player, 10)
     )
 
-#sets the rule for all pokemon given by the individual rules
+
+# sets the rule for all pokemon given by the individual rules
 def pokemon_rule(rule, world, player, location_name, location_id, has_rule_list):
     if has_rule_list[location_id - 15000]:
         add_rule(
@@ -295,7 +297,8 @@ def pokemon_rule(rule, world, player, location_name, location_id, has_rule_list)
             rule
         )
 
-#checks if a pokemon evolution is possible and gets sets the rule for pre dialga pokemon
+
+# checks if a pokemon evolution is possible and gets sets the rule for pre dialga pokemon
 def early_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world, recruit_chance, difficulty):
     for j in range(len(pokemon_info[location_id - 15000][3])):                               
         if(pokemon_info[location_id - 15000][3][j][1] <= level):
@@ -313,7 +316,8 @@ def early_pokemon_evolution_rule(location_id, location_found, location_name, lev
                             rule = early_evolution_pokemon(location_found, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h], player, world, recruit_chance, difficulty)
                             pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
 
-#checks if a pokemon evolution is possible and gets sets the rule for post dialga pokemon
+
+# checks if a pokemon evolution is possible and gets sets the rule for post dialga pokemon
 def late_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world, recruit_chance, difficulty):
     for j in range(len(pokemon_info[location_id - 15000][3])):                               
         if(pokemon_info[location_id - 15000][3][j][1] <= level):
@@ -325,7 +329,8 @@ def late_pokemon_evolution_rule(location_id, location_found, location_name, leve
                     rule = late_evolution_pokemon(location_found, player, world, recruit_chance, difficulty)
                     pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
 
-#checks if a pokemon evolution is possible and gets sets the rule for aegis cave pokemon
+
+# checks if a pokemon evolution is possible and gets sets the rule for aegis cave pokemon
 def aegis_pokemon_evolution_rule(location_id, location_found, location_name, level, amount, pokemeon_has_rule, player, world, recruit_chance, difficulty):
     for j in range(len(pokemon_info[location_id - 15000][3])):                               
         if(pokemon_info[location_id - 15000][3][j][1] <= level):
@@ -337,7 +342,8 @@ def aegis_pokemon_evolution_rule(location_id, location_found, location_name, lev
                     rule = aegis_evolution_pokemon(location_found, amount, player, world, recruit_chance, difficulty)
                     pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
 
-#checks if a pokemon evolution is possible and gets sets the rule for dark crater pokemon
+
+# checks if a pokemon evolution is possible and gets sets the rule for dark crater pokemon
 def boss_pokemon_evolution_rule(location_id, location_found, location_name, level, pokemeon_has_rule, player, world, recruit_chance, difficulty):
     for j in range(len(pokemon_info[location_id - 15000][3])):                               
         if(pokemon_info[location_id - 15000][3][j][1] <= level):
@@ -349,9 +355,10 @@ def boss_pokemon_evolution_rule(location_id, location_found, location_name, leve
                     rule = boss_evolution_pokemon(player, world, recruit_chance, difficulty)
                     pokemon_rule(rule, world, player, pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][0], pokemon_info[pokemon_info[location_id - 15000][3][j][3]][3][h][3] + 15000, pokemeon_has_rule)
 
-#retrieves the rule for pokemon evolutions that are found pre dialga
+
+# retrieves the rule for pokemon evolutions that are found pre dialga
 def early_evolution_pokemon(location_name, location_data, player, world, recruit_chance, difficulty):
-    if (location_data[2] or location_data[1] > 20):
+    if location_data[2] or location_data[1] > 20:
         if recruit_chance >= difficulty: 
             return (
                 lambda state, ln=location_name: state.has(ln, player)
@@ -626,7 +633,8 @@ def early_evolution_pokemon(location_name, location_data, player, world, recruit
                 and state.has("Progressive Evolution", player)
                 )
 
-#retrieves the rule for pokemon evolutions that are found past dialga
+
+# retrieves the rule for pokemon evolutions that are found past dialga
 def late_evolution_pokemon(location_name, player, world, recruit_chance, difficulty):
     if recruit_chance >= difficulty: 
         return (
@@ -766,7 +774,8 @@ def late_evolution_pokemon(location_name, player, world, recruit_chance, difficu
             and state.has("Progressive Evolution", player)
             )
 
-#retrieves the rule for pokemon evolutions that are found in aegis cave
+
+# retrieves the rule for pokemon evolutions that are found in aegis cave
 def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance, difficulty):
     if amount == 1:
         if recruit_chance >= difficulty: 
@@ -1261,7 +1270,8 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Progressive Seal", player, 3)
                 )
 
-#retrieves the rule for pokemon evolutions that are found in dark crater
+
+# retrieves the rule for pokemon evolutions that are found in dark crater
 def boss_evolution_pokemon(player, world, recruit_chance, difficulty):
     if recruit_chance >= difficulty: 
         return (
@@ -1365,7 +1375,8 @@ def boss_evolution_pokemon(player, world, recruit_chance, difficulty):
             and state.has("Progressive Evolution", player)
             )
 
-#retrieves the rule for pokemon that are found pre dialga
+
+# retrieves the rule for pokemon that are found pre dialga
 def early_pokemon(location_name, player, world, recruit_chance, difficulty):
     if recruit_chance >= difficulty: 
         return (
@@ -1430,7 +1441,8 @@ def early_pokemon(location_name, player, world, recruit_chance, difficulty):
             and state.has("Secret Rank", player)
             )
 
-#retrieves the rule for pokemon that are found past dialga
+
+# retrieves the rule for pokemon that are found past dialga
 def late_pokemon(location_name, player, world, recruit_chance, difficulty):
     if recruit_chance >= difficulty: 
         return (
@@ -1496,7 +1508,8 @@ def late_pokemon(location_name, player, world, recruit_chance, difficulty):
             and state.has("Secret Rank", player)
             )
 
-#retrieves the rule for pokemon that are found in aegis cave
+
+# retrieves the rule for pokemon that are found in aegis cave
 def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficulty):
     if amount == 1:
         if recruit_chance >= difficulty: 
@@ -1731,7 +1744,8 @@ def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficul
                 )
     return
 
-#retrieves the rule for pokemon that are found in dark crater
+
+# retrieves the rule for pokemon that are found in dark crater
 def boss_pokemon(player, world, recruit_chance, difficulty):
     if recruit_chance >= difficulty: 
         return (
@@ -1779,7 +1793,8 @@ def boss_pokemon(player, world, recruit_chance, difficulty):
             and state.has("Secret Rank", player)
             )
 
-#retrieves the rule for pokemon that are recruited through the challenge letter
+
+# retrieves the rule for pokemon that are recruited through the challenge letter
 def challenge_pokemon(location_name, player, world, recruit_chance, difficulty):
     return (
         lambda state, ln=location_name: state.has(ln, player)
@@ -1803,6 +1818,7 @@ def challenge_pokemon(location_name, player, world, recruit_chance, difficulty):
         and state.has("Secret Rank", player)
         and state.has("Recruitment Sensor", player)
         )
+
 
 def dungeon_locations_behind_items(world, player):
     pokemeon_has_rule = [0] * 492
