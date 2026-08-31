@@ -276,21 +276,22 @@ class EoSClient(BizHawkClient):
 
             item_boxes_collected: list[dict] = []
             legendaries_recruited: list[dict] = []
-            open_list_total_offset: int = await self.load_script_variable_raw(0x4F, ctx)
-            conquest_list_total_offset: int = await self.load_script_variable_raw(0x52, ctx)
-            scenario_balance_offset = await self.load_script_variable_raw(0x13, ctx)
-            performance_progress_offset = await self.load_script_variable_raw(0x4E, ctx)
-            scenario_subx_offset = await self.load_script_variable_raw(0x5, ctx)
-            received_items_offset = await self.load_script_variable_raw(0x16, ctx)
-            scenario_main_offset = await self.load_script_variable_raw(0x3, ctx)
-            scenario_main_bitfield_offset = await self.load_script_variable_raw(0x11, ctx)
-            special_episode_offset = await self.load_script_variable_raw(0x4B, ctx)
-            item_backup_offset = await self.load_script_variable_raw(0x64, ctx)
-            dungeon_enter_index_offset = await self.load_script_variable_raw(0x29, ctx)
-            scenario_talk_bitfield_offset = await self.load_script_variable_raw(0x12, ctx)
-            event_local_offset = await self.load_script_variable_raw(0x5C, ctx)
-            recycle_amount_offset = await self.load_script_variable_raw(0x6C, ctx)
-            pelipper_received_counter_offset = await self.load_script_variable_raw(0x1, ctx)
+            script_vars_values_addr = 0x2AB9EC # 0x0202AB9EC
+            open_list_total_offset = script_vars_values_addr + 0x197 # $DUNGEON_OPEN_LIST
+            conquest_list_total_offset = script_vars_values_addr + 0x1F7 # $DUNGEON_CONQUEST_LIST
+            scenario_balance_offset = script_vars_values_addr + 0xB0 # $SCENARIO_BALANCE_FLAG
+            performance_progress_offset = script_vars_values_addr + 0x18F # $PERFORMANCE_PROGRESS_LIST
+            scenario_subx_offset = script_vars_values_addr + 0xC0 # $SCENARIO_SUB1
+            received_items_offset = script_vars_values_addr + 0xD1 # $CRYSTAL_COLOR_02
+            scenario_main_offset = script_vars_values_addr + 0xBC # $SCENARIO_MAIN
+            scenario_main_bitfield_offset = script_vars_values_addr + 0x11C # $SCENARIO_MAIN_BIT_FLAG
+            special_episode_offset = script_vars_values_addr + 0x18C # $SPECIAL_EPISODE_OPEN
+            item_backup_offset = script_vars_values_addr + 0x90 # $ITEM_BACKUP
+            dungeon_enter_index_offset = script_vars_values_addr + 0x66 # $DUNGEON_ENTER_INDEX
+            scenario_talk_bitfield_offset = script_vars_values_addr + 0x12C # $SCENARIO_TALK_BIT_FLAG
+            event_local_offset = script_vars_values_addr + 0x8C # $EVENT_LCOAL
+            recycle_amount_offset = script_vars_values_addr + 0x2C # $RECYCLE_COUNT
+            pelipper_received_counter_offset = script_vars_values_addr + 0x4 # $CONDITION
             bank_gold_offset = 0x2A5504  # await (self.load_script_variable_raw(0x3D, ctx))
             player_gold_offset = 0x2A54F8
             custom_save_area_offset = 0x3B0000
@@ -1651,13 +1652,13 @@ class EoSClient(BizHawkClient):
         except bizhawk.ConnectorError:
             pass
 
-    async def load_script_variable_raw(self, var_id, ctx: "BizHawkClientContext") -> int:
-        script_vars_values = 0x2AB9EC
-        script_vars = 0x9DDF4
-        var_mem_offset = await bizhawk.read(
-            ctx.bizhawk_ctx, [((script_vars + (var_id << 0x4) + 0x4), 2, self.ram_mem_domain)]
-        )
-        return script_vars_values + int.from_bytes(var_mem_offset[0], "little")
+    # async def load_script_variable_raw(self, var_id, ctx: "BizHawkClientContext") -> int:
+    #    script_vars_values = 0x2AB9EC
+    #    script_vars = 0x9DDF4
+    #    var_mem_offset = await bizhawk.read(
+    #        ctx.bizhawk_ctx, [((script_vars + (var_id << 0x4) + 0x4), 2, self.ram_mem_domain)]
+    #     )
+    #     return script_vars_values + int.from_bytes(var_mem_offset[0], "little")
 
     def unused(self, ctx):
         (
