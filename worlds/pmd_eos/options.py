@@ -413,6 +413,7 @@ class MaxRequiredRank(Choice):
     option_master_3star = 11
     option_guildmaster = 12
 
+
 class RecruitSanity(Toggle):
     """Adds checks for each recruitable pokemon
     If enabled all legendaries will be in the pool and progressive for darkrai goal
@@ -422,6 +423,7 @@ class RecruitSanity(Toggle):
 
     display_name = "Recruit Sanity"
 
+
 class RecruitEvolution(Toggle):
     """If on it is assumed that if a pokemon pre evolution is in logic
     This ties into required story progress for levels
@@ -429,6 +431,7 @@ class RecruitEvolution(Toggle):
     Luminous Spring becomes a progressive item"""
 
     display_name = "Evolution Logically Required"
+
 
 class RecruitLongLocations(Toggle):
     """includes kecleon
@@ -439,6 +442,7 @@ class RecruitLongLocations(Toggle):
     includes level 99-100"""
 
     display_name = "Long Recruit Location"
+
 
 class RecruitPercentageRequired(Choice):
     """Sets the minimum recruit rate for something to be in logic
@@ -461,6 +465,7 @@ class RecruitProgressiveFriendItems(Choice):
     display_name = "Progressive Friend Items"
     option_all_random = 0
     option_progressive = 1
+
 
 class RecruitProgressiveEvolution(Choice):
     """Sets if evolution should be progressive or random items in the pool"""

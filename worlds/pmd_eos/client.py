@@ -73,7 +73,7 @@ class EoSClient(BizHawkClient):
         self.local_events = []
 
     async def update_received_items(
-        self, ctx: "BizHawkClientContext", received_items_offset, received_index, i
+            self, ctx: "BizHawkClientContext", received_items_offset, received_index, i
     ) -> None:
         # write the received index to the rom to save where we are at with the queue
         await bizhawk.write(
@@ -157,7 +157,6 @@ class EoSClient(BizHawkClient):
             ctx.bizhawk_ctx, [((int.from_bytes(adventure_log[0], "little") & 0xFFFFFF) + 0x44, 62, self.ram_mem_domain)]
         )
         for dex_num in range(pokedex_size):
-
             pokedex_list.append((int.from_bytes(joined_flag_byte[0], "little") & (1 << (dex_num))) != 0)
         return pokedex_list
 
@@ -262,6 +261,8 @@ class EoSClient(BizHawkClient):
                                 "prog_recruit": 0,
                                 "prog_evolution": 0,
                             },
+                            # TODO: Get rid of all of this client storage and just write it as
+                            #  rereading the list each time. Now added progressive recruit and evo to the list
                             "want_reply": True,
                             "operations": [
                                 {
@@ -620,14 +621,14 @@ class EoSClient(BizHawkClient):
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
 
                 elif (
-                    ("EarlyDungeons" in item_data.group)
-                    or ("LateDungeons" in item_data.group)
-                    or ("Dojo Dungeons" in item_data.group)
-                    or ("BossDungeons" in item_data.group)
-                    or ("ExtraDungeons" in item_data.group)
-                    or ("RuleDungeons" in item_data.group)
-                    or ("Final Dojo" in item_data.group)
-                    or ("Dungeon" in item_data.group)
+                        ("EarlyDungeons" in item_data.group)
+                        or ("LateDungeons" in item_data.group)
+                        or ("Dojo Dungeons" in item_data.group)
+                        or ("BossDungeons" in item_data.group)
+                        or ("ExtraDungeons" in item_data.group)
+                        or ("RuleDungeons" in item_data.group)
+                        or ("Final Dojo" in item_data.group)
+                        or ("Dungeon" in item_data.group)
                 ):
                     item_memory_offset = item_data.memory_offset
                     # Since our open list is a byte array and our memory offset is bit based
@@ -954,16 +955,17 @@ class EoSClient(BizHawkClient):
                                 ],
                             )
                             await asyncio.sleep(0.1)
-                    
-                        #await self.update_received_items(ctx, received_items_offset, received_index, i)
-                        [
-                            {
-                                "cmd": "Set",
-                                "key": self.player_name + "GenericStorage",
-                                "want_reply": True,
-                                "operations": [{"operation": "update", "value": {"prog_recruit": self.prog_recruit}}],
-                            }
-                        ]
+
+                        # TODO: I don't know why this was in here or what it is doing so I commented it out
+                        # await self.update_received_items(ctx, received_items_offset, received_index, i)
+                        # [
+                        #    {
+                        #        "cmd": "Set",
+                        #        "key": self.player_name + "GenericStorage",
+                        #        "want_reply": True,
+                        #        "operations": [{"operation": "update", "value": {"prog_recruit": self.prog_recruit}}],
+                        #    }
+                        #  ]
                     else:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
@@ -1239,13 +1241,11 @@ class EoSClient(BizHawkClient):
                         if bit_number_dung in location_Dict_by_id:
                             locs_to_send.add(location_Dict_by_id[bit_number_dung].id)
 
-            #retrieves the list of all pokemon recruited and checks if a pokemon needs to sent as a check
+            # retrieves the list of all pokemon recruited and checks if a pokemon needs to sent as a check
             is_recruited = await self.is_pokemon_recruited(ctx)
             for p in range(493):
                 if (is_recruited[p]):
                     locs_to_send.add(location_Dict_by_id[p + 14999].id)
-
-
 
             # Check for set location flags in general bitfield
             for byte_m, byte in enumerate(scenario_subx_bitfield):
@@ -1588,9 +1588,9 @@ class EoSClient(BizHawkClient):
 
             else:  # if we are dealing with items
                 if (
-                    item_boxes_collected
-                    and (pelipper_received_counter < len(item_boxes_collected))
-                    and (((scenario_talk_bitfield_248_list >> 2) & 1) == 1)
+                        item_boxes_collected
+                        and (pelipper_received_counter < len(item_boxes_collected))
+                        and (((scenario_talk_bitfield_248_list >> 2) & 1) == 1)
                 ):
                     # I have an item in my list and lappy is already done with the item in the queue,
                     # so add another item to queue and set performance progress to true
@@ -1747,9 +1747,9 @@ class EoSClient(BizHawkClient):
 
             # if performance progress 37 is off, and we have a legendary to recruit, turn 37 on
             if (
-                (((performance_progress_bitfield[4] >> 5) & 1) == 0)
-                and event_local_num != 22
-                and legendaries_recruited_amount < len(legendaries_recruited)
+                    (((performance_progress_bitfield[4] >> 5) & 1) == 0)
+                    and event_local_num != 22
+                    and legendaries_recruited_amount < len(legendaries_recruited)
             ):
                 write_byte = performance_progress_bitfield[4] | (0x1 << 5)
                 performance_progress_bitfield[4] = write_byte
@@ -1765,9 +1765,9 @@ class EoSClient(BizHawkClient):
             # if Scenario Talk 249 is on, edit event local with the index of the next legendary and then turn off
             # performance progress 37
             if (
-                (((scenario_talk_bitfield_248_list >> 1) & 1) == 1)
-                and event_local_num == 22
-                and legendaries_recruited_amount < len(legendaries_recruited)
+                    (((scenario_talk_bitfield_248_list >> 1) & 1) == 1)
+                    and event_local_num == 22
+                    and legendaries_recruited_amount < len(legendaries_recruited)
             ):
                 item_data = legendaries_recruited[legendaries_recruited_amount]
                 legendaries_recruited_amount += 1
@@ -1862,20 +1862,21 @@ class EoSClient(BizHawkClient):
         )
         return script_vars_values + int.from_bytes(var_mem_offset[0], "little")
 
-    def unused(self, ctx):
-        (
-            ctx.send_msgs(
-                [
-                    {
-                        "cmd": "Set",
-                        "key": "Dungeon Missions",
-                        "default": {},
-                        "want_reply": True,
-                        "operations": [{"operation": "update", "value": {}}],
-                    }
-                ]
-            )
-        )
+    # TODO: If this is actually not necessary, we should get rid of it
+    # def unused(self, ctx):
+    #     (
+    #         ctx.send_msgs(
+    #             [
+    #                 {
+    #                     "cmd": "Set",
+    #                     "key": "Dungeon Missions",
+    #                     "default": {},
+    #                     "want_reply": True,
+    #                     "operations": [{"operation": "update", "value": {}}],
+    #                 }
+    #             ]
+    #         )
+    #     )
 
     async def is_game_running(self, ctx: "BizHawkClientContext") -> bool:
         LOADED_OVERLAY_GROUP_1 = 0xAF234
@@ -1887,13 +1888,13 @@ class EoSClient(BizHawkClient):
         return False
 
     async def add_money(
-        self,
-        ctx: "BizHawkClientContext",
-        money,
-        player_gold_amount,
-        bank_gold_amount,
-        player_gold_offset,
-        bank_gold_offset,
+            self,
+            ctx: "BizHawkClientContext",
+            money,
+            player_gold_amount,
+            bank_gold_amount,
+            player_gold_offset,
+            bank_gold_offset,
     ):
         player_gold_amount += money
         # bank_gold_amount += item_data.memory_offset
