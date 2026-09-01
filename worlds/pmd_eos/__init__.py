@@ -46,7 +46,7 @@ class EOSWeb(WebWorld):
             language="English",
             file_name="setup_en.md",
             link="setup/en",
-            authors=["CrypticMonkey33", "Chesyon"],
+            authors=["CrypticMonkey33", "Chesyon", "happylappy", "HeckaBad"],
         )
     ]
 
