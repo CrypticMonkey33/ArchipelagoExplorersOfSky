@@ -23,6 +23,7 @@ from .items import (
     filler_items,
     exclusive_filler_items,
     conditional_filler_useful_items,
+    non_rea_conditional_filler,
 )
 from .locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table, rea_start_id
 from .options import EOSOptions, option_name_to_value_dict
@@ -672,9 +673,9 @@ class EOSWorld(World):
         if self.options.goal == 1:
             required_items.append(self.create_item("Manaphy", ItemClassification.progression))
             required_items.append(self.create_item("Secret Rank", ItemClassification.progression))
-        else:
-            # self.excluded_locations += 1
-            test = 0
+
+        # TODO: Need to fix this, it's outside of the loop that is adding all the pieces of this so the items
+        #  are getting double added
         # Makes friend and recruit items progressive if recruitsanity is on
         if self.options.recruit_sanity.value == 1:
             if self.options.recruit_sanity_progressive_friend_items.value == 0:
@@ -812,6 +813,10 @@ class EOSWorld(World):
                 conditional_count += 1
                 # conditional_item_table.append(item_name)
                 continue
+            elif item_table[item_name].name in non_rea_conditional_filler and not self.options.recruit_sanity:
+                conditional_count += 1
+                # conditional_item_table.append(item_name)
+                continue
             elif item_table[item_name].classification == ItemClassification.filler:
                 if item_name in ["Gold Ribbon"]:
                     continue
@@ -905,11 +910,15 @@ class EOSWorld(World):
             - 1
             - self.excluded_locations
         )  # subtracting 1 for the event check
-        for i in range(len(conditional_filler_useful_items)):
+        new_conditional_filler = conditional_filler_useful_items
+        if not self.options.recruit_sanity:
+            new_conditional_filler += non_rea_conditional_filler
+
+        for i in range(len(new_conditional_filler)):
             if (i <= (self.excluded_tag_amount - remaining)) and (remaining < self.excluded_tag_amount):
-                required_items.append(self.create_item(conditional_filler_useful_items[i], ItemClassification.filler))
+                required_items.append(self.create_item(new_conditional_filler[i], ItemClassification.filler))
             else:
-                required_items.append(self.create_item(conditional_filler_useful_items[i], ItemClassification.useful))
+                required_items.append(self.create_item(new_conditional_filler[i], ItemClassification.useful))
 
         self.multiworld.itempool += required_items
 

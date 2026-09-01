@@ -1020,3 +1020,13 @@ conditional_filler_useful_items = [
     "Wonder Chest",
     "Shaymin Village",
 ]
+non_rea_conditional_filler = [
+    "Mystery Part",
+    "Secret Slab",
+    "Amber Tear",
+    "Friend Bow",
+    "Golden Mask",
+    "Hero Evolution",
+    "Recruit Evolution",
+    "Luminous Spring",
+]
