@@ -373,13 +373,13 @@ EOS_item_table = [
     ItemData("Dragu-teki", 544, ItemClassification.progression_skip_balancing, 0, ["Item", "Instrument"], 0x576),
     ItemData("Steel Guitar", 545, ItemClassification.progression_skip_balancing, 0, ["Item", "Instrument"], 0x577),
     # Items that give the player an overall buff or ability to do something new in game
-    ItemData("Hero Evolution", 550, ItemClassification.useful, 0, ["Recruit"], 0),
+    # ItemData("Hero Evolution", 550, ItemClassification.useful, 0, ["Recruit"], 0),
     ItemData("Formation Control", 553, ItemClassification.progression, 0, ["Generic"], 0),
     # Unlocking the main game for Special Episode Sanity
     ItemData("Main Game Unlock", 700, ItemClassification.progression, 0, [], 0),
     # Adding one team name trap so players can actually get their team name at leasst once in the game
     ItemData("Inspiration Strikes!!", 466, ItemClassification.useful, 0, ["Trap"], 0x0),
-    ItemData("Luminous Spring", 177, ItemClassification.progression, 177, ["Unique", "ExtraDungeons", "Recruit"], 0xB1),
+    # ItemData("Luminous Spring", 177, ItemClassification.progression, 177, ["Unique", "ExtraDungeons", "Recruit"], 0xB1),
     ItemData("Amber Tear", 502, ItemClassification.progression, 0, ["Recruit"], 0x3A),
     ItemData("Friend Bow", 503, ItemClassification.progression, 0, ["Recruit"], 0x35),
     ItemData("Golden Mask", 546, ItemClassification.progression, 0, ["Recruit"], 0x39),
@@ -407,7 +407,7 @@ EOS_item_table = [
     ItemData("Rayquaza", 523, ItemClassification.progression, 0, ["Legendary"], 0x13),
     ItemData("Kyogre", 524, ItemClassification.progression, 0, ["Legendary"], 0x14),
     ItemData("Shaymin", 525, ItemClassification.progression, 0, ["Legendary"], 0x15),
-    ItemData("Recruit Evolution", 551, ItemClassification.progression, 0, ["Recruit"], 0),
+    # ItemData("Recruit Evolution", 551, ItemClassification.progression, 0, ["Recruit"], 0),
     ItemData("Recruitment", 552, ItemClassification.progression, 0, ["Recruit"], 0),
     ItemData("Progressive Recruitment", 554, ItemClassification.progression, 0, ["Recruit"], 0),
     ItemData("Progressive Evolution", 555, ItemClassification.progression, 0, ["Recruit"], 0),
@@ -1026,7 +1026,5 @@ non_rea_conditional_filler = [
     "Amber Tear",
     "Friend Bow",
     "Golden Mask",
-    "Hero Evolution",
-    "Recruit Evolution",
-    "Luminous Spring",
+    "Progressive Evolution"
 ]

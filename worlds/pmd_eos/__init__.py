@@ -116,15 +116,11 @@ class EOSWorld(World):
             item_name = "Bag Upgrade"
             self.multiworld.push_precollected(self.create_item(item_name))
         if self.options.hero_evolution.value:
-            item_name = "Hero Evolution"
+            item_name = "Progressive Evolution"
             self.multiworld.push_precollected(self.create_item(item_name))
         if self.options.recruit_evo.value:
-            if self.options.recruit_sanity_progressive_evolution:
-                item_name = "Progressive Evolution"
-                self.multiworld.push_precollected(self.create_item(item_name))
-            else:
-                item_name = "Luminous Spring"
-                self.multiworld.push_precollected(self.create_item(item_name))
+            item_name = "Progressive Evolution"
+            self.multiworld.push_precollected(self.create_item(item_name))
         if self.options.dojo_dungeons.value > 0:
             dojo_amount = self.options.dojo_dungeons.value
             dojo_table = item_table_by_groups["Dojo Dungeons"]
@@ -674,69 +670,8 @@ class EOSWorld(World):
             required_items.append(self.create_item("Manaphy", ItemClassification.progression))
             required_items.append(self.create_item("Secret Rank", ItemClassification.progression))
 
-        # TODO: Need to fix this, it's outside of the loop that is adding all the pieces of this so the items
-        #  are getting double added
-        # Makes friend and recruit items progressive if recruitsanity is on
-        if self.options.recruit_sanity.value == 1:
-            if self.options.recruit_sanity_progressive_friend_items.value == 0:
-                if self.options.recruit.value == 0:
-                    required_items.append(self.create_item("Recruitment", ItemClassification.progression))
-                required_items.append(self.create_item("Friend Bow", ItemClassification.progression))
-                if self.options.goal == 1:
-                    required_items.append(self.create_item("Amber Tear", ItemClassification.progression))
-                    required_items.append(self.create_item("Golden Mask", ItemClassification.progression))
-            else:
-                if self.options.goal == 0:
-                    for i in range(2 - self.options.recruit.value):
-                        required_items.append(self.create_item("Progressive Recruitment", ItemClassification.progression))
-                else:
-                    for i in range(4 - self.options.recruit.value):
-                        required_items.append(self.create_item("Progressive Recruitment", ItemClassification.progression))
-        else:
-            if self.options.recruit.value == 0:
-                required_items.append(self.create_item("Recruitment", ItemClassification.useful))
-            required_items.append(self.create_item("Friend Bow", ItemClassification.useful))
-            if self.options.goal == 1:
-                required_items.append(self.create_item("Amber Tear", ItemClassification.useful))
-                required_items.append(self.create_item("Golden Mask", ItemClassification.useful))
-
-        if (self.options.recruit_sanity.value == 1 and self.options.recruit_sanity_evolution.value == 1
-                and self.options.recruit_evo.value == 0):
-            if self.options.recruit_sanity_progressive_evolution.value:
-                required_items.append(self.create_item("Progressive Evolution", ItemClassification.progression))
-                if self.options.hero_evolution.value == 0:
-                    required_items.append(self.create_item("Progressive Evolution", ItemClassification.progression))
-            else:
-                required_items.append(self.create_item("Luminous Spring", ItemClassification.progression))
-                if self.options.hero_evolution.value == 0:
-                    required_items.append(self.create_item("Hero Evolution", ItemClassification.useful))
-        else:
-            if self.options.recruit_sanity_progressive_evolution.value:
-                if self.options.recruit_evo.value == 0:
-                    required_items.append(self.create_item("Progressive Evolution", ItemClassification.useful))
-                if self.options.hero_evolution.value == 0:
-                    required_items.append(self.create_item("Progressive Evolution", ItemClassification.useful))
-            else:
-                if self.options.recruit_evo.value == 0:
-                    required_items.append(self.create_item("Luminous Spring", ItemClassification.useful))
-                if self.options.hero_evolution.value == 0:
-                    required_items.append(self.create_item("Hero Evolution", ItemClassification.useful))
-
-        if self.options.recruit_sanity.value == 1 and self.options.recruit_sanity_long_location.value == 1:
-            if self.options.recruit_sanity_progressive_friend_items.value == 0:
-                required_items.append(self.create_item("Mystery Part", ItemClassification.progression))
-                required_items.append(self.create_item("Secret Slab", ItemClassification.progression))
-                if self.options.recruit_sensor.value == 0:
-                    required_items.append(self.create_item("Recruitment Sensor", ItemClassification.progression))
-            else:
-                for i in range(2):
-                    required_items.append(self.create_item("Progressive Recruitment", ItemClassification.progression))
-        else:
-            required_items.append(self.create_item("Mystery Part", ItemClassification.useful))
-            required_items.append(self.create_item("Secret Slab", ItemClassification.useful))
-            if self.options.recruit_sensor.value == 0:
-                required_items.append(self.create_item("Recruitment Sensor", ItemClassification.useful))
-
+        # Processing Legendaries. If we are in dilaga goal, nothing happens, if we are in darkrai goal check for REA.
+        # REA requires legendaries to all be included and are progression items
         if self.options.goal.value == 1 and (
             self.options.legendaries.value > len(self.options.allowed_legendaries.value)
         ) and self.options.recruit_sanity == 0:
@@ -748,8 +683,7 @@ class EOSWorld(World):
             )
             for item in new_list:
                 required_items.append(self.create_item(item, ItemClassification.filler))
-
-        if self.options.goal.value == 1 and self.options.recruit_sanity == 1:
+        elif self.options.goal.value == 1 and self.options.recruit_sanity == 1:
             required_items.append(self.create_item("Regirock", ItemClassification.progression))
             required_items.append(self.create_item("Regice", ItemClassification.progression))
             required_items.append(self.create_item("Registeel", ItemClassification.progression))
@@ -911,8 +845,74 @@ class EOSWorld(World):
             - self.excluded_locations
         )  # subtracting 1 for the event check
         new_conditional_filler = conditional_filler_useful_items
-        if not self.options.recruit_sanity:
-            new_conditional_filler += non_rea_conditional_filler
+        non_rea_filler_amount_needed = remaining - len(new_conditional_filler)
+        conditional_filler_classifications = {}
+        for i in range(len(non_rea_conditional_filler)):
+            if i < non_rea_filler_amount_needed:
+                conditional_filler_classifications.update({non_rea_conditional_filler[i]: ItemClassification.filler})
+            else:
+                conditional_filler_classifications.update({non_rea_conditional_filler[i]: ItemClassification.useful})
+
+        # TODO: Need to fix this, it's outside of the loop that is adding all the pieces of this so the items
+        #  are getting double added
+        # Makes friend and recruit items progressive if recruitsanity is on
+        if self.options.recruit_sanity.value == 1:
+            if self.options.recruit_sanity_progressive_friend_items.value == 0:
+                if self.options.recruit.value == 0:
+                    required_items.append(self.create_item("Recruitment", ItemClassification.progression))
+                required_items.append(self.create_item("Friend Bow", ItemClassification.progression))
+                if self.options.goal == 1:
+                    required_items.append(self.create_item("Amber Tear", ItemClassification.progression))
+                    required_items.append(self.create_item("Golden Mask", ItemClassification.progression))
+            else:
+                if self.options.goal == 0:
+                    for i in range(2 - self.options.recruit.value):
+                        required_items.append(
+                            self.create_item("Progressive Recruitment", ItemClassification.progression))
+                else:
+                    for i in range(4 - self.options.recruit.value):
+                        required_items.append(
+                            self.create_item("Progressive Recruitment", ItemClassification.progression))
+        else:
+            if self.options.recruit.value == 0:
+                required_items.append(self.create_item("Recruitment", ItemClassification.useful))
+            required_items.append(self.create_item("Friend Bow",
+                                                   conditional_filler_classifications["Friend Bow"]))
+            if self.options.goal == 1:
+                required_items.append(self.create_item("Amber Tear",
+                                                       conditional_filler_classifications["Amber Tear"]))
+                required_items.append(self.create_item("Golden Mask",
+                                                       conditional_filler_classifications["Golden Mask"]))
+
+        if self.options.recruit_sanity.value and self.options.recruit_sanity_evolution.value:
+            if not self.options.recruit_evo.value:
+                required_items.append(self.create_item("Progressive Evolution", ItemClassification.progression))
+            if not self.options.hero_evolution.value:
+                required_items.append(self.create_item("Progressive Evolution", ItemClassification.progression))
+
+        else:
+            if not self.options.recruit_evo.value:
+                required_items.append(self.create_item("Progressive Evolution",
+                                                       conditional_filler_classifications["Progressive Evolution"]))
+            if not self.options.hero_evolution.value:
+                required_items.append(self.create_item("Progressive Evolution",
+                                                       conditional_filler_classifications["Progressive Evolution"]))
+
+        if self.options.recruit_sanity.value and self.options.recruit_sanity_long_location.value:
+            if self.options.recruit_sanity_progressive_friend_items.value == 0:
+                required_items.append(self.create_item("Mystery Part", ItemClassification.progression))
+                required_items.append(self.create_item("Secret Slab", ItemClassification.progression))
+                if not self.options.recruit_sensor.value:
+                    required_items.append(self.create_item("Recruitment Sensor", ItemClassification.progression))
+            else:
+                for i in range(2):
+                    required_items.append(
+                        self.create_item("Progressive Recruitment", ItemClassification.progression))
+        else:
+            required_items.append(self.create_item("Mystery Part", ItemClassification.useful))
+            required_items.append(self.create_item("Secret Slab", ItemClassification.useful))
+            if self.options.recruit_sensor.value == 0:
+                required_items.append(self.create_item("Recruitment Sensor", ItemClassification.useful))
 
         for i in range(len(new_conditional_filler)):
             if (i <= (self.excluded_tag_amount - remaining)) and (remaining < self.excluded_tag_amount):

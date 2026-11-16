@@ -164,6 +164,7 @@ class FullTeamFormationControl(DefaultOnToggle):
 
     display_name = "Formation Control Enable"
 
+
 class RecruitmentSensor(DefaultOnToggle):
     """Start with recruitment sensor enabled?
     If false, recruitment sensor will be an item in your game"""
@@ -467,12 +468,13 @@ class RecruitProgressiveFriendItems(Choice):
     option_progressive = 1
 
 
-class RecruitProgressiveEvolution(Choice):
-    """Sets if evolution should be progressive or random items in the pool"""
+# TODO: Remove all instances of progressive recruitment being optional. It is now mandatory progressive
+# class RecruitProgressiveEvolution(Choice):
+#    """Sets if evolution should be progressive or random items in the pool"""
 
-    display_name = "Progressive Evolution Items"
-    option_all_random = 0
-    option_progressive = 1
+#    display_name = "Progressive Evolution Items"
+#    option_all_random = 0
+#    option_progressive = 1
 
 
 
@@ -524,7 +526,7 @@ class EOSOptions(PerGameCommonOptions):
     recruit_sanity_long_location: RecruitLongLocations
     recruit_sanity_difficulty: RecruitPercentageRequired
     recruit_sanity_progressive_friend_items: RecruitProgressiveFriendItems
-    recruit_sanity_progressive_evolution: RecruitProgressiveEvolution
+    # recruit_sanity_progressive_evolution: RecruitProgressiveEvolution
 
 
 option_name_to_value_dict = {
@@ -574,7 +576,7 @@ option_name_to_value_dict = {
             "RecruitLongLocations": "recruit_sanity_long_location",
             "RecruitPercentageRequired": "recruit_sanity_difficulty",
             "RecruitProgressiveFriendItems": "recruit_sanity_progressive_friend_items",
-            "RecruitProgressiveEvolution": "recruit_sanity_progressive_evolution",
+            # "RecruitProgressiveEvolution": "recruit_sanity_progressive_evolution",
             "RecruitmentSensor": "recruit_sensor",
     }
 

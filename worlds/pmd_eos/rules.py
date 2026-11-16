@@ -10,8 +10,6 @@ if TYPE_CHECKING:
     from . import EOSWorld
 
 
-
-
 def set_rules(world: "EOSWorld", excluded):
 
     player = world.player
@@ -148,6 +146,7 @@ def spinda_drink_events(world, player):
 def forbid_items_behind_locations(world, player):
     forbid_item(world.multiworld.get_location("Hidden Land Cleared", player), "Relic Fragment Shard", player)
     forbid_item(world.multiworld.get_location("Temporal Tower Cleared", player), "Relic Fragment Shard", player)
+    forbid_item(world.multiworld.get_location("In the Future of Darkness Location", player), "Relic Fragment Shard", player)
     if world.options.goal.value == 1 and world.options.sky_peak_type == 1:
         forbid_item(world.multiworld.get_location("1st Station Pass Cleared", player), "Progressive Sky Peak", player)
         forbid_item(world.multiworld.get_location("2nd Station Pass Cleared", player), "Progressive Sky Peak", player)

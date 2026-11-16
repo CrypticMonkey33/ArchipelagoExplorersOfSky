@@ -765,16 +765,17 @@ class EoSClient(BizHawkClient):
                         )
                     await self.update_received_items(ctx, received_items_offset, received_index, i)
                 elif "Recruit" in item_data.group:
-                    if item_data.name == "Recruit Evolution":
-                        write_byte = performance_progress_bitfield[0] | (0x1 << 6)
-                        performance_progress_bitfield[0] = write_byte
-                        await bizhawk.write(
-                            ctx.bizhawk_ctx,
-                            [
-                                (performance_progress_offset, int.to_bytes(write_byte), self.ram_mem_domain),
-                            ],
-                        )
-                    elif item_data.name == "Recruitment":
+                    # TODO: Remove this code if it is no longer necessary
+                    # if item_data.name == "Recruit Evolution":
+                    #    write_byte = performance_progress_bitfield[0] | (0x1 << 6)
+                    #    performance_progress_bitfield[0] = write_byte
+                    #    await bizhawk.write(
+                    #        ctx.bizhawk_ctx,
+                    #        [
+                    #           (performance_progress_offset, int.to_bytes(write_byte), self.ram_mem_domain),
+                    #       ],
+                    #   )
+                    if item_data.name == "Recruitment":
                         write_byte = performance_progress_bitfield[0] | (0x1 << 5)
                         performance_progress_bitfield[0] = write_byte
                         await bizhawk.write(
@@ -792,15 +793,16 @@ class EoSClient(BizHawkClient):
                                 (performance_progress_offset + 0x3, int.to_bytes(write_byte), self.ram_mem_domain),
                             ],
                         )
-                    elif item_data.name == "Hero Evolution":
-                        write_byte = performance_progress_bitfield[1] | (0x1 << 2)
-                        performance_progress_bitfield[1] = write_byte
-                        await bizhawk.write(
-                            ctx.bizhawk_ctx,
-                            [
-                                (performance_progress_offset + 0x1, int.to_bytes(write_byte), self.ram_mem_domain),
-                            ],
-                        )
+                    # TODO: Remove this code if it is no longer necessary
+                    # elif item_data.name == "Hero Evolution":
+                    #    write_byte = performance_progress_bitfield[1] | (0x1 << 2)
+                    #    performance_progress_bitfield[1] = write_byte
+                    #    await bizhawk.write(
+                    #        ctx.bizhawk_ctx,
+                    #        [
+                    #            (performance_progress_offset + 0x1, int.to_bytes(write_byte), self.ram_mem_domain),
+                    #        ],
+                    #    )
                     elif item_data.name == "Progressive Evolution":
                         if self.prog_evolution == 0:
                             self.prog_evolution += 1
@@ -967,6 +969,7 @@ class EoSClient(BizHawkClient):
                         #        "operations": [{"operation": "update", "value": {"prog_recruit": self.prog_recruit}}],
                         #    }
                         #  ]
+                    # TODO: Tails what the actual heck is this? Why are you sending items outside my item sending thing?
                     else:
                         write_byte = performance_progress_bitfield[4] | (0x1 << 3)
                         performance_progress_bitfield[4] = write_byte
