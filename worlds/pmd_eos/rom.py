@@ -44,7 +44,7 @@ def write_tokens(
     dimensional_screams: list[Location],
     starting_se: int,
 ) -> None:
-    ov36_mem_loc = 2724864  # find_ov36_mem_location()
+    ov36_mem_loc = 5433344  # find_ov36_mem_location()
     seed_offset = 0x36FA0
     player_name_offset = 0x36F80
     player_name_changed_offset = 0x36F90
@@ -52,7 +52,7 @@ def write_tokens(
     # mission_max_offset = 0x36F9A
     # macguffin_max_offset = 0x36F9E
     # spinda_drinks_offset = 0x37146
-    hintable_items_offset = 3303424  # number from Heckas makefile code
+    hintable_items_offset = 6012928  # number from Heckas makefile code
     #custom_save_area_offset = ov36_mem_loc + 0x8F80 # unused
     # main_game_unlocked_offset = ov36_mem_loc + 0x37148  # custom_save_area_offset + 0x2A7
     dimensional_scream_who_offset = hintable_items_offset + 0x4
