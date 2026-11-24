@@ -1,5 +1,6 @@
 from typing import ClassVar, NamedTuple
-from ctypes import LittleEndianStructure, c_uint8, _SimpleCData
+from ctypes import LittleEndianStructure, c_uint8
+import ctypes
 
 
 class SubXBitfield(NamedTuple):
@@ -266,7 +267,7 @@ subx_table = [
 
 class RomSettings(LittleEndianStructure):
     _pack_: ClassVar[int] = 1
-    _fields_: ClassVar[list[tuple[str, type[_SimpleCData]]]] = [
+    _fields_: ClassVar[list[tuple[str, type[ctypes]]]] = [
         ("exp_multiplier", c_uint8),
         ("iq_multiplier", c_uint8),
         ("level_scaling_mode", c_uint8),

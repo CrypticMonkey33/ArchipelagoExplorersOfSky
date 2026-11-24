@@ -728,6 +728,17 @@ class EOSWorld(World):
                     required_items.append(self.create_item(item_name, ItemClassification.progression))
             elif item_table[item_name].name in ["Victory", "Relic Fragment Shard"]:
                 continue
+            elif item_table[item_name].name in non_rea_conditional_filler and not self.options.recruit_sanity:
+                if item_table[item_name].name == "Progressive Evolution":
+
+                    if self.options.goal == 0:
+                        conditional_count += (2 - self.options.recruit.value)
+                    else:
+                        conditional_count += (4 - self.options.recruit.value)
+                else:
+                    conditional_count += 1
+                # conditional_item_table.append(item_name)
+                continue
             elif "Legendary" in item_table[item_name].group:
                 continue
             elif "Instrument" in item_table[item_name].group:
@@ -737,10 +748,6 @@ class EOSWorld(World):
             elif "Recruit" in item_table[item_name].group:
                 continue
             elif item_table[item_name].name in conditional_filler_useful_items:
-                conditional_count += 1
-                # conditional_item_table.append(item_name)
-                continue
-            elif item_table[item_name].name in non_rea_conditional_filler and not self.options.recruit_sanity:
                 conditional_count += 1
                 # conditional_item_table.append(item_name)
                 continue

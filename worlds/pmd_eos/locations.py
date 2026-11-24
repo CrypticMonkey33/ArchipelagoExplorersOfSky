@@ -229,6 +229,7 @@ eos_location_table: list[LocationData] = [
     LocationData("SpecialDungeonComplete", "SE Icicle Forest Cleared", 145, ["Special"]),
     LocationData("SpecialDungeonComplete", "SE Vast Ice Mountain Cleared", 148, ["Special"]),  # 3 subareas
     LocationData("SpecialDungeonComplete", "SE Southern Jungle Cleared", 149, ["Special"]),
+    LocationData("SpecialDungeonComplete", "SE Boulder Quarry Cleared", 152, ["Special"]),  # 3 subareas
     LocationData("SpecialDungeonComplete", "SE Right Cave Path Cleared", 153, ["Special"]),
     LocationData("SpecialDungeonComplete", "SE Left Cave Path Cleared", 154, ["Special"]),
     LocationData("SpecialDungeonComplete", "SE Limestone Cavern Cleared", 157, ["Special"]),  # 3 subareas
