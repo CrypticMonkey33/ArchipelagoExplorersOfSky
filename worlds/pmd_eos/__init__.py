@@ -78,12 +78,12 @@ class EOSWorld(World):
     required_server_version = (0, 6, 1)
 
     item_name_groups = item_table_by_groups
-    disabled_locations: ClassVar[set[str]] = []
+    disabled_locations: set[str] = []
     extra_locations_added = 0
     mission_start_id = 1000
     excluded_locations = 0
-    dimensional_scream_list: ClassVar[list] = []
-    dimensional_scream_list_ints: ClassVar[list[int]] = []
+    dimensional_scream_list: list = []
+    dimensional_scream_list_ints: list[int] = []
     starting_se: int = 0
     slot_data_ready = threading.Event
     excluded_tag_amount: int = 0

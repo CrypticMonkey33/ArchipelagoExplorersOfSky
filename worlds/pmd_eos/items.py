@@ -38,6 +38,7 @@ def get_item_table_by_groups() -> dict[str, set[str]]:
 
     return new_dict
 
+
 # Item table for all the EOS items that can be in the game. Does not include filler or trap items.
 eos_item_table = [
     # "Test Dungeon"0, ItemClassification.progression, ["Unique", "Dungeons"],0x0), Test Dungeon does not actually exist

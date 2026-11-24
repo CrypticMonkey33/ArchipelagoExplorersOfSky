@@ -1,5 +1,5 @@
 import json
-from typing import TYPE_CHECKING, ClassVar
+from typing import TYPE_CHECKING
 
 from BaseClasses import Location
 from settings import get_settings
@@ -27,7 +27,7 @@ class EOSProcedurePatch(APProcedurePatch, APTokenMixin):
     patch_file_ending = ".apeos"
     result_file_ending = ".nds"
     # different procedures to apply. Can always add more but have only needed these two so far
-    procedure : ClassVar = [
+    procedure = [
         ("apply_bsdiff4", ["base_patch.bsdiff4"]),
         ("apply_tokens", ["token_data.bin"]),
     ]
@@ -53,7 +53,7 @@ def write_tokens(
     # macguffin_max_offset = 0x36F9E
     # spinda_drinks_offset = 0x37146
     hintable_items_offset = 6012928  # number from Heckas makefile code
-    #custom_save_area_offset = ov36_mem_loc + 0x8F80 # unused
+    # custom_save_area_offset = ov36_mem_loc + 0x8F80 # unused
     # main_game_unlocked_offset = ov36_mem_loc + 0x37148  # custom_save_area_offset + 0x2A7
     dimensional_scream_who_offset = hintable_items_offset + 0x4
     dimensional_scream_what_offset = hintable_items_offset + 0x202

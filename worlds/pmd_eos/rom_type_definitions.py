@@ -1,6 +1,7 @@
 from typing import ClassVar, NamedTuple
 from ctypes import LittleEndianStructure, c_uint8, _SimpleCData
 
+
 class SubXBitfield(NamedTuple):
     bitfield_bit_number: int
     subx_area: int
@@ -261,6 +262,7 @@ subx_table = [
     SubXBitfield(126, 8, 1, 6, "Unused", ["-"], "-"),
     SubXBitfield(127, 8, 1, 7, "Team Name Location", ["Main Game"], "Team Name Trap", "Team Name"),
 ]
+
 
 class RomSettings(LittleEndianStructure):
     _pack_: ClassVar[int] = 1

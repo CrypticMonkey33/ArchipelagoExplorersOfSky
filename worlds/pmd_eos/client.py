@@ -32,9 +32,9 @@ class EoSClient(BizHawkClient):
     room: int
     local_events: list[int]
     player_name: str | None
-    checked_dungeon_flags: ClassVar[dict[int, list]] = {}
-    checked_general_flags: ClassVar[dict[int, list]] = {}
-    checked_pokemon_flags: ClassVar[dict[int, list]] = {}
+    checked_dungeon_flags: dict[int, list] = {}
+    checked_general_flags: dict[int, list] = {}
+    checked_pokemon_flags: dict[int, list] = {}
     ram_mem_domain = "Main RAM"
     goal_complete = False
     bag_given = False
@@ -54,8 +54,8 @@ class EoSClient(BizHawkClient):
     deathlink_sender = ""
     deathlink_message: str = ""
     item_box_count = 0
-    hint_loc: ClassVar[list] = []
-    hints_hinted: ClassVar[list[int]] = []
+    hint_loc: list = []
+    hints_hinted: list[int] = []
     client_version = game_version
     hint_issue = False
     prog_recruit = 0
@@ -291,22 +291,22 @@ class EoSClient(BizHawkClient):
 
             item_boxes_collected: list[dict] = []
             legendaries_recruited: list[dict] = []
-            script_vars_values_addr = 0x2AB9EC # 0x0202AB9EC
-            open_list_total_offset = script_vars_values_addr + 0x197 # $DUNGEON_OPEN_LIST
-            conquest_list_total_offset = script_vars_values_addr + 0x1F7 # $DUNGEON_CONQUEST_LIST
-            scenario_balance_offset = script_vars_values_addr + 0xB0 # $SCENARIO_BALANCE_FLAG
-            performance_progress_offset = script_vars_values_addr + 0x18F # $PERFORMANCE_PROGRESS_LIST
-            scenario_subx_offset = script_vars_values_addr + 0xC0 # $SCENARIO_SUB1
-            received_items_offset = script_vars_values_addr + 0xD1 # $CRYSTAL_COLOR_02
-            scenario_main_offset = script_vars_values_addr + 0xBC # $SCENARIO_MAIN
-            scenario_main_bitfield_offset = script_vars_values_addr + 0x11C # $SCENARIO_MAIN_BIT_FLAG
-            special_episode_offset = script_vars_values_addr + 0x18C # $SPECIAL_EPISODE_OPEN
-            item_backup_offset = script_vars_values_addr + 0x90 # $ITEM_BACKUP
-            dungeon_enter_index_offset = script_vars_values_addr + 0x66 # $DUNGEON_ENTER_INDEX
-            scenario_talk_bitfield_offset = script_vars_values_addr + 0x12C # $SCENARIO_TALK_BIT_FLAG
-            event_local_offset = script_vars_values_addr + 0x8C # $EVENT_LCOAL
-            recycle_amount_offset = script_vars_values_addr + 0x2C # $RECYCLE_COUNT
-            pelipper_received_counter_offset = script_vars_values_addr + 0x4 # $CONDITION
+            script_vars_values_addr = 0x2AB9EC  # 0x0202AB9EC
+            open_list_total_offset = script_vars_values_addr + 0x197  # $DUNGEON_OPEN_LIST
+            conquest_list_total_offset = script_vars_values_addr + 0x1F7  # $DUNGEON_CONQUEST_LIST
+            scenario_balance_offset = script_vars_values_addr + 0xB0  # $SCENARIO_BALANCE_FLAG
+            performance_progress_offset = script_vars_values_addr + 0x18F  # $PERFORMANCE_PROGRESS_LIST
+            scenario_subx_offset = script_vars_values_addr + 0xC0  # $SCENARIO_SUB1
+            received_items_offset = script_vars_values_addr + 0xD1  # $CRYSTAL_COLOR_02
+            scenario_main_offset = script_vars_values_addr + 0xBC  # $SCENARIO_MAIN
+            scenario_main_bitfield_offset = script_vars_values_addr + 0x11C  # $SCENARIO_MAIN_BIT_FLAG
+            special_episode_offset = script_vars_values_addr + 0x18C  # $SPECIAL_EPISODE_OPEN
+            item_backup_offset = script_vars_values_addr + 0x90  # $ITEM_BACKUP
+            dungeon_enter_index_offset = script_vars_values_addr + 0x66  # $DUNGEON_ENTER_INDEX
+            scenario_talk_bitfield_offset = script_vars_values_addr + 0x12C  # $SCENARIO_TALK_BIT_FLAG
+            event_local_offset = script_vars_values_addr + 0x8C  # $EVENT_LCOAL
+            recycle_amount_offset = script_vars_values_addr + 0x2C  # $RECYCLE_COUNT
+            pelipper_received_counter_offset = script_vars_values_addr + 0x4  # $CONDITION
             bank_gold_offset = 0x2A5504  # await (self.load_script_variable_raw(0x3D, ctx))
             player_gold_offset = 0x2A54F8
             custom_save_area_offset = 0x3B0000
@@ -534,7 +534,7 @@ class EoSClient(BizHawkClient):
                             sky_peaks_ram += 1
                             self.logger.info(
                                 "Something Weird Happened Please tell Cryptic if you see this "
-                                 "\nThe Sky Peak count from AP was "
+                                "\nThe Sky Peak count from AP was "
                                 + str(old_sky_peaks)
                                 + "\nAnd the Sky Peaks read from the rom was: "
                                 + str(rom_old_sky)
@@ -547,7 +547,7 @@ class EoSClient(BizHawkClient):
                             sky_peaks_ram += 1
                             self.logger.info(
                                 "The Rom decided to be lower than the AP count probably due to save states "
-                                 "\nThe Sky Peak count from AP is "
+                                "\nThe Sky Peak count from AP is "
                                 + str(self.skypeaks_open)
                                 + "\nAnd the Sky Peaks written to the ROM should now be: "
                                 + str(sky_peaks_ram)
@@ -1274,7 +1274,7 @@ class EoSClient(BizHawkClient):
                     if i not in location_dict_by_start_id:
                         continue
                     if "Mission" in location_dict_by_start_id[i].group:
-                        #location_name = location_dict_by_start_id[i].name # unused
+                        # location_name = location_dict_by_start_id[i].name # unused
                         location_id = location_dict_by_start_id[i].id
                         # dungeons_complete = dungeon_missions_dict[location_name]
                         current_missions_completed = mission_status[2 * i]
@@ -1290,8 +1290,8 @@ class EoSClient(BizHawkClient):
                             for k in range(current_missions_completed):
                                 if k < ctx.slot_data["LateMissionsAmount"]:
                                     locs_to_send.add(location_id + mission_start_id + (100 * location_id) + k)
-                                        # dungeon_missions_dict[location_name] += 1
-                                        # location.id + mission_start_id + (100 * i) + j
+                                    # dungeon_missions_dict[location_name] += 1
+                                    # location.id + mission_start_id + (100 * i) + j
                 # await (ctx.send_msgs(
                 #    [
                 #        {"cmd": "Set",
@@ -1343,8 +1343,8 @@ class EoSClient(BizHawkClient):
                             for k in range(current_missions_completed):
                                 if k < ctx.slot_data["LateOutlawsAmount"]:
                                     locs_to_send.add(location_id + mission_start_id + 50 + (100 * location_id) + k)
-                                        # dungeon_outlaws_dict[location_name] += 1
-                                        # location.id + mission_start_id + (100 * i) + j
+                                    # dungeon_outlaws_dict[location_name] += 1
+                                    # location.id + mission_start_id + (100 * i) + j
                 # await (ctx.send_msgs(
                 #    [
                 #        {"cmd": "Set",
@@ -1863,22 +1863,6 @@ class EoSClient(BizHawkClient):
     #        ctx.bizhawk_ctx, [((script_vars + (var_id << 0x4) + 0x4), 2, self.ram_mem_domain)]
     #     )
     #     return script_vars_values + int.from_bytes(var_mem_offset[0], "little")
-
-    # TODO: If this is actually not necessary, we should get rid of it
-    # def unused(self, ctx):
-    #     (
-    #         ctx.send_msgs(
-    #             [
-    #                 {
-    #                     "cmd": "Set",
-    #                     "key": "Dungeon Missions",
-    #                     "default": {},
-    #                     "want_reply": True,
-    #                     "operations": [{"operation": "update", "value": {}}],
-    #                 }
-    #             ]
-    #         )
-    #     )
 
     async def is_game_running(self, ctx: "BizHawkClientContext") -> bool:
         loaded_overlay_group_1 = 0xAF234

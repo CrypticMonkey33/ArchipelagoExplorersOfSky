@@ -13,7 +13,7 @@ class LocationData:
     dungeon_length: int = 1
     id: int = -1
     dungeon_start_id: int = -1
-    group: ClassVar[list[str]] = [""]
+    group: list[str] = [""]
     recruit_rate: int = 0.0
 
     def __init__(self, classification, name, id, group=None):
@@ -63,16 +63,14 @@ def get_subx_table() -> list[LocationData]:
     return new_list
 
 
-def get_pokemon_table() -> List[LocationData]:
-    new_list: List[LocationData] = []
-    start_id = rea_start_id # random number to change later
+def get_pokemon_table() -> list[LocationData]:
+    new_list: list[LocationData] = []
+    start_id = rea_start_id  # random number to change later
     for i in range(len(pokemon_info)):
         new_location = LocationData(
             classification="Pokemon",
-            dungeon_length=0,
             name=pokemon_info[i][0],
             id=start_id + i,
-            dungeon_start_id=0,
             group=pokemon_info[i][2],
         )
         new_list.append(new_location)
@@ -121,23 +119,6 @@ def get_mission_location_table() -> list[LocationData]:
                 new_list.append(LocationData("Outlaw", location_name, location_id, []))
 
     return new_list
-
-
-def get_location_table_by_start_id() -> dict[int, set[str]]:
-    # groups: Set[str] = set()
-    new_dict: dict[int, set[str]] = {}
-    for location_name, location_data in location_table.items():
-        if location_data.group:
-            for group in location_data.group:
-                # groups.add(group)
-                if group in new_dict:
-                    new_dict[group].add(location_name)
-                else:
-                    test_set = set("")
-                    test_set.add(location_name)
-                    new_dict.update({group: test_set})
-
-    return new_dict
 
 
 subx_location_list = get_subx_table()
@@ -358,7 +339,7 @@ eos_location_table: list[LocationData] = [
     # LocationData("Instrument", 0, "Get Rock Horn", 339, 0),
     # LocationData("Instrument", 0, "Get Sky Melodica", 341, 0),
     # LocationData("Instrument", 0, "Get Grass Cornet", 343, 0),
-    *subx_location_list
+    *subx_location_list,
     *pokemon_location_list
 ]
 
