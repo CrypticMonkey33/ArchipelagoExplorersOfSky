@@ -1,4 +1,4 @@
-from typing import List, NamedTuple
+from typing import NamedTuple
 
 common_weight = 40
 uncommon_weight = 20

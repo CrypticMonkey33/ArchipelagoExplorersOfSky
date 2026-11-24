@@ -1,38 +1,31 @@
 import math
-import threading
-import typing
 import os
 import pkgutil
-import settings
 import random
-from typing import List, Dict, Set, Any
+import threading
+from typing import Any, ClassVar
 
+import settings
+from BaseClasses import ItemClassification, Location, LocationProgressType, Region, Tutorial
+from worlds.AutoWorld import WebWorld, World
+from worlds.generic.Rules import set_rule
+
+from .client import game_version
 from .items import (
     EOSItem,
-    item_table,
-    item_frequencies,
-    item_table_by_id,
-    item_table_by_groups,
+    conditional_filler_useful_items,
+    exclusive_filler_item_weights,
     filler_item_table,
     filler_item_weights,
-    trap_item_table,
-    trap_item_weights,
-    exclusive_filler_item_table,
-    exclusive_filler_item_weights,
-    legendary_pool_dict,
-    filler_items,
-    exclusive_filler_items,
-    conditional_filler_useful_items,
+    item_frequencies,
+    item_table,
+    item_table_by_groups,
     non_rea_conditional_filler,
 )
-from .locations import EOS_location_table, EOSLocation, location_Dict_by_id, expanded_EOS_location_table, rea_start_id
+from .locations import EOSLocation, eos_location_table, expanded_eos_location_table, rea_start_id
 from .options import EOSOptions, option_name_to_value_dict
-from .rules import set_rules, ready_for_late_game, has_relic_shards, has_start_recruit
-from BaseClasses import Tutorial, ItemClassification, Region, Location, LocationProgressType, Item
-from worlds.AutoWorld import World, WebWorld
-from worlds.generic.Rules import set_rule
-from .client import EoSClient, game_version
 from .rom import EOSProcedurePatch, write_tokens
+from .rules import set_rules
 from .pokemon import pokemon_info
 
 
@@ -58,7 +51,7 @@ class EOSSettings(settings.Group):
 
         copy_to = "POKEDUN_SORA_C2SP01_00.nds"
         description = "Explorers of Sky (EU) ROM File"
-        md5s = ["6735749e060e002efd88e61560e45567"]
+        md5s: ClassVar[list[str | bytes]] = ["6735749e060e002efd88e61560e45567"]
 
     rom_file: RomFile = RomFile(RomFile.copy_to)
     rom_start: bool = True
@@ -75,22 +68,22 @@ class EOSWorld(World):
     options: EOSOptions
     options_dataclass = EOSOptions
     web = EOSWeb()
-    settings: typing.ClassVar[EOSSettings]
+    settings: ClassVar[EOSSettings]
     ut_can_gen_without_yaml = True
 
-    item_name_to_id = {item.name: item.id for item in item_table.values()}
-    location_name_to_id = {location.name: location.id for location in expanded_EOS_location_table}
+    item_name_to_id: ClassVar = {item.name: item.id for item in item_table.values()}
+    location_name_to_id: ClassVar = {location.name: location.id for location in expanded_eos_location_table}
 
     required_client_version = (0, 6, 1)
     required_server_version = (0, 6, 1)
 
     item_name_groups = item_table_by_groups
-    disabled_locations: Set[str] = []
+    disabled_locations: ClassVar[set[str]] = []
     extra_locations_added = 0
     mission_start_id = 1000
     excluded_locations = 0
-    dimensional_scream_list = []
-    dimensional_scream_list_ints: list[int] = []
+    dimensional_scream_list: ClassVar[list] = []
+    dimensional_scream_list_ints: ClassVar[list[int]] = []
     starting_se: int = 0
     slot_data_ready = threading.Event
     excluded_tag_amount: int = 0
@@ -180,7 +173,7 @@ class EOSWorld(World):
         # pokemon_has_location = []
         pokemon_has_location = [0] * 492
 
-        for location in EOS_location_table:
+        for location in eos_location_table:
             if location.name == "Beach Cave Cleared":
                 menu_region.locations.append(EOSLocation(self.player, location.name, location.id, menu_region))
                 if "Mission" in location.group:
@@ -524,18 +517,18 @@ class EOSWorld(World):
                     # location.progress_type = LocationProgressType.EXCLUDED
                     # rule_dungeons_region.locations.append(location)
                 else:
-                    location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
-                    rule_dungeons_region.locations.append(location)
+                    rule_dungeons_region.locations.append(EOSLocation(self.player, location.name, location.id,
+                                                        rule_dungeons_region))
 
             elif location.classification in "OptionalSubX":
                 if self.options.long_location.value == 0:
-                    location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
-                    location.progress_type = LocationProgressType.EXCLUDED
+                    new_location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
+                    new_location.progress_type = LocationProgressType.EXCLUDED
                     self.excluded_tag_amount += 1
-                    rule_dungeons_region.locations.append(location)
+                    rule_dungeons_region.locations.append(new_location)
                 else:
-                    location = EOSLocation(self.player, location.name, location.id, rule_dungeons_region)
-                    rule_dungeons_region.locations.append(location)
+                    rule_dungeons_region.locations.append(EOSLocation(self.player, location.name, location.id,
+                                                            rule_dungeons_region))
 
         menu_region.connect(extra_items_region)
 
@@ -568,7 +561,7 @@ class EOSWorld(World):
         else:
             return EOSItem(item_data.name, item_data.classification, item_data.id, self.player)
 
-    def fill_slot_data(self) -> Dict[str, Any]:
+    def fill_slot_data(self) -> dict[str, Any]:
         return {
             "Goal": self.options.goal.value,
             "ServerVersion": game_version,
@@ -661,7 +654,7 @@ class EOSWorld(World):
         else:
             relics_to_add = self.options.total_shards.value
 
-        for i in range(relics_to_add):
+        for _ in range(relics_to_add):
             required_items.append(
                 self.create_item("Relic Fragment Shard", ItemClassification.progression_skip_balancing)
             )
@@ -786,7 +779,7 @@ class EOSWorld(World):
                         classification = ItemClassification.progression
                     if self.options.cursed_aegis_cave.value == 0:
                         if item_name == "Progressive Seal":
-                            for i in range(3):
+                            for _ in range(3):
                                 required_items.append(self.create_item(item_name, classification))
                                 continue
                         else:
@@ -806,20 +799,16 @@ class EOSWorld(World):
                                 # classification = ItemClassification.useful
                             else:
                                 classification = ItemClassification.progression
-                            for i in range(10):
+                            for _ in range(10):
                                 required_items.append(self.create_item(item_name, classification))
                             continue
                         else:
                             continue
                     elif self.options.sky_peak_type.value == 2:
-                        if item_name == "Progressive Sky Peak":
-                            continue
+                        if (item_name != "Progressive Sky Peak") and self.options.goal.value != 0:
+                            classification = ItemClassification.progression
                         else:
-                            if self.options.goal.value == 0:
-                                # classification = ItemClassification.useful
-                                continue
-                            else:
-                                classification = ItemClassification.progression
+                            continue
                     elif self.options.sky_peak_type.value == 3:
                         if item_name == "1st Station Pass":
                             if self.options.goal.value == 0:
@@ -837,7 +826,7 @@ class EOSWorld(World):
                 required_items.append(self.create_item(item_name, ItemClassification.useful))
 
         remaining = (
-            len(EOS_location_table)
+            len(eos_location_table)
             + self.extra_locations_added
             - len(required_items)
             - conditional_count
@@ -923,7 +912,7 @@ class EOSWorld(World):
         self.multiworld.itempool += required_items
 
         item_weights += filler_item_weights
-        for i in range(4):
+        for _ in range(4):
             filler_items_pool += filler_items_pool
             non_unique_trap_items += non_unique_trap_items
             item_weights += item_weights
@@ -1068,7 +1057,7 @@ class EOSWorld(World):
 
         return hint_loc
 
-    def modify_multidata(self, multidata: Dict[str, Any]) -> None:
+    def modify_multidata(self, multidata: dict[str, Any]) -> None:
         self.slot_data_ready.wait()
         slot = self.player
         if self.dimensional_scream_list_ints:

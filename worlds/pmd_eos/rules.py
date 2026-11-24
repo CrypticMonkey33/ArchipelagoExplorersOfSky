@@ -1,10 +1,10 @@
-from typing import Dict, TYPE_CHECKING
+from typing import TYPE_CHECKING
 
-from worlds.generic.Rules import set_rule, add_rule, forbid_item
-from .locations import EOS_location_table, EOSLocation, location_Dict_by_id, rea_start_id
-from .rom_type_definitions import subX_table
+from worlds.generic.Rules import add_rule, forbid_item, set_rule
+
+from .locations import eos_location_table, location_dict_by_id, rea_start_id
+from .rom_type_definitions import subx_table
 from .pokemon import pokemon_info
-
 
 if TYPE_CHECKING:
     from . import EOSWorld
@@ -13,7 +13,6 @@ if TYPE_CHECKING:
 def set_rules(world: "EOSWorld", excluded):
 
     player = world.player
-    options = world.options
 
     special_episodes_rules(world, player)
     subx_rules(world, player)
@@ -66,7 +65,7 @@ def set_rules(world: "EOSWorld", excluded):
     set_rule(
         world.multiworld.get_entrance("Late Game Door", player), lambda state: ready_for_late_game(state, player, world)
     )
-    
+
     set_rule(
         world.multiworld.get_entrance("Pokemon Recruit", player), lambda state: has_start_recruit(state, player, world)
     )
@@ -100,11 +99,11 @@ def ready_for_late_game(state, player, world):
 
 
 def has_start_recruit(state, player, world):
-    if special_episode_sanity_no_exclusion(world, player): 
+    if special_episode_sanity_no_exclusion(world, player):
         return (
-            state.has("Recruitment", player) 
+            state.has("Recruitment", player)
             and state.has("Main Game Unlock", player)
-            or state.has("Progressive Recruitment", player, 1) 
+            or state.has("Progressive Recruitment", player, 1)
             and state.has("Main Game Unlock", player)
         )
     else:
@@ -162,7 +161,7 @@ def forbid_items_behind_locations(world, player):
         forbid_item(world.multiworld.get_location("Sky Peak Summit Cleared", player), "Progressive Sky Peak", player)
         # if world.options.goal.value == 1:
         for i in range(111, 120):
-            location = location_Dict_by_id[i]
+            location = location_dict_by_id[i]
             for j in range(world.options.late_mission_checks.value):
                 forbid_item(
                     world.multiworld.get_location(f"{location.name[:-8]} Mission {j + 1}", player),
@@ -362,7 +361,7 @@ def boss_pokemon_evolution_rule(location_id, location_found, location_name, leve
 # retrieves the rule for pokemon evolutions that are found pre dialga
 def early_evolution_pokemon(location_name, location_data, player, world, recruit_chance, difficulty):
     if location_data[2] or location_data[1] > 20:
-        if recruit_chance >= difficulty: 
+        if recruit_chance >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and ready_for_late_game(state, player, world)
@@ -371,7 +370,7 @@ def early_evolution_pokemon(location_name, location_data, player, world, recruit
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Evolution", player)
                 )
-        elif recruit_chance + 0.100 >= difficulty: 
+        elif recruit_chance + 0.100 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Friend Bow", player)
@@ -406,7 +405,7 @@ def early_evolution_pokemon(location_name, location_data, player, world, recruit
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Evolution", player)
                 )
-        elif recruit_chance + 0.225 >= difficulty: 
+        elif recruit_chance + 0.225 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 3)
@@ -433,7 +432,7 @@ def early_evolution_pokemon(location_name, location_data, player, world, recruit
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Evolution", player)
                 )
-        elif recruit_chance + 0.326 >= difficulty: 
+        elif recruit_chance + 0.326 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 4)
@@ -500,14 +499,14 @@ def early_evolution_pokemon(location_name, location_data, player, world, recruit
                 and state.has("Progressive Evolution", player)
                 )
     else:
-        if recruit_chance >= difficulty: 
+        if recruit_chance >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Luminous Spring", player)
                 or state.has(ln, player)
                 and state.has("Progressive Evolution", player)
                 )
-        elif recruit_chance + 0.100 >= difficulty: 
+        elif recruit_chance + 0.100 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Friend Bow", player)
@@ -542,7 +541,7 @@ def early_evolution_pokemon(location_name, location_data, player, world, recruit
                 and state.has_group("EarlyDungeons", player, 10)
                 and state.has("Progressive Evolution", player)
                 )
-        elif recruit_chance + 0.225 >= difficulty: 
+        elif recruit_chance + 0.225 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 3)
@@ -569,7 +568,7 @@ def early_evolution_pokemon(location_name, location_data, player, world, recruit
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Evolution", player)
                 )
-        elif recruit_chance + 0.326 >= difficulty: 
+        elif recruit_chance + 0.326 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 4)
@@ -639,7 +638,7 @@ def early_evolution_pokemon(location_name, location_data, player, world, recruit
 
 # retrieves the rule for pokemon evolutions that are found past dialga
 def late_evolution_pokemon(location_name, player, world, recruit_chance, difficulty):
-    if recruit_chance >= difficulty: 
+    if recruit_chance >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             and ready_for_late_game(state, player, world)
@@ -648,7 +647,7 @@ def late_evolution_pokemon(location_name, player, world, recruit_chance, difficu
             and ready_for_late_game(state, player, world)
             and state.has("Progressive Evolution", player)
             )
-    elif recruit_chance + 0.100 >= difficulty: 
+    elif recruit_chance + 0.100 >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             and state.has("Friend Bow", player)
@@ -683,7 +682,7 @@ def late_evolution_pokemon(location_name, player, world, recruit_chance, difficu
             and ready_for_late_game(state, player, world)
             and state.has("Progressive Evolution", player)
             )
-    elif recruit_chance + 0.225 >= difficulty: 
+    elif recruit_chance + 0.225 >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             and state.has("Progressive Recruitment", player, 3)
@@ -710,7 +709,7 @@ def late_evolution_pokemon(location_name, player, world, recruit_chance, difficu
             and ready_for_late_game(state, player, world)
             and state.has("Progressive Evolution", player)
             )
-    elif recruit_chance + 0.326 >= difficulty: 
+    elif recruit_chance + 0.326 >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             and state.has("Progressive Recruitment", player, 4)
@@ -781,7 +780,7 @@ def late_evolution_pokemon(location_name, player, world, recruit_chance, difficu
 # retrieves the rule for pokemon evolutions that are found in aegis cave
 def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance, difficulty):
     if amount == 1:
-        if recruit_chance >= difficulty: 
+        if recruit_chance >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and ready_for_late_game(state, player, world)
@@ -792,7 +791,7 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Luminous Spring", player)
                 and state.has("Progressive Evolution", player)
                 )
-        elif recruit_chance + 0.100 >= difficulty: 
+        elif recruit_chance + 0.100 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Friend Bow", player)
@@ -835,7 +834,7 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Progressive Evolution", player)
                 and state.has("Progressive Seal", player, 1)
                 )
-        elif recruit_chance + 0.225 >= difficulty: 
+        elif recruit_chance + 0.225 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 3)
@@ -868,7 +867,7 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Progressive Evolution", player)
                 and state.has("Progressive Seal", player, 1)
                 )
-        elif recruit_chance + 0.326 >= difficulty: 
+        elif recruit_chance + 0.326 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 4)
@@ -945,7 +944,7 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Progressive Seal", player, 1)
                 )
     elif amount == 2:
-        if recruit_chance >= difficulty: 
+        if recruit_chance >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and ready_for_late_game(state, player, world)
@@ -956,7 +955,7 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Progressive Evolution", player)
                 and state.has("Progressive Seal", player, 2)
                 )
-        elif recruit_chance + 0.100 >= difficulty: 
+        elif recruit_chance + 0.100 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Friend Bow", player)
@@ -999,7 +998,7 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Progressive Evolution", player)
                 and state.has("Progressive Seal", player, 2)
                 )
-        elif recruit_chance + 0.225 >= difficulty: 
+        elif recruit_chance + 0.225 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 3)
@@ -1032,7 +1031,7 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Progressive Evolution", player)
                 and state.has("Progressive Seal", player, 2)
                 )
-        elif recruit_chance + 0.326 >= difficulty: 
+        elif recruit_chance + 0.326 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 4)
@@ -1109,7 +1108,7 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Progressive Seal", player, 2)
                 )
     elif amount == 3:
-        if recruit_chance >= difficulty: 
+        if recruit_chance >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and ready_for_late_game(state, player, world)
@@ -1120,7 +1119,7 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Progressive Evolution", player)
                 and state.has("Progressive Seal", player, 3)
                 )
-        elif recruit_chance + 0.100 >= difficulty: 
+        elif recruit_chance + 0.100 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Friend Bow", player)
@@ -1163,7 +1162,7 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Progressive Evolution", player)
                 and state.has("Progressive Seal", player, 3)
                 )
-        elif recruit_chance + 0.225 >= difficulty: 
+        elif recruit_chance + 0.225 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 3)
@@ -1196,7 +1195,7 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
                 and state.has("Progressive Evolution", player)
                 and state.has("Progressive Seal", player, 3)
                 )
-        elif recruit_chance + 0.326 >= difficulty: 
+        elif recruit_chance + 0.326 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 4)
@@ -1276,14 +1275,14 @@ def aegis_evolution_pokemon(location_name, amount, player, world, recruit_chance
 
 # retrieves the rule for pokemon evolutions that are found in dark crater
 def boss_evolution_pokemon(player, world, recruit_chance, difficulty):
-    if recruit_chance >= difficulty: 
+    if recruit_chance >= difficulty:
         return (
             lambda state: ready_for_darkrai(state, player, world)
             and state.has("Luminous Spring", player)
             or ready_for_darkrai(state, player, world)
             and state.has("Progressive Evolution", player)
             )
-    elif recruit_chance + 0.100 >= difficulty: 
+    elif recruit_chance + 0.100 >= difficulty:
         return (
             lambda state: ready_for_darkrai(state, player, world)
             and state.has("Friend Bow", player)
@@ -1310,7 +1309,7 @@ def boss_evolution_pokemon(player, world, recruit_chance, difficulty):
             and state.has("Progressive Recruitment", player, 2)
             and state.has("Progressive Evolution", player)
             )
-    elif recruit_chance + 0.225 >= difficulty: 
+    elif recruit_chance + 0.225 >= difficulty:
         return (
             lambda state: ready_for_darkrai(state, player, world)
             and state.has("Progressive Recruitment", player, 3)
@@ -1331,7 +1330,7 @@ def boss_evolution_pokemon(player, world, recruit_chance, difficulty):
             and state.has("Golden Mask", player)
             and state.has("Progressive Evolution", player)
             )
-    elif recruit_chance + 0.326 >= difficulty: 
+    elif recruit_chance + 0.326 >= difficulty:
         return (
             lambda state: ready_for_darkrai(state, player, world)
             and state.has("Progressive Recruitment", player, 4)
@@ -1381,11 +1380,11 @@ def boss_evolution_pokemon(player, world, recruit_chance, difficulty):
 
 # retrieves the rule for pokemon that are found pre dialga
 def early_pokemon(location_name, player, world, recruit_chance, difficulty):
-    if recruit_chance >= difficulty: 
+    if recruit_chance >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             )
-    elif recruit_chance + 0.100 >= difficulty: 
+    elif recruit_chance + 0.100 >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             and state.has("Friend Bow", player)
@@ -1400,7 +1399,7 @@ def early_pokemon(location_name, player, world, recruit_chance, difficulty):
             and state.has("Progressive Recruitment", player, 2)
             and state.has_group("EarlyDungeons", player, 10)
             )
-    elif recruit_chance + 0.225 >= difficulty: 
+    elif recruit_chance + 0.225 >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             and state.has("Progressive Recruitment", player, 3)
@@ -1412,7 +1411,7 @@ def early_pokemon(location_name, player, world, recruit_chance, difficulty):
             and state.has("Golden Mask", player)
             and ready_for_late_game(state, player, world)
             )
-    elif recruit_chance + 0.326 >= difficulty: 
+    elif recruit_chance + 0.326 >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             and state.has("Progressive Recruitment", player, 4)
@@ -1447,12 +1446,12 @@ def early_pokemon(location_name, player, world, recruit_chance, difficulty):
 
 # retrieves the rule for pokemon that are found past dialga
 def late_pokemon(location_name, player, world, recruit_chance, difficulty):
-    if recruit_chance >= difficulty: 
+    if recruit_chance >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             and ready_for_late_game(state, player, world)
             )
-    elif recruit_chance + 0.100 >= difficulty: 
+    elif recruit_chance + 0.100 >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             and state.has("Friend Bow", player)
@@ -1467,7 +1466,7 @@ def late_pokemon(location_name, player, world, recruit_chance, difficulty):
             and state.has("Progressive Recruitment", player, 2)
             and ready_for_late_game(state, player, world)
             )
-    elif recruit_chance + 0.225 >= difficulty: 
+    elif recruit_chance + 0.225 >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             and state.has("Progressive Recruitment", player, 3)
@@ -1479,7 +1478,7 @@ def late_pokemon(location_name, player, world, recruit_chance, difficulty):
             and state.has("Golden Mask", player)
             and ready_for_late_game(state, player, world)
             )
-    elif recruit_chance + 0.326 >= difficulty: 
+    elif recruit_chance + 0.326 >= difficulty:
         return (
             lambda state, ln=location_name: state.has(ln, player)
             and state.has("Progressive Recruitment", player, 4)
@@ -1515,13 +1514,13 @@ def late_pokemon(location_name, player, world, recruit_chance, difficulty):
 # retrieves the rule for pokemon that are found in aegis cave
 def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficulty):
     if amount == 1:
-        if recruit_chance >= difficulty: 
+        if recruit_chance >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Seal", player, 1)
                 )
-        elif recruit_chance + 0.100 >= difficulty: 
+        elif recruit_chance + 0.100 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Friend Bow", player)
@@ -1540,7 +1539,7 @@ def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficul
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Seal", player, 1)
                 )
-        elif recruit_chance + 0.225 >= difficulty: 
+        elif recruit_chance + 0.225 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 3)
@@ -1555,7 +1554,7 @@ def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficul
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Seal", player, 1)
                 )
-        elif recruit_chance + 0.326 >= difficulty: 
+        elif recruit_chance + 0.326 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 4)
@@ -1592,13 +1591,13 @@ def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficul
                 and state.has("Secret Rank", player)
                 )
     elif amount == 2:
-        if recruit_chance >= difficulty: 
+        if recruit_chance >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Seal", player, 1)
                 )
-        elif recruit_chance + 0.100 >= difficulty: 
+        elif recruit_chance + 0.100 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Friend Bow", player)
@@ -1617,7 +1616,7 @@ def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficul
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Seal", player, 2)
                 )
-        elif recruit_chance + 0.225 >= difficulty: 
+        elif recruit_chance + 0.225 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 3)
@@ -1632,7 +1631,7 @@ def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficul
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Seal", player, 2)
                 )
-        elif recruit_chance + 0.326 >= difficulty: 
+        elif recruit_chance + 0.326 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 4)
@@ -1669,13 +1668,13 @@ def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficul
                 and state.has("Secret Rank", player)
                 )
     elif amount == 3:
-        if recruit_chance >= difficulty: 
+        if recruit_chance >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Seal", player, 3)
                 )
-        elif recruit_chance + 0.100 >= difficulty: 
+        elif recruit_chance + 0.100 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Friend Bow", player)
@@ -1694,7 +1693,7 @@ def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficul
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Seal", player, 3)
                 )
-        elif recruit_chance + 0.225 >= difficulty: 
+        elif recruit_chance + 0.225 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 3)
@@ -1709,7 +1708,7 @@ def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficul
                 and ready_for_late_game(state, player, world)
                 and state.has("Progressive Seal", player, 3)
                 )
-        elif recruit_chance + 0.326 >= difficulty: 
+        elif recruit_chance + 0.326 >= difficulty:
             return (
                 lambda state, ln=location_name: state.has(ln, player)
                 and state.has("Progressive Recruitment", player, 4)
@@ -1750,11 +1749,11 @@ def aegis_pokemon(location_name, amount, player, world, recruit_chance, difficul
 
 # retrieves the rule for pokemon that are found in dark crater
 def boss_pokemon(player, world, recruit_chance, difficulty):
-    if recruit_chance >= difficulty: 
+    if recruit_chance >= difficulty:
         return (
             lambda state: ready_for_darkrai(state, player, world)
             )
-    elif recruit_chance + 0.100 >= difficulty: 
+    elif recruit_chance + 0.100 >= difficulty:
         return (
             lambda state: ready_for_darkrai(state, player, world)
             and state.has("Friend Bow", player)
@@ -1765,7 +1764,7 @@ def boss_pokemon(player, world, recruit_chance, difficulty):
             or ready_for_darkrai(state, player, world)
             and state.has("Progressive Recruitment", player, 2)
             )
-    elif recruit_chance + 0.225 >= difficulty: 
+    elif recruit_chance + 0.225 >= difficulty:
         return (
             lambda state: ready_for_darkrai(state, player, world)
             and state.has("Progressive Recruitment", player, 3)
@@ -1774,7 +1773,7 @@ def boss_pokemon(player, world, recruit_chance, difficulty):
             or ready_for_darkrai(state, player, world)
             and state.has("Golden Mask", player)
             )
-    elif recruit_chance + 0.326 >= difficulty: 
+    elif recruit_chance + 0.326 >= difficulty:
         return (
             lambda state: ready_for_darkrai(state, player, world)
             and state.has("Progressive Recruitment", player, 4)
@@ -1825,7 +1824,7 @@ def challenge_pokemon(location_name, player, world, recruit_chance, difficulty):
 
 def dungeon_locations_behind_items(world, player):
     pokemeon_has_rule = [0] * 492
-    for location in EOS_location_table:
+    for location in eos_location_table:
         if location.name == "Beach Cave Cleared":
             if special_episode_sanity_no_exclusion(world, player):
                 add_rule(
@@ -1833,7 +1832,7 @@ def dungeon_locations_behind_items(world, player):
                     lambda state: state.has("Main Game Unlock", player),
                 )
             continue
-        elif "Early" in location.group:
+        if "Early" in location.group:
             set_rule(
                 world.multiworld.get_location(location.name, player),
                 lambda state, ln=location.name[:-8]: state.has(ln, player),
@@ -1884,7 +1883,7 @@ def dungeon_locations_behind_items(world, player):
                 continue
             elif (pokemon_info[location.id - rea_start_id][1] + 0.100) < difficulty and world.options.goal == 0:
                 continue
-            
+
             #goes through each location a pokemon can be found in and applies appropriate rules depending on the dungeons logical location and some minor outliers as long locations
             for i in range(len(location.group)):
                 if pokemon_info[location.id - rea_start_id][5][i] == "Early":
@@ -1892,7 +1891,7 @@ def dungeon_locations_behind_items(world, player):
                     pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                     if world.options.recruit_sanity_evolution.value == 1:
                         early_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
-                        
+
                 elif pokemon_info[location.id - rea_start_id][5][i] == "Late":
                     if world.options.goal == 0:
                         continue
@@ -1949,7 +1948,7 @@ def dungeon_locations_behind_items(world, player):
                         pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                         if world.options.recruit_sanity_evolution.value == 1:
                             aegis_pokemon_evolution_rule(location.id, location.group[i], location.name, level, 3, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
-                
+
                 elif pokemon_info[location.id - rea_start_id][5][i] == "Boss":
                     if world.options.goal == 0:
                         continue
@@ -1967,7 +1966,7 @@ def dungeon_locations_behind_items(world, player):
                     pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
                     if world.options.recruit_sanity_evolution.value == 1:
                         late_pokemon_evolution_rule(location.id, location.group[i], location.name, level, pokemeon_has_rule, player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
-                
+
                 elif pokemon_info[location.id - rea_start_id][5][i] == "Long Recruit Challenge" or pokemon_info[location.id - rea_start_id][5][i] == "Long Location Challenge":
                     if world.options.recruit_sanity_long_location.value == 0 or world.options.goal == 0:
                         continue
@@ -1975,7 +1974,7 @@ def dungeon_locations_behind_items(world, player):
                         continue
                     rule = challenge_pokemon(location.group[i], player, world, pokemon_info[location.id - rea_start_id][1], difficulty)
                     pokemon_rule(rule, world, player, location.name, location.id, pokemeon_has_rule)
-        
+
         elif "Station" in location.group and world.options.goal.value == 1:
             if world.options.sky_peak_type.value == 1:  # progressive
                 if location.name == "Sky Peak Summit Cleared":
@@ -2144,7 +2143,7 @@ def dungeon_locations_behind_items(world, player):
 
 
 def mission_rules(world, player):
-    for i, location in enumerate(EOS_location_table):
+    for _, location in enumerate(eos_location_table):
         if "Mission" not in location.group:
             continue
 
@@ -2162,7 +2161,7 @@ def mission_rules(world, player):
                     )
             continue
 
-        elif location.classification == "EarlyDungeonComplete":
+        if location.classification == "EarlyDungeonComplete":
             for j in range(world.options.early_mission_checks.value):
                 set_rule(
                     world.multiworld.get_location(f"{location.name[:-8]} Mission {j + 1}", player),
@@ -2340,7 +2339,7 @@ def mission_rules(world, player):
 
 
 def subx_rules(world, player):
-    for item in subX_table:
+    for item in subx_table:
         if item.flag_definition == "Unused" or item.default_item == "ignore":
             continue
         if world.options.goal.value == 0 and item.classification in [
@@ -2508,5 +2507,4 @@ def subx_rules(world, player):
 def special_episode_sanity_no_exclusion(world, player) -> bool:
     if world.options.special_episode_sanity.value == 1 and not world.options.exclude_special.value:
         return True
-    else:
-        return False
+    return False
