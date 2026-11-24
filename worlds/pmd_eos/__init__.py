@@ -728,13 +728,26 @@ class EOSWorld(World):
                     required_items.append(self.create_item(item_name, ItemClassification.progression))
             elif item_table[item_name].name in ["Victory", "Relic Fragment Shard"]:
                 continue
-            elif item_table[item_name].name in non_rea_conditional_filler and not self.options.recruit_sanity:
+            elif item_table[item_name].name in (non_rea_conditional_filler
+                                                + ["Progressive Recruitment"]):
                 if item_table[item_name].name == "Progressive Evolution":
+
+                    if not self.options.recruit_evo.value:
+                        conditional_count += 1
+                    if not self.options.hero_evolution.value:
+                        conditional_count += 1
+                elif item_table[item_name].name == "Progressive Recruitment":
+                    if self.options.recruit_sanity_progressive_friend_items.value == 0:
+                        continue
 
                     if self.options.goal == 0:
                         conditional_count += (2 - self.options.recruit.value)
                     else:
                         conditional_count += (4 - self.options.recruit.value)
+                    continue
+                elif item_table[item_name].name in ["Amber Tear", "Golden Mask", "Friend Bow"]:
+                    if self.options.recruit_sanity_progressive_friend_items.value == 0:
+                        conditional_count += 1
                 else:
                     conditional_count += 1
                 # conditional_item_table.append(item_name)
